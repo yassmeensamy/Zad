@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.zad.zad"
+    namespace = "com.zad.islamic"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.zad.zad"
+        applicationId = "com.zad.islamic"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

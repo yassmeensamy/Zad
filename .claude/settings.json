@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(dart|yaml\\)$\")",
+      "Bash(grep -r 'class BaseCubit' /Users/yassmeen/Documents/dummy_projects/EramDoctor-app --include=*.dart)",
+      "Bash(grep -r OtpTimer /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/packages/shared/lib --include=*.dart -B 5 -A 10)",
+      "Bash(grep -r \"^import.*OtpTimer\\\\|class.*OtpTimer\\\\|^export.*OtpTimer\" /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/packages/shared/lib --include=*.dart)",
+      "Bash(grep \"\\\\.dart$\")",
+      "Bash(grep -r \"http\\\\|https\\\\|localhost\\\\|0\\\\.0\\\\.0\\\\.0\\\\|192\\\\.168\" /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/packages/auth --include=*.dart)",
+      "Read(//Users/yassmeen/.pub-cache/hosted/pub.dev/**)",
+      "Read(//Users/yassmeen/.pub-cache/**)",
+      "Bash(find /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/packages/auth -type f \\\\\\(-name *test.dart -o -name *_test.dart \\\\\\))",
+      "Bash(dart pub:*)",
+      "Bash(melos clean:*)",
+      "Bash(dart run:*)",
+      "Bash(cat ~/.pub-cache/global_packages/melos/bin/melos.dart-*.snapshot)",
+      "Bash(dart --version)",
+      "Bash(dart \"/Users/yassmeen/.pub-cache/global_packages/melos/bin/melos.dart-3.10.8.snapshot\" clean)",
+      "Bash(grep -r AuthStateListenerMixin /Users/yassmeen/Documents/dummy_projects/EramDoctor-app --include=*.dart)",
+      "Bash(grep -r \"AuthEndPoints\\\\|auth_endpoints\" /Users/yassmeen/Documents/dummy_projects/EramDoctor-app --include=*.dart)",
+      "Bash(flutter analyze:*)",
+      "Bash(wc -l /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/presentation/cubit/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/models/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/enum/*.dart)"
+    ]
+  }
+}

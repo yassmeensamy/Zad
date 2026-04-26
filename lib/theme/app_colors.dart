@@ -29,6 +29,10 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF111111);
 
+  // Cream border tones — used for ornamental gradient borders.
+  static const Color creamBorderLight = Color(0xFFF0E1BD);
+  static const Color creamBorderDark = Color(0xFFA88C68);
+
   // Status — tinted slightly toward the warm palette
   static const Color success = Color(0xFF6B8E3D);
   static const Color warning = Color(0xFFD4933A);

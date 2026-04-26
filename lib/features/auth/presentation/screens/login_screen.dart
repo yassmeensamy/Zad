@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/navigation/app_routes.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zad_brand.dart';
@@ -30,11 +32,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onSignIn() {
     _formKey.currentState?.validate();
-    // Hook up auth here.
+    context.go(AppRoutes.home);
   }
 
   void _onGoogle() {
-    // Hook up Google sign-in here.
+    context.go(AppRoutes.home);
   }
 
   @override

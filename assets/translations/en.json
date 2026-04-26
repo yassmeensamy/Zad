@@ -26,5 +26,22 @@
     "generic": "Something went wrong",
     "no_internet": "No internet connection",
     "required_field": "This field is required"
+  },
+  "cancel": "Cancel",
+  "language": "Language",
+  "language_subtitle": "You can change the app language at any time.",
+  "change_language": "Change language",
+  "failed_to_update_language": "Failed to update language",
+  "profile": {
+    "practice": "Practice",
+    "account": "Account",
+    "reminders": "Reminders",
+    "language": "Language",
+    "theme": "Appearance",
+    "theme_system": "System",
+    "edit_profile": "Edit profile",
+    "privacy": "Privacy",
+    "help_support": "Help & support",
+    "sign_out": "Sign out"
   }
 }

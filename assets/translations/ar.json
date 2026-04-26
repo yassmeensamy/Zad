@@ -26,5 +26,22 @@
     "generic": "حدث خطأ ما",
     "no_internet": "لا يوجد اتصال بالإنترنت",
     "required_field": "هذا الحقل مطلوب"
+  },
+  "cancel": "إلغاء",
+  "language": "اللغة",
+  "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",
+  "change_language": "تغيير اللغة",
+  "failed_to_update_language": "تعذّر تحديث اللغة",
+  "profile": {
+    "practice": "الممارسة",
+    "account": "الحساب",
+    "reminders": "التذكيرات",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "theme_system": "النظام",
+    "edit_profile": "تعديل الملف الشخصي",
+    "privacy": "الخصوصية",
+    "help_support": "المساعدة والدعم",
+    "sign_out": "تسجيل الخروج"
   }
 }

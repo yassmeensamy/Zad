@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
@@ -22,7 +21,6 @@ class _AndroidApiLevels {
 }
 
 abstract class PermissionService {
-  Future<void> requestTracking();
   Future<void> checkLocationPermission();
   Future<void> checkNotificationPermission();
   Future<void> checkStoragePermission();
@@ -41,15 +39,6 @@ class PermissionServiceImpl implements PermissionService {
   }
 
   @override
-  Future<void> requestTracking() async {
-    var status = await AppTrackingTransparency.trackingAuthorizationStatus;
-    logger.debug('Tracking status: $status');
-
-    if (status == TrackingStatus.notDetermined) {
-      status = await AppTrackingTransparency.requestTrackingAuthorization();
-    }
-  }
-
   @override
   Future<void> checkLocationPermission() async {
     logger.debug('Checking location permissions...');
@@ -97,8 +86,8 @@ class PermissionServiceImpl implements PermissionService {
     }
 
     if (Platform.isIOS) {
-      final settings =
-          await FirebaseMessaging.instance.getNotificationSettings();
+      final settings = await FirebaseMessaging.instance
+          .getNotificationSettings();
 
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
         logger.debug(
@@ -124,10 +113,9 @@ class PermissionServiceImpl implements PermissionService {
 
     // Determine permission type based on Android SDK version
     final sdkInt = await _getAndroidSdkInt();
-    final permission =
-        sdkInt >= _AndroidApiLevels.api30
-            ? Permission.manageExternalStorage
-            : Permission.storage;
+    final permission = sdkInt >= _AndroidApiLevels.api30
+        ? Permission.manageExternalStorage
+        : Permission.storage;
 
     final status = await permission.request();
     logger.debug('Storage permission status: $status');
@@ -180,9 +168,7 @@ class PermissionServiceImpl implements PermissionService {
     }
 
     if (status.isDenied) {
-      throw CameraPermissionDeniedException(
-        'Camera permission is denied.',
-      );
+      throw CameraPermissionDeniedException('Camera permission is denied.');
     }
 
     logger.debug('Camera permission granted.');
@@ -203,9 +189,7 @@ class PermissionServiceImpl implements PermissionService {
       }
 
       if (status.isDenied) {
-        throw PhotosPermissionDeniedException(
-          'Photos permission is denied.',
-        );
+        throw PhotosPermissionDeniedException('Photos permission is denied.');
       }
 
       logger.debug('Photos permission granted.');
@@ -216,10 +200,9 @@ class PermissionServiceImpl implements PermissionService {
       final sdkInt = await _getAndroidSdkInt();
 
       // Android 13+ (API 33+) uses photos permission
-      final permission =
-          sdkInt >= _AndroidApiLevels.api33
-              ? Permission.photos
-              : Permission.storage;
+      final permission = sdkInt >= _AndroidApiLevels.api33
+          ? Permission.photos
+          : Permission.storage;
 
       final status = await permission.request();
       logger.debug('Photos permission status: $status');
@@ -231,9 +214,7 @@ class PermissionServiceImpl implements PermissionService {
       }
 
       if (status.isDenied) {
-        throw PhotosPermissionDeniedException(
-          'Photos permission is denied.',
-        );
+        throw PhotosPermissionDeniedException('Photos permission is denied.');
       }
 
       logger.debug('Photos permission granted.');
@@ -281,9 +262,7 @@ class PermissionServiceImpl implements PermissionService {
     }
 
     if (status.isDenied) {
-      throw PhonePermissionDeniedException(
-        'Phone permission is denied.',
-      );
+      throw PhonePermissionDeniedException('Phone permission is denied.');
     }
 
     logger.debug('Phone permission granted.');

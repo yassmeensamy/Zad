@@ -1,0 +1,30 @@
+{
+  "app_name": "Zad",
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "no_internet": "No internet connection",
+    "required_field": "This field is required"
+  }
+}

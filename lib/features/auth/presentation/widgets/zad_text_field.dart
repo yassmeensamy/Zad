@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../core/textforms/main_text_form.dart';
+import '../../../../theme/theme.dart';
+
+/// Login-style field. Visual tokens (fill, borders, hint, icon colors)
+/// come from the global [InputDecorationTheme] in `AppTheme`.
+class ZadTextField extends StatelessWidget {
+  const ZadTextField({
+    super.key,
+    required this.hintText,
+    this.controller,
+    this.prefixIcon,
+    this.keyboardType,
+    this.obscureText = false,
+    this.passwordToggle = false,
+    this.autofillHints,
+    this.textInputAction,
+  });
+
+  final String hintText;
+  final TextEditingController? controller;
+  final Widget? prefixIcon;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final bool passwordToggle;
+  final List<String>? autofillHints;
+  final TextInputAction? textInputAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+
+    return MainTextFormField(
+      controller: controller,
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      passwordToggle: passwordToggle,
+      autofillHints: autofillHints,
+      textInputAction: textInputAction,
+      iconSize: 20,
+      style: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: colors.textArabic,
+      ),
+    );
+  }
+}

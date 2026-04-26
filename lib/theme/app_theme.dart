@@ -41,30 +41,36 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerLow,
+        fillColor: appColors.canvas.withValues(alpha: 0.55),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 14,
+          vertical: 18,
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: appColors.textPlaceholder,
+          color: appColors.textArabic.withValues(alpha: 0.7),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.outline),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: appColors.textArabic.withValues(alpha: 0.22),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: appColors.textArabic.withValues(alpha: 0.22),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: appColors.accent, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.error),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: appColors.warning),
         ),
+        prefixIconColor: appColors.textArabic.withValues(alpha: 0.8),
+        suffixIconColor: appColors.textArabic.withValues(alpha: 0.7),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

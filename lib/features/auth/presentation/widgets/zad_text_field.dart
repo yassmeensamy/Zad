@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -34,7 +35,7 @@ class ZadTextField extends StatelessWidget {
 
     return MainTextFormField(
       controller: controller,
-      hintText: hintText,
+      hintText: hintText.tr(),
       prefixIcon: prefixIcon,
       keyboardType: keyboardType,
       obscureText: obscureText,
@@ -45,7 +46,7 @@ class ZadTextField extends StatelessWidget {
       style: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: colors.textArabic,
+        color: colors.oliveDeep,
       ),
     );
   }

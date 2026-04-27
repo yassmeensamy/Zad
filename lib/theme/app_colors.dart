@@ -16,8 +16,15 @@ class AppColors {
   static const Color amberSoft = Color(0xFFE8C088);
   static const Color date = Color(0xFF7A4A29);
   static const Color dateDeep = Color(0xFF4D2D17);
+  static const Color dateSoft = Color(0xFF8D5C36);
   static const Color darkOlive = Color(0xFF3D3A1F);
   static const Color dustyOlive = Color(0xFF6B6644);
+
+  // Olive — primary brand accent for the v2 designs
+  static const Color olive = Color(0xFF3E4A2A);
+  static const Color oliveDeep = Color(0xFF2A331C);
+  static const Color oliveSoft = Color(0xFF56653B);
+  static const Color oliveLeaf = Color(0xFF6B7A4D);
 
   // Dark-mode warm neutrals (kept in the same family)
   static const Color inkwell = Color(0xFF1F140A);

@@ -55,9 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
     context.go(AppRoutes.signup);
   }
 
+  void _onForgotPassword() {
+    // TODO: route to forgot-password flow once it exists.
+  }
+
   void _onAuthStateChanged(BuildContext context, AuthState state) {
     if (state.isLoggedIn) {
-      context.go(AppRoutes.home);
+      context.go(AppRoutes.roleSelect);
       return;
     }
     if (state.isError && state.errorMessage != null) {
@@ -77,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: DesertBackground(
           child: SafeArea(
             child: SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
               child: Form(
                 key: _formKey,
@@ -97,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.next,
                       prefixIcon: Icon(
                         Icons.mail_outline_rounded,
-                        color: colors.textArabic.withValues(alpha: 0.55),
+                        color: colors.oliveSoft,
                         size: 20,
                       ),
                     ),
@@ -111,11 +116,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
-                        color: colors.textArabic.withValues(alpha: 0.55),
+                        color: colors.oliveSoft,
                         size: 20,
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 6),
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: InkWell(
+                        onTap: _onForgotPassword,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 6,
+                          ),
+                          child: ResponsiveText(
+                            'auth.forgot_password',
+                            style: GoogleFonts.inter(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              color: colors.olive,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     BlocBuilder<AuthCubit, AuthState>(
                       buildWhen: (previous, current) =>
                           previous.isLoading != current.isLoading,
@@ -167,11 +194,11 @@ class _Headline extends StatelessWidget {
         Text.rich(
           TextSpan(
             style: GoogleFonts.fraunces(
-              fontSize: 28,
+              fontSize: 30,
               fontWeight: FontWeight.w300,
               height: 1.15,
-              letterSpacing: -0.14,
-              color: colors.textArabic,
+              letterSpacing: -0.4,
+              color: colors.oliveDeep,
             ),
             children: [
               TextSpan(text: 'auth.login_screen.welcome_prefix'.tr()),
@@ -180,7 +207,7 @@ class _Headline extends StatelessWidget {
                 style: GoogleFonts.fraunces(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
-                  color: colors.accent,
+                  color: colors.textArabic,
                 ),
               ),
             ],

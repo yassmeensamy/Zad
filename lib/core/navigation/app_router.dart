@@ -7,6 +7,9 @@ import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/onboarding_flow/presentation/screens/create_profiles_screen.dart';
+import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
+import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import 'app_routes.dart';
@@ -36,6 +39,21 @@ class AppRouter {
         path: AppRoutes.signup,
         name: AppRoutes.signupName,
         builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.roleSelect,
+        name: AppRoutes.roleSelectName,
+        builder: (context, state) => const RoleSelectScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.createProfiles,
+        name: AppRoutes.createProfilesName,
+        builder: (context, state) => const CreateProfilesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.profileSelect,
+        name: AppRoutes.profileSelectName,
+        builder: (context, state) => const ProfileSelectScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

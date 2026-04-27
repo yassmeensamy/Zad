@@ -21,6 +21,11 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color accentSoft;
   final Color accentDeep;
 
+  final Color olive;
+  final Color oliveDeep;
+  final Color oliveSoft;
+  final Color oliveLeaf;
+
   final Color success;
   final Color warning;
   final Color info;
@@ -43,6 +48,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.accent,
     required this.accentSoft,
     required this.accentDeep,
+    required this.olive,
+    required this.oliveDeep,
+    required this.oliveSoft,
+    required this.oliveLeaf,
     required this.success,
     required this.warning,
     required this.info,
@@ -65,6 +74,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     accent: AppColors.amber,
     accentSoft: AppColors.amberSoft,
     accentDeep: AppColors.amberDeep,
+    olive: AppColors.olive,
+    oliveDeep: AppColors.oliveDeep,
+    oliveSoft: AppColors.oliveSoft,
+    oliveLeaf: AppColors.oliveLeaf,
     success: AppColors.success,
     warning: AppColors.warning,
     info: AppColors.info,
@@ -87,6 +100,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     accent: AppColors.amber,
     accentSoft: AppColors.amberSoft,
     accentDeep: AppColors.amberDeep,
+    olive: AppColors.oliveLeaf,
+    oliveDeep: AppColors.oliveSoft,
+    oliveSoft: AppColors.olive,
+    oliveLeaf: AppColors.oliveDeep,
     success: AppColors.success,
     warning: AppColors.warning,
     info: AppColors.info,
@@ -110,6 +127,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? accent,
     Color? accentSoft,
     Color? accentDeep,
+    Color? olive,
+    Color? oliveDeep,
+    Color? oliveSoft,
+    Color? oliveLeaf,
     Color? success,
     Color? warning,
     Color? info,
@@ -131,6 +152,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         accent: accent ?? this.accent,
         accentSoft: accentSoft ?? this.accentSoft,
         accentDeep: accentDeep ?? this.accentDeep,
+        olive: olive ?? this.olive,
+        oliveDeep: oliveDeep ?? this.oliveDeep,
+        oliveSoft: oliveSoft ?? this.oliveSoft,
+        oliveLeaf: oliveLeaf ?? this.oliveLeaf,
         success: success ?? this.success,
         warning: warning ?? this.warning,
         info: info ?? this.info,
@@ -156,6 +181,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       accent: Color.lerp(accent, other.accent, t)!,
       accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
       accentDeep: Color.lerp(accentDeep, other.accentDeep, t)!,
+      olive: Color.lerp(olive, other.olive, t)!,
+      oliveDeep: Color.lerp(oliveDeep, other.oliveDeep, t)!,
+      oliveSoft: Color.lerp(oliveSoft, other.oliveSoft, t)!,
+      oliveLeaf: Color.lerp(oliveLeaf, other.oliveLeaf, t)!,
       success: Color.lerp(success, other.success, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       info: Color.lerp(info, other.info, t)!,

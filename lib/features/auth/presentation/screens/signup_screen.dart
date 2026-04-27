@@ -9,6 +9,7 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zad_brand.dart';
+import '../../../splash/widgets/zad_logo_mark.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -31,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
 
   static const _dateSoft = Color(0xFFA8825C);
-  static const _fieldGap = 10.0;
 
   @override
   void dispose() {
@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onAuthStateChanged(BuildContext context, AuthState state) {
     if (state.isLoggedIn) {
-      context.go(AppRoutes.home);
+      context.go(AppRoutes.roleSelect);
       return;
     }
     if (state.isError && state.errorMessage != null) {
@@ -76,64 +76,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocListener<AuthCubit, AuthState>(
       listener: _onAuthStateChanged,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: DesertBackground(
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    const ZadBrand(),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 24),
+                    const ZadLogoMark(size: 84),
+                    const SizedBox(height: 22),
+                    const ZadBrand.compact(dateSoft: _dateSoft),
+                    const SizedBox(height: 24),
                     const _Headline(),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ZadTextField(
-                            hintText: 'auth.signup_screen.username_hint',
-                            controller: _usernameController,
-                            keyboardType: TextInputType.text,
-                            autofillHints: const [AutofillHints.newUsername],
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: Icon(
-                              Icons.person_outline_rounded,
-                              color: colors.textArabic.withValues(alpha: 0.55),
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(height: _fieldGap),
-                          ZadTextField(
-                            hintText: 'auth.email_hint',
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            autofillHints: const [AutofillHints.email],
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: Icon(
-                              Icons.mail_outline_rounded,
-                              color: colors.textArabic.withValues(alpha: 0.55),
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(height: _fieldGap),
-                          ZadTextField(
-                            hintText: '••••••••',
-                            controller: _passwordController,
-                            obscureText: true,
-                            passwordToggle: true,
-                            autofillHints: const [AutofillHints.newPassword],
-                            textInputAction: TextInputAction.done,
-                            prefixIcon: Icon(
-                              Icons.lock_outline_rounded,
-                              color: colors.textArabic.withValues(alpha: 0.55),
-                              size: 20,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 22),
+                    ZadTextField(
+                      hintText: 'auth.signup_screen.username_hint',
+                      controller: _usernameController,
+                      keyboardType: TextInputType.text,
+                      autofillHints: const [AutofillHints.newUsername],
+                      textInputAction: TextInputAction.next,
+                      prefixIcon: Icon(
+                        Icons.person_outline_rounded,
+                        color: colors.oliveSoft,
+                        size: 20,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    ZadTextField(
+                      hintText: 'auth.email_hint',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
+                      textInputAction: TextInputAction.next,
+                      prefixIcon: Icon(
+                        Icons.mail_outline_rounded,
+                        color: colors.oliveSoft,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ZadTextField(
+                      hintText: '••••••••',
+                      controller: _passwordController,
+                      obscureText: true,
+                      passwordToggle: true,
+                      autofillHints: const [AutofillHints.newPassword],
+                      textInputAction: TextInputAction.done,
+                      prefixIcon: Icon(
+                        Icons.lock_outline_rounded,
+                        color: colors.oliveSoft,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     BlocBuilder<AuthCubit, AuthState>(
                       buildWhen: (previous, current) =>
                           previous.isLoading != current.isLoading,
@@ -143,9 +142,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onTap: _onCreateAccount,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 20),
                     const AuthOrDivider(label: 'auth.or_continue'),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     BlocBuilder<AuthCubit, AuthState>(
                       buildWhen: (previous, current) =>
                           previous.isSocialLoading != current.isSocialLoading,
@@ -155,7 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onTap: _onGoogle,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 22),
                     AuthPromptLink(
                       prompt: 'auth.signup_screen.have_account_prompt',
                       action: 'auth.signup_screen.sign_in',
@@ -182,21 +181,21 @@ class _Headline extends StatelessWidget {
     return Text.rich(
       TextSpan(
         style: GoogleFonts.fraunces(
-          fontSize: 26,
+          fontSize: 28,
           fontWeight: FontWeight.w300,
           height: 1.15,
-          letterSpacing: -0.14,
-          color: colors.textArabic,
+          letterSpacing: -0.4,
+          color: colors.oliveDeep,
         ),
         children: [
           TextSpan(text: 'auth.signup_screen.headline_prefix'.tr()),
           TextSpan(
             text: 'auth.signup_screen.headline_accent'.tr(),
             style: GoogleFonts.fraunces(
-              fontSize: 26,
+              fontSize: 28,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w400,
-              color: colors.accent,
+              color: colors.textArabic,
             ),
           ),
         ],

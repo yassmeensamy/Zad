@@ -19,18 +19,19 @@ class ZadBrand extends StatelessWidget {
     this.tag = 'Your daily companion',
   });
 
-  /// Compact preset used on auth screens (login).
+  /// Compact preset used on auth screens (login). Matches the Olive v2 design:
+  /// 44px wordmark, 18px Arabic, 9.5px tag, 28px rule.
   const ZadBrand.compact({
     super.key,
     this.dateSoft = const Color(0xFF8D5C36),
     this.tag = 'Your daily companion',
-  })  : wordSize = 52,
-        arabicSize = 24,
-        tagSize = 10,
+  })  : wordSize = 44,
+        arabicSize = 18,
+        tagSize = 9.5,
         ruleWidth = 28,
-        gap = 10,
-        ruleGap = 18,
-        tagGap = 14;
+        gap = 6,
+        ruleGap = 12,
+        tagGap = 12;
 
   final double wordSize;
   final double arabicSize;
@@ -52,9 +53,10 @@ class ZadBrand extends StatelessWidget {
           'Zad',
           style: GoogleFonts.fraunces(
             fontSize: wordSize,
-            fontWeight: FontWeight.w300,
+            fontWeight: FontWeight.w400,
             height: 1,
-            color: colors.textArabic,
+            letterSpacing: -0.5,
+            color: colors.oliveDeep,
           ),
         ),
         SizedBox(height: gap),
@@ -63,7 +65,7 @@ class ZadBrand extends StatelessWidget {
           textDirection: TextDirection.rtl,
           style: GoogleFonts.amiri(
             fontSize: arabicSize,
-            color: colors.accentDeep,
+            color: colors.textArabic,
           ),
         ),
         SizedBox(height: ruleGap),
@@ -73,9 +75,9 @@ class ZadBrand extends StatelessWidget {
           tag.toUpperCase(),
           style: GoogleFonts.inter(
             fontSize: tagSize,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             letterSpacing: tagSize * 0.42,
-            color: dateSoft,
+            color: colors.oliveSoft,
           ),
         ),
       ],

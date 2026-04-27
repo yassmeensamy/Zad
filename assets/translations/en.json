@@ -9,10 +9,48 @@
     "back": "Back",
     "next": "Next",
     "done": "Done",
+    "continue": "CONTINUE",
     "loading": "Loading...",
     "retry": "Retry",
     "yes": "Yes",
     "no": "No"
+  },
+  "role_select": {
+    "eyebrow": "Step 1 of 2",
+    "title_prefix": "Who's ",
+    "title_accent": "this for",
+    "subtitle": "Tell us how you'll use Zad so we can shape the experience around you.",
+    "individual_label": "For myself",
+    "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
+    "family_label": "For my family",
+    "family_desc": "Set up child profiles with their own progress, gentle goals, and guided content.",
+    "footer_prefix": "You can change this later in ",
+    "footer_settings": "Settings"
+  },
+  "create_profiles": {
+    "step": "STEP 2 OF 2",
+    "eyebrow": "Family setup",
+    "title_prefix": "Add your ",
+    "title_accent": "children",
+    "subtitle": "Each child gets their own avatar and progress.",
+    "name_label": "Name",
+    "name_hint": "e.g. Yusuf",
+    "age_label": "Age",
+    "add_child": "ADD ANOTHER CHILD",
+    "skip": "I'll do this later",
+    "sheet_title": "Choose an avatar",
+    "sheet_sub": "Pick a character that feels like home"
+  },
+  "profile_select": {
+    "eyebrow": "Profiles",
+    "title_prefix": "Who's ",
+    "title_accent": "reading",
+    "subtitle": "Choose a profile to continue your journey.",
+    "role_parent": "Parent",
+    "age_label": "Age {}",
+    "days": "days",
+    "add_child": "Add a child",
+    "manage": "Manage profiles"
   },
   "auth": {
     "login": "Login",

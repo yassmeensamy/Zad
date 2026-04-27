@@ -9,10 +9,48 @@
     "back": "رجوع",
     "next": "التالي",
     "done": "تم",
+    "continue": "متابعة",
     "loading": "جارٍ التحميل...",
     "retry": "إعادة المحاولة",
     "yes": "نعم",
     "no": "لا"
+  },
+  "role_select": {
+    "eyebrow": "الخطوة 1 من 2",
+    "title_prefix": "لمن ",
+    "title_accent": "هذا التطبيق",
+    "subtitle": "أخبرنا كيف ستستخدم زاد لنُهيّئ التجربة لك.",
+    "individual_label": "لي شخصياً",
+    "individual_desc": "رفيق شخصي للتأمل اليومي والذكر والقراءة.",
+    "family_label": "لعائلتي",
+    "family_desc": "أنشئ ملفات للأبناء بأهداف لطيفة ومحتوى موجَّه ومتابعة تقدّم خاصة بكلٍ منهم.",
+    "footer_prefix": "يمكنك تغيير ذلك لاحقاً من ",
+    "footer_settings": "الإعدادات"
+  },
+  "create_profiles": {
+    "step": "الخطوة 2 من 2",
+    "eyebrow": "إعداد العائلة",
+    "title_prefix": "أضف ",
+    "title_accent": "أبناءك",
+    "subtitle": "لكل طفل صورة شخصية وتقدّمه الخاص.",
+    "name_label": "الاسم",
+    "name_hint": "مثال: يوسف",
+    "age_label": "العمر",
+    "add_child": "إضافة طفل آخر",
+    "skip": "سأفعل ذلك لاحقاً",
+    "sheet_title": "اختر صورة شخصية",
+    "sheet_sub": "اختر شخصية تشبهك"
+  },
+  "profile_select": {
+    "eyebrow": "الملفات الشخصية",
+    "title_prefix": "من ",
+    "title_accent": "يقرأ",
+    "subtitle": "اختر ملفًا شخصيًا لمواصلة رحلتك.",
+    "role_parent": "ولي الأمر",
+    "age_label": "العمر {}",
+    "days": "أيام",
+    "add_child": "إضافة طفل",
+    "manage": "إدارة الملفات"
   },
   "auth": {
     "login": "تسجيل الدخول",

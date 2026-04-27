@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'app_color_scheme.dart';
 import 'app_text_styles.dart';
+import 'custom_button_theme.dart';
 
 class AppTheme {
   AppTheme._();
@@ -30,7 +33,10 @@ class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
       textTheme: textTheme,
-      extensions: <ThemeExtension<dynamic>>[appColors],
+      extensions: <ThemeExtension<dynamic>>[
+        appColors,
+        _buildCustomButtonTheme(appColors),
+      ],
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -42,36 +48,46 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: appColors.canvas.withValues(alpha: 0.55),
+        fillColor: const Color(0xFFFFFFFF).withValues(alpha: 0.5),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
         ),
         hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: appColors.textArabic.withValues(alpha: 0.7),
+          color: appColors.oliveSoft.withValues(alpha: 0.55),
+        ),
+        labelStyle: AppTextStyles.labelMedium.copyWith(
+          color: appColors.oliveSoft,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.32 * 12,
+        ),
+        floatingLabelStyle: AppTextStyles.labelSmall.copyWith(
+          color: appColors.oliveSoft,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.32 * 9,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: appColors.textArabic.withValues(alpha: 0.22),
+            color: appColors.oliveSoft.withValues(alpha: 0.28),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: appColors.textArabic.withValues(alpha: 0.22),
+            color: appColors.oliveSoft.withValues(alpha: 0.28),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: appColors.accent, width: 1.4),
+          borderSide: BorderSide(color: appColors.olive, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: appColors.warning),
         ),
-        prefixIconColor: appColors.textArabic.withValues(alpha: 0.8),
-        suffixIconColor: appColors.textArabic.withValues(alpha: 0.7),
+        prefixIconColor: appColors.oliveSoft,
+        suffixIconColor: appColors.oliveSoft,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -116,6 +132,28 @@ class AppTheme {
         color: colorScheme.outlineVariant,
         thickness: 1,
         space: 1,
+      ),
+    );
+  }
+
+  static CustomButtonTheme _buildCustomButtonTheme(AppColorsTheme c) {
+    return CustomButtonTheme(
+      height: 46,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      borderRadius: 14,
+      useGradient: true,
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        stops: const [0.0, 0.5, 1.0],
+        colors: [c.oliveSoft, c.olive, c.oliveDeep],
+      ),
+      backgroundColor: c.olive,
+      textColor: c.canvas,
+      textStyle: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 14 * 0.14,
       ),
     );
   }

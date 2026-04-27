@@ -42,7 +42,7 @@ class AuthPromptLink extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: colors.accent,
+                  color: colors.olive,
                 ),
               ),
             ],

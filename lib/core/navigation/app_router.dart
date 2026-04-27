@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
@@ -24,6 +25,11 @@ class AppRouter {
         path: AppRoutes.login,
         name: AppRoutes.loginName,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.signup,
+        name: AppRoutes.signupName,
+        builder: (context, state) => const SignUpScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

@@ -9,28 +9,30 @@ import '../../../splash/widgets/zad_brand.dart';
 import '../../../splash/widgets/zad_logo_mark.dart';
 import '../widgets/zad_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController(text: '••••••••');
+  final _passwordController = TextEditingController();
 
   static const _dateSoft = Color(0xFFA8825C);
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _onSignIn() {
+  void _onCreateAccount() {
     _formKey.currentState?.validate();
     context.go(AppRoutes.home);
   }
@@ -39,8 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
     context.go(AppRoutes.home);
   }
 
-  void _onGoToSignUp() {
-    context.go(AppRoutes.signup);
+  void _onGoToLogin() {
+    context.go(AppRoutes.login);
   }
 
   @override
@@ -56,22 +58,35 @@ class _LoginScreenState extends State<LoginScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  const SizedBox(height: 24),
-                  const ZadLogoMark(size: 84),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 16),
+                  const ZadLogoMark(size: 76),
+                  const SizedBox(height: 18),
                   const ZadBrand(
-                    wordSize: 52,
-                    arabicSize: 24,
+                    wordSize: 46,
+                    arabicSize: 22,
                     tagSize: 10,
-                    ruleWidth: 28,
+                    ruleWidth: 26,
                     gap: 10,
-                    ruleGap: 18,
-                    tagGap: 14,
+                    ruleGap: 16,
+                    tagGap: 12,
                     dateSoft: _dateSoft,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 22),
                   _Headline(dateSoft: _dateSoft),
                   const SizedBox(height: 22),
+                  ZadTextField(
+                    hintText: 'username',
+                    controller: _usernameController,
+                    keyboardType: TextInputType.text,
+                    autofillHints: const [AutofillHints.newUsername],
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Icon(
+                      Icons.person_outline_rounded,
+                      color: colors.textArabic.withValues(alpha: 0.55),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   ZadTextField(
                     hintText: 'you@example.com',
                     controller: _emailController,
@@ -90,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: true,
                     passwordToggle: true,
-                    autofillHints: const [AutofillHints.password],
+                    autofillHints: const [AutofillHints.newPassword],
                     textInputAction: TextInputAction.done,
                     prefixIcon: Icon(
                       Icons.lock_outline_rounded,
@@ -98,16 +113,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       size: 20,
                     ),
                   ),
+                  const SizedBox(height: 14),
+                  _TermsNote(dateSoft: _dateSoft),
                   const SizedBox(height: 18),
-                  _SignInButton(onTap: _onSignIn),
+                  _PrimaryButton(
+                    label: 'CREATE ACCOUNT',
+                    onTap: _onCreateAccount,
+                  ),
                   const SizedBox(height: 20),
                   const _OrDivider(),
                   const SizedBox(height: 12),
                   _GoogleButton(onTap: _onGoogle),
                   const SizedBox(height: 22),
-                  _SignUpPrompt(
+                  _LoginPrompt(
                     dateSoft: _dateSoft,
-                    onTap: _onGoToSignUp,
+                    onTap: _onGoToLogin,
                   ),
                 ],
               ),
@@ -138,9 +158,9 @@ class _Headline extends StatelessWidget {
               color: colors.textArabic,
             ),
             children: [
-              const TextSpan(text: 'Welcome '),
+              const TextSpan(text: 'Begin your '),
               TextSpan(
-                text: 'home',
+                text: 'journey',
                 style: GoogleFonts.fraunces(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
@@ -155,7 +175,7 @@ class _Headline extends StatelessWidget {
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 280),
           child: Text(
-            'Sign in to continue your daily practice.',
+            'Create an account to start your daily practice.',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 13,
@@ -169,8 +189,27 @@ class _Headline extends StatelessWidget {
   }
 }
 
-class _SignInButton extends StatelessWidget {
-  const _SignInButton({required this.onTap});
+class _TermsNote extends StatelessWidget {
+  const _TermsNote({required this.dateSoft});
+  final Color dateSoft;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'By creating an account, you agree to our Terms & Privacy Policy.',
+      textAlign: TextAlign.center,
+      style: GoogleFonts.inter(
+        fontSize: 11,
+        height: 1.5,
+        color: dateSoft.withValues(alpha: 0.85),
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatelessWidget {
+  const _PrimaryButton({required this.label, required this.onTap});
+  final String label;
   final VoidCallback onTap;
 
   @override
@@ -210,7 +249,7 @@ class _SignInButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'SIGN IN',
+                    label,
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -310,8 +349,8 @@ class _GoogleButton extends StatelessWidget {
   }
 }
 
-class _SignUpPrompt extends StatelessWidget {
-  const _SignUpPrompt({required this.dateSoft, required this.onTap});
+class _LoginPrompt extends StatelessWidget {
+  const _LoginPrompt({required this.dateSoft, required this.onTap});
   final Color dateSoft;
   final VoidCallback onTap;
 
@@ -331,9 +370,9 @@ class _SignUpPrompt extends StatelessWidget {
               color: dateSoft,
             ),
             children: [
-              const TextSpan(text: "New to Zad?  "),
+              const TextSpan(text: 'Already have an account?  '),
               TextSpan(
-                text: 'Create an account',
+                text: 'Sign in',
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -363,7 +402,6 @@ class _GoogleGlyph extends StatelessWidget {
 }
 
 class _GooglePainter extends CustomPainter {
-  // Brand colours from the design SVG.
   static const _blue = Color(0xFF4285F4);
   static const _green = Color(0xFF34A853);
   static const _yellow = Color(0xFFFBBC05);
@@ -374,7 +412,7 @@ class _GooglePainter extends CustomPainter {
     final scale = size.width / 24;
     canvas.scale(scale);
 
-    void drawPath(String _, Color color, Path path) {
+    void drawPath(Color color, Path path) {
       final paint = Paint()
         ..color = color
         ..style = PaintingStyle.fill;
@@ -392,7 +430,7 @@ class _GooglePainter extends CustomPainter {
       ..lineTo(18.63, 19.51)
       ..cubicTo(20.53, 17.76, 21.6, 15.19, 21.6, 12.2)
       ..close();
-    drawPath('blue', _blue, blue);
+    drawPath(_blue, blue);
 
     final green = Path()
       ..moveTo(12, 22)
@@ -403,7 +441,7 @@ class _GooglePainter extends CustomPainter {
       ..lineTo(3.07, 16.47)
       ..cubicTo(4.72, 19.78, 8.09, 22, 12, 22)
       ..close();
-    drawPath('green', _green, green);
+    drawPath(_green, green);
 
     final yellow = Path()
       ..moveTo(6.4, 13.87)
@@ -415,7 +453,7 @@ class _GooglePainter extends CustomPainter {
       ..cubicTo(2, 13.6, 2.39, 15.12, 3.07, 16.47)
       ..lineTo(6.4, 13.87)
       ..close();
-    drawPath('yellow', _yellow, yellow);
+    drawPath(_yellow, yellow);
 
     final red = Path()
       ..moveTo(12, 5.94)
@@ -426,7 +464,7 @@ class _GooglePainter extends CustomPainter {
       ..lineTo(6.4, 10.13)
       ..cubicTo(7.18, 7.76, 9.4, 6, 12, 5.94)
       ..close();
-    drawPath('red', _red, red);
+    drawPath(_red, red);
   }
 
   @override

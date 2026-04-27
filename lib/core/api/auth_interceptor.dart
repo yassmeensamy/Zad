@@ -8,16 +8,20 @@ import '../constants/storage_keys.dart';
 import '../expections/session_expire_expection.dart';
 import '../models/token_model.dart';
 import '../services/cache_service.dart';
+import 'endpoints/app_endpoints.dart';
 
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({
     required CacheService cacheService,
+    required AppEndpoint endpoints,
     required this.onLogout,
     required this.pendingRequests,
-  }) : _cacheService = cacheService;
+  }) : _cacheService = cacheService,
+       _endpoints = endpoints;
 
   final void Function()? onLogout;
   final CacheService _cacheService;
+  final AppEndpoint _endpoints;
   final List<CancelToken> pendingRequests;
   Completer<TokensModel?>? _refreshCompleter;
 
@@ -129,8 +133,8 @@ class AuthInterceptor extends Interceptor {
 
     try {
       final res = await _dio.post(
-        'https://template.eramapps.com/api/refresh-token/',
-        data: {'refresh': refreshToken},
+        _endpoints.refresh,
+        data: {'refreshToken': refreshToken},
         cancelToken: cancelToken,
       );
 

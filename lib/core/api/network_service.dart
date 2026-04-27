@@ -150,6 +150,7 @@ class NetworkServiceImpl implements NetworkService {
       AuthInterceptor(
         pendingRequests: _pendingRequests,
         cacheService: sl(),
+        endpoints: sl(),
         onLogout: onLogout,
       ),
       LanguageInterceptor(cacheService: sl()),

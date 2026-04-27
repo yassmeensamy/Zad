@@ -1,12 +1,27 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/navigation/app_router.dart';
+import 'core/services/core_service_locator.dart';
+import 'core/services/service_locator.dart';
+import 'features/auth/core/auth_event_service.dart';
+import 'features/auth/data/strategies/oauth_strategy_factory.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  await ServiceLocator().init(
+    baseUrl: 'https://api.example.com/',
+    oauthConfig: const OAuthConfig(
+      googleAndroidClientId: '',
+      googleIosClientId: '',
+      googleServerClientId: '',
+    ),
+  );
 
   runApp(
     EasyLocalization(
@@ -23,15 +38,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Zad',
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      routerConfig: AppRouter.router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (context) {
+            final cubit = AuthCubit(
+              repository: sl(),
+              authEventService: sl<AuthEventService>(),
+            )..init();
+
+            return cubit;
+          },
+          lazy: false,
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Zad',
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.system,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        routerConfig: AppRouter.router,
+      ),
     );
   }
 }

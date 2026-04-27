@@ -3,6 +3,7 @@ class AppRoutes {
 
   static const String splash = '/';
   static const String login = '/login';
+  static const String signup = '/signup';
 
   static const String home = '/home';
   static const String learn = '/learn';
@@ -11,6 +12,7 @@ class AppRoutes {
 
   static const String splashName = 'splash';
   static const String loginName = 'login';
+  static const String signupName = 'signup';
   static const String homeName = 'home';
   static const String learnName = 'learn';
   static const String leaderboardName = 'leaderboard';

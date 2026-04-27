@@ -77,6 +77,12 @@
       "create_account": "CREATE ACCOUNT",
       "have_account_prompt": "Already have an account?  ",
       "sign_in": "Sign in"
+    },
+    "signup_success": {
+      "title_prefix": "Welcome to ",
+      "title_accent": "Zad",
+      "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
+      "cta": "CONTINUE"
     }
   },
   "errors": {

@@ -77,6 +77,12 @@
       "create_account": "أنشئ حسابًا",
       "have_account_prompt": "لديك حساب؟ ",
       "sign_in": "تسجيل الدخول"
+    },
+    "signup_success": {
+      "title_prefix": "أهلًا بك في ",
+      "title_accent": "زاد",
+      "subtitle": "تم إنشاء حسابك. لنُهيّئ مساحتك ونبدأ الرحلة.",
+      "cta": "متابعة"
     }
   },
   "errors": {

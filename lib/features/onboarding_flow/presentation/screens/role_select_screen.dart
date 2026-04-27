@@ -7,10 +7,36 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
-import '../../../splash/widgets/desert_background.dart';
 import '../widgets/onboarding_topnav.dart';
 
-enum _Role { individual, parent }
+class _RoleOption {
+  const _RoleOption({
+    required this.icon,
+    required this.labelKey,
+    required this.descKey,
+    required this.route,
+  });
+
+  final IconData icon;
+  final String labelKey;
+  final String descKey;
+  final String route;
+}
+
+const List<_RoleOption> _roleOptions = [
+  _RoleOption(
+    icon: Icons.person_outline_rounded,
+    labelKey: 'role_select.individual_label',
+    descKey: 'role_select.individual_desc',
+    route: AppRoutes.home,
+  ),
+  _RoleOption(
+    icon: Icons.family_restroom_rounded,
+    labelKey: 'role_select.family_label',
+    descKey: 'role_select.family_desc',
+    route: AppRoutes.createProfiles,
+  ),
+];
 
 class RoleSelectScreen extends StatefulWidget {
   const RoleSelectScreen({super.key});
@@ -20,91 +46,96 @@ class RoleSelectScreen extends StatefulWidget {
 }
 
 class _RoleSelectScreenState extends State<RoleSelectScreen> {
-  _Role? _selected;
+  final ValueNotifier<_RoleOption?> _selected = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    _selected.dispose();
+    super.dispose();
+  }
 
   void _proceed() {
-    if (_selected == null) return;
-    if (_selected == _Role.parent) {
-      context.go(AppRoutes.createProfiles);
-    } else {
-      context.go(AppRoutes.profileSelect);
-    }
+    final option = _selected.value;
+    if (option == null) return;
+    context.go(option.route);
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      body: DesertBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              OnboardingTopNav(
-                onBack: () => context.go(AppRoutes.login),
-                showBrand: true,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(28, 16, 28, 24),
-                  child: Column(
-                    children: [
-                      _Heading(colors: colors),
-                      const SizedBox(height: 28),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            _RoleCard(
-                              icon: Icons.person_outline_rounded,
-                              label: 'role_select.individual_label'.tr(),
-                              desc: 'role_select.individual_desc'.tr(),
-                              selected: _selected == _Role.individual,
-                              onTap: () =>
-                                  setState(() => _selected = _Role.individual),
-                            ),
-                            const SizedBox(height: 14),
-                            _RoleCard(
-                              icon: Icons.family_restroom_rounded,
-                              label: 'role_select.family_label'.tr(),
-                              desc: 'role_select.family_desc'.tr(),
-                              selected: _selected == _Role.parent,
-                              onTap: () =>
-                                  setState(() => _selected = _Role.parent),
-                            ),
-                          ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            OnboardingTopNav(
+              onBack: () => context.go(AppRoutes.login),
+              showBrand: true,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(28, 16, 28, 24),
+                child: Column(
+                  children: [
+                    _Heading(colors: colors),
+                    const SizedBox(height: 28),
+                    Expanded(
+                      child: ValueListenableBuilder<_RoleOption?>(
+                        valueListenable: _selected,
+                        builder: (context, selected, _) {
+                          return Column(
+                            children: [
+                              for (var i = 0; i < _roleOptions.length; i++) ...[
+                                if (i > 0) const SizedBox(height: 14),
+                                _RoleCard(
+                                  icon: _roleOptions[i].icon,
+                                  label: _roleOptions[i].labelKey.tr(),
+                                  desc: _roleOptions[i].descKey.tr(),
+                                  selected: selected == _roleOptions[i],
+                                  onTap: () =>
+                                      _selected.value = _roleOptions[i],
+                                ),
+                              ],
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    ValueListenableBuilder<_RoleOption?>(
+                      valueListenable: _selected,
+                      builder: (context, selected, _) {
+                        return AuthPrimaryButton(
+                          label: 'common.continue',
+                          onTap: _proceed,
+                          enabled: selected != null,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    Text.rich(
+                      TextSpan(
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: colors.textArabic.withValues(alpha: 0.55),
                         ),
-                      ),
-                      AuthPrimaryButton(
-                        label: 'common.continue',
-                        onTap: _proceed,
-                        enabled: _selected != null,
-                      ),
-                      const SizedBox(height: 12),
-                      Text.rich(
-                        TextSpan(
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: colors.textArabic.withValues(alpha: 0.55),
+                        children: [
+                          TextSpan(text: 'role_select.footer_prefix'.tr()),
+                          TextSpan(
+                            text: 'role_select.footer_settings'.tr(),
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: colors.oliveDeep,
+                            ),
                           ),
-                          children: [
-                            TextSpan(text: 'role_select.footer_prefix'.tr()),
-                            TextSpan(
-                              text: 'role_select.footer_settings'.tr(),
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: colors.oliveDeep,
-                              ),
-                            ),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
+                        ],
                       ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

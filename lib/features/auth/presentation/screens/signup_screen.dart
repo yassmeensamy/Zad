@@ -16,6 +16,7 @@ import '../widgets/auth_google_button.dart';
 import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_prompt_link.dart';
+import '../widgets/signup_success_dialog.dart';
 import '../widgets/zad_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -31,6 +32,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _awaitingSignupResult = false;
+  bool _successShown = false;
+
   static const _dateSoft = Color(0xFFA8825C);
 
   @override
@@ -43,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onCreateAccount() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+    _awaitingSignupResult = true;
     context.read<AuthCubit>().signup(
       email: _emailController.text.trim(),
       password: _passwordController.text,
@@ -60,13 +65,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onAuthStateChanged(BuildContext context, AuthState state) {
     if (state.isLoggedIn) {
+      if (_awaitingSignupResult && !_successShown) {
+        _awaitingSignupResult = false;
+        _successShown = true;
+        SignupSuccessDialog.show(
+          context,
+          onContinue: () {
+            Navigator.of(context, rootNavigator: true).pop();
+            context.go(AppRoutes.roleSelect);
+          },
+        );
+        return;
+      }
       context.go(AppRoutes.roleSelect);
       return;
     }
-    if (state.isError && state.errorMessage != null) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: ResponsiveText(state.errorMessage!)));
+    if (state.isError) {
+      _awaitingSignupResult = false;
+      if (state.errorMessage != null) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: ResponsiveText(state.errorMessage!)),
+          );
+      }
     }
   }
 

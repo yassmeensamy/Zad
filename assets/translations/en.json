@@ -39,7 +39,15 @@
     "add_child": "ADD ANOTHER CHILD",
     "skip": "I'll do this later",
     "sheet_title": "Choose an avatar",
-    "sheet_sub": "Pick a character that feels like home"
+    "sheet_sub": "Pick a character that feels like home",
+    "password_set": "Password set",
+    "password_set_cta": "Set password",
+    "password_label": "Password",
+    "password_hint": "At least 4 characters",
+    "password_sheet_title": "Set a password",
+    "password_sheet_sub": "Used by {} to sign in",
+    "password_sheet_fallback_name": "this child",
+    "password_too_short": "Password must be at least {} characters."
   },
   "profile_select": {
     "eyebrow": "Profiles",
@@ -90,6 +98,12 @@
     "no_internet": "No internet connection",
     "required_field": "This field is required"
   },
+  "please_enter_email": "Please enter your email",
+  "please_enter_valid_email": "Please enter a valid email",
+  "please_enter_password": "Please enter your password",
+  "password_min_length": "Password must be at least {} characters",
+  "please_enter_your_name": "Please enter your name",
+  "full_name_max_length": "Name is too long",
   "cancel": "Cancel",
   "language": "Language",
   "language_subtitle": "You can change the app language at any time.",

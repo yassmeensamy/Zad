@@ -9,6 +9,10 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/data/services/auth_local_service.dart';
 import '../../features/auth/data/strategies/oauth_strategy_factory.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/child/data/remote/child_remote_data_source.dart';
+import '../../features/child/data/repositories/child_repository.dart';
+import '../../features/child/presentation/cubit/child_cubit.dart';
+import '../../features/child/presentation/cubit/child_draft_cubit.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
@@ -78,6 +82,16 @@ class ServiceLocator {
     sl.registerLazySingleton<UserCubit>(
       () => UserCubit(userRepository: sl(), authEventService: sl()),
     );
+
+    // Child
+    sl.registerLazySingleton<ChildRemoteDataSource>(
+      () => ChildRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
+    );
+    sl.registerLazySingleton<ChildRepository>(
+      () => ChildRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<ChildCubit>(() => ChildCubit(childRepository: sl()));
+    sl.registerFactory<ChildDraftCubit>(() => ChildDraftCubit());
 
     // Onboarding
     sl.registerLazySingleton<OnboardingRepository>(

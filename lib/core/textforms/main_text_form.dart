@@ -30,6 +30,7 @@ class MainTextFormField extends StatefulWidget {
     this.passwordToggle = false,
     this.maxLength,
     this.validator,
+    this.autovalidateMode,
     this.prefixIcon,
     this.suffixIcon,
     this.autofillHints,
@@ -74,6 +75,7 @@ class MainTextFormField extends StatefulWidget {
 
   // Validation
   final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
   final void Function(String)? onFieldSubmitted;
   final String? errorText;
   final TextStyle? errorStyle;
@@ -276,6 +278,7 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
           obscureText: _obscureText,
           maxLength: widget.maxLength,
           validator: widget.validator,
+          autovalidateMode: widget.autovalidateMode,
           autofillHints: widget.autofillHints,
           onTap: widget.onTap,
           onFieldSubmitted: widget.onFieldSubmitted,

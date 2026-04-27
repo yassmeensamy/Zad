@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/validation/form_validation.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
@@ -30,13 +31,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _allFilled = false;
+
   static const _dateSoft = Color(0xFFA8825C);
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_recomputeFilled);
+    _passwordController.addListener(_recomputeFilled);
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _recomputeFilled() {
+    final filled = _emailController.text.trim().isNotEmpty &&
+        _passwordController.text.isNotEmpty;
+    if (filled != _allFilled) {
+      setState(() => _allFilled = filled);
+    }
   }
 
   void _onSignIn() {
@@ -100,6 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.emailAddress,
                       autofillHints: const [AutofillHints.email],
                       textInputAction: TextInputAction.next,
+                      validator: FormValidators.requiredEmail(),
                       prefixIcon: Icon(
                         Icons.mail_outline_rounded,
                         color: colors.oliveSoft,
@@ -114,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       passwordToggle: true,
                       autofillHints: const [AutofillHints.password],
                       textInputAction: TextInputAction.done,
+                      validator: FormValidators.requiredPassword(),
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
                         color: colors.oliveSoft,
@@ -149,6 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context, state) => AuthPrimaryButton(
                         label: 'auth.login_screen.sign_in',
                         loading: state.isLoading,
+                        enabled: _allFilled,
                         onTap: _onSignIn,
                       ),
                     ),

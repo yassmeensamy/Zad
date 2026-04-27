@@ -41,12 +41,12 @@ class _ProfileEntry {
 class ProfileSelectScreen extends StatelessWidget {
   const ProfileSelectScreen({super.key});
 
-  static const _profiles = <_ProfileEntry>[
-    _ProfileEntry.parent(name: 'Ahmad'),
+  static final _profiles = <_ProfileEntry>[
+    const _ProfileEntry.parent(name: 'Ahmad'),
     _ProfileEntry.child(
       name: 'Yusuf',
       age: 7,
-      avatar: ChildAvatar.lion,
+      avatar: ChildAvatar.palm,
       progress: 0.7,
       streak: 12,
     ),

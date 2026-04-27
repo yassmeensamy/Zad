@@ -39,7 +39,15 @@
     "add_child": "إضافة طفل آخر",
     "skip": "سأفعل ذلك لاحقاً",
     "sheet_title": "اختر صورة شخصية",
-    "sheet_sub": "اختر شخصية تشبهك"
+    "sheet_sub": "اختر شخصية تشبهك",
+    "password_set": "تم تعيين كلمة المرور",
+    "password_set_cta": "تعيين كلمة المرور",
+    "password_label": "كلمة المرور",
+    "password_hint": "٤ أحرف على الأقل",
+    "password_sheet_title": "تعيين كلمة مرور",
+    "password_sheet_sub": "تُستخدم لتسجيل دخول {}",
+    "password_sheet_fallback_name": "هذا الطفل",
+    "password_too_short": "يجب أن تتكوّن كلمة المرور من {} أحرف على الأقل."
   },
   "profile_select": {
     "eyebrow": "الملفات الشخصية",
@@ -90,6 +98,12 @@
     "no_internet": "لا يوجد اتصال بالإنترنت",
     "required_field": "هذا الحقل مطلوب"
   },
+  "please_enter_email": "يرجى إدخال البريد الإلكتروني",
+  "please_enter_valid_email": "يرجى إدخال بريد إلكتروني صحيح",
+  "please_enter_password": "يرجى إدخال كلمة المرور",
+  "password_min_length": "يجب ألا تقل كلمة المرور عن {} أحرف",
+  "please_enter_your_name": "يرجى إدخال اسمك",
+  "full_name_max_length": "الاسم طويل جدًا",
   "cancel": "إلغاء",
   "language": "اللغة",
   "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",

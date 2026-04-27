@@ -18,6 +18,8 @@ class ZadTextField extends StatelessWidget {
     this.passwordToggle = false,
     this.autofillHints,
     this.textInputAction,
+    this.validator,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
 
   final String hintText;
@@ -28,6 +30,8 @@ class ZadTextField extends StatelessWidget {
   final bool passwordToggle;
   final List<String>? autofillHints;
   final TextInputAction? textInputAction;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,8 @@ class ZadTextField extends StatelessWidget {
       passwordToggle: passwordToggle,
       autofillHints: autofillHints,
       textInputAction: textInputAction,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
       iconSize: 20,
       style: GoogleFonts.inter(
         fontSize: 14,

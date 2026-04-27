@@ -7,7 +7,7 @@ import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
-import '../../features/onboarding_flow/presentation/screens/create_profiles_screen.dart';
+import '../../features/child/presentation/screens/create_children_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -48,7 +48,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.createProfiles,
         name: AppRoutes.createProfilesName,
-        builder: (context, state) => const CreateProfilesScreen(),
+        builder: (context, state) => const CreateChildrenScreen(),
       ),
       GoRoute(
         path: AppRoutes.profileSelect,

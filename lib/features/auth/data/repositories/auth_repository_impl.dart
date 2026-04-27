@@ -63,6 +63,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> logout() async {
+    final refreshToken = await _localService.getRefreshToken();
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      await _remoteDataSource.logout(refreshToken);
+    }
     await _localService.clearAllAuthData(
       (provider) => _strategyFactory.getStrategy(provider).signOut(),
     );

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../../../core/models/user_model.dart';
+import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/profile_section.dart';
@@ -30,26 +35,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onRemindersChanged: (v) => setState(() => _remindersEnabled = v),
     );
 
-    return SafeArea(
-      bottom: false,
-      child: BlocBuilder<UserCubit, UserState>(
-        builder: (context, state) => ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
-        physics: const BouncingScrollPhysics(),
-        children: [
-          _ProfileHeader(colors: colors, user: state.user),
-          const SizedBox(height: 18),
-          _StatsRow(colors: colors),
-          const SizedBox(height: 22),
-          for (final section in sections) ...[
-            _SectionLabel(textKey: section.titleKey, colors: colors),
-            const SizedBox(height: 10),
-            for (final item in section.items) _MenuTile(item: item),
-            const SizedBox(height: 22),
-          ],
-          const _SignOutButton(),
-        ],
-      ),
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (previous, current) =>
+          previous.status != current.status && current.isNotLoggedIn,
+      listener: (context, state) {
+        context.goNamed(AppRoutes.loginName);
+      },
+      child: SafeArea(
+        bottom: false,
+        child: BlocBuilder<UserCubit, UserState>(
+          builder: (context, state) => ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _ProfileHeader(colors: colors, user: state.user),
+              const SizedBox(height: 18),
+              _StatsRow(colors: colors),
+              const SizedBox(height: 22),
+              for (final section in sections) ...[
+                _SectionLabel(textKey: section.titleKey, colors: colors),
+                const SizedBox(height: 10),
+                for (final item in section.items) _MenuTile(item: item),
+                const SizedBox(height: 22),
+              ],
+              const _SignOutButton(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -296,27 +308,28 @@ class _SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 48,
-      child: TextButton.icon(
-        onPressed: () {},
-        style: TextButton.styleFrom(
-          backgroundColor: AppColors.error.withValues(alpha: 0.08),
-          foregroundColor: AppColors.error,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+    return CustomButton.full(
+      onTap: () => context.read<AuthCubit>().logout(),
+      theme: CustomButtonTheme(
+        height: 48,
+        backgroundColor: AppColors.error.withValues(alpha: 0.08),
+        textColor: AppColors.error,
+        borderRadius: 14,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.logout_rounded, size: 18, color: AppColors.error),
+          const SizedBox(width: 8),
+          ResponsiveText(
+            'profile.sign_out',
+            style: GoogleFonts.cairo(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.error,
+            ),
           ),
-        ),
-        icon: const Icon(Icons.logout_rounded, size: 18),
-        label: ResponsiveText(
-          'profile.sign_out',
-          style: GoogleFonts.cairo(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: AppColors.error,
-          ),
-        ),
+        ],
       ),
     );
   }

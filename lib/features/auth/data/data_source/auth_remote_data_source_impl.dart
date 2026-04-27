@@ -67,6 +67,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<void> logout(String refreshToken) async {
+    final response = await _networkService.post(
+      _endpoints.logout,
+      data: {'refreshToken': refreshToken},
+    );
+    _validateResponse(response, [200, 204]);
+  }
+
+  @override
   Future<void> deleteAccount(String password) async {
     final response = await _networkService.delete(
       _endpoints.me,

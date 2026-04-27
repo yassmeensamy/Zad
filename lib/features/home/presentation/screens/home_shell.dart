@@ -45,7 +45,6 @@ class HomeShell extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         extendBody: true,
-        backgroundColor: context.appColors.canvas,
         body: navigationShell,
         bottomNavigationBar: ZadBottomNav(
           items: _items,

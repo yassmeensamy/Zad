@@ -105,14 +105,17 @@ class AuthCubit extends BaseCubit<AuthState> {
   }
 
   Future<void> logout() async {
+    emit(state.copyWith(status: AuthStatus.loading));
     try {
       await _authEventService.runPreLogoutCallbacks();
       await _repository.logout();
       _emitAndNotify(const AuthState(status: AuthStatus.notLoggedIn));
-    } on ServerException {
-      logger.debug('Error during logout');
+    } on ServerException catch (e) {
+      logger.debug('Error during logout: ${e.message}');
+      _emitError(_errorMessage(e));
     } catch (e) {
-      logger.debug(e.toString());
+      logger.debug('Unexpected error in logout: $e');
+      _emitError('general_error');
     }
   }
 

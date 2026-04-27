@@ -14,5 +14,7 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResponse> googleAuth(String idToken);
 
+  Future<void> logout(String refreshToken);
+
   Future<void> deleteAccount(String password);
 }

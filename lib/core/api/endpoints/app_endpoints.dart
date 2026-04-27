@@ -6,6 +6,7 @@ class AppEndpoint {
   // Authentication
   String get signup => '${baseUrl}api/auth/signup';
   String get login => '${baseUrl}api/auth/login';
+  String get logout => '${baseUrl}api/auth/logout';
   String get refresh => '${baseUrl}api/auth/refresh';
   String get google => '${baseUrl}api/auth/google';
 

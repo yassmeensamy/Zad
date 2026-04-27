@@ -37,6 +37,19 @@ List<ProfileSection> profileSections(
     ],
   ),
   const ProfileSection(
+    titleKey: 'profile.library',
+    items: [
+      ProfileMenuItem(
+        icon: Icons.drafts_outlined,
+        titleKey: 'profile.drafts',
+      ),
+      ProfileMenuItem(
+        icon: Icons.family_restroom_rounded,
+        titleKey: 'profile.my_children',
+      ),
+    ],
+  ),
+  const ProfileSection(
     titleKey: 'profile.account',
     items: [
       ProfileMenuItem(

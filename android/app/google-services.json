@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "334382692403",
+    "project_id": "zaad-7a0a8",
+    "storage_bucket": "zaad-7a0a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334382692403:android:b64eb9b4a03b124ef0cb46",
+        "android_client_info": {
+          "package_name": "com.zad.islamic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgaEBq_P-NghG4l1YUgwNGE6MZwtziLY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

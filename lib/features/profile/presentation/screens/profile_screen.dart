@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart' as intl;
 
+import '../../../../core/models/user_model.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
+import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
 
@@ -27,11 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return SafeArea(
       bottom: false,
-      child: ListView(
+      child: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) => ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
         physics: const BouncingScrollPhysics(),
         children: [
-          _ProfileHeader(colors: colors),
+          _ProfileHeader(colors: colors, user: state.user),
           const SizedBox(height: 18),
           _StatsRow(colors: colors),
           const SizedBox(height: 22),
@@ -44,16 +50,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const _SignOutButton(),
         ],
       ),
+      ),
     );
   }
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.colors});
+  const _ProfileHeader({required this.colors, required this.user});
   final AppColorsTheme colors;
+  final UserModel? user;
 
   @override
   Widget build(BuildContext context) {
+    final name = user?.fullName ?? '';
+    final initial = name.isNotEmpty ? name.characters.first : '؟';
+    final joinedAt = user?.createdAt;
     return Column(
       children: [
         Container(
@@ -76,7 +87,7 @@ class _ProfileHeader extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: ResponsiveText(
-            'ي',
+            initial,
             style: GoogleFonts.amiri(
               fontSize: 44,
               fontWeight: FontWeight.w700,
@@ -86,25 +97,32 @@ class _ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         ResponsiveText(
-          'ياسمين',
+          name,
           style: GoogleFonts.amiri(
             fontSize: 26,
             fontWeight: FontWeight.w700,
             color: colors.textArabic,
           ),
         ),
-        const SizedBox(height: 2),
-        ResponsiveText(
-          'انضمّت في رمضان ١٤٤٦',
-          style: GoogleFonts.cairo(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: colors.textArabic.withValues(alpha: 0.6),
+        if (joinedAt != null) ...[
+          const SizedBox(height: 2),
+          ResponsiveText(
+            _formatJoinedAt(joinedAt),
+            style: GoogleFonts.cairo(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: colors.textArabic.withValues(alpha: 0.6),
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
+}
+
+String _formatJoinedAt(DateTime date) {
+  final formatted = intl.DateFormat.yMMMM('ar').format(date);
+  return 'انضمّت في $formatted';
 }
 
 class _StatsRow extends StatelessWidget {

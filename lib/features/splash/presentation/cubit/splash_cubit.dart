@@ -20,7 +20,6 @@ class SplashCubit extends BaseCubit<SplashStates> {
 
   final OnboardingRepository _onboardingRepository;
   final CacheService _cacheService;
-  // ignore: unused_field
   final NotificationService _notificationService;
 
   Future<void> init(String language) async {
@@ -29,8 +28,7 @@ class SplashCubit extends BaseCubit<SplashStates> {
     try {
       await Future.wait([
         _cacheService.set<String>(StorageKeys.kLocaleKey, language),
-        // TODO: re-enable once Firebase is initialized in main()
-        // _notificationService.init(),
+        _notificationService.init(),
       ]);
 
       final isFirstAppLaunch = await _onboardingRepository.getFirstOpen();

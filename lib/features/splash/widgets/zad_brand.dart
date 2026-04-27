@@ -19,6 +19,19 @@ class ZadBrand extends StatelessWidget {
     this.tag = 'Your daily companion',
   });
 
+  /// Compact preset used on auth screens (login).
+  const ZadBrand.compact({
+    super.key,
+    this.dateSoft = const Color(0xFF8D5C36),
+    this.tag = 'Your daily companion',
+  })  : wordSize = 52,
+        arabicSize = 24,
+        tagSize = 10,
+        ruleWidth = 28,
+        gap = 10,
+        ruleGap = 18,
+        tagGap = 14;
+
   final double wordSize;
   final double arabicSize;
   final double tagSize;

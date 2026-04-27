@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/constants/app_images.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -11,6 +11,10 @@ import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zad_brand.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../widgets/auth_google_button.dart';
+import '../widgets/auth_or_divider.dart';
+import '../widgets/auth_primary_button.dart';
+import '../widgets/auth_prompt_link.dart';
 import '../widgets/zad_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -89,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ZadTextField(
-                            hintText: 'username',
+                            hintText: 'auth.signup_screen.username_hint',
                             controller: _usernameController,
                             keyboardType: TextInputType.text,
                             autofillHints: const [AutofillHints.newUsername],
@@ -102,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(height: _fieldGap),
                           ZadTextField(
-                            hintText: 'you@example.com',
+                            hintText: 'auth.email_hint',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             autofillHints: const [AutofillHints.email],
@@ -133,25 +137,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     BlocBuilder<AuthCubit, AuthState>(
                       buildWhen: (previous, current) =>
                           previous.isLoading != current.isLoading,
-                      builder: (context, state) => _PrimaryButton(
-                        label: 'CREATE ACCOUNT',
+                      builder: (context, state) => AuthPrimaryButton(
+                        label: 'auth.signup_screen.create_account',
                         loading: state.isLoading,
                         onTap: _onCreateAccount,
                       ),
                     ),
                     const SizedBox(height: 14),
-                    const _OrDivider(),
+                    const AuthOrDivider(label: 'auth.or_continue'),
                     const SizedBox(height: 10),
                     BlocBuilder<AuthCubit, AuthState>(
                       buildWhen: (previous, current) =>
                           previous.isSocialLoading != current.isSocialLoading,
-                      builder: (context, state) => _GoogleButton(
+                      builder: (context, state) => AuthGoogleButton(
+                        label: 'auth.continue_google',
                         loading: state.isSocialLoading,
                         onTap: _onGoogle,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _LoginPrompt(
+                    AuthPromptLink(
+                      prompt: 'auth.signup_screen.have_account_prompt',
+                      action: 'auth.signup_screen.sign_in',
                       dateSoft: _dateSoft,
                       onTap: _onGoToLogin,
                     ),
@@ -182,9 +189,9 @@ class _Headline extends StatelessWidget {
           color: colors.textArabic,
         ),
         children: [
-          const TextSpan(text: 'Begin your '),
+          TextSpan(text: 'auth.signup_screen.headline_prefix'.tr()),
           TextSpan(
-            text: 'journey',
+            text: 'auth.signup_screen.headline_accent'.tr(),
             style: GoogleFonts.fraunces(
               fontSize: 26,
               fontStyle: FontStyle.italic,
@@ -195,227 +202,6 @@ class _Headline extends StatelessWidget {
         ],
       ),
       textAlign: TextAlign.center,
-    );
-  }
-}
-
-class _PrimaryButton extends StatelessWidget {
-  const _PrimaryButton({
-    required this.label,
-    required this.onTap,
-    this.loading = false,
-  });
-  final String label;
-  final VoidCallback onTap;
-  final bool loading;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.0, 0.55, 1.0],
-            colors: [
-              colors.accentSoft,
-              const Color(0xFFD2963F),
-              colors.accent,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: colors.accent.withValues(alpha: 0.18),
-              blurRadius: 22,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: loading ? null : onTap,
-            child: Center(
-              child: loading
-                  ? SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.2,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(colors.canvas),
-                      ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ResponsiveText(
-                          label,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 14 * 0.14,
-                            color: colors.canvas,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 18,
-                          color: colors.canvas,
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OrDivider extends StatelessWidget {
-  const _OrDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final lineColor = colors.textArabic.withValues(alpha: 0.14);
-    return Row(
-      children: [
-        Expanded(child: Container(height: 1, color: lineColor)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Opacity(
-            opacity: 0.65,
-            child: ResponsiveText(
-              'OR CONTINUE WITH',
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 10 * 0.3,
-                color: colors.textArabic,
-              ),
-            ),
-          ),
-        ),
-        Expanded(child: Container(height: 1, color: lineColor)),
-      ],
-    );
-  }
-}
-
-class _GoogleButton extends StatelessWidget {
-  const _GoogleButton({required this.onTap, this.loading = false});
-  final VoidCallback onTap;
-  final bool loading;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.canvas.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colors.textArabic.withValues(alpha: 0.14)),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: loading ? null : onTap,
-            child: Center(
-              child: loading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(colors.textArabic),
-                      ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const _GoogleGlyph(size: 20),
-                        const SizedBox(width: 10),
-                        ResponsiveText(
-                          'Continue with Google',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: colors.textArabic,
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LoginPrompt extends StatelessWidget {
-  const _LoginPrompt({required this.dateSoft, required this.onTap});
-  final Color dateSoft;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: Text.rich(
-          TextSpan(
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              height: 1.4,
-              color: dateSoft,
-            ),
-            children: [
-              const TextSpan(text: 'Already have an account?  '),
-              TextSpan(
-                text: 'Sign in',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: colors.accent,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GoogleGlyph extends StatelessWidget {
-  const _GoogleGlyph({required this.size});
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      AppImages.googleLogo,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
     );
   }
 }

@@ -20,7 +20,26 @@
     "register": "Register",
     "email": "Email",
     "password": "Password",
-    "forgot_password": "Forgot password?"
+    "forgot_password": "Forgot password?",
+    "email_hint": "you@example.com",
+    "or_continue": "OR CONTINUE WITH",
+    "continue_google": "Continue with Google",
+    "login_screen": {
+      "welcome_prefix": "Welcome ",
+      "welcome_accent": "home",
+      "subtitle": "Sign in to continue your daily practice.",
+      "sign_in": "SIGN IN",
+      "new_prompt": "New to Zad?  ",
+      "create_account": "Create an account"
+    },
+    "signup_screen": {
+      "username_hint": "username",
+      "headline_prefix": "Begin your ",
+      "headline_accent": "journey",
+      "create_account": "CREATE ACCOUNT",
+      "have_account_prompt": "Already have an account?  ",
+      "sign_in": "Sign in"
+    }
   },
   "errors": {
     "generic": "Something went wrong",
@@ -34,7 +53,10 @@
   "failed_to_update_language": "Failed to update language",
   "profile": {
     "practice": "Practice",
+    "library": "Library",
     "account": "Account",
+    "drafts": "Drafts",
+    "my_children": "My children",
     "reminders": "Reminders",
     "language": "Language",
     "theme": "Appearance",

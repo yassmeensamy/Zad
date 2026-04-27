@@ -20,7 +20,26 @@
     "register": "إنشاء حساب",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
-    "forgot_password": "هل نسيت كلمة المرور؟"
+    "forgot_password": "هل نسيت كلمة المرور؟",
+    "email_hint": "you@example.com",
+    "or_continue": "أو تابع باستخدام",
+    "continue_google": "المتابعة باستخدام Google",
+    "login_screen": {
+      "welcome_prefix": "مرحبًا بعودتك إلى ",
+      "welcome_accent": "زاد",
+      "subtitle": "سجّل الدخول لمواصلة ممارستك اليومية.",
+      "sign_in": "تسجيل الدخول",
+      "new_prompt": "جديد في زاد؟ ",
+      "create_account": "أنشئ حسابًا"
+    },
+    "signup_screen": {
+      "username_hint": "اسم المستخدم",
+      "headline_prefix": "ابدأ ",
+      "headline_accent": "رحلتك",
+      "create_account": "أنشئ حسابًا",
+      "have_account_prompt": "لديك حساب؟ ",
+      "sign_in": "تسجيل الدخول"
+    }
   },
   "errors": {
     "generic": "حدث خطأ ما",
@@ -34,7 +53,10 @@
   "failed_to_update_language": "تعذّر تحديث اللغة",
   "profile": {
     "practice": "الممارسة",
+    "library": "المحتوى",
     "account": "الحساب",
+    "drafts": "المسودات",
+    "my_children": "أبنائي",
     "reminders": "التذكيرات",
     "language": "اللغة",
     "theme": "المظهر",

@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:my_app/firebase_options.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 
 import 'core/navigation/app_router.dart';
@@ -11,10 +14,11 @@ import 'features/auth/data/strategies/oauth_strategy_factory.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/user/presentation/cubit/user_cubit.dart';
 import 'theme/theme.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await initializeDateFormatting('ar');
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await ServiceLocator().init(
     baseUrl: 'http://178.104.159.239:8000/',

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/custom_dialog.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../cubit/language_cubit.dart';
 import '../cubit/language_state.dart';
@@ -80,7 +81,7 @@ class LanguageDialog extends StatelessWidget {
     } else if (state.status.isError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('failed_to_update_language'.tr()),
+          content: const ResponsiveText('failed_to_update_language'),
           backgroundColor: context.appColors.warning,
         ),
       );
@@ -121,8 +122,8 @@ class _Header extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        Text(
-          'language'.tr(),
+        ResponsiveText(
+          'language',
           textAlign: TextAlign.center,
           style: GoogleFonts.amiri(
             fontSize: 22,
@@ -131,8 +132,8 @@ class _Header extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Text(
-          'language_subtitle'.tr(),
+        ResponsiveText(
+          'language_subtitle',
           textAlign: TextAlign.center,
           style: GoogleFonts.cairo(
             fontSize: 12.5,
@@ -198,7 +199,7 @@ class _LanguageItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    ResponsiveText(
                       option.label,
                       style: GoogleFonts.amiri(
                         fontSize: 17,
@@ -207,7 +208,7 @@ class _LanguageItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    ResponsiveText(
                       option.subtitle,
                       style: GoogleFonts.cairo(
                         fontSize: 11.5,
@@ -273,8 +274,8 @@ class _ActionButtons extends StatelessWidget {
                   color: colors.textArabic.withValues(alpha: 0.2),
                 ),
               ),
-              child: Text(
-                'cancel'.tr(),
+              child: ResponsiveText(
+                'cancel',
                 style: GoogleFonts.cairo(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -321,8 +322,8 @@ class _ActionButtons extends StatelessWidget {
                           color: colors.canvas,
                         ),
                       )
-                    : Text(
-                        'change_language'.tr(),
+                    : ResponsiveText(
+                        'change_language',
                         style: GoogleFonts.cairo(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class ZadBottomNavItem {
@@ -116,7 +117,7 @@ class _NavSlot extends StatelessWidget {
               const SizedBox(height: 3),
               FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text(
+                child: ResponsiveText(
                   item.label,
                   maxLines: 1,
                   softWrap: false,

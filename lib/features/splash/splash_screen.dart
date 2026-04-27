@@ -1,23 +1,45 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/navigation/app_routes.dart';
+import '../../core/services/core_service_locator.dart';
+import '../../core/widgets/responsive_text.dart';
 import '../../theme/theme.dart';
+import '../auth/presentation/cubit/auth_cubit.dart';
+import '../auth/presentation/cubit/auth_state.dart';
+import '../user/presentation/cubit/user_cubit.dart';
+import '../user/presentation/cubit/user_state.dart';
+import 'presentation/cubit/splash_cubit.dart';
+import 'presentation/cubit/splash_state.dart';
 import 'widgets/desert_background.dart';
 import 'widgets/zad_brand.dart';
 import 'widgets/zad_logo_mark.dart';
 
-class ZadSplashScreen extends StatefulWidget {
+class ZadSplashScreen extends StatelessWidget {
   const ZadSplashScreen({super.key});
 
   @override
-  State<ZadSplashScreen> createState() => _ZadSplashScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<SplashCubit>()..init(context.locale.languageCode),
+      child: const _SplashView(),
+    );
+  }
 }
 
-class _ZadSplashScreenState extends State<ZadSplashScreen>
+class _SplashView extends StatefulWidget {
+  const _SplashView();
+
+  @override
+  State<_SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<_SplashView>
     with TickerProviderStateMixin {
   static const _dateSoft = Color(0xFF8D5C36);
 
@@ -31,13 +53,11 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
     duration: const Duration(milliseconds: 2400),
   );
 
-  Timer? _autoAdvance;
   bool _navigating = false;
 
   @override
   void initState() {
     super.initState();
-    _autoAdvance = Timer(const Duration(milliseconds: 4500), _goToLogin);
     Timer(const Duration(milliseconds: 3000), () {
       if (mounted) _hintPulse.repeat(reverse: true);
     });
@@ -45,31 +65,71 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
 
   @override
   void dispose() {
-    _autoAdvance?.cancel();
     _intro.dispose();
     _hintPulse.dispose();
     super.dispose();
   }
 
-  void _goToLogin() {
+  void _go(String route) {
     if (_navigating || !mounted) return;
     _navigating = true;
-    _autoAdvance?.cancel();
-    context.go(AppRoutes.login);
+    context.go(route);
+  }
+
+  void _navigateWhenReady() {
+    if (_navigating) return;
+    final splash = context.read<SplashCubit>().state;
+    final destination = splash.destination;
+    if (destination == null) return;
+
+    if (destination == SplashDestination.onboarding) {
+      _go(AppRoutes.onboarding);
+      return;
+    }
+
+    // authCheck path: wait for AuthCubit to resolve.
+    final auth = context.read<AuthCubit>().state;
+    if (auth.isInitial || auth.isLoading) return;
+    if (auth.isError || auth.isNotLoggedIn) {
+      _go(AppRoutes.login);
+      return;
+    }
+    if (auth.isLoggedIn) {
+      // Profile is auto-fetched via AuthEventService → UserCubit. Wait for
+      // it to resolve before routing home so the home screen has data.
+      final user = context.read<UserCubit>().state;
+      if (user.isInitial || user.isLoading) return;
+      if (user.isError) {
+        _go(AppRoutes.login);
+        return;
+      }
+      if (user.isSuccess) _go(AppRoutes.home);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: _goToLogin,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<SplashCubit, SplashStates>(
+            listenWhen: (a, b) => a.status != b.status,
+            listener: (_, _) => _navigateWhenReady(),
+          ),
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (a, b) => a.status != b.status,
+            listener: (_, _) => _navigateWhenReady(),
+          ),
+          BlocListener<UserCubit, UserState>(
+            listenWhen: (a, b) => a.status != b.status,
+            listener: (_, _) => _navigateWhenReady(),
+          ),
+        ],
         child: DesertBackground(
           child: SafeArea(
             child: Stack(
               children: [
-                // Center column: mark + brand.
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(40),
@@ -88,7 +148,6 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
                     ),
                   ),
                 ),
-                // Bismillah, near the bottom.
                 Positioned(
                   left: 0,
                   right: 0,
@@ -98,7 +157,7 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
                     start: 0.78,
                     end: 1,
                     targetOpacity: 0.65,
-                    child: Text(
+                    child: ResponsiveText(
                       'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
                       textAlign: TextAlign.center,
                       textDirection: TextDirection.rtl,
@@ -109,7 +168,6 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
                     ),
                   ),
                 ),
-                // "Tap to begin" hint.
                 Positioned(
                   left: 0,
                   right: 0,
@@ -123,8 +181,8 @@ class _ZadSplashScreenState extends State<ZadSplashScreen>
                       final opacity = introT * (introT < 1 ? 0.55 : pulse);
                       return Opacity(
                         opacity: opacity,
-                        child: Text(
-                          'TAP TO BEGIN',
+                        child: ResponsiveText(
+                          'LOADING...',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             fontSize: 10,

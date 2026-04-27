@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/widgets/responsive_text.dart';
 import '../../../theme/theme.dart';
 
 /// Wordmark "Zad" + Arabic "زاد" + amber rule + uppercase tagline.
@@ -34,7 +35,7 @@ class ZadBrand extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
+        ResponsiveText(
           'Zad',
           style: GoogleFonts.fraunces(
             fontSize: wordSize,
@@ -44,7 +45,7 @@ class ZadBrand extends StatelessWidget {
           ),
         ),
         SizedBox(height: gap),
-        Text(
+        ResponsiveText(
           'زاد',
           textDirection: TextDirection.rtl,
           style: GoogleFonts.amiri(
@@ -55,7 +56,7 @@ class ZadBrand extends StatelessWidget {
         SizedBox(height: ruleGap),
         Container(width: ruleWidth, height: 1, color: colors.accent),
         SizedBox(height: tagGap),
-        Text(
+        ResponsiveText(
           tag.toUpperCase(),
           style: GoogleFonts.inter(
             fontSize: tagSize,

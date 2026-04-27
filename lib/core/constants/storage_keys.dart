@@ -8,4 +8,5 @@ class StorageKeys {
   static const String kLoginMethodKey = 'login_method';
   static const String kAccessTokenKey = 'access_token';
   static const String kRefreshTokenKey = 'refresh_token';
+  static const String kUserKey = 'user_profile';
 }

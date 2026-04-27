@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zad_brand.dart';
@@ -154,7 +155,7 @@ class _Headline extends StatelessWidget {
         const SizedBox(height: 10),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 280),
-          child: Text(
+          child: ResponsiveText(
             'Sign in to continue your daily practice.',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
@@ -209,7 +210,7 @@ class _SignInButton extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
+                  ResponsiveText(
                     'SIGN IN',
                     style: GoogleFonts.inter(
                       fontSize: 14,
@@ -248,7 +249,7 @@ class _OrDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Opacity(
             opacity: 0.65,
-            child: Text(
+            child: ResponsiveText(
               'OR CONTINUE WITH',
               style: GoogleFonts.inter(
                 fontSize: 10,
@@ -292,7 +293,7 @@ class _GoogleButton extends StatelessWidget {
                 children: [
                   const _GoogleGlyph(size: 20),
                   const SizedBox(width: 10),
-                  Text(
+                  ResponsiveText(
                     'Continue with Google',
                     style: GoogleFonts.inter(
                       fontSize: 14,

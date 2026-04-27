@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/core/widgets/responsive_text.dart';
 
 class MainTextFormField extends StatefulWidget {
   const MainTextFormField({
@@ -216,7 +217,7 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
       errorStyle: widget.errorStyle ?? deco.errorStyle,
       error:
           widget.forceErrorText != null
-              ? Text(
+              ? ResponsiveText(
                 widget.forceErrorText!,
                 style: widget.errorStyle ?? deco.errorStyle,
               )

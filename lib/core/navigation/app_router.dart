@@ -6,6 +6,7 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import 'app_routes.dart';
@@ -20,6 +21,11 @@ class AppRouter {
         path: AppRoutes.splash,
         name: AppRoutes.splashName,
         builder: (context, state) => const ZadSplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.onboarding,
+        name: AppRoutes.onboardingName,
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: AppRoutes.login,

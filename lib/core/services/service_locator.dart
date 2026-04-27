@@ -10,6 +10,12 @@ import '../../features/auth/data/services/auth_local_service.dart';
 import '../../features/auth/data/strategies/oauth_strategy_factory.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
+import '../../features/onboarding/data/repositories/onboarding_repository.dart';
+import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import '../../features/splash/presentation/cubit/splash_cubit.dart';
+import '../../features/user/data/remote/user_remote_data_source.dart';
+import '../../features/user/data/repositories/user_repository.dart';
+import '../../features/user/presentation/cubit/user_cubit.dart';
 
 import 'app_info_service.dart';
 import 'cache_service.dart';
@@ -60,6 +66,34 @@ class ServiceLocator {
     );
     sl.registerFactory<AuthCubit>(
       () => AuthCubit(repository: sl(), authEventService: sl()),
+    );
+
+    // User
+    sl.registerLazySingleton<UserRemoteDataSource>(
+      () => UserRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
+    );
+    sl.registerLazySingleton<UserRepository>(
+      () => UserRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
+    );
+    sl.registerLazySingleton<UserCubit>(
+      () => UserCubit(userRepository: sl(), authEventService: sl()),
+    );
+
+    // Onboarding
+    sl.registerLazySingleton<OnboardingRepository>(
+      () => OnboardingRepositoryImpl(cacheService: sl()),
+    );
+    sl.registerFactory<OnboardingCubit>(
+      () => OnboardingCubit(onboardingRepository: sl()),
+    );
+
+    // Splash
+    sl.registerFactory<SplashCubit>(
+      () => SplashCubit(
+        onboardingRepository: sl(),
+        notificationService: sl(),
+        cacheService: sl(),
+      ),
     );
 
     // Language

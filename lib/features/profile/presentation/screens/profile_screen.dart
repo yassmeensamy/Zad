@@ -1,7 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
@@ -75,7 +75,7 @@ class _ProfileHeader extends StatelessWidget {
             ],
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: ResponsiveText(
             'ي',
             style: GoogleFonts.amiri(
               fontSize: 44,
@@ -85,7 +85,7 @@ class _ProfileHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        Text(
+        ResponsiveText(
           'ياسمين',
           style: GoogleFonts.amiri(
             fontSize: 26,
@@ -94,7 +94,7 @@ class _ProfileHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
+        ResponsiveText(
           'انضمّت في رمضان ١٤٤٦',
           style: GoogleFonts.cairo(
             fontSize: 12,
@@ -157,7 +157,7 @@ class _Stat extends StatelessWidget {
     final colors = context.appColors;
     return Column(
       children: [
-        Text(
+        ResponsiveText(
           value,
           style: GoogleFonts.amiri(
             fontSize: 24,
@@ -166,7 +166,7 @@ class _Stat extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
+        ResponsiveText(
           label,
           style: GoogleFonts.cairo(
             fontSize: 12,
@@ -188,8 +188,8 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 4),
-      child: Text(
-        textKey.tr(),
+      child: ResponsiveText(
+        textKey,
         style: GoogleFonts.cairo(
           fontSize: 12,
           fontWeight: FontWeight.w700,
@@ -235,8 +235,8 @@ class _MenuTile extends StatelessWidget {
                 Icon(item.icon, size: 20, color: colors.accent),
                 const SizedBox(width: 14),
                 Expanded(
-                  child: Text(
-                    item.titleKey.tr(),
+                  child: ResponsiveText(
+                    item.titleKey,
                     style: GoogleFonts.cairo(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -247,7 +247,7 @@ class _MenuTile extends StatelessWidget {
                 if (hasTrailingText)
                   Padding(
                     padding: const EdgeInsetsDirectional.only(end: 6),
-                    child: Text(
+                    child: ResponsiveText(
                       item.trailingText!,
                       style: GoogleFonts.cairo(
                         fontSize: 12,
@@ -291,8 +291,8 @@ class _SignOutButton extends StatelessWidget {
           ),
         ),
         icon: const Icon(Icons.logout_rounded, size: 18),
-        label: Text(
-          'profile.sign_out'.tr(),
+        label: ResponsiveText(
+          'profile.sign_out',
           style: GoogleFonts.cairo(
             fontSize: 14,
             fontWeight: FontWeight.w700,

@@ -13,6 +13,7 @@ class AppRoutes {
   static const String learn = '/learn';
   static const String leaderboard = '/leaderboard';
   static const String profile = '/profile';
+  static const String myChildren = '/my-children';
 
   static const String splashName = 'splash';
   static const String onboardingName = 'onboarding';
@@ -25,4 +26,5 @@ class AppRoutes {
   static const String learnName = 'learn';
   static const String leaderboardName = 'leaderboard';
   static const String profileName = 'profile';
+  static const String myChildrenName = 'my-children';
 }

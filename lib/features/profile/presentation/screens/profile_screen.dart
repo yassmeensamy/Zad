@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart' as intl;
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
@@ -15,6 +14,7 @@ import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
+import '../widgets/profile_menu_tile.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -44,21 +44,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: SafeArea(
         bottom: false,
         child: BlocBuilder<UserCubit, UserState>(
-          builder: (context, state) => ListView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
-            physics: const BouncingScrollPhysics(),
+          builder: (context, state) => Stack(
             children: [
-              _ProfileHeader(colors: colors, user: state.user),
-              const SizedBox(height: 18),
-              _StatsRow(colors: colors),
-              const SizedBox(height: 22),
-              for (final section in sections) ...[
-                _SectionLabel(textKey: section.titleKey, colors: colors),
-                const SizedBox(height: 10),
-                for (final item in section.items) _MenuTile(item: item),
-                const SizedBox(height: 22),
-              ],
-              const _SignOutButton(),
+              const _BackdropOrnament(),
+              ListView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  _HeroCard(colors: colors, user: state.user),
+                  const SizedBox(height: 28),
+                  for (var i = 0; i < sections.length; i++) ...[
+                    _SectionLabel(
+                      textKey: sections[i].titleKey,
+                      colors: colors,
+                    ),
+                    const SizedBox(height: 12),
+                    _SectionCard(items: sections[i].items),
+                    const SizedBox(height: 24),
+                  ],
+                  const _SignOutButton(),
+                ],
+              ),
             ],
           ),
         ),
@@ -67,8 +73,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.colors, required this.user});
+class _BackdropOrnament extends StatelessWidget {
+  const _BackdropOrnament();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Stack(
+          children: [
+            Positioned(
+              top: -80,
+              left: -60,
+              right: -60,
+              height: 280,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.topCenter,
+                    radius: 0.95,
+                    colors: [
+                      colors.oliveLeaf.withValues(alpha: 0.22),
+                      colors.olive.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 120,
+              right: -80,
+              width: 220,
+              height: 220,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      colors.oliveLeaf.withValues(alpha: 0.10),
+                      colors.olive.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroCard extends StatelessWidget {
+  const _HeroCard({required this.colors, required this.user});
   final AppColorsTheme colors;
   final UserModel? user;
 
@@ -76,135 +134,60 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = user?.fullName ?? '';
     final initial = name.isNotEmpty ? name.characters.first : '؟';
-    final joinedAt = user?.createdAt;
+
     return Column(
       children: [
-        Container(
-          width: 96,
-          height: 96,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [colors.accentSoft, colors.accent],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: colors.accent.withValues(alpha: 0.25),
-                blurRadius: 22,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: ResponsiveText(
-            initial,
-            style: GoogleFonts.amiri(
-              fontSize: 44,
-              fontWeight: FontWeight.w700,
-              color: colors.canvas,
-            ),
-          ),
-        ),
+        _Avatar(initial: initial, colors: colors),
         const SizedBox(height: 14),
         ResponsiveText(
-          name,
+          name.isEmpty ? '—' : name,
+          textAlign: TextAlign.center,
           style: GoogleFonts.amiri(
-            fontSize: 26,
+            fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: colors.textArabic,
+            color: colors.oliveDeep,
+            height: 1.1,
           ),
         ),
-        if (joinedAt != null) ...[
-          const SizedBox(height: 2),
-          ResponsiveText(
-            _formatJoinedAt(joinedAt),
-            style: GoogleFonts.cairo(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: colors.textArabic.withValues(alpha: 0.6),
-            ),
-          ),
-        ],
       ],
     );
   }
 }
 
-String _formatJoinedAt(DateTime date) {
-  final formatted = intl.DateFormat.yMMMM('ar').format(date);
-  return 'انضمّت في $formatted';
-}
-
-class _StatsRow extends StatelessWidget {
-  const _StatsRow({required this.colors});
+class _Avatar extends StatelessWidget {
+  const _Avatar({required this.initial, required this.colors});
+  final String initial;
   final AppColorsTheme colors;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+      width: 64,
+      height: 64,
       decoration: BoxDecoration(
-        color: colors.canvasRaised.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: colors.textArabic.withValues(alpha: 0.12),
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [colors.olive, colors.oliveDeep],
         ),
-      ),
-      child: Row(
-        children: [
-          const Expanded(child: _Stat(value: '٧', label: 'يوم متتالي')),
-          _Divider(colors: colors),
-          const Expanded(child: _Stat(value: '١٢٨', label: 'آية')),
-          _Divider(colors: colors),
-          const Expanded(child: _Stat(value: '٣٫٥٨٠', label: 'نقطة')),
+        boxShadow: [
+          BoxShadow(
+            color: colors.olive.withValues(alpha: 0.22),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  const _Divider({required this.colors});
-  final AppColorsTheme colors;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: 1,
-        height: 32,
-        color: colors.textArabic.withValues(alpha: 0.14),
-      );
-}
-
-class _Stat extends StatelessWidget {
-  const _Stat({required this.value, required this.label});
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Column(
-      children: [
-        ResponsiveText(
-          value,
-          style: GoogleFonts.amiri(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: colors.accent,
-          ),
+      alignment: Alignment.center,
+      child: ResponsiveText(
+        initial,
+        style: GoogleFonts.amiri(
+          fontSize: 30,
+          fontWeight: FontWeight.w700,
+          color: colors.canvas,
         ),
-        const SizedBox(height: 2),
-        ResponsiveText(
-          label,
-          style: GoogleFonts.cairo(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: colors.textArabic.withValues(alpha: 0.65),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -217,86 +200,83 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 4),
-      child: ResponsiveText(
-        textKey,
-        style: GoogleFonts.cairo(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.4,
-          color: colors.textArabic.withValues(alpha: 0.6),
-        ),
+      padding: const EdgeInsetsDirectional.only(start: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 16,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [colors.oliveLeaf, colors.oliveDeep],
+              ),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          ResponsiveText(
+            textKey,
+            style: GoogleFonts.cairo(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+              color: colors.oliveDeep,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _MenuTile extends StatelessWidget {
-  const _MenuTile({required this.item});
-  final ProfileMenuItem item;
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({required this.items});
+  final List<ProfileMenuItem> items;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final hasTrailingWidget = item.trailing != null;
-    final hasTrailingText = item.trailingText != null;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: colors.canvasRaised.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(14),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: item.onTap,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: hasTrailingWidget ? 10 : 14,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: colors.textArabic.withValues(alpha: 0.10),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(item.icon, size: 20, color: colors.accent),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: ResponsiveText(
-                    item.titleKey,
-                    style: GoogleFonts.cairo(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textArabic,
-                    ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colors.canvas.withValues(alpha: 0.92),
+            colors.canvasRaised.withValues(alpha: 0.78),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colors.olive.withValues(alpha: 0.16),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colors.oliveDeep.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          children: [
+            for (var i = 0; i < items.length; i++) ...[
+              ProfileMenuTile(item: items[i]),
+              if (i != items.length - 1)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 64),
+                  child: Container(
+                    height: 1,
+                    color: colors.olive.withValues(alpha: 0.10),
                   ),
                 ),
-                if (hasTrailingText)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 6),
-                    child: ResponsiveText(
-                      item.trailingText!,
-                      style: GoogleFonts.cairo(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: colors.textArabic.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ),
-                if (hasTrailingWidget)
-                  item.trailing!
-                else
-                  Icon(
-                    Icons.chevron_left_rounded,
-                    size: 20,
-                    color: colors.textArabic.withValues(alpha: 0.4),
-                  ),
-              ],
-            ),
-          ),
+            ],
+          ],
         ),
       ),
     );
@@ -308,28 +288,31 @@ class _SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomButton.full(
-      onTap: () => context.read<AuthCubit>().logout(),
-      theme: CustomButtonTheme(
-        height: 48,
-        backgroundColor: AppColors.error.withValues(alpha: 0.08),
-        textColor: AppColors.error,
-        borderRadius: 14,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.logout_rounded, size: 18, color: AppColors.error),
-          const SizedBox(width: 8),
-          ResponsiveText(
-            'profile.sign_out',
-            style: GoogleFonts.cairo(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: AppColors.error,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: CustomButton.full(
+        onTap: () => context.read<AuthCubit>().logout(),
+        theme: CustomButtonTheme(
+          height: 52,
+          backgroundColor: AppColors.error.withValues(alpha: 0.08),
+          textColor: AppColors.error,
+          borderRadius: 16,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.logout_rounded, size: 18, color: AppColors.error),
+            const SizedBox(width: 8),
+            ResponsiveText(
+              'profile.sign_out',
+              style: GoogleFonts.cairo(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.error,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

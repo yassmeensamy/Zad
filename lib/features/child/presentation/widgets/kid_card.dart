@@ -31,7 +31,7 @@ class KidCard extends StatelessWidget {
       builder: (_) => AvatarPickerSheet(current: draft.avatar),
     );
     if (picked != null) {
-      cubit.updateDraft(draft.id, avatar: picked);
+      cubit.update(draft.id, avatar: picked);
     }
   }
 
@@ -47,7 +47,7 @@ class KidCard extends StatelessWidget {
       ),
     );
     if (picked != null) {
-      cubit.updateDraft(draft.id, password: picked);
+      cubit.update(draft.id, password: picked);
     }
   }
 
@@ -120,7 +120,7 @@ class KidCard extends StatelessWidget {
                             hint: 'create_profiles.name_hint'.tr(),
                             initial: draft.name,
                             onChanged: (v) =>
-                                cubit.updateDraft(draft.id, name: v),
+                                cubit.update(draft.id, name: v),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -132,7 +132,7 @@ class KidCard extends StatelessWidget {
                             initial: draft.age,
                             keyboardType: TextInputType.number,
                             onChanged: (v) =>
-                                cubit.updateDraft(draft.id, age: v),
+                                cubit.update(draft.id, age: v),
                           ),
                         ),
                       ],
@@ -156,7 +156,7 @@ class KidCard extends StatelessWidget {
                 shape: const CircleBorder(),
                 child: InkWell(
                   customBorder: const CircleBorder(),
-                  onTap: () => cubit.removeDraft(draft.id),
+                  onTap: () => cubit.remove(draft.id),
                   child: const Padding(
                     padding: EdgeInsets.all(6),
                     child: Icon(

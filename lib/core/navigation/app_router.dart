@@ -7,6 +7,7 @@ import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/child/presentation/screens/children_list_screen.dart';
 import '../../features/child/presentation/screens/create_children_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
@@ -54,6 +55,11 @@ class AppRouter {
         path: AppRoutes.profileSelect,
         name: AppRoutes.profileSelectName,
         builder: (context, state) => const ProfileSelectScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myChildren,
+        name: AppRoutes.myChildrenName,
+        builder: (context, state) => const ChildrenListScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

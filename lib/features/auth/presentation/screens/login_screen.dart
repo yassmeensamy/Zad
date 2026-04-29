@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../core/validation/form_validation.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
@@ -27,7 +26,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -58,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSignIn() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
     context.read<AuthCubit>().login(
       identifier: _emailController.text.trim(),
       password: _passwordController.text,
@@ -101,99 +98,94 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               physics: ClampingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    const ZadLogoMark(size: 84),
-                    const SizedBox(height: 22),
-                    const ZadBrand.compact(dateSoft: _dateSoft),
-                    const SizedBox(height: 24),
-                    _Headline(dateSoft: _dateSoft),
-                    const SizedBox(height: 22),
-                    ZadTextField(
-                      hintText: 'auth.email_hint',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      textInputAction: TextInputAction.next,
-                      validator: FormValidators.requiredEmail(),
-                      prefixIcon: Icon(
-                        Icons.mail_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  const ZadLogoMark(size: 84),
+                  const SizedBox(height: 22),
+                  const ZadBrand.compact(dateSoft: _dateSoft),
+                  const SizedBox(height: 24),
+                  _Headline(dateSoft: _dateSoft),
+                  const SizedBox(height: 22),
+                  ZadTextField(
+                    hintText: 'auth.email_hint',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Icon(
+                      Icons.mail_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 12),
-                    ZadTextField(
-                      hintText: '••••••••',
-                      controller: _passwordController,
-                      obscureText: true,
-                      passwordToggle: true,
-                      autofillHints: const [AutofillHints.password],
-                      textInputAction: TextInputAction.done,
-                      validator: FormValidators.requiredPassword(),
-                      prefixIcon: Icon(
-                        Icons.lock_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  ZadTextField(
+                    hintText: '••••••••',
+                    controller: _passwordController,
+                    obscureText: true,
+                    passwordToggle: true,
+                    autofillHints: const [AutofillHints.password],
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: Icon(
+                      Icons.lock_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 6),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: InkWell(
-                        onTap: _onForgotPassword,
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 6,
-                          ),
-                          child: ResponsiveText(
-                            'auth.forgot_password',
-                            style: GoogleFonts.inter(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w500,
-                              color: colors.olive,
-                            ),
+                  ),
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: InkWell(
+                      onTap: _onForgotPassword,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        child: ResponsiveText(
+                          'auth.forgot_password',
+                          style: GoogleFonts.inter(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
+                            color: colors.olive,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.isLoading != current.isLoading,
-                      builder: (context, state) => AuthPrimaryButton(
-                        label: 'auth.login_screen.sign_in',
-                        loading: state.isLoading,
-                        enabled: _allFilled,
-                        onTap: _onSignIn,
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isLoading != current.isLoading,
+                    builder: (context, state) => AuthPrimaryButton(
+                      label: 'auth.login_screen.sign_in',
+                      loading: state.isLoading,
+                      enabled: _allFilled,
+                      onTap: _onSignIn,
                     ),
-                    const SizedBox(height: 20),
-                    const AuthOrDivider(label: 'auth.or_continue'),
-                    const SizedBox(height: 12),
-                    BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.isSocialLoading != current.isSocialLoading,
-                      builder: (context, state) => AuthGoogleButton(
-                        label: 'auth.continue_google',
-                        loading: state.isSocialLoading,
-                        onTap: _onGoogle,
-                      ),
+                  ),
+                  const SizedBox(height: 20),
+                  const AuthOrDivider(label: 'auth.or_continue'),
+                  const SizedBox(height: 12),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isSocialLoading != current.isSocialLoading,
+                    builder: (context, state) => AuthGoogleButton(
+                      label: 'auth.continue_google',
+                      loading: state.isSocialLoading,
+                      onTap: _onGoogle,
                     ),
-                    const SizedBox(height: 22),
-                    AuthPromptLink(
-                      prompt: 'auth.login_screen.new_prompt',
-                      action: 'auth.login_screen.create_account',
-                      dateSoft: _dateSoft,
-                      onTap: _onGoToSignUp,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 22),
+                  AuthPromptLink(
+                    prompt: 'auth.login_screen.new_prompt',
+                    action: 'auth.login_screen.create_account',
+                    dateSoft: _dateSoft,
+                    onTap: _onGoToSignUp,
+                  ),
+                ],
               ),
             ),
           ),

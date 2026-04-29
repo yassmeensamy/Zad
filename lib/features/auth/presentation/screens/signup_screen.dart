@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../core/validation/form_validation.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
@@ -28,7 +27,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -65,7 +63,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onCreateAccount() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
     _awaitingSignupResult = true;
     context.read<AuthCubit>().signup(
       email: _emailController.text.trim(),
@@ -123,91 +120,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    const ZadLogoMark(size: 84),
-                    const SizedBox(height: 22),
-                    const ZadBrand.compact(dateSoft: _dateSoft),
-                    const SizedBox(height: 24),
-                    const _Headline(),
-                    const SizedBox(height: 22),
-                    ZadTextField(
-                      hintText: 'auth.signup_screen.username_hint',
-                      controller: _usernameController,
-                      keyboardType: TextInputType.text,
-                      autofillHints: const [AutofillHints.newUsername],
-                      textInputAction: TextInputAction.next,
-                      validator: FormValidators.requiredName(),
-                      prefixIcon: Icon(
-                        Icons.person_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  const ZadLogoMark(size: 84),
+                  const SizedBox(height: 22),
+                  const ZadBrand.compact(dateSoft: _dateSoft),
+                  const SizedBox(height: 24),
+                  const _Headline(),
+                  const SizedBox(height: 22),
+                  ZadTextField(
+                    hintText: 'auth.signup_screen.username_hint',
+                    controller: _usernameController,
+                    keyboardType: TextInputType.text,
+                    autofillHints: const [AutofillHints.newUsername],
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Icon(
+                      Icons.person_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 12),
-                    ZadTextField(
-                      hintText: 'auth.email_hint',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      textInputAction: TextInputAction.next,
-                      validator: FormValidators.requiredEmail(),
-                      prefixIcon: Icon(
-                        Icons.mail_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  ZadTextField(
+                    hintText: 'auth.email_hint',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: Icon(
+                      Icons.mail_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 12),
-                    ZadTextField(
-                      hintText: '••••••••',
-                      controller: _passwordController,
-                      obscureText: true,
-                      passwordToggle: true,
-                      autofillHints: const [AutofillHints.newPassword],
-                      textInputAction: TextInputAction.done,
-                      validator: FormValidators.requiredPassword(),
-                      prefixIcon: Icon(
-                        Icons.lock_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  ZadTextField(
+                    hintText: '••••••••',
+                    controller: _passwordController,
+                    obscureText: true,
+                    passwordToggle: true,
+                    autofillHints: const [AutofillHints.newPassword],
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: Icon(
+                      Icons.lock_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 16),
-                    BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.isLoading != current.isLoading,
-                      builder: (context, state) => AuthPrimaryButton(
-                        label: 'auth.signup_screen.create_account',
-                        loading: state.isLoading,
-                        enabled: _allFilled,
-                        onTap: _onCreateAccount,
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isLoading != current.isLoading,
+                    builder: (context, state) => AuthPrimaryButton(
+                      label: 'auth.signup_screen.create_account',
+                      loading: state.isLoading,
+                      enabled: _allFilled,
+                      onTap: _onCreateAccount,
                     ),
-                    const SizedBox(height: 20),
-                    const AuthOrDivider(label: 'auth.or_continue'),
-                    const SizedBox(height: 12),
-                    BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.isSocialLoading != current.isSocialLoading,
-                      builder: (context, state) => AuthGoogleButton(
-                        label: 'auth.continue_google',
-                        loading: state.isSocialLoading,
-                        onTap: _onGoogle,
-                      ),
+                  ),
+                  const SizedBox(height: 20),
+                  const AuthOrDivider(label: 'auth.or_continue'),
+                  const SizedBox(height: 12),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isSocialLoading != current.isSocialLoading,
+                    builder: (context, state) => AuthGoogleButton(
+                      label: 'auth.continue_google',
+                      loading: state.isSocialLoading,
+                      onTap: _onGoogle,
                     ),
-                    const SizedBox(height: 22),
-                    AuthPromptLink(
-                      prompt: 'auth.signup_screen.have_account_prompt',
-                      action: 'auth.signup_screen.sign_in',
-                      dateSoft: _dateSoft,
-                      onTap: _onGoToLogin,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 22),
+                  AuthPromptLink(
+                    prompt: 'auth.signup_screen.have_account_prompt',
+                    action: 'auth.signup_screen.sign_in',
+                    dateSoft: _dateSoft,
+                    onTap: _onGoToLogin,
+                  ),
+                ],
               ),
             ),
           ),

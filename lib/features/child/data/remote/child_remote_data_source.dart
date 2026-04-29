@@ -16,6 +16,7 @@ abstract class ChildRemoteDataSource {
     required String childId,
     String? username,
     String? fullName,
+    String? password,
     DateTime? birthDate,
   });
   Future<void> deleteChild(String childId);
@@ -77,6 +78,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
     required String childId,
     String? username,
     String? fullName,
+    String? password,
     DateTime? birthDate,
   }) async {
     final response = await _networkService.put(
@@ -84,6 +86,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
       data: {
         'username': ?username,
         'fullName': ?fullName,
+        'password': ?password,
         if (birthDate != null) 'birthDate': birthDate.toIso8601String(),
       },
     );

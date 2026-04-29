@@ -136,6 +136,7 @@ class ChildCubit extends BaseCubit<ChildState> {
     String? username,
     String? fullName,
     DateTime? birthDate,
+    String? password, // won't be sent if null, but if non-null it will be updated
   }) async {
     emit(
       state.copyWith(
@@ -149,6 +150,7 @@ class ChildCubit extends BaseCubit<ChildState> {
         username: username,
         fullName: fullName,
         birthDate: birthDate,
+        password: password,
       );
       final updatedList = [
         for (final c in state.children)

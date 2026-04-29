@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../child/presentation/widgets/custom_modal.dart';
 import '../cubit/language_cubit.dart';
 import '../cubit/language_state.dart';
 
@@ -23,47 +23,81 @@ class LanguageDialog extends StatelessWidget {
   final OnLanguageChangedCallback? onLanguageChanged;
 
   static const List<_LanguageOption> _availableLanguages = [
-    _LanguageOption(label: 'العربية', subtitle: 'Arabic', code: 'ar'),
-    _LanguageOption(label: 'English', subtitle: 'الإنجليزية', code: 'en'),
+    _LanguageOption(
+      label: 'العربية',
+      subtitle: 'Arabic',
+      code: 'ar',
+      flag: '🇸🇦',
+    ),
+    _LanguageOption(
+      label: 'English',
+      subtitle: 'الإنجليزية',
+      code: 'en',
+      flag: '🇬🇧',
+    ),
   ];
 
   static Future<void> show(
     BuildContext context, {
     bool shouldSkipBackend = true,
     OnLanguageChangedCallback? onLanguageChanged,
-  }) => CustomDialog.show<void>(
+  }) => showModalBottomSheet<void>(
     context: context,
-    child: LanguageDialog(
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    useRootNavigator: true,
+    builder: (_) => LanguageDialog(
       shouldSkipBackend: shouldSkipBackend,
       onLanguageChanged: onLanguageChanged,
     ),
   );
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) =>
-        LanguageCubit()..updateCurrentLanguage(context.locale.languageCode),
-    child: BlocConsumer<LanguageCubit, LanguageState>(
-      listener: _handleLanguageStateChange,
-      builder: (context, state) => AbsorbPointer(
-        absorbing: state.status.isLoading,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _Header(),
-            const SizedBox(height: 18),
-            for (final lang in _availableLanguages) ...[
-              _buildLanguageItem(lang, state),
-              const SizedBox(height: 8),
-            ],
-            const SizedBox(height: 14),
-            _ActionButtons(shouldSkipBackend: shouldSkipBackend),
-          ],
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return BlocProvider(
+      create: (_) =>
+          LanguageCubit()..updateCurrentLanguage(context.locale.languageCode),
+      child: BlocConsumer<LanguageCubit, LanguageState>(
+        listener: _handleLanguageStateChange,
+        builder: (context, state) => CustomModal(
+          title: ResponsiveText(
+            'language',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.amiri(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: colors.oliveDeep,
+            ),
+          ),
+          subtitle: ResponsiveText(
+            'language_subtitle',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.cairo(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              color: colors.olive.withValues(alpha: 0.7),
+            ),
+          ),
+          child: AbsorbPointer(
+            absorbing: state.status.isLoading,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final lang in _availableLanguages) ...[
+                  _buildLanguageItem(lang, state),
+                  const SizedBox(height: 10),
+                ],
+                const SizedBox(height: 8),
+                _ActionButtons(shouldSkipBackend: shouldSkipBackend),
+              ],
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   Future<void> _handleLanguageStateChange(
     BuildContext context,
@@ -102,60 +136,18 @@ class LanguageDialog extends StatelessWidget {
       );
 }
 
-class _Header extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Column(
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.accent.withValues(alpha: 0.14),
-          ),
-          child: Icon(
-            Icons.translate_rounded,
-            color: colors.accent,
-            size: 24,
-          ),
-        ),
-        const SizedBox(height: 14),
-        ResponsiveText(
-          'language',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.amiri(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: colors.textArabic,
-          ),
-        ),
-        const SizedBox(height: 6),
-        ResponsiveText(
-          'language_subtitle',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(
-            fontSize: 12.5,
-            fontWeight: FontWeight.w500,
-            color: colors.textArabic.withValues(alpha: 0.65),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _LanguageOption {
   const _LanguageOption({
     required this.label,
     required this.subtitle,
     required this.code,
+    required this.flag,
   });
 
   final String label;
   final String subtitle;
   final String code;
+  final String flag;
 }
 
 class _LanguageItem extends StatelessWidget {
@@ -175,26 +167,49 @@ class _LanguageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Material(
-      color: isSelected
-          ? colors.accentSoft.withValues(alpha: 0.22)
-          : colors.canvas.withValues(alpha: 0.6),
-      borderRadius: BorderRadius.circular(14),
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         onTap: isEnabled ? onTap : null,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        splashColor: colors.olive.withValues(alpha: 0.08),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            gradient: isSelected
+                ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colors.oliveLeaf.withValues(alpha: 0.20),
+                      colors.olive.withValues(alpha: 0.12),
+                    ],
+                  )
+                : null,
+            color: isSelected ? null : colors.canvas.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected
-                  ? colors.accent.withValues(alpha: 0.5)
-                  : colors.textArabic.withValues(alpha: 0.10),
+                  ? colors.olive.withValues(alpha: 0.45)
+                  : colors.olive.withValues(alpha: 0.12),
               width: isSelected ? 1.4 : 1,
             ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: colors.olive.withValues(alpha: 0.10),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(
             children: [
+              _FlagBadge(flag: option.flag, isSelected: isSelected),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +219,9 @@ class _LanguageItem extends StatelessWidget {
                       style: GoogleFonts.amiri(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
-                        color: colors.textArabic,
+                        color: isSelected
+                            ? colors.oliveDeep
+                            : colors.textArabic,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -226,10 +243,10 @@ class _LanguageItem extends StatelessWidget {
                 height: 22,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? colors.accent : Colors.transparent,
+                  color: isSelected ? colors.olive : Colors.transparent,
                   border: Border.all(
                     color: isSelected
-                        ? colors.accent
+                        ? colors.olive
                         : colors.textArabic.withValues(alpha: 0.3),
                     width: 1.6,
                   ),
@@ -246,6 +263,52 @@ class _LanguageItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FlagBadge extends StatelessWidget {
+  const _FlagBadge({required this.flag, required this.isSelected});
+  final String flag;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isSelected
+              ? [
+                  colors.canvas,
+                  colors.canvasRaised,
+                ]
+              : [
+                  colors.canvasRaised.withValues(alpha: 0.8),
+                  colors.canvas.withValues(alpha: 0.8),
+                ],
+        ),
+        border: Border.all(
+          color: colors.olive.withValues(alpha: isSelected ? 0.45 : 0.18),
+          width: 1.2,
+        ),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: colors.olive.withValues(alpha: 0.18),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      alignment: Alignment.center,
+      child: Text(flag, style: const TextStyle(fontSize: 22)),
     );
   }
 }
@@ -271,7 +334,7 @@ class _ActionButtons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 side: BorderSide(
-                  color: colors.textArabic.withValues(alpha: 0.2),
+                  color: colors.olive.withValues(alpha: 0.25),
                 ),
               ),
               child: ResponsiveText(
@@ -279,7 +342,7 @@ class _ActionButtons extends StatelessWidget {
                 style: GoogleFonts.cairo(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: colors.textArabic.withValues(alpha: 0.75),
+                  color: colors.olive,
                 ),
               ),
             ),
@@ -303,10 +366,8 @@ class _ActionButtons extends StatelessWidget {
                       )
                     : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.accent,
-                  disabledBackgroundColor: colors.accent.withValues(
-                    alpha: 0.4,
-                  ),
+                  backgroundColor: colors.olive,
+                  disabledBackgroundColor: colors.olive.withValues(alpha: 0.4),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

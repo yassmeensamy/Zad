@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/navigation/app_routes.dart';
 import '../../../theme/theme.dart';
 import '../../language/presentation/modals/language_dialog.dart';
 import 'profile_section.dart';
@@ -36,16 +38,17 @@ List<ProfileSection> profileSections(
       ),
     ],
   ),
-  const ProfileSection(
+  ProfileSection(
     titleKey: 'profile.library',
     items: [
-      ProfileMenuItem(
+      const ProfileMenuItem(
         icon: Icons.drafts_outlined,
         titleKey: 'profile.drafts',
       ),
       ProfileMenuItem(
         icon: Icons.family_restroom_rounded,
         titleKey: 'profile.my_children',
+        onTap: () => context.pushNamed(AppRoutes.myChildrenName),
       ),
     ],
   ),

@@ -169,7 +169,7 @@ class _DraftList extends StatelessWidget {
           itemBuilder: (context, i) {
             if (i == drafts.length) {
               return _AddKidTile(
-                onTap: () => context.read<ChildDraftCubit>().addDraft(),
+                onTap: () => context.read<ChildDraftCubit>().add(),
               );
             }
             final draft = drafts[i];

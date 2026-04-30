@@ -13,6 +13,9 @@ import '../../features/child/data/remote/child_remote_data_source.dart';
 import '../../features/child/data/repositories/child_repository.dart';
 import '../../features/child/presentation/cubit/child_cubit.dart';
 import '../../features/child/presentation/cubit/child_draft_cubit.dart';
+import '../../features/help_center/data/remote/help_center_remote_data_source.dart';
+import '../../features/help_center/data/repositories/help_center_repository.dart';
+import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
@@ -125,6 +128,17 @@ class ServiceLocator {
     );
     sl.registerFactory<NotificationCubit>(
       () => NotificationCubit(notificationRepository: sl()),
+    );
+
+    // Help center (mock-backed)
+    sl.registerLazySingleton<HelpCenterRemoteDataSource>(
+      () => HelpCenterRemoteDataSourceImpl(),
+    );
+    sl.registerLazySingleton<HelpCenterRepository>(
+      () => HelpCenterRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<HelpCenterCubit>(
+      () => HelpCenterCubit(helpCenterRepository: sl()),
     );
   }
 }

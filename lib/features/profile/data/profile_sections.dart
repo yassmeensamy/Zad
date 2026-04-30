@@ -55,9 +55,10 @@ List<ProfileSection> profileSections(BuildContext context) => [
         icon: Icons.privacy_tip_outlined,
         titleKey: 'profile.privacy',
       ),
-      const ProfileMenuItem(
+      ProfileMenuItem(
         icon: Icons.help_outline_rounded,
         titleKey: 'profile.help_support',
+        onTap: () => context.pushNamed(AppRoutes.helpCenterName),
       ),
     ],
   ),

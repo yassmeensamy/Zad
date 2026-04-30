@@ -16,6 +16,7 @@ class AppRoutes {
   static const String myChildren = '/my-children';
   static const String notifications = '/notifications';
   static const String editProfile = '/edit-profile';
+  static const String helpCenter = '/help-center';
 
   static const String splashName = 'splash';
   static const String onboardingName = 'onboarding';
@@ -31,4 +32,5 @@ class AppRoutes {
   static const String myChildrenName = 'my-children';
   static const String notificationsName = 'notifications';
   static const String editProfileName = 'edit-profile';
+  static const String helpCenterName = 'help-center';
 }

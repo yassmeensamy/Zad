@@ -14,6 +14,7 @@ import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
+import '../../../../core/widgets/islamic_ornaments.dart';
 import '../widgets/profile_menu_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -35,23 +36,38 @@ class ProfileScreen extends StatelessWidget {
         child: BlocBuilder<UserCubit, UserState>(
           builder: (context, state) => Stack(
             children: [
-              const _BackdropOrnament(),
+              _BackdropOrnament(colors: colors),
               ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 120),
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  _HeroCard(colors: colors, user: state.user),
-                  const SizedBox(height: 28),
+                  _MihrabHero(colors: colors, user: state.user),
+                  const SizedBox(height: 22),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: StarRule(color: colors.accent, starSize: 10),
+                  ),
+                  const SizedBox(height: 24),
                   for (var i = 0; i < sections.length; i++) ...[
-                    _SectionLabel(
-                      textKey: sections[i].titleKey,
-                      colors: colors,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _SectionLabel(
+                        textKey: sections[i].titleKey,
+                        colors: colors,
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    _SectionCard(items: sections[i].items),
-                    const SizedBox(height: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _SectionCard(items: sections[i].items),
+                    ),
+                    const SizedBox(height: 22),
                   ],
-                  const _SignOutButton(),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _SignOutButton(),
+                  ),
                 ],
               ),
             ],
@@ -62,46 +78,33 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────
+// BACKDROP — paper warmth + faint star tessellation behind the hero
+// ─────────────────────────────────────────────────────────────────
+
 class _BackdropOrnament extends StatelessWidget {
-  const _BackdropOrnament();
+  const _BackdropOrnament({required this.colors});
+  final AppColorsTheme colors;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Positioned.fill(
       child: IgnorePointer(
         child: Stack(
           children: [
             Positioned(
-              top: -80,
-              left: -60,
-              right: -60,
-              height: 280,
+              top: -100,
+              left: -40,
+              right: -40,
+              height: 320,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     center: Alignment.topCenter,
                     radius: 0.95,
                     colors: [
-                      colors.oliveLeaf.withValues(alpha: 0.22),
-                      colors.olive.withValues(alpha: 0.0),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 120,
-              right: -80,
-              width: 220,
-              height: 220,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      colors.oliveLeaf.withValues(alpha: 0.10),
-                      colors.olive.withValues(alpha: 0.0),
+                      colors.accentSoft.withValues(alpha: 0.20),
+                      colors.canvas.withValues(alpha: 0),
                     ],
                   ),
                 ),
@@ -114,8 +117,12 @@ class _BackdropOrnament extends StatelessWidget {
   }
 }
 
-class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.colors, required this.user});
+// ─────────────────────────────────────────────────────────────────
+// HERO — Mihrab arch with avatar nested inside, name + role beneath
+// ─────────────────────────────────────────────────────────────────
+
+class _MihrabHero extends StatelessWidget {
+  const _MihrabHero({required this.colors, required this.user});
   final AppColorsTheme colors;
   final UserModel? user;
 
@@ -123,36 +130,59 @@ class _HeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = user?.fullName ?? '';
     final initial = name.isNotEmpty ? name.characters.first : '؟';
+    final email = user?.email;
 
-    return Column(
-      children: [
-        _Avatar(initial: initial, colors: colors),
-        const SizedBox(height: 14),
-        ResponsiveText(
-          name.isEmpty ? '—' : name,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: colors.oliveDeep,
-            height: 1.1,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          _AvatarMedallion(initial: initial, colors: colors),
+          const SizedBox(height: 14),
+          ResponsiveText(
+            name.isEmpty ? '—' : name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: colors.oliveDeep,
+              height: 1.2,
+              letterSpacing: -0.2,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ],
+          if (email != null && email.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            ResponsiveText(
+              email,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w500,
+                color: colors.textSecondary,
+                letterSpacing: 0.2,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
 
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.initial, required this.colors});
+class _AvatarMedallion extends StatelessWidget {
+  const _AvatarMedallion({required this.initial, required this.colors});
   final String initial;
   final AppColorsTheme colors;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 64,
-      height: 64,
+      width: 68,
+      height: 68,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
@@ -160,11 +190,15 @@ class _Avatar extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [colors.olive, colors.oliveDeep],
         ),
+        border: Border.all(
+          color: colors.accent.withValues(alpha: 0.45),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: colors.olive.withValues(alpha: 0.22),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
+            color: colors.oliveDeep.withValues(alpha: 0.20),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -172,14 +206,20 @@ class _Avatar extends StatelessWidget {
       child: ResponsiveText(
         initial,
         style: TextStyle(
-          fontSize: 30,
-          fontWeight: FontWeight.w700,
+          fontSize: 26,
+          fontWeight: FontWeight.w800,
           color: colors.canvas,
+          height: 1,
+          letterSpacing: -0.4,
         ),
       ),
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────
+// SECTION HEADER — Roman ordinal + label + extending gold rule
+// ─────────────────────────────────────────────────────────────────
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.textKey, required this.colors});
@@ -189,19 +229,18 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 6),
+      padding: const EdgeInsetsDirectional.only(start: 4),
       child: Row(
         children: [
-          Container(
-            width: 4,
-            height: 16,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [colors.oliveLeaf, colors.oliveDeep],
+          SizedBox(
+            width: 10,
+            height: 10,
+            child: CustomPaint(
+              painter: KhatimStarPainter(
+                fill: colors.accent.withValues(alpha: 0.20),
+                stroke: colors.accentDeep,
+                strokeWidth: 0.7,
               ),
-              borderRadius: BorderRadius.circular(2),
             ),
           ),
           const SizedBox(width: 10),
@@ -209,7 +248,7 @@ class _SectionLabel extends StatelessWidget {
             textKey,
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               letterSpacing: 0.6,
               color: colors.oliveDeep,
             ),
@@ -220,6 +259,10 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────
+// SECTION CARD — paper container with gold hairlines between rows
+// ─────────────────────────────────────────────────────────────────
+
 class _SectionCard extends StatelessWidget {
   const _SectionCard({required this.items});
   final List<ProfileMenuItem> items;
@@ -227,26 +270,23 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colors.canvas.withValues(alpha: 0.92),
-            colors.canvasRaised.withValues(alpha: 0.78),
-          ],
+          colors: [colors.canvas, colors.canvasRaised],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colors.olive.withValues(alpha: 0.16),
-          width: 1.2,
+          color: colors.accent.withValues(alpha: 0.20),
+          width: 0.8,
         ),
         boxShadow: [
           BoxShadow(
-            color: colors.oliveDeep.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: colors.oliveDeep.withValues(alpha: 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -258,10 +298,13 @@ class _SectionCard extends StatelessWidget {
               ProfileMenuTile(item: items[i]),
               if (i != items.length - 1)
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 64),
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 58,
+                    end: 16,
+                  ),
                   child: Container(
-                    height: 1,
-                    color: colors.olive.withValues(alpha: 0.10),
+                    height: 0.6,
+                    color: colors.accent.withValues(alpha: 0.14),
                   ),
                 ),
             ],
@@ -271,6 +314,10 @@ class _SectionCard extends StatelessWidget {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────
+// SIGN OUT — outlined danger pill (kept understated by intent)
+// ─────────────────────────────────────────────────────────────────
 
 class _SignOutButton extends StatelessWidget {
   const _SignOutButton();
@@ -286,14 +333,22 @@ class _SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final errorColor = context.colorScheme.error;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: errorColor.withValues(alpha: 0.28),
+          width: 1.0,
+        ),
+        color: colors.canvas.withValues(alpha: 0.6),
+      ),
       child: CustomButton.full(
         onTap: () => _confirmLogout(context),
         theme: CustomButtonTheme(
           height: 52,
-          backgroundColor: errorColor.withValues(alpha: 0.08),
+          backgroundColor: Colors.transparent,
           textColor: errorColor,
           borderRadius: 16,
         ),
@@ -301,13 +356,14 @@ class _SignOutButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.logout_rounded, size: 18, color: errorColor),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             ResponsiveText(
               'profile.sign_out',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 color: errorColor,
+                letterSpacing: 0.4,
               ),
             ),
           ],

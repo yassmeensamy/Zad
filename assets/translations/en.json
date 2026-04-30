@@ -192,5 +192,50 @@
     "password_mismatch": "Passwords don't match",
     "change_password_cta": "Update password",
     "change_password_success": "Password updated"
+  },
+  "help_center": {
+    "title": "Help & support",
+    "subtitle": "We're here to listen",
+    "eyebrow": "WE'RE LISTENING",
+    "heading": "How can we help?",
+    "lede": "Tell us what's on your mind. A real person reads every message.",
+    "choose_topic": "PICK A TOPIC",
+    "pick_topic_hint": "Choose a topic above to start writing your message.",
+    "subject_label": "SUBJECT (OPTIONAL)",
+    "subject_hint": "A short headline",
+    "message_label": "YOUR MESSAGE",
+    "message_hint": "Share as much detail as you'd like — we'll read every word.",
+    "char_floor": "Write at least 10 characters",
+    "ready_to_send": "Ready to send",
+    "send_cta": "Send message",
+    "sending": "Sending…",
+    "send_failed": "Couldn't send your message. Please try again.",
+    "reply_window": "We typically reply within 24 hours",
+    "topics": {
+      "feedback": {
+        "label": "Feedback",
+        "description": "Share what you love or what could be better."
+      },
+      "question": {
+        "label": "Question",
+        "description": "Ask us anything about Zad."
+      },
+      "bug": {
+        "label": "Bug report",
+        "description": "Something didn't work as expected."
+      },
+      "technical": {
+        "label": "Technical",
+        "description": "Account, sync, or device issues."
+      }
+    },
+    "success": {
+      "title": "Your message is on its way",
+      "subtitle": "Thank you for taking a moment to write to us. We'll be in touch soon.",
+      "topic_label": "TOPIC",
+      "reference_label": "REFERENCE",
+      "send_another": "Send another message",
+      "close": "Back to settings"
+    }
   }
 }

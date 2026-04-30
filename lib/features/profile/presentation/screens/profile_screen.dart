@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -275,34 +276,124 @@ class _SectionCard extends StatelessWidget {
 class _SignOutButton extends StatelessWidget {
   const _SignOutButton();
 
+  Future<void> _confirmLogout(BuildContext context) async {
+    final confirmed = await CustomDialog.show<bool>(
+      context: context,
+      child: const _SignOutConfirmDialog(),
+    );
+    if (confirmed != true || !context.mounted) return;
+    await context.read<AuthCubit>().logout();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final errorColor = context.colorScheme.error;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: CustomButton.full(
-        onTap: () => context.read<AuthCubit>().logout(),
+        onTap: () => _confirmLogout(context),
         theme: CustomButtonTheme(
           height: 52,
-          backgroundColor: AppColors.error.withValues(alpha: 0.08),
-          textColor: AppColors.error,
+          backgroundColor: errorColor.withValues(alpha: 0.08),
+          textColor: errorColor,
           borderRadius: 16,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.logout_rounded, size: 18, color: AppColors.error),
+            Icon(Icons.logout_rounded, size: 18, color: errorColor),
             const SizedBox(width: 8),
             ResponsiveText(
               'profile.sign_out',
               style: GoogleFonts.cairo(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: AppColors.error,
+                color: errorColor,
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SignOutConfirmDialog extends StatelessWidget {
+  const _SignOutConfirmDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final errorColor = context.colorScheme.error;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          width: 56,
+          height: 56,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: errorColor.withValues(alpha: 0.10),
+          ),
+          child: Icon(
+            Icons.logout_rounded,
+            color: errorColor,
+            size: 26,
+          ),
+        ),
+        const SizedBox(height: 14),
+        ResponsiveText(
+          'profile.sign_out_confirm_title',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.cairo(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: colors.oliveDeep,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ResponsiveText(
+          'profile.sign_out_confirm_subtitle',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.cairo(
+            fontSize: 13,
+            height: 1.5,
+            color: colors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 24),
+        CustomButton.full(
+          onTap: () => Navigator.of(context).pop(true),
+          theme: CustomButtonTheme(
+            height: 48,
+            backgroundColor: errorColor,
+            textColor: colors.canvas,
+            borderRadius: 14,
+          ),
+          child: ResponsiveText(
+            'profile.sign_out_confirm_cta',
+            style: GoogleFonts.cairo(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: colors.canvas,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: ResponsiveText(
+            'common.cancel',
+            style: GoogleFonts.cairo(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: colors.textSecondary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

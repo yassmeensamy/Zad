@@ -52,6 +52,83 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     emit(state.copyWith(status: UserStatus.success, user: cached));
   }
 
+  Future<void> updateProfile({
+    required String fullName,
+    DateTime? birthDate,
+  }) async {
+    emit(state.copyWith(updateStatus: UpdateProfileStatus.loading));
+    try {
+      final user = await _userRepository.updateProfile(
+        fullName: fullName,
+        birthDate: birthDate,
+      );
+      emit(
+        state.copyWith(
+          updateStatus: UpdateProfileStatus.success,
+          user: user,
+        ),
+      );
+    } on ServerException catch (e) {
+      emit(
+        state.copyWith(
+          updateStatus: UpdateProfileStatus.error,
+          updateErrorMessage: e.message,
+        ),
+      );
+    } catch (e) {
+      logger.error('UserCubit.updateProfile failed: $e');
+      emit(
+        state.copyWith(
+          updateStatus: UpdateProfileStatus.error,
+          updateErrorMessage: 'Failed to update profile',
+        ),
+      );
+    }
+  }
+
+  void resetUpdateStatus() {
+    emit(state.copyWith(updateStatus: UpdateProfileStatus.initial));
+  }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    emit(state.copyWith(changePasswordStatus: ChangePasswordStatus.loading));
+    try {
+      await _userRepository.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmNewPassword: confirmNewPassword,
+      );
+      emit(
+        state.copyWith(changePasswordStatus: ChangePasswordStatus.success),
+      );
+    } on ServerException catch (e) {
+      emit(
+        state.copyWith(
+          changePasswordStatus: ChangePasswordStatus.error,
+          changePasswordErrorMessage: e.message,
+        ),
+      );
+    } catch (e) {
+      logger.error('UserCubit.changePassword failed: $e');
+      emit(
+        state.copyWith(
+          changePasswordStatus: ChangePasswordStatus.error,
+          changePasswordErrorMessage: 'Failed to change password',
+        ),
+      );
+    }
+  }
+
+  void resetChangePasswordStatus() {
+    emit(
+      state.copyWith(changePasswordStatus: ChangePasswordStatus.initial),
+    );
+  }
+
   Future<void> clearUser() async {
     await _userRepository.clearProfileCache();
     emit(const UserState());

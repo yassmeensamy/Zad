@@ -5,6 +5,15 @@ import '../remote/user_remote_data_source.dart';
 
 abstract class UserRepository {
   Future<UserModel> fetchUserProfile();
+  Future<UserModel> updateProfile({
+    required String fullName,
+    DateTime? birthDate,
+  });
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  });
   Future<UserModel?> loadProfileFromCache();
   Future<void> saveProfileToCache(UserModel user);
   Future<void> clearProfileCache();
@@ -25,6 +34,32 @@ class UserRepositoryImpl implements UserRepository {
     final user = await _remoteDataSource.getUserProfile();
     await saveProfileToCache(user);
     return user;
+  }
+
+  @override
+  Future<UserModel> updateProfile({
+    required String fullName,
+    DateTime? birthDate,
+  }) async {
+    final user = await _remoteDataSource.updateProfile(
+      fullName: fullName,
+      birthDate: birthDate,
+    );
+    await saveProfileToCache(user);
+    return user;
+  }
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) {
+    return _remoteDataSource.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmNewPassword: confirmNewPassword,
+    );
   }
 
   @override

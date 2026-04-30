@@ -249,15 +249,12 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveInitialValue =
-        widget.controller == null ? widget.initialValue : null;
     final inputDecoration = _buildDecoration(context);
     return ValueListenableBuilder<TextDirection>(
       valueListenable: _textDirection,
       builder: (context, direction, _) {
         return TextFormField(
           controller: _controller,
-          initialValue: effectiveInitialValue,
           focusNode: widget.focusNode,
           decoration: inputDecoration,
           keyboardType: widget.keyboardType,

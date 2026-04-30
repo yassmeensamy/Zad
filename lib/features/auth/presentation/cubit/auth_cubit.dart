@@ -120,6 +120,7 @@ class AuthCubit extends BaseCubit<AuthState> {
   }
 
   Future<void> deleteAccount(String password) async {
+    emit(state.copyWith(status: AuthStatus.loading));
     try {
       await _authEventService.runPreLogoutCallbacks();
       await _repository.deleteAccount(password);
@@ -127,7 +128,8 @@ class AuthCubit extends BaseCubit<AuthState> {
     } on ServerException catch (e) {
       _emitError(_errorMessage(e));
     } catch (e) {
-      logger.debug(e.toString());
+      logger.debug('Unexpected error in deleteAccount: $e');
+      _emitError('general_error');
     }
   }
 

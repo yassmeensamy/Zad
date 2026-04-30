@@ -43,18 +43,19 @@ List<ProfileSection> profileSections(BuildContext context) => [
       ),
     ],
   ),
-  const ProfileSection(
+  ProfileSection(
     titleKey: 'profile.account',
     items: [
       ProfileMenuItem(
         icon: Icons.person_outline_rounded,
         titleKey: 'profile.edit_profile',
+        onTap: () => context.pushNamed(AppRoutes.editProfileName),
       ),
-      ProfileMenuItem(
+      const ProfileMenuItem(
         icon: Icons.privacy_tip_outlined,
         titleKey: 'profile.privacy',
       ),
-      ProfileMenuItem(
+      const ProfileMenuItem(
         icon: Icons.help_outline_rounded,
         titleKey: 'profile.help_support',
       ),

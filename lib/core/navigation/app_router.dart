@@ -12,6 +12,7 @@ import '../../features/child/presentation/screens/create_children_screen.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import 'app_routes.dart';
@@ -66,6 +67,11 @@ class AppRouter {
         path: AppRoutes.notifications,
         name: AppRoutes.notificationsName,
         builder: (context, state) => const NotificationScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.editProfile,
+        name: AppRoutes.editProfileName,
+        builder: (context, state) => const EditProfileScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

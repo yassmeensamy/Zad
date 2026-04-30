@@ -110,11 +110,12 @@ class ZadAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 44,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 44),
                   child: actions.isEmpty
-                      ? null
+                      ? const SizedBox(width: 44)
                       : Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: actions,
                         ),

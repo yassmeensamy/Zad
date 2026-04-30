@@ -16,24 +16,13 @@ import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
 import '../widgets/profile_menu_tile.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  bool _remindersEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final sections = profileSections(
-      context,
-      remindersEnabled: _remindersEnabled,
-      onRemindersChanged: (v) => setState(() => _remindersEnabled = v),
-    );
+    final sections = profileSections(context);
 
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) =>

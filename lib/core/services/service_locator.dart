@@ -14,6 +14,9 @@ import '../../features/child/data/repositories/child_repository.dart';
 import '../../features/child/presentation/cubit/child_cubit.dart';
 import '../../features/child/presentation/cubit/child_draft_cubit.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
+import '../../features/notification/data/remote/notification_remote_data_source.dart';
+import '../../features/notification/data/repositories/notification_repository.dart';
+import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import '../../features/splash/presentation/cubit/splash_cubit.dart';
@@ -112,5 +115,16 @@ class ServiceLocator {
 
     // Language
     sl.registerFactory<LanguageCubit>(() => LanguageCubit());
+
+    // Notifications (mock-backed)
+    sl.registerLazySingleton<NotificationRemoteDataSource>(
+      () => NotificationRemoteDataSourceImpl(),
+    );
+    sl.registerLazySingleton<NotificationRepository>(
+      () => NotificationRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<NotificationCubit>(
+      () => NotificationCubit(notificationRepository: sl()),
+    );
   }
 }

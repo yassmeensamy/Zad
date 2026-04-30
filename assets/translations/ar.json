@@ -109,6 +109,42 @@
   "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",
   "change_language": "تغيير اللغة",
   "failed_to_update_language": "تعذّر تحديث اللغة",
+  "notifications": {
+    "title": "الإشعارات",
+    "clear_all": "مسح الكل",
+    "empty_title": "لا توجد إشعارات",
+    "empty_subtitle": "ستظهر هنا التذكيرات والإنجازات والمستجدّات.",
+    "load_failed": "تعذّر تحميل الإشعارات",
+    "delete_failed": "تعذّر حذف الإشعار",
+    "types": {
+      "reminder": "تذكير",
+      "reading": "قراءة",
+      "achievement": "إنجاز",
+      "child_activity": "نشاط الطفل",
+      "announcement": "إعلان",
+      "other": "إشعار"
+    },
+    "time": {
+      "just_now": "الآن",
+      "minutes_ago": "قبل {} دقيقة",
+      "hours_ago": "قبل {} ساعة",
+      "days_ago": "قبل {} يوم"
+    },
+    "mock": {
+      "reminder_title": "حان وقت ذكرك المسائي",
+      "reminder_body": "دقائق هادئة تصنع الفرق. افتح زاد لتبدأ.",
+      "achievement_title": "حصدت سلسلة 7 أيام",
+      "achievement_body": "حافظت على ممارستك اليومية أسبوعًا كاملًا. عملٌ جميل.",
+      "reading_title": "فصلٌ جديد في مكتبتك",
+      "reading_body": "أُضيفت لك تأمّلات قصيرة عن الصبر.",
+      "child_activity_title": "أنهى يوسف درس اليوم",
+      "child_activity_body": "أكمل هدف القراءة وحصل على نجمة.",
+      "announcement_title": "أهلًا بك في زاد",
+      "announcement_body": "شكرًا لانضمامك. نحن سعداء بوجودك معنا.",
+      "evening_reminder_title": "لا تنسَ خطة الغد",
+      "evening_reminder_body": "مراجعتك الأسبوعية مجدولة في الصباح."
+    }
+  },
   "profile": {
     "practice": "الممارسة",
     "library": "المحتوى",

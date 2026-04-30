@@ -17,11 +17,11 @@ class ProfileMenuTile extends StatelessWidget {
     final hasTrailingText = item.trailingText != null;
 
     return Material(
-      color: Colors.transparent,
+      color: Colors.white.withValues(alpha: 0.55),
       child: InkWell(
         onTap: item.onTap,
-        splashColor: colors.olive.withValues(alpha: 0.08),
-        highlightColor: colors.oliveLeaf.withValues(alpha: 0.05),
+        splashColor: Colors.white.withValues(alpha: 0.85),
+        highlightColor: Colors.white.withValues(alpha: 0.85),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 14,

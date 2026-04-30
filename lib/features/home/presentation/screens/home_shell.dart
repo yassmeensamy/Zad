@@ -43,7 +43,7 @@ class HomeShell extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        extendBody: true,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: navigationShell,
         bottomNavigationBar: ZadBottomNav(
           items: _items,

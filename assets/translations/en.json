@@ -109,6 +109,42 @@
   "language_subtitle": "You can change the app language at any time.",
   "change_language": "Change language",
   "failed_to_update_language": "Failed to update language",
+  "notifications": {
+    "title": "Notifications",
+    "clear_all": "CLEAR ALL",
+    "empty_title": "You're all caught up",
+    "empty_subtitle": "New reminders, achievements, and updates will appear here.",
+    "load_failed": "Couldn't load notifications",
+    "delete_failed": "Couldn't delete notification",
+    "types": {
+      "reminder": "Reminder",
+      "reading": "Reading",
+      "achievement": "Achievement",
+      "child_activity": "Child activity",
+      "announcement": "Announcement",
+      "other": "Notification"
+    },
+    "time": {
+      "just_now": "Just now",
+      "minutes_ago": "{} min ago",
+      "hours_ago": "{} h ago",
+      "days_ago": "{} d ago"
+    },
+    "mock": {
+      "reminder_title": "Time for your evening dhikr",
+      "reminder_body": "A few quiet minutes go a long way. Open Zad to begin.",
+      "achievement_title": "Streak unlocked: 7 days",
+      "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
+      "reading_title": "New chapter in your library",
+      "reading_body": "A short reflection on patience has been added for you.",
+      "child_activity_title": "Yusuf finished today's lesson",
+      "child_activity_body": "He completed his reading goal and earned a star.",
+      "announcement_title": "Welcome to Zad",
+      "announcement_body": "Thank you for joining. We're glad you're here.",
+      "evening_reminder_title": "Don't forget tomorrow's plan",
+      "evening_reminder_body": "Your weekly review is scheduled for the morning."
+    }
+  },
   "profile": {
     "practice": "Practice",
     "library": "Library",

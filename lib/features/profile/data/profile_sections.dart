@@ -3,26 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/navigation/app_routes.dart';
-import '../../../theme/theme.dart';
 import '../../language/presentation/modals/language_dialog.dart';
 import 'profile_section.dart';
 
-List<ProfileSection> profileSections(
-  BuildContext context, {
-  required bool remindersEnabled,
-  required ValueChanged<bool> onRemindersChanged,
-}) => [
+List<ProfileSection> profileSections(BuildContext context) => [
   ProfileSection(
     titleKey: 'profile.practice',
     items: [
       ProfileMenuItem(
         icon: Icons.notifications_none_rounded,
         titleKey: 'profile.reminders',
-        trailing: _RemindersSwitch(
-          value: remindersEnabled,
-          onChanged: onRemindersChanged,
-        ),
-        onTap: () => onRemindersChanged(!remindersEnabled),
+        onTap: () => context.pushNamed(AppRoutes.notificationsName),
       ),
       ProfileMenuItem(
         icon: Icons.translate_rounded,
@@ -70,28 +61,3 @@ List<ProfileSection> profileSections(
     ],
   ),
 ];
-
-class _RemindersSwitch extends StatelessWidget {
-  const _RemindersSwitch({required this.value, required this.onChanged});
-
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Switch.adaptive(
-      value: value,
-      onChanged: onChanged,
-      activeThumbColor: colors.canvas,
-      activeTrackColor: colors.accent,
-      inactiveThumbColor: colors.canvas,
-      inactiveTrackColor: colors.textArabic.withValues(alpha: 0.18),
-      trackOutlineColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.selected)
-            ? colors.accent
-            : colors.textArabic.withValues(alpha: 0.18),
-      ),
-    );
-  }
-}

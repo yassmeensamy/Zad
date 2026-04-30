@@ -9,6 +9,7 @@ import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart'
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
 import '../../features/child/presentation/screens/create_children_screen.dart';
+import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -60,6 +61,11 @@ class AppRouter {
         path: AppRoutes.myChildren,
         name: AppRoutes.myChildrenName,
         builder: (context, state) => const ChildrenListScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.notifications,
+        name: AppRoutes.notificationsName,
+        builder: (context, state) => const NotificationScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -146,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: ResponsiveText(
                           'auth.forgot_password',
-                          style: GoogleFonts.inter(
+                          style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w500,
                             color: colors.olive,
@@ -206,7 +205,7 @@ class _Headline extends StatelessWidget {
       children: [
         Text.rich(
           TextSpan(
-            style: GoogleFonts.fraunces(
+            style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w300,
               height: 1.15,
@@ -217,7 +216,7 @@ class _Headline extends StatelessWidget {
               TextSpan(text: 'auth.login_screen.welcome_prefix'.tr()),
               TextSpan(
                 text: 'auth.login_screen.welcome_accent'.tr(),
-                style: GoogleFonts.fraunces(
+                style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
                   color: colors.textArabic,
@@ -233,7 +232,7 @@ class _Headline extends StatelessWidget {
           child: ResponsiveText(
             'auth.login_screen.subtitle',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13,
               height: 1.6,
               color: dateSoft,

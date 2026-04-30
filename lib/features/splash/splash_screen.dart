@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../core/services/core_service_locator.dart';
@@ -161,7 +160,7 @@ class _SplashViewState extends State<_SplashView>
                       'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
                       textAlign: TextAlign.center,
                       textDirection: TextDirection.rtl,
-                      style: GoogleFonts.amiri(
+                      style: TextStyle(
                         fontSize: 18,
                         color: colors.textArabic,
                       ),
@@ -184,7 +183,7 @@ class _SplashViewState extends State<_SplashView>
                         child: ResponsiveText(
                           'LOADING...',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 3,

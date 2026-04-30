@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/textforms/main_text_form.dart';
 import '../../../../theme/theme.dart';
@@ -49,7 +48,7 @@ class ZadTextField extends StatelessWidget {
       validator: validator,
       autovalidateMode: autovalidateMode,
       iconSize: 20,
-      style: GoogleFonts.inter(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: colors.oliveDeep,

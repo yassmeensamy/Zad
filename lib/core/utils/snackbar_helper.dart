@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/theme.dart';
 import '../widgets/responsive_text.dart';
@@ -153,7 +152,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                       Expanded(
                         child: ResponsiveText(
                           widget.message.tr(),
-                          style: GoogleFonts.cairo(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: colors.canvas,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -34,7 +33,7 @@ class ProfileMenuTile extends StatelessWidget {
               Expanded(
                 child: ResponsiveText(
                   item.titleKey,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: colors.textArabic,
@@ -45,7 +44,7 @@ class ProfileMenuTile extends StatelessWidget {
               if (hasTrailingText) ...[
                 ResponsiveText(
                   item.trailingText!,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: colors.olive.withValues(alpha: 0.75),

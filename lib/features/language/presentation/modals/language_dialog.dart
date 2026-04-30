@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -64,7 +63,7 @@ class LanguageDialog extends StatelessWidget {
           title: ResponsiveText(
             'language',
             textAlign: TextAlign.center,
-            style: GoogleFonts.amiri(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: colors.oliveDeep,
@@ -73,7 +72,7 @@ class LanguageDialog extends StatelessWidget {
           subtitle: ResponsiveText(
             'language_subtitle',
             textAlign: TextAlign.center,
-            style: GoogleFonts.cairo(
+            style: TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w500,
               color: colors.olive.withValues(alpha: 0.7),
@@ -216,7 +215,7 @@ class _LanguageItem extends StatelessWidget {
                   children: [
                     ResponsiveText(
                       option.label,
-                      style: GoogleFonts.amiri(
+                      style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
                         color: isSelected
@@ -227,7 +226,7 @@ class _LanguageItem extends StatelessWidget {
                     const SizedBox(height: 2),
                     ResponsiveText(
                       option.subtitle,
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,
                         color: colors.textArabic.withValues(alpha: 0.6),
@@ -339,7 +338,7 @@ class _ActionButtons extends StatelessWidget {
               ),
               child: ResponsiveText(
                 'cancel',
-                style: GoogleFonts.cairo(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: colors.olive,
@@ -385,7 +384,7 @@ class _ActionButtons extends StatelessWidget {
                       )
                     : ResponsiveText(
                         'change_language',
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: colors.canvas,

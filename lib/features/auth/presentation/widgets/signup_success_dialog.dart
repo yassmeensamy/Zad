@@ -3,7 +3,6 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
@@ -119,7 +118,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
           animation: _title,
           child: Text.rich(
             TextSpan(
-              style: GoogleFonts.fraunces(
+              style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w300,
                 height: 1.15,
@@ -130,7 +129,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
                 TextSpan(text: 'auth.signup_success.title_prefix'.tr()),
                 TextSpan(
                   text: 'auth.signup_success.title_accent'.tr(),
-                  style: GoogleFonts.fraunces(
+                  style: TextStyle(
                     fontSize: 26,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w400,
@@ -148,7 +147,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
           child: Text(
             'auth.signup_success.subtitle'.tr(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 14,
               height: 1.5,
               color: colors.textSecondary,
@@ -170,7 +169,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
                 colors: [colors.olive, colors.oliveDeep],
               ),
               textColor: colors.textInverse,
-              textStyle: GoogleFonts.inter(
+              textStyle: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.6,

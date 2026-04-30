@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
@@ -131,7 +130,7 @@ class CreateChildrenScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(6),
                           child: ResponsiveText(
                             'create_profiles.skip',
-                            style: GoogleFonts.inter(
+                            style: TextStyle(
                               fontSize: 12,
                               color: AppColors.dateSoft,
                             ),
@@ -209,7 +208,7 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'create_profiles.eyebrow'.tr().toUpperCase(),
-          style: GoogleFonts.inter(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 10 * 0.32,
@@ -219,7 +218,7 @@ class _Heading extends StatelessWidget {
         const SizedBox(height: 10),
         Text.rich(
           TextSpan(
-            style: GoogleFonts.fraunces(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w300,
               height: 1.15,
@@ -229,7 +228,7 @@ class _Heading extends StatelessWidget {
               TextSpan(text: 'create_profiles.title_prefix'.tr()),
               TextSpan(
                 text: 'create_profiles.title_accent'.tr(),
-                style: GoogleFonts.fraunces(
+                style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
                   color: colors.textArabic,
@@ -245,7 +244,7 @@ class _Heading extends StatelessWidget {
           child: ResponsiveText(
             'create_profiles.subtitle',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 12.5,
               height: 1.5,
               color: AppColors.dateSoft,
@@ -285,7 +284,7 @@ class _AddKidTile extends StatelessWidget {
               const SizedBox(width: 8),
               ResponsiveText(
                 'create_profiles.add_child',
-                style: GoogleFonts.inter(
+                style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 12.5 * 0.18,

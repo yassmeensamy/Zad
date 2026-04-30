@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -22,7 +21,7 @@ class AuthOrDivider extends StatelessWidget {
             opacity: 0.65,
             child: ResponsiveText(
               label,
-              style: GoogleFonts.inter(
+              style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 10 * 0.3,

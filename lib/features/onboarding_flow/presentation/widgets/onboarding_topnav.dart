@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -52,7 +51,7 @@ class OnboardingTopNav extends StatelessWidget {
                   : (stepLabel != null
                       ? ResponsiveText(
                           stepLabel!,
-                          style: GoogleFonts.inter(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 10 * 0.32,
@@ -117,7 +116,7 @@ class _MiniMark extends StatelessWidget {
         const SizedBox(width: 8),
         ResponsiveText(
           'Zad',
-          style: GoogleFonts.fraunces(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
             color: colors.oliveDeep,

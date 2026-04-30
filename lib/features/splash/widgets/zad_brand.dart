@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/widgets/responsive_text.dart';
 import '../../../theme/theme.dart';
@@ -51,7 +50,7 @@ class ZadBrand extends StatelessWidget {
       children: [
         ResponsiveText(
           'Zad',
-          style: GoogleFonts.fraunces(
+          style: TextStyle(
             fontSize: wordSize,
             fontWeight: FontWeight.w400,
             height: 1,
@@ -63,7 +62,7 @@ class ZadBrand extends StatelessWidget {
         ResponsiveText(
           'زاد',
           textDirection: TextDirection.rtl,
-          style: GoogleFonts.amiri(
+          style: TextStyle(
             fontSize: arabicSize,
             color: colors.textArabic,
           ),
@@ -73,7 +72,7 @@ class ZadBrand extends StatelessWidget {
         SizedBox(height: tagGap),
         ResponsiveText(
           tag.toUpperCase(),
-          style: GoogleFonts.inter(
+          style: TextStyle(
             fontSize: tagSize,
             fontWeight: FontWeight.w600,
             letterSpacing: tagSize * 0.42,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/widgets/custom_button.dart';
@@ -43,7 +42,7 @@ class AuthGoogleButton extends StatelessWidget {
           const SizedBox(width: 10),
           ResponsiveText(
             label,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: colors.oliveDeep,

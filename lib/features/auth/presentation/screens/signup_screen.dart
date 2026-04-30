@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -216,7 +215,7 @@ class _Headline extends StatelessWidget {
     final colors = context.appColors;
     return Text.rich(
       TextSpan(
-        style: GoogleFonts.fraunces(
+        style: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.w300,
           height: 1.15,
@@ -227,7 +226,7 @@ class _Headline extends StatelessWidget {
           TextSpan(text: 'auth.signup_screen.headline_prefix'.tr()),
           TextSpan(
             text: 'auth.signup_screen.headline_accent'.tr(),
-            style: GoogleFonts.fraunces(
+            style: TextStyle(
               fontSize: 28,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w400,

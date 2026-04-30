@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/theme.dart';
 import 'responsive_text.dart';
@@ -34,7 +33,7 @@ class ErrorState extends StatelessWidget {
             ResponsiveText(
               message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.cairo(
+              style: TextStyle(
                 fontSize: 13,
                 color: colors.textArabic,
               ),
@@ -51,7 +50,7 @@ class ErrorState extends StatelessWidget {
                 ),
                 child: ResponsiveText(
                   retryLabelKey,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: colors.oliveDeep,
                   ),

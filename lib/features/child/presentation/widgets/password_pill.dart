@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -48,7 +47,7 @@ class PasswordPill extends StatelessWidget {
                   hasPassword
                       ? 'create_profiles.password_set'
                       : 'create_profiles.password_set_cta',
-                  style: GoogleFonts.inter(
+                  style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 11.5 * 0.18,

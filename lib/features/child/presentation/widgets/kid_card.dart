@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -205,7 +204,7 @@ class _MiniField extends StatelessWidget {
         children: [
           ResponsiveText(
             label.toUpperCase(),
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 8,
               fontWeight: FontWeight.w600,
               letterSpacing: 8 * 0.3,
@@ -216,7 +215,7 @@ class _MiniField extends StatelessWidget {
             initialValue: initial,
             onChanged: onChanged,
             keyboardType: keyboardType,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.w500,
               color: colors.oliveDeep,
@@ -230,7 +229,7 @@ class _MiniField extends StatelessWidget {
               filled: false,
               contentPadding: EdgeInsets.zero,
               hintText: hint,
-              hintStyle: GoogleFonts.inter(
+              hintStyle: TextStyle(
                 fontSize: 13.5,
                 color: colors.oliveSoft.withValues(alpha: 0.45),
               ),

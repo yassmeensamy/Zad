@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../theme/theme.dart';
 
@@ -30,7 +29,7 @@ class AuthPromptLink extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Text.rich(
           TextSpan(
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13,
               height: 1.4,
               color: dateSoft,
@@ -39,7 +38,7 @@ class AuthPromptLink extends StatelessWidget {
               TextSpan(text: prompt.tr()),
               TextSpan(
                 text: action.tr(),
-                style: GoogleFonts.inter(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: colors.olive,

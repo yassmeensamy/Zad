@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
@@ -132,7 +131,7 @@ class _HeroCard extends StatelessWidget {
         ResponsiveText(
           name.isEmpty ? '—' : name,
           textAlign: TextAlign.center,
-          style: GoogleFonts.amiri(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
             color: colors.oliveDeep,
@@ -172,7 +171,7 @@ class _Avatar extends StatelessWidget {
       alignment: Alignment.center,
       child: ResponsiveText(
         initial,
-        style: GoogleFonts.amiri(
+        style: TextStyle(
           fontSize: 30,
           fontWeight: FontWeight.w700,
           color: colors.canvas,
@@ -208,7 +207,7 @@ class _SectionLabel extends StatelessWidget {
           const SizedBox(width: 10),
           ResponsiveText(
             textKey,
-            style: GoogleFonts.cairo(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.6,
@@ -305,7 +304,7 @@ class _SignOutButton extends StatelessWidget {
             const SizedBox(width: 8),
             ResponsiveText(
               'profile.sign_out',
-              style: GoogleFonts.cairo(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: errorColor,
@@ -347,7 +346,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
         ResponsiveText(
           'profile.sign_out_confirm_title',
           textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
             color: colors.oliveDeep,
@@ -357,7 +356,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
         ResponsiveText(
           'profile.sign_out_confirm_subtitle',
           textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(
+          style: TextStyle(
             fontSize: 13,
             height: 1.5,
             color: colors.textSecondary,
@@ -374,7 +373,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
           ),
           child: ResponsiveText(
             'profile.sign_out_confirm_cta',
-            style: GoogleFonts.cairo(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: colors.canvas,
@@ -386,7 +385,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(false),
           child: ResponsiveText(
             'common.cancel',
-            style: GoogleFonts.cairo(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: colors.textSecondary,

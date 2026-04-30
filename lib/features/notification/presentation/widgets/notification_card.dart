@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../../core/widgets/responsive_text.dart';
@@ -57,7 +56,7 @@ class NotificationCard extends StatelessWidget {
               children: [
                 ResponsiveText(
                   notification.title,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: colors.oliveDeep,
@@ -69,7 +68,7 @@ class NotificationCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   ResponsiveText(
                     notification.messageBody,
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                       color: colors.textSecondary,
@@ -87,7 +86,7 @@ class NotificationCard extends StatelessWidget {
                           notification.createdAt!,
                           locale: context.locale.languageCode,
                         ),
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
                           color: colors.textTertiary,

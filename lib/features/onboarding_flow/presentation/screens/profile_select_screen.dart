@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -106,7 +105,7 @@ class ProfileSelectScreen extends StatelessWidget {
                             const SizedBox(width: 6),
                             ResponsiveText(
                               'profile_select.manage',
-                              style: GoogleFonts.inter(
+                              style: TextStyle(
                                 fontSize: 11.5,
                                 color: AppColors.dateSoft,
                               ),
@@ -119,7 +118,7 @@ class ProfileSelectScreen extends StatelessWidget {
                         textDirection: ui.TextDirection.rtl,
                         child: Text(
                           'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-                          style: GoogleFonts.amiri(
+                          style: TextStyle(
                             fontSize: 13,
                             color: colors.oliveDeep.withValues(alpha: 0.55),
                           ),
@@ -147,7 +146,7 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'profile_select.eyebrow'.tr().toUpperCase(),
-          style: GoogleFonts.inter(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 10 * 0.32,
@@ -157,7 +156,7 @@ class _Heading extends StatelessWidget {
         const SizedBox(height: 12),
         Text.rich(
           TextSpan(
-            style: GoogleFonts.fraunces(
+            style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w300,
               height: 1.15,
@@ -167,7 +166,7 @@ class _Heading extends StatelessWidget {
               TextSpan(text: 'profile_select.title_prefix'.tr()),
               TextSpan(
                 text: 'profile_select.title_accent'.tr(),
-                style: GoogleFonts.fraunces(
+                style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
                   color: colors.textArabic,
@@ -184,7 +183,7 @@ class _Heading extends StatelessWidget {
           child: ResponsiveText(
             'profile_select.subtitle',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13,
               height: 1.5,
               color: AppColors.dateSoft,
@@ -300,7 +299,7 @@ class _ProfileCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   ResponsiveText(
                     entry.name,
-                    style: GoogleFonts.fraunces(
+                    style: TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.w400,
                       letterSpacing: -0.2,
@@ -313,7 +312,7 @@ class _ProfileCard extends StatelessWidget {
                         ? 'profile_select.role_parent'.tr().toUpperCase()
                         : 'profile_select.age_label'
                             .tr(args: ['${entry.age}']).toUpperCase(),
-                    style: GoogleFonts.inter(
+                    style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 10 * 0.18,
@@ -345,7 +344,7 @@ class _ProfileCard extends StatelessWidget {
                           const SizedBox(width: 5),
                           Text(
                             '${entry.streak} ${'profile_select.days'.tr()}',
-                            style: GoogleFonts.inter(
+                            style: TextStyle(
                               fontSize: 10.5,
                               fontWeight: FontWeight.w600,
                               color: colors.accentDeep,
@@ -404,7 +403,7 @@ class _AddTile extends StatelessWidget {
               const SizedBox(height: 14),
               ResponsiveText(
                 'profile_select.add_child',
-                style: GoogleFonts.fraunces(
+                style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.w300,
                   fontStyle: FontStyle.italic,

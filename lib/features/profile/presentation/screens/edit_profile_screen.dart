@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/textforms/main_text_form.dart';
@@ -130,7 +129,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
                           ),
                           label: ResponsiveText(
                             'edit_profile.delete_account',
-                            style: GoogleFonts.cairo(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: errorColor,
@@ -211,7 +210,7 @@ class _ChangePasswordTile extends StatelessWidget {
               Expanded(
                 child: ResponsiveText(
                   'edit_profile.change_password',
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: colors.oliveDeep,
@@ -337,7 +336,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                 ResponsiveText(
                   'edit_profile.change_password_title',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: colors.oliveDeep,
@@ -347,7 +346,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                 ResponsiveText(
                   'edit_profile.change_password_subtitle',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 13,
                     height: 1.5,
                     color: colors.textSecondary,
@@ -366,7 +365,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -389,7 +388,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -408,7 +407,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -434,7 +433,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                         )
                       : ResponsiveText(
                           'edit_profile.change_password_cta',
-                          style: GoogleFonts.cairo(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: colors.canvas,
@@ -446,7 +445,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                   onPressed: loading ? null : () => Navigator.of(context).pop(),
                   child: ResponsiveText(
                     'common.cancel',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: colors.textSecondary,
@@ -530,7 +529,7 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                 ResponsiveText(
                   'edit_profile.delete_password_title',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: colors.oliveDeep,
@@ -540,7 +539,7 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                 ResponsiveText(
                   'edit_profile.delete_password_subtitle',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 13,
                     height: 1.5,
                     color: colors.textSecondary,
@@ -561,7 +560,7 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -597,7 +596,7 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                         )
                       : ResponsiveText(
                           'edit_profile.delete_password_cta',
-                          style: GoogleFonts.cairo(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: colors.canvas,
@@ -609,7 +608,7 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                   onPressed: loading ? null : () => Navigator.of(context).pop(),
                   child: ResponsiveText(
                     'common.cancel',
-                    style: GoogleFonts.cairo(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: colors.textSecondary,

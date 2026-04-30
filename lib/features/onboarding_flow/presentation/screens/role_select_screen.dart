@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -113,7 +112,7 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
                     const SizedBox(height: 12),
                     Text.rich(
                       TextSpan(
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
                           fontSize: 11,
                           color: colors.textArabic.withValues(alpha: 0.55),
                         ),
@@ -121,7 +120,7 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
                           TextSpan(text: 'role_select.footer_prefix'.tr()),
                           TextSpan(
                             text: 'role_select.footer_settings'.tr(),
-                            style: GoogleFonts.inter(
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
                               color: colors.oliveDeep,
@@ -152,7 +151,7 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'role_select.eyebrow'.tr().toUpperCase(),
-          style: GoogleFonts.inter(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 10 * 0.32,
@@ -162,7 +161,7 @@ class _Heading extends StatelessWidget {
         const SizedBox(height: 14),
         Text.rich(
           TextSpan(
-            style: GoogleFonts.fraunces(
+            style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w300,
               height: 1.15,
@@ -173,7 +172,7 @@ class _Heading extends StatelessWidget {
               TextSpan(text: 'role_select.title_prefix'.tr()),
               TextSpan(
                 text: 'role_select.title_accent'.tr(),
-                style: GoogleFonts.fraunces(
+                style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
                   color: colors.textArabic,
@@ -190,7 +189,7 @@ class _Heading extends StatelessWidget {
           child: ResponsiveText(
             'role_select.subtitle',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
+            style: TextStyle(
               fontSize: 13,
               height: 1.5,
               color: AppColors.dateSoft,
@@ -283,7 +282,7 @@ class _RoleCard extends StatelessWidget {
                   children: [
                     ResponsiveText(
                       label,
-                      style: GoogleFonts.fraunces(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w400,
                         letterSpacing: -0.3,
@@ -294,7 +293,7 @@ class _RoleCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     ResponsiveText(
                       desc,
-                      style: GoogleFonts.inter(
+                      style: TextStyle(
                         fontSize: 12,
                         height: 1.5,
                         color: AppColors.dateSoft,

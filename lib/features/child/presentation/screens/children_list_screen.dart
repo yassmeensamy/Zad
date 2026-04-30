@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
@@ -303,7 +302,7 @@ class _BottomBar extends StatelessWidget {
                       backgroundColor: colors.olive,
                       textColor: colors.canvas,
                       borderRadius: 14,
-                      textStyle: GoogleFonts.cairo(
+                      textStyle: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: colors.canvas,
@@ -332,7 +331,7 @@ class _BottomBar extends StatelessWidget {
                       const SizedBox(width: 8),
                       ResponsiveText(
                         'create_profiles.add_child',
-                        style: GoogleFonts.cairo(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: colors.olive,

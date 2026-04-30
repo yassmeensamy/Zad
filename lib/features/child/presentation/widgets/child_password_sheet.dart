@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -69,12 +68,12 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
       title: ResponsiveText(
         'create_profiles.password_sheet_title',
         textAlign: TextAlign.center,
-        style: GoogleFonts.fraunces(fontSize: 20, color: colors.oliveDeep),
+        style: TextStyle(fontSize: 20, color: colors.oliveDeep),
       ),
       subtitle: Text(
         'create_profiles.password_sheet_sub'.tr(args: [name]),
         textAlign: TextAlign.center,
-        style: GoogleFonts.inter(fontSize: 11, color: AppColors.dateSoft),
+        style: TextStyle(fontSize: 11, color: AppColors.dateSoft),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,7 +93,7 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
             const SizedBox(height: 6),
             Text(
               _error!,
-              style: GoogleFonts.inter(fontSize: 11.5, color: AppColors.date),
+              style: TextStyle(fontSize: 11.5, color: AppColors.date),
             ),
           ],
           const SizedBox(height: 18),
@@ -145,7 +144,7 @@ class _PasswordField extends StatelessWidget {
               children: [
                 ResponsiveText(
                   'create_profiles.password_label',
-                  style: GoogleFonts.inter(
+                  style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 9 * 0.3,
@@ -159,7 +158,7 @@ class _PasswordField extends StatelessWidget {
                   onChanged: onChanged,
                   onSubmitted: onSubmitted,
                   textInputAction: TextInputAction.done,
-                  style: GoogleFonts.inter(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: colors.oliveDeep,
@@ -173,7 +172,7 @@ class _PasswordField extends StatelessWidget {
                     filled: false,
                     contentPadding: EdgeInsets.zero,
                     hintText: 'create_profiles.password_hint'.tr(),
-                    hintStyle: GoogleFonts.inter(
+                    hintStyle: TextStyle(
                       fontSize: 13.5,
                       color: colors.oliveSoft.withValues(alpha: 0.45),
                     ),

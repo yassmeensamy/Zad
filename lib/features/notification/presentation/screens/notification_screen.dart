@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
@@ -130,7 +129,7 @@ class _ClearAllButton extends StatelessWidget {
       ),
       child: ResponsiveText(
         'notifications.clear_all',
-        style: GoogleFonts.cairo(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           color: colors.accentDeep,

@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -135,7 +134,7 @@ class _FieldGroup extends StatelessWidget {
           padding: const EdgeInsetsDirectional.only(start: 4),
           child: ResponsiveText(
             label,
-            style: GoogleFonts.cairo(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.4,
@@ -151,7 +150,7 @@ class _FieldGroup extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: 4),
             child: ResponsiveText(
               helper!,
-              style: GoogleFonts.cairo(
+              style: TextStyle(
                 fontSize: 11,
                 color: colors.textSecondary,
               ),
@@ -196,7 +195,7 @@ class _CardAvatar extends StatelessWidget {
             alignment: Alignment.center,
             child: ResponsiveText(
               initial,
-              style: GoogleFonts.amiri(
+              style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w700,
                 color: colors.canvas,
@@ -245,7 +244,7 @@ class _NameFieldState extends State<_NameField> {
         horizontal: 14,
         vertical: 10,
       ),
-      style: GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w500),
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       onChanged: formCubit.setName,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
@@ -286,7 +285,7 @@ class _ReadOnlyField extends StatelessWidget {
           Expanded(
             child: ResponsiveText(
               text,
-              style: GoogleFonts.inter(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: colors.oliveDeep.withValues(alpha: 0.7),
@@ -345,7 +344,7 @@ class _BirthDateField extends StatelessWidget {
               Expanded(
                 child: ResponsiveText(
                   label,
-                  style: GoogleFonts.cairo(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: hasDate ? colors.oliveDeep : colors.textSecondary,
@@ -424,7 +423,7 @@ class _CupertinoDatePickerSheetState extends State<_CupertinoDatePickerSheet> {
                     onPressed: () => Navigator.of(context).pop(),
                     child: ResponsiveText(
                       'common.cancel',
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(
                         fontSize: 14,
                         color: colors.textSecondary,
                       ),
@@ -436,7 +435,7 @@ class _CupertinoDatePickerSheetState extends State<_CupertinoDatePickerSheet> {
                     ).pop(_userChanged ? _selectedDate : null),
                     child: ResponsiveText(
                       'common.done',
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: colors.olive,

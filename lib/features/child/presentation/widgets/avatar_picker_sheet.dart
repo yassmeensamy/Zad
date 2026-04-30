@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -19,12 +18,12 @@ class AvatarPickerSheet extends StatelessWidget {
       title: ResponsiveText(
         'create_profiles.sheet_title',
         textAlign: TextAlign.center,
-        style: GoogleFonts.fraunces(fontSize: 20, color: colors.oliveDeep),
+        style: TextStyle(fontSize: 20, color: colors.oliveDeep),
       ),
       subtitle: ResponsiveText(
         'create_profiles.sheet_sub',
         textAlign: TextAlign.center,
-        style: GoogleFonts.inter(fontSize: 11, color: AppColors.dateSoft),
+        style: TextStyle(fontSize: 11, color: AppColors.dateSoft),
       ),
       child: GridView.builder(
         shrinkWrap: true,

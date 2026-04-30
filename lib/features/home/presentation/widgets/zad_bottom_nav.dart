@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -138,7 +137,7 @@ class _NavSlot extends StatelessWidget {
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.visible,
-                      style: GoogleFonts.cairo(
+                      style: TextStyle(
                         fontSize: 10.5,
                         fontWeight:
                             selected ? FontWeight.w700 : FontWeight.w500,

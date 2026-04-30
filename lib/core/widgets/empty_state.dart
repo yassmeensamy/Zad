@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/theme.dart';
 import 'responsive_text.dart';
@@ -54,7 +53,7 @@ class EmptyState extends StatelessWidget {
             ResponsiveText(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.amiri(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: colors.oliveDeep,
@@ -65,7 +64,7 @@ class EmptyState extends StatelessWidget {
               ResponsiveText(
                 subtitle,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.cairo(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: colors.olive.withValues(alpha: 0.7),

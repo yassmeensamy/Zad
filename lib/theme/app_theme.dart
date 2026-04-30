@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'app_color_scheme.dart';
 import 'app_text_styles.dart';
@@ -150,7 +149,7 @@ class AppTheme {
       ),
       backgroundColor: c.olive,
       textColor: c.canvas,
-      textStyle: GoogleFonts.inter(
+      textStyle: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
         letterSpacing: 14 * 0.14,

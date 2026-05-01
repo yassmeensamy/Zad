@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/responsive_text.dart';
-import '../../../../theme/theme.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 
+/// Thin alias kept for the auth/onboarding screens. Delegates to the
+/// canonical [ZaadPrimaryButton] so a single component drives every primary
+/// CTA in the app.
 class AuthPrimaryButton extends StatelessWidget {
   const AuthPrimaryButton({
     super.key,
@@ -20,25 +21,13 @@ class AuthPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return CustomButton.full(
+    return ZaadPrimaryButton(
+      label: label,
       onTap: onTap,
-      enabled: enabled,
       loading: loading,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ResponsiveText(
-            label,
-            style: Theme.of(context)
-                .extension<CustomButtonTheme>()
-                ?.textStyle
-                ?.copyWith(color: colors.canvas),
-          ),
-          const SizedBox(width: 10),
-          Icon(Icons.arrow_forward_rounded, size: 18, color: colors.canvas),
-        ],
-      ),
+      enabled: enabled,
+      height: 46,
+      trailingIcon: Icons.arrow_forward_rounded,
     );
   }
 }

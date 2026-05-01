@@ -31,7 +31,7 @@ class TopicTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ZaadRadii.card),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOutCubic,
@@ -50,7 +50,7 @@ class TopicTile extends StatelessWidget {
                       colors.canvasRaised.withValues(alpha: 0.78),
                     ],
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(ZaadRadii.card),
             border: Border.all(
               color: selected
                   ? accent.withValues(alpha: 0.55)

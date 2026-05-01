@@ -27,7 +27,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.splash,
         name: AppRoutes.splashName,
-        builder: (context, state) => const ZadSplashScreen(),
+        builder: (context, state) => const ZaadSplashScreen(),
       ),
       GoRoute(
         path: AppRoutes.onboarding,

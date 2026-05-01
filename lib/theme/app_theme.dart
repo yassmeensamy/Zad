@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_color_scheme.dart';
 import 'app_text_styles.dart';
 import 'custom_button_theme.dart';
+import 'zaad_radii.dart';
 
 class AppTheme {
   AppTheme._();
@@ -66,23 +67,23 @@ class AppTheme {
           letterSpacing: 0.32 * 9,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
           borderSide: BorderSide(
             color: appColors.oliveSoft.withValues(alpha: 0.28),
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
           borderSide: BorderSide(
             color: appColors.oliveSoft.withValues(alpha: 0.28),
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
           borderSide: BorderSide(color: appColors.olive, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
           borderSide: BorderSide(color: appColors.warning),
         ),
         prefixIconColor: appColors.oliveSoft,
@@ -93,7 +94,7 @@ class AppTheme {
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZaadRadii.md),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           textStyle: AppTextStyles.labelLarge,
@@ -112,7 +113,7 @@ class AppTheme {
           foregroundColor: colorScheme.primary,
           side: BorderSide(color: colorScheme.outline),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZaadRadii.md),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           textStyle: AppTextStyles.labelLarge,
@@ -123,7 +124,7 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
           side: BorderSide(color: colorScheme.outlineVariant),
         ),
       ),
@@ -139,7 +140,7 @@ class AppTheme {
     return CustomButtonTheme(
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      borderRadius: 14,
+      borderRadius: ZaadRadii.lg,
       useGradient: true,
       gradient: LinearGradient(
         begin: Alignment.topCenter,

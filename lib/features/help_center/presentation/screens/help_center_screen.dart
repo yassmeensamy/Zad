@@ -5,9 +5,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/textforms/main_text_form.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zad_app_bar.dart';
+import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/support_request_model.dart';
 import '../cubit/help_center_cubit.dart';
@@ -55,7 +56,7 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
     final colors = context.appColors;
     return Scaffold(
       backgroundColor: colors.canvas,
-      appBar: ZadAppBar(
+      appBar: ZaadAppBar(
         title: 'help_center.title',
         subtitle: 'help_center.subtitle',
         onBack: context.canPop() ? () => context.pop() : null,
@@ -67,15 +68,10 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
             FocusScope.of(context).unfocus();
             _resetControllers();
           } else if (state.isError) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: ResponsiveText(
-                    state.errorMessage ?? 'help_center.send_failed',
-                  ),
-                ),
-              );
+            SnackBarHelper.showError(
+              context,
+              message: state.errorMessage ?? 'help_center.send_failed',
+            );
             context.read<HelpCenterCubit>().dismissError();
           }
         },
@@ -361,12 +357,7 @@ class _SectionLabel extends StatelessWidget {
           const SizedBox(width: 10),
           ResponsiveText(
             textKey,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.6,
-              color: colors.oliveDeep,
-            ),
+            style: ZaadType.sectionLabel.copyWith(color: colors.oliveDeep),
           ),
         ],
       ),
@@ -414,7 +405,7 @@ class _PromptHint extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
       decoration: BoxDecoration(
         color: colors.canvasRaised.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(ZaadRadii.xl),
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.10),
           width: 1,
@@ -470,7 +461,7 @@ class _ComposerCard extends StatelessWidget {
             colors.canvasRaised.withValues(alpha: 0.78),
           ],
         ),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(ZaadRadii.xxl),
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.16),
           width: 1.2,
@@ -508,7 +499,7 @@ class _ComposerCard extends StatelessWidget {
               fontSize: 13,
               color: colors.textPlaceholder,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZaadRadii.md),
           ),
           const SizedBox(height: 22),
           _FieldLabel(textKey: 'help_center.message_label'),
@@ -585,9 +576,8 @@ class _FieldLabel extends StatelessWidget {
     final colors = context.appColors;
     return ResponsiveText(
       textKey,
-      style: TextStyle(
+      style: ZaadType.sectionLabel.copyWith(
         fontSize: 11,
-        fontWeight: FontWeight.w800,
         letterSpacing: 0.7,
         color: colors.textSecondary,
       ),

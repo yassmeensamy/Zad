@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-class ZadBottomNavItem {
-  const ZadBottomNavItem({
+class ZaadBottomNavItem {
+  const ZaadBottomNavItem({
     required this.label,
     required this.icon,
     required this.activeIcon,
@@ -15,15 +15,15 @@ class ZadBottomNavItem {
   final IconData activeIcon;
 }
 
-class ZadBottomNav extends StatelessWidget {
-  const ZadBottomNav({
+class ZaadBottomNav extends StatelessWidget {
+  const ZaadBottomNav({
     super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
   });
 
-  final List<ZadBottomNavItem> items;
+  final List<ZaadBottomNavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
 
@@ -76,7 +76,7 @@ class _NavSlot extends StatelessWidget {
     required this.onTap,
   });
 
-  final ZadBottomNavItem item;
+  final ZaadBottomNavItem item;
   final bool selected;
   final VoidCallback onTap;
 
@@ -105,7 +105,7 @@ class _NavSlot extends StatelessWidget {
                       colors: [colors.oliveSoft, colors.olive, colors.oliveDeep],
                     )
                   : null,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(ZaadRadii.lg),
               boxShadow: selected
                   ? [
                       BoxShadow(
@@ -137,13 +137,10 @@ class _NavSlot extends StatelessWidget {
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.visible,
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight:
-                            selected ? FontWeight.w700 : FontWeight.w500,
-                        height: 1.0,
-                        color: selected ? onOlive : restColor,
-                      ),
+                      style: (selected
+                              ? ZaadType.navLabelActive
+                              : ZaadType.navLabel)
+                          .copyWith(color: selected ? onOlive : restColor),
                     ),
                   ),
                 ],

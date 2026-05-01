@@ -4,10 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zad_app_bar.dart';
+import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/notification_model.dart';
 import '../cubit/notification_cubit.dart';
@@ -34,7 +35,7 @@ class _NotificationView extends StatelessWidget {
     final colors = context.appColors;
     return Scaffold(
       backgroundColor: colors.canvas,
-      appBar: ZadAppBar(
+      appBar: ZaadAppBar(
         title: 'notifications.title',
         onBack: context.canPop() ? () => context.pop() : null,
         actions: [
@@ -58,8 +59,9 @@ class _NotificationView extends StatelessWidget {
             b.deleteStatus == DeleteNotificationStatus.error,
         listener: (context, state) {
           if (state.deleteErrorMessage == null) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: ResponsiveText(state.deleteErrorMessage)),
+          SnackBarHelper.showError(
+            context,
+            message: state.deleteErrorMessage!,
           );
           context.read<NotificationCubit>().resetDeleteStatus();
         },

@@ -16,11 +16,11 @@ import '../user/presentation/cubit/user_state.dart';
 import 'presentation/cubit/splash_cubit.dart';
 import 'presentation/cubit/splash_state.dart';
 import 'widgets/desert_background.dart';
-import 'widgets/zad_brand.dart';
-import 'widgets/zad_logo_mark.dart';
+import 'widgets/zaad_brand.dart';
+import 'widgets/zaad_logo_mark.dart';
 
-class ZadSplashScreen extends StatelessWidget {
-  const ZadSplashScreen({super.key});
+class ZaadSplashScreen extends StatelessWidget {
+  const ZaadSplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -135,13 +135,13 @@ class _SplashViewState extends State<_SplashView>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ZadLogoMark(animation: _intro),
+                        ZaadLogoMark(animation: _intro),
                         const SizedBox(height: 32),
                         _StaggeredFade(
                           controller: _intro,
                           start: 0.42,
                           end: 0.6,
-                          child: ZadBrand(dateSoft: _dateSoft),
+                          child: ZaadBrand(dateSoft: _dateSoft),
                         ),
                       ],
                     ),

@@ -23,7 +23,7 @@ class PasswordPill extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(ZaadRadii.sm),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsetsDirectional.fromSTEB(12, 7, 10, 7),
@@ -31,7 +31,7 @@ class PasswordPill extends StatelessWidget {
             color: hasPassword
                 ? colors.olive.withValues(alpha: 0.10)
                 : Colors.white.withValues(alpha: 0.55),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(ZaadRadii.sm),
             border: Border.all(color: accent.withValues(alpha: 0.35)),
           ),
           child: Row(

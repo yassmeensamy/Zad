@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/utils/snackbar_helper.dart';
-import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zad_app_bar.dart';
+import '../../../../core/widgets/zaad_app_bar.dart';
+import '../../../../core/widgets/zaad_close_button.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
@@ -62,15 +62,9 @@ class _EditProfileViewState extends State<_EditProfileView> {
     await CustomDialog.show<void>(
       context: context,
       barrierDismissible: false,
+      radius: 24,
+      padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
       child: const _DeletePasswordDialog(),
-    );
-  }
-
-  Future<void> _openChangePassword() async {
-    await CustomDialog.show<void>(
-      context: context,
-      barrierDismissible: false,
-      child: const _ChangePasswordDialog(),
     );
   }
 
@@ -79,7 +73,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
     final colors = context.appColors;
     return Scaffold(
       backgroundColor: colors.canvas,
-      appBar: ZadAppBar(
+      appBar: ZaadAppBar(
         title: 'profile.edit_profile',
         onBack: context.canPop() ? () => context.pop() : null,
       ),
@@ -112,32 +106,12 @@ class _EditProfileViewState extends State<_EditProfileView> {
                   const EditProfileForm(),
                   const SizedBox(height: 24),
                   _SaveButton(onTap: _onSave),
-                  const SizedBox(height: 12),
-                  _ChangePasswordTile(onTap: _openChangePassword),
                   const SizedBox(height: 20),
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (a, b) => a.status != b.status,
                     builder: (context, state) {
-                      final errorColor = context.colorScheme.error;
-                      return Center(
-                        child: TextButton.icon(
-                          onPressed: state.isLoading ? null : _confirmDelete,
-                          icon: Icon(
-                            Icons.delete_outline_rounded,
-                            size: 16,
-                            color: errorColor,
-                          ),
-                          label: ResponsiveText(
-                            'edit_profile.delete_account',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: errorColor,
-                              decoration: TextDecoration.underline,
-                              decorationColor: errorColor,
-                            ),
-                          ),
-                        ),
+                      return _DeleteAccountCard(
+                        onDelete: state.isLoading ? null : _confirmDelete,
                       );
                     },
                   ),
@@ -176,290 +150,327 @@ class _SaveButton extends StatelessWidget {
   }
 }
 
-class _ChangePasswordTile extends StatelessWidget {
-  const _ChangePasswordTile({required this.onTap});
 
-  final VoidCallback onTap;
+class _DeleteAccountCard extends StatelessWidget {
+  const _DeleteAccountCard({required this.onDelete});
+
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-            color: colors.canvas,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: colors.olive.withValues(alpha: 0.20),
-              width: 1.2,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.lock_reset_rounded,
-                size: 20,
-                color: colors.oliveDeep,
+    final errorColor = context.colorScheme.error;
+    final disabled = onDelete == null;
+    final tint = errorColor.withValues(alpha: disabled ? 0.4 : 1);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.canvas,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.borderDefault, width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ResponsiveText(
+              'edit_profile.delete_account',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: tint,
+                letterSpacing: -0.2,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ResponsiveText(
-                  'edit_profile.change_password',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: colors.oliveDeep,
+            ),
+            const SizedBox(height: 6),
+            ResponsiveText(
+              'edit_profile.delete_account_description',
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.5,
+                color: colors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onDelete,
+                borderRadius: BorderRadius.circular(999),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: colors.borderDefault, width: 1),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete_outline_rounded,
+                        size: 16,
+                        color: tint,
+                      ),
+                      const SizedBox(width: 10),
+                      ResponsiveText(
+                        'edit_profile.delete_account_cta',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: tint,
+                          letterSpacing: 2.16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: colors.olive.withValues(alpha: 0.55),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ChangePasswordDialog extends StatefulWidget {
-  const _ChangePasswordDialog();
+class _DialogHeader extends StatelessWidget {
+  const _DialogHeader({
+    required this.eyebrowKey,
+    required this.titleLeadKey,
+    required this.titleAccentKey,
+    this.danger = false,
+  });
+
+  final String eyebrowKey;
+  final String titleLeadKey;
+  final String titleAccentKey;
+  final bool danger;
 
   @override
-  State<_ChangePasswordDialog> createState() => _ChangePasswordDialogState();
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final errorColor = context.colorScheme.error;
+    final eyebrowColor = danger
+        ? errorColor.withValues(alpha: 0.85)
+        : colors.oliveSoft;
+    final accentColor = danger ? errorColor : colors.textArabic;
+    final ruleColor = danger ? errorColor : colors.accent;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: Column(
+        children: [
+          ResponsiveText(
+            eyebrowKey,
+            textAlign: TextAlign.center,
+            style: ZaadType.eyebrowSm.copyWith(color: eyebrowColor),
+          ),
+          const SizedBox(height: 8),
+          DefaultTextStyle.merge(
+            style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: '${titleLeadKey.tr()} '),
+                  TextSpan(
+                    text: titleAccentKey.tr(),
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: accentColor,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 28,
+            height: 1,
+            color: ruleColor,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _currentController = TextEditingController();
-  final _newController = TextEditingController();
-  final _confirmController = TextEditingController();
-  String? _serverError;
+class _PwdField extends StatefulWidget {
+  const _PwdField({
+    required this.controller,
+    required this.labelKey,
+    required this.hintKey,
+    required this.enabled,
+    this.textInputAction,
+    this.validator,
+    this.onChanged,
+    this.onSubmitted,
+    this.errorText,
+  });
+
+  final TextEditingController controller;
+  final String labelKey;
+  final String hintKey;
+  final bool enabled;
+  final TextInputAction? textInputAction;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final String? errorText;
+
+  @override
+  State<_PwdField> createState() => _PwdFieldState();
+}
+
+class _PwdFieldState extends State<_PwdField> {
+  bool _obscure = true;
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
-    _currentController.dispose();
-    _newController.dispose();
-    _confirmController.dispose();
+    _focusNode.dispose();
     super.dispose();
-  }
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _serverError = null);
-    context.read<UserCubit>().changePassword(
-      currentPassword: _currentController.text,
-      newPassword: _newController.text,
-      confirmNewPassword: _confirmController.text,
-    );
-  }
-
-  void _onUserState(BuildContext context, UserState state) {
-    if (state.isPasswordSuccess) {
-      Navigator.of(context).pop();
-      SnackBarHelper.showSuccess(
-        context,
-        message: 'edit_profile.change_password_success',
-      );
-      context.read<UserCubit>().resetChangePasswordStatus();
-    } else if (state.isPasswordError) {
-      setState(() => _serverError = state.changePasswordErrorMessage);
-      context.read<UserCubit>().resetChangePasswordStatus();
-    }
-  }
-
-  String? _validateRequired(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'edit_profile.password_required'.tr();
-    }
-    return null;
-  }
-
-  String? _validateNew(String? value) {
-    final required = _validateRequired(value);
-    if (required != null) return required;
-    if (value!.length < 8) {
-      return 'edit_profile.password_min_length'.tr();
-    }
-    return null;
-  }
-
-  String? _validateConfirm(String? value) {
-    final required = _validateRequired(value);
-    if (required != null) return required;
-    if (value != _newController.text) {
-      return 'edit_profile.password_mismatch'.tr();
-    }
-    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocListener<UserCubit, UserState>(
-      listenWhen: (a, b) => a.changePasswordStatus != b.changePasswordStatus,
-      listener: _onUserState,
-      child: BlocBuilder<UserCubit, UserState>(
-        buildWhen: (a, b) =>
-            a.changePasswordStatus != b.changePasswordStatus,
-        builder: (context, state) {
-          final loading = state.isPasswordLoading;
-          return Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.olive.withValues(alpha: 0.10),
-                  ),
-                  child: Icon(
-                    Icons.lock_reset_rounded,
-                    color: colors.oliveDeep,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                ResponsiveText(
-                  'edit_profile.change_password_title',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: colors.oliveDeep,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ResponsiveText(
-                  'edit_profile.change_password_subtitle',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.5,
-                    color: colors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                MainTextFormField(
-                  controller: _currentController,
-                  hintText: 'edit_profile.current_password_hint'.tr(),
-                  obscureText: true,
-                  passwordToggle: true,
-                  isEnabled: !loading,
-                  textInputAction: TextInputAction.next,
-                  errorText: _serverError?.tr(),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  onChanged: (_) {
-                    if (_serverError != null) {
-                      setState(() => _serverError = null);
-                    }
-                  },
-                  validator: _validateRequired,
-                ),
-                const SizedBox(height: 12),
-                MainTextFormField(
-                  controller: _newController,
-                  hintText: 'edit_profile.new_password_hint'.tr(),
-                  obscureText: true,
-                  passwordToggle: true,
-                  isEnabled: !loading,
-                  textInputAction: TextInputAction.next,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  validator: _validateNew,
-                ),
-                const SizedBox(height: 12),
-                MainTextFormField(
-                  controller: _confirmController,
-                  hintText: 'edit_profile.confirm_password_hint'.tr(),
-                  obscureText: true,
-                  passwordToggle: true,
-                  isEnabled: !loading,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  validator: _validateConfirm,
-                ),
-                const SizedBox(height: 20),
-                CustomButton.full(
-                  onTap: loading ? () {} : _submit,
-                  theme: CustomButtonTheme(
-                    height: 48,
-                    backgroundColor: colors.olive,
-                    textColor: colors.canvas,
-                    borderRadius: 14,
-                  ),
-                  child: loading
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(colors.canvas),
-                          ),
-                        )
-                      : ResponsiveText(
-                          'edit_profile.change_password_cta',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: colors.canvas,
+    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
+    final focused = _focusNode.hasFocus;
+    final errorColor = context.colorScheme.error;
+
+    return FormField<String>(
+      validator: (_) => widget.validator?.call(widget.controller.text),
+      builder: (formState) {
+        final showError = hasError || formState.hasError;
+        final errorMessage = widget.errorText ?? formState.errorText;
+
+        Color borderColor;
+        if (showError) {
+          borderColor = errorColor.withValues(alpha: 0.6);
+        } else if (focused) {
+          borderColor = colors.olive;
+        } else {
+          borderColor = colors.olive.withValues(alpha: 0.18);
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: colors.canvas,
+                borderRadius: BorderRadius.circular(ZaadRadii.md),
+                border: Border.all(color: borderColor, width: 1.5),
+                boxShadow: focused && !showError
+                    ? [
+                        BoxShadow(
+                          color: colors.olive.withValues(alpha: 0.08),
+                          blurRadius: 0,
+                          spreadRadius: 3,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ResponsiveText(
+                          widget.labelKey,
+                          style: ZaadType.fieldLabel.copyWith(
+                            color: colors.oliveSoft,
                           ),
                         ),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: loading ? null : () => Navigator.of(context).pop(),
-                  child: ResponsiveText(
-                    'common.cancel',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textSecondary,
+                        const SizedBox(height: 2),
+                        TextField(
+                          controller: widget.controller,
+                          focusNode: _focusNode,
+                          enabled: widget.enabled,
+                          obscureText: _obscure,
+                          obscuringCharacter: '•',
+                          textInputAction: widget.textInputAction,
+                          onChanged: (v) {
+                            widget.onChanged?.call(v);
+                            formState.didChange(v);
+                          },
+                          onSubmitted: widget.onSubmitted,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: colors.oliveDeep,
+                          ),
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            border: InputBorder.none,
+                            hintText: widget.hintKey.tr(),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: colors.textSecondary
+                                  .withValues(alpha: 0.7),
+                            ),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  InkWell(
+                    onTap: widget.enabled
+                        ? () => setState(() => _obscure = !_obscure)
+                        : null,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        _obscure
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        size: 16,
+                        color: colors.oliveSoft,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
+            if (showError && errorMessage != null) ...[
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  errorMessage,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: errorColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
+
 
 class _DeletePasswordDialog extends StatefulWidget {
   const _DeletePasswordDialog();
@@ -494,9 +505,15 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
     }
   }
 
+  String? _validateRequired(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'edit_profile.delete_password_required'.tr();
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final errorColor = context.colorScheme.error;
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (a, b) => a.status != b.status,
@@ -505,118 +522,87 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
         buildWhen: (a, b) => a.status != b.status,
         builder: (context, state) {
           final loading = state.isLoading;
-          return Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: errorColor.withValues(alpha: 0.10),
-                  ),
-                  child: Icon(
-                    Icons.lock_outline_rounded,
-                    color: errorColor,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                ResponsiveText(
-                  'edit_profile.delete_password_title',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: colors.oliveDeep,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ResponsiveText(
-                  'edit_profile.delete_password_subtitle',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.5,
-                    color: colors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                MainTextFormField(
-                  controller: _controller,
-                  hintText: 'edit_profile.delete_password_hint'.tr(),
-                  obscureText: true,
-                  passwordToggle: true,
-                  autofocus: true,
-                  isEnabled: !loading,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
-                  errorText: _serverError?.tr(),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  onChanged: (_) {
-                    if (_serverError != null) {
-                      setState(() => _serverError = null);
-                    }
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'edit_profile.delete_password_required'.tr();
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                CustomButton.full(
-                  onTap: loading ? () {} : _submit,
-                  theme: CustomButtonTheme(
-                    height: 48,
-                    backgroundColor: errorColor,
-                    textColor: colors.canvas,
-                    borderRadius: 14,
-                  ),
-                  child: loading
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(colors.canvas),
-                          ),
-                        )
-                      : ResponsiveText(
-                          'edit_profile.delete_password_cta',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: colors.canvas,
-                          ),
-                        ),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: loading ? null : () => Navigator.of(context).pop(),
-                  child: ResponsiveText(
-                    'common.cancel',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.textSecondary,
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _DialogHeader(
+                      eyebrowKey: 'edit_profile.delete_password_eyebrow',
+                      titleLeadKey: 'edit_profile.delete_password_title_lead',
+                      titleAccentKey:
+                          'edit_profile.delete_password_title_accent',
+                      danger: true,
                     ),
-                  ),
+                    const SizedBox(height: 14),
+                    _PwdField(
+                      controller: _controller,
+                      labelKey: 'edit_profile.delete_password_label',
+                      hintKey: 'edit_profile.delete_password_hint',
+                      enabled: !loading,
+                      textInputAction: TextInputAction.done,
+                      errorText: _serverError?.tr(),
+                      onChanged: (_) {
+                        if (_serverError != null) {
+                          setState(() => _serverError = null);
+                        }
+                      },
+                      onSubmitted: (_) => _submit(),
+                      validator: _validateRequired,
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            size: 14,
+                            color: errorColor.withValues(alpha: 0.85),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: ResponsiveText(
+                              'edit_profile.delete_password_helper',
+                              style: TextStyle(
+                                fontSize: 11,
+                                height: 1.5,
+                                color: errorColor.withValues(alpha: 0.85),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    ZaadPrimaryButton(
+                      label: 'edit_profile.delete_password_cta',
+                      loading: loading,
+                      onTap: _submit,
+                      variant: ZaadButtonVariant.danger,
+                      height: 46,
+                      borderRadius: ZaadRadii.md,
+                      fontSize: 12,
+                      letterSpacing: 2.16,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                top: -6,
+                right: -6,
+                child: ZaadCloseButton(
+                  enabled: !loading,
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
           );
         },
       ),

@@ -151,23 +151,12 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'role_select.eyebrow'.tr().toUpperCase(),
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 10 * 0.32,
-            color: colors.oliveSoft,
-          ),
+          style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
         ),
         const SizedBox(height: 14),
         Text.rich(
           TextSpan(
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w300,
-              height: 1.15,
-              letterSpacing: -0.4,
-              color: colors.oliveDeep,
-            ),
+            style: ZaadType.titleHero.copyWith(color: colors.oliveDeep),
             children: [
               TextSpan(text: 'role_select.title_prefix'.tr()),
               TextSpan(
@@ -224,7 +213,7 @@ class _RoleCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(ZaadRadii.xxl),
           onTap: onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
@@ -233,7 +222,7 @@ class _RoleCard extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 128),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: selected ? 0.85 : 0.55),
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(ZaadRadii.xxl),
               border: Border.all(
                 color: selected
                     ? colors.olive

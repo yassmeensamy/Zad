@@ -45,7 +45,7 @@ class ErrorState extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: colors.olive),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(ZaadRadii.md),
                   ),
                 ),
                 child: ResponsiveText(

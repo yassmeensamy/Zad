@@ -1,5 +1,5 @@
 {
-  "app_name": "Zad",
+  "app_name": "Zaad",
   "common": {
     "ok": "OK",
     "cancel": "Cancel",
@@ -19,7 +19,7 @@
     "eyebrow": "Step 1 of 2",
     "title_prefix": "Who's ",
     "title_accent": "this for",
-    "subtitle": "Tell us how you'll use Zad so we can shape the experience around you.",
+    "subtitle": "Tell us how you'll use Zaad so we can shape the experience around you.",
     "individual_label": "For myself",
     "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
     "family_label": "For my family",
@@ -47,7 +47,14 @@
     "password_sheet_title": "Set a password",
     "password_sheet_sub": "Used by {} to sign in",
     "password_sheet_fallback_name": "this child",
-    "password_too_short": "Password must be at least {} characters."
+    "password_too_short": "Password must be at least {} characters.",
+    "password_required_for_all": "Please set a password for every child before continuing."
+  },
+  "home_nav": {
+    "home": "Home",
+    "learn": "Learn",
+    "leaderboard": "Leaderboard",
+    "profile": "Account"
   },
   "profile_select": {
     "eyebrow": "Profiles",
@@ -75,7 +82,7 @@
       "welcome_accent": "home",
       "subtitle": "Sign in to continue your daily practice.",
       "sign_in": "SIGN IN",
-      "new_prompt": "New to Zad?  ",
+      "new_prompt": "New to Zaad?  ",
       "create_account": "Create an account"
     },
     "signup_screen": {
@@ -88,7 +95,7 @@
     },
     "signup_success": {
       "title_prefix": "Welcome to ",
-      "title_accent": "Zad",
+      "title_accent": "Zaad",
       "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
       "cta": "CONTINUE"
     }
@@ -106,7 +113,11 @@
   "full_name_max_length": "Name is too long",
   "cancel": "Cancel",
   "language": "Language",
+  "language_eyebrow": "LANGUAGE",
+  "language_title_lead": "Choose your",
+  "language_title_accent": "tongue",
   "language_subtitle": "You can change the app language at any time.",
+  "language_save_cta": "Save changes",
   "change_language": "Change language",
   "failed_to_update_language": "Failed to update language",
   "notifications": {
@@ -132,14 +143,14 @@
     },
     "mock": {
       "reminder_title": "Time for your evening dhikr",
-      "reminder_body": "A few quiet minutes go a long way. Open Zad to begin.",
+      "reminder_body": "A few quiet minutes go a long way. Open Zaad to begin.",
       "achievement_title": "Streak unlocked: 7 days",
       "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
       "reading_title": "New chapter in your library",
       "reading_body": "A short reflection on patience has been added for you.",
       "child_activity_title": "Yusuf finished today's lesson",
       "child_activity_body": "He completed his reading goal and earned a star.",
-      "announcement_title": "Welcome to Zad",
+      "announcement_title": "Welcome to Zaad",
       "announcement_body": "Thank you for joining. We're glad you're here.",
       "evening_reminder_title": "Don't forget tomorrow's plan",
       "evening_reminder_body": "Your weekly review is scheduled for the morning."
@@ -173,20 +184,34 @@
     "update_success": "Profile updated",
     "update_failed": "Couldn't update profile",
     "delete_account": "Delete account",
+    "delete_account_description": "This will permanently remove your profile, progress, and saved bookmarks. This action cannot be undone.",
+    "delete_account_cta": "DELETE MY ACCOUNT",
     "delete_confirm_title": "Delete your account?",
     "delete_confirm_subtitle": "This will permanently remove your account and all associated data. This action cannot be undone.",
     "delete_confirm_cta": "Yes, delete my account",
     "delete_password_title": "Confirm with your password",
+    "delete_password_title_lead": "Confirm",
+    "delete_password_title_accent": "deletion",
+    "delete_password_eyebrow": "ACCOUNT REMOVAL",
     "delete_password_subtitle": "Enter your password to permanently delete your account.",
+    "delete_password_helper": "This action is permanent and cannot be undone.",
+    "delete_password_label": "PASSWORD",
     "delete_password_hint": "Password",
     "delete_password_required": "Please enter your password",
     "delete_password_cta": "Delete account",
     "change_password": "Change password",
+    "change_password_eyebrow": "SECURITY",
     "change_password_title": "Change your password",
+    "change_password_title_lead": "Change",
+    "change_password_title_accent": "password",
     "change_password_subtitle": "Enter your current password and choose a new one.",
+    "change_password_helper": "Use at least 8 characters with a mix of letters, numbers, and symbols.",
+    "current_password_label": "CURRENT PASSWORD",
+    "new_password_label": "NEW PASSWORD",
+    "confirm_password_label": "CONFIRM NEW PASSWORD",
     "current_password_hint": "Current password",
-    "new_password_hint": "New password",
-    "confirm_password_hint": "Confirm new password",
+    "new_password_hint": "At least 8 characters",
+    "confirm_password_hint": "Repeat new password",
     "password_required": "Please enter your password",
     "password_min_length": "Password must be at least 8 characters",
     "password_mismatch": "Passwords don't match",
@@ -218,7 +243,7 @@
       },
       "question": {
         "label": "Question",
-        "description": "Ask us anything about Zad."
+        "description": "Ask us anything about Zaad."
       },
       "bug": {
         "label": "Bug report",

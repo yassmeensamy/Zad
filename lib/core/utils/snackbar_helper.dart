@@ -136,7 +136,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                   ),
                   decoration: BoxDecoration(
                     color: colors.oliveDeep,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZaadRadii.lg),
                     boxShadow: [
                       BoxShadow(
                         color: colors.oliveDeep.withValues(alpha: 0.25),

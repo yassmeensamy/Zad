@@ -87,21 +87,18 @@ class _FormCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colors.canvas.withValues(alpha: 0.92),
-            colors.canvasRaised.withValues(alpha: 0.78),
-          ],
+          colors: [colors.canvas, colors.canvasRaised],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ZaadRadii.card),
         border: Border.all(
-          color: colors.olive.withValues(alpha: 0.16),
-          width: 1.2,
+          color: colors.accent.withValues(alpha: 0.20),
+          width: 0.8,
         ),
         boxShadow: [
           BoxShadow(
-            color: colors.oliveDeep.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: colors.oliveDeep.withValues(alpha: 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -134,9 +131,7 @@ class _FieldGroup extends StatelessWidget {
           padding: const EdgeInsetsDirectional.only(start: 4),
           child: ResponsiveText(
             label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
+            style: ZaadType.sectionLabel.copyWith(
               letterSpacing: 0.4,
               color: colors.oliveDeep,
             ),
@@ -272,7 +267,7 @@ class _ReadOnlyField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: colors.olive.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZaadRadii.lg),
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.14),
           width: 1.2,
@@ -321,13 +316,13 @@ class _BirthDateField extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZaadRadii.lg),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: colors.canvas,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZaadRadii.lg),
             border: Border.all(
               color: colors.olive.withValues(alpha: 0.20),
               width: 1.2,

@@ -4,11 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zad_app_bar.dart';
+import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../../onboarding_flow/data/child_avatar.dart';
 import '../cubit/child_cubit.dart';
@@ -82,7 +83,7 @@ class _ChildrenListView extends StatelessWidget {
     final colors = context.appColors;
     return Scaffold(
       backgroundColor: colors.canvas,
-      appBar: ZadAppBar(
+      appBar: ZaadAppBar(
         title: 'profile.my_children',
         onBack: () => context.pop(),
       ),
@@ -102,10 +103,9 @@ class _ChildrenListView extends StatelessWidget {
                 context.read<ChildCubit>().resetActionStatus();
               } else if (state.isActionError &&
                   state.actionErrorMessage != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: ResponsiveText(state.actionErrorMessage),
-                  ),
+                SnackBarHelper.showError(
+                  context,
+                  message: state.actionErrorMessage!,
                 );
                 context.read<ChildCubit>().resetActionStatus();
               }
@@ -116,10 +116,9 @@ class _ChildrenListView extends StatelessWidget {
                 b.validationError != null &&
                 a.validationError != b.validationError,
             listener: (context, state) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: ResponsiveText(state.validationError),
-                ),
+              SnackBarHelper.showError(
+                context,
+                message: state.validationError!,
               );
               context.read<ChildDraftCubit>().clearError();
             },
@@ -223,7 +222,7 @@ class _LoadingSkeleton extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: colors.olive.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZaadRadii.lg),
                 ),
               ),
             ),

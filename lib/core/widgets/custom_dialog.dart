@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/splash/widgets/desert_background.dart';
 import '../../theme/theme.dart';
 
 class CustomDialog extends StatelessWidget {
@@ -7,7 +8,7 @@ class CustomDialog extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-    this.radius = 28,
+    this.radius = ZaadRadii.dialog,
     this.constraints,
     this.insetPadding,
   });
@@ -31,7 +32,7 @@ class CustomDialog extends StatelessWidget {
     required Widget child,
     EdgeInsetsGeometry padding =
         const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-    double radius = 28,
+    double radius = ZaadRadii.dialog,
     BoxConstraints? constraints,
     EdgeInsets? insetPadding,
     bool barrierDismissible = true,
@@ -52,6 +53,10 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final maxHeight = screenHeight * 0.85;
+    final mergedConstraints = (constraints ?? const BoxConstraints())
+        .copyWith(maxHeight: constraints?.maxHeight ?? maxHeight);
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -66,7 +71,7 @@ class CustomDialog extends StatelessWidget {
         builder: (_, value, child) =>
             Transform.scale(scale: value, child: child),
         child: Container(
-          constraints: constraints,
+          constraints: mergedConstraints,
           padding: const EdgeInsets.all(_borderStroke),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
@@ -84,17 +89,19 @@ class CustomDialog extends StatelessWidget {
               ),
             ],
           ),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(radius - _borderStroke),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [colors.canvas, colors.canvasRaised],
-              ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radius - _borderStroke),
+            child: Stack(
+              children: [
+                const Positioned.fill(
+                  child: DesertBackground(child: SizedBox.shrink()),
+                ),
+                SingleChildScrollView(
+                  padding: padding,
+                  child: child,
+                ),
+              ],
             ),
-            child: child,
           ),
         ),
       ),

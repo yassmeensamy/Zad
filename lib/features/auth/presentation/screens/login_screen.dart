@@ -4,18 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
-import '../../../splash/widgets/zad_brand.dart';
-import '../../../splash/widgets/zad_logo_mark.dart';
+import '../../../splash/widgets/zaad_brand.dart';
+import '../../../splash/widgets/zaad_logo_mark.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
 import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_prompt_link.dart';
-import '../widgets/zad_text_field.dart';
+import '../widgets/zaad_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,9 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     if (state.isError && state.errorMessage != null) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: ResponsiveText(state.errorMessage!)));
+      SnackBarHelper.showError(context, message: state.errorMessage!);
     }
   }
 
@@ -100,13 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  const ZadLogoMark(size: 84),
+                  const ZaadLogoMark(size: 84),
                   const SizedBox(height: 22),
-                  const ZadBrand.compact(dateSoft: _dateSoft),
+                  const ZaadBrand.compact(dateSoft: _dateSoft),
                   const SizedBox(height: 24),
                   _Headline(dateSoft: _dateSoft),
                   const SizedBox(height: 22),
-                  ZadTextField(
+                  ZaadTextField(
                     hintText: 'auth.email_hint',
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -119,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ZadTextField(
+                  ZaadTextField(
                     hintText: '••••••••',
                     controller: _passwordController,
                     obscureText: true,
@@ -205,13 +204,7 @@ class _Headline extends StatelessWidget {
       children: [
         Text.rich(
           TextSpan(
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w300,
-              height: 1.15,
-              letterSpacing: -0.4,
-              color: colors.oliveDeep,
-            ),
+            style: ZaadType.titleHero.copyWith(color: colors.oliveDeep),
             children: [
               TextSpan(text: 'auth.login_screen.welcome_prefix'.tr()),
               TextSpan(

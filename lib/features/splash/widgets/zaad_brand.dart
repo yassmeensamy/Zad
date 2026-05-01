@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/responsive_text.dart';
 import '../../../theme/theme.dart';
 
-/// Wordmark "Zad" + Arabic "زاد" + amber rule + uppercase tagline.
-class ZadBrand extends StatelessWidget {
-  const ZadBrand({
+/// Wordmark "Zaad" + Arabic "زاد" + amber rule + uppercase tagline.
+class ZaadBrand extends StatelessWidget {
+  const ZaadBrand({
     super.key,
     this.wordSize = 78,
     this.arabicSize = 34,
@@ -20,7 +20,7 @@ class ZadBrand extends StatelessWidget {
 
   /// Compact preset used on auth screens (login). Matches the Olive v2 design:
   /// 44px wordmark, 18px Arabic, 9.5px tag, 28px rule.
-  const ZadBrand.compact({
+  const ZaadBrand.compact({
     super.key,
     this.dateSoft = const Color(0xFF8D5C36),
     this.tag = 'Your daily companion',
@@ -49,7 +49,7 @@ class ZadBrand extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ResponsiveText(
-          'Zad',
+          'Zaad',
           style: TextStyle(
             fontSize: wordSize,
             fontWeight: FontWeight.w400,

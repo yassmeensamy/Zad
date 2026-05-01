@@ -7,8 +7,8 @@ import '../../../theme/theme.dart';
 ///
 /// When [animation] is supplied, the mark animates in: ring scales from 0.6→1,
 /// the two squares rotate from −20°/25° to 0°/45°, and the core pops to scale 1.
-class ZadLogoMark extends StatelessWidget {
-  const ZadLogoMark({
+class ZaadLogoMark extends StatelessWidget {
+  const ZaadLogoMark({
     super.key,
     this.size = 140,
     this.animation,

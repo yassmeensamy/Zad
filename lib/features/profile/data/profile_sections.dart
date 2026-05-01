@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/navigation/app_routes.dart';
 import '../../language/presentation/modals/language_dialog.dart';
+import '../presentation/widgets/change_password_dialog.dart';
 import 'profile_section.dart';
 
 List<ProfileSection> profileSections(BuildContext context) => [
@@ -50,6 +51,11 @@ List<ProfileSection> profileSections(BuildContext context) => [
         icon: Icons.person_outline_rounded,
         titleKey: 'profile.edit_profile',
         onTap: () => context.pushNamed(AppRoutes.editProfileName),
+      ),
+      ProfileMenuItem(
+        icon: Icons.lock_reset_rounded,
+        titleKey: 'edit_profile.change_password',
+        onTap: () => ChangePasswordDialog.show(context),
       ),
       const ProfileMenuItem(
         icon: Icons.privacy_tip_outlined,

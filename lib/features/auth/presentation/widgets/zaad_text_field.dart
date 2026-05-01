@@ -6,8 +6,8 @@ import '../../../../theme/theme.dart';
 
 /// Login-style field. Visual tokens (fill, borders, hint, icon colors)
 /// come from the global [InputDecorationTheme] in `AppTheme`.
-class ZadTextField extends StatelessWidget {
-  const ZadTextField({
+class ZaadTextField extends StatelessWidget {
+  const ZaadTextField({
     super.key,
     required this.hintText,
     this.controller,

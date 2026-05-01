@@ -2,9 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_close_button.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
-import '../../../child/presentation/widgets/custom_modal.dart';
 import '../cubit/language_cubit.dart';
 import '../cubit/language_state.dart';
 
@@ -23,16 +26,17 @@ class LanguageDialog extends StatelessWidget {
 
   static const List<_LanguageOption> _availableLanguages = [
     _LanguageOption(
-      label: 'العربية',
-      subtitle: 'Arabic',
-      code: 'ar',
-      flag: '🇸🇦',
+      native: 'English',
+      english: 'English',
+      code: 'en',
+      flag: 'EN',
     ),
     _LanguageOption(
-      label: 'English',
-      subtitle: 'الإنجليزية',
-      code: 'en',
-      flag: '🇬🇧',
+      native: 'العربية',
+      english: 'Arabic',
+      code: 'ar',
+      flag: 'ع',
+      isArabic: true,
     ),
   ];
 
@@ -40,12 +44,11 @@ class LanguageDialog extends StatelessWidget {
     BuildContext context, {
     bool shouldSkipBackend = true,
     OnLanguageChangedCallback? onLanguageChanged,
-  }) => showModalBottomSheet<void>(
+  }) => CustomDialog.show<void>(
     context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    useRootNavigator: true,
-    builder: (_) => LanguageDialog(
+    radius: 24,
+    padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
+    child: LanguageDialog(
       shouldSkipBackend: shouldSkipBackend,
       onLanguageChanged: onLanguageChanged,
     ),
@@ -53,47 +56,44 @@ class LanguageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return BlocProvider(
       create: (_) =>
           LanguageCubit()..updateCurrentLanguage(context.locale.languageCode),
       child: BlocConsumer<LanguageCubit, LanguageState>(
         listener: _handleLanguageStateChange,
-        builder: (context, state) => CustomModal(
-          title: ResponsiveText(
-            'language',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: colors.oliveDeep,
-            ),
-          ),
-          subtitle: ResponsiveText(
-            'language_subtitle',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w500,
-              color: colors.olive.withValues(alpha: 0.7),
-            ),
-          ),
-          child: AbsorbPointer(
-            absorbing: state.status.isLoading,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final lang in _availableLanguages) ...[
-                  _buildLanguageItem(lang, state),
-                  const SizedBox(height: 10),
-                ],
-                const SizedBox(height: 8),
-                _ActionButtons(shouldSkipBackend: shouldSkipBackend),
-              ],
-            ),
-          ),
-        ),
+        builder: (context, state) {
+          final loading = state.status.isLoading;
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              AbsorbPointer(
+                absorbing: loading,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _LanguageHeader(),
+                    const SizedBox(height: 14),
+                    for (final lang in _availableLanguages) ...[
+                      _LanguageTile(option: lang),
+                      const SizedBox(height: 8),
+                    ],
+                    const SizedBox(height: 6),
+                    _SaveCtaButton(shouldSkipBackend: shouldSkipBackend),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: -6,
+                right: -6,
+                child: ZaadCloseButton(
+                  enabled: !loading,
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -112,289 +112,258 @@ class LanguageDialog extends StatelessWidget {
       if (!context.mounted) return;
       Navigator.of(context).pop();
     } else if (state.status.isError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const ResponsiveText('failed_to_update_language'),
-          backgroundColor: context.appColors.warning,
-        ),
+      SnackBarHelper.showError(
+        context,
+        message: 'failed_to_update_language',
       );
       context.read<LanguageCubit>().clearError();
     }
   }
-
-  Widget _buildLanguageItem(_LanguageOption option, LanguageState state) =>
-      BlocSelector<LanguageCubit, LanguageState, String?>(
-        selector: (s) => s.selectedLanguage,
-        builder: (context, selectedCode) => _LanguageItem(
-          option: option,
-          isSelected: selectedCode == option.code,
-          isEnabled: !state.status.isLoading,
-          onTap: () =>
-              context.read<LanguageCubit>().updateCurrentLanguage(option.code),
-        ),
-      );
 }
 
 class _LanguageOption {
   const _LanguageOption({
-    required this.label,
-    required this.subtitle,
+    required this.native,
+    required this.english,
     required this.code,
     required this.flag,
+    this.isArabic = false,
   });
 
-  final String label;
-  final String subtitle;
+  final String native;
+  final String english;
   final String code;
   final String flag;
+  final bool isArabic;
 }
 
-class _LanguageItem extends StatelessWidget {
-  const _LanguageItem({
-    required this.option,
-    required this.isSelected,
-    required this.isEnabled,
-    required this.onTap,
-  });
-
-  final _LanguageOption option;
-  final bool isSelected;
-  final bool isEnabled;
-  final VoidCallback onTap;
+class _LanguageHeader extends StatelessWidget {
+  const _LanguageHeader();
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: isEnabled ? onTap : null,
-        splashColor: colors.olive.withValues(alpha: 0.08),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            gradient: isSelected
-                ? LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      colors.oliveLeaf.withValues(alpha: 0.20),
-                      colors.olive.withValues(alpha: 0.12),
-                    ],
-                  )
-                : null,
-            color: isSelected ? null : colors.canvas.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected
-                  ? colors.olive.withValues(alpha: 0.45)
-                  : colors.olive.withValues(alpha: 0.12),
-              width: isSelected ? 1.4 : 1,
-            ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: colors.olive.withValues(alpha: 0.10),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: Column(
+        children: [
+          ResponsiveText(
+            'language_eyebrow',
+            textAlign: TextAlign.center,
+            style: ZaadType.eyebrowSm.copyWith(color: colors.oliveSoft),
           ),
-          child: Row(
-            children: [
-              _FlagBadge(flag: option.flag, isSelected: isSelected),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ResponsiveText(
-                      option.label,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: isSelected
-                            ? colors.oliveDeep
-                            : colors.textArabic,
-                      ),
+          const SizedBox(height: 8),
+          DefaultTextStyle.merge(
+            style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: '${'language_title_lead'.tr()} '),
+                  TextSpan(
+                    text: 'language_title_accent'.tr(),
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: colors.textArabic,
                     ),
-                    const SizedBox(height: 2),
-                    ResponsiveText(
-                      option.subtitle,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                        color: colors.textArabic.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeOutCubic,
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? colors.olive : Colors.transparent,
-                  border: Border.all(
-                    color: isSelected
-                        ? colors.olive
-                        : colors.textArabic.withValues(alpha: 0.3),
-                    width: 1.6,
                   ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(width: 28, height: 1, color: colors.accent),
+        ],
+      ),
+    );
+  }
+}
+
+class _LanguageTile extends StatelessWidget {
+  const _LanguageTile({required this.option});
+
+  final _LanguageOption option;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<LanguageCubit, LanguageState, String?>(
+      selector: (s) => s.selectedLanguage,
+      builder: (context, selectedCode) {
+        final colors = context.appColors;
+        final isSelected = selectedCode == option.code;
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(ZaadRadii.lg),
+            onTap: () => context
+                .read<LanguageCubit>()
+                .updateCurrentLanguage(option.code),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.white.withValues(alpha: 0.85)
+                    : Colors.white.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                border: Border.all(
+                  color: isSelected
+                      ? colors.olive
+                      : colors.olive.withValues(alpha: 0.18),
+                  width: 1.5,
                 ),
-                child: isSelected
-                    ? Icon(
-                        Icons.check_rounded,
-                        size: 14,
-                        color: colors.canvas,
-                      )
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: colors.olive.withValues(alpha: 0.10),
+                          blurRadius: 0,
+                          spreadRadius: 3,
+                        ),
+                      ]
                     : null,
               ),
-            ],
+              child: Row(
+                children: [
+                  _FlagBadge(flag: option.flag, isArabic: option.isArabic),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          option.native,
+                          style: TextStyle(
+                            fontSize: option.isArabic ? 18 : 16,
+                            fontWeight: FontWeight.w500,
+                            height: 1.1,
+                            color: colors.oliveDeep,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          option.english,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: colors.textArabic,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _CheckPill(selected: isSelected),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _FlagBadge extends StatelessWidget {
-  const _FlagBadge({required this.flag, required this.isSelected});
+  const _FlagBadge({required this.flag, required this.isArabic});
+
   final String flag;
-  final bool isSelected;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Container(
-      width: 44,
-      height: 44,
+      width: 34,
+      height: 34,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(ZaadRadii.sm),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isSelected
-              ? [
-                  colors.canvas,
-                  colors.canvasRaised,
-                ]
-              : [
-                  colors.canvasRaised.withValues(alpha: 0.8),
-                  colors.canvas.withValues(alpha: 0.8),
-                ],
+          colors: [
+            colors.canvas,
+            colors.canvasRaised,
+          ],
         ),
         border: Border.all(
-          color: colors.olive.withValues(alpha: isSelected ? 0.45 : 0.18),
-          width: 1.2,
+          color: colors.olive.withValues(alpha: 0.20),
+          width: 1,
         ),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: colors.olive.withValues(alpha: 0.18),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
       ),
       alignment: Alignment.center,
-      child: Text(flag, style: const TextStyle(fontSize: 22)),
+      child: Text(
+        flag,
+        style: TextStyle(
+          fontSize: isArabic ? 18 : 13,
+          fontWeight: FontWeight.w500,
+          color: colors.oliveDeep,
+          height: 1,
+        ),
+      ),
     );
   }
 }
 
-class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({required this.shouldSkipBackend});
+class _CheckPill extends StatelessWidget {
+  const _CheckPill({required this.selected});
+
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: selected ? colors.olive : Colors.transparent,
+        border: Border.all(
+          color: selected
+              ? colors.olive
+              : colors.olive.withValues(alpha: 0.30),
+          width: 1.5,
+        ),
+      ),
+      child: selected
+          ? Icon(Icons.check_rounded, size: 12, color: colors.canvas)
+          : null,
+    );
+  }
+}
+
+class _SaveCtaButton extends StatelessWidget {
+  const _SaveCtaButton({required this.shouldSkipBackend});
 
   final bool shouldSkipBackend;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Row(
-      children: [
-        Expanded(
-          child: BlocSelector<LanguageCubit, LanguageState, bool>(
-            selector: (s) => s.status.isLoading,
-            builder: (context, isLoading) => OutlinedButton(
-              onPressed: isLoading ? null : () => Navigator.of(context).pop(),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                side: BorderSide(
-                  color: colors.olive.withValues(alpha: 0.25),
-                ),
-              ),
-              child: ResponsiveText(
-                'cancel',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: colors.olive,
-                ),
-              ),
-            ),
+    return BlocSelector<LanguageCubit, LanguageState, LanguageState>(
+      selector: (s) => s,
+      builder: (context, state) {
+        final selected = state.selectedLanguage;
+        final loading = state.status.isLoading;
+        final canConfirm =
+            !loading &&
+            selected != null &&
+            selected != context.locale.languageCode;
+
+        return ZaadPrimaryButton(
+          label: 'language_save_cta',
+          loading: loading,
+          enabled: canConfirm,
+          onTap: () => context.read<LanguageCubit>().updateLanguage(
+            selected!,
+            shouldSkipBackend: shouldSkipBackend,
           ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: BlocSelector<LanguageCubit, LanguageState, LanguageState>(
-            selector: (s) => s,
-            builder: (context, state) {
-              final selected = state.selectedLanguage;
-              final canConfirm =
-                  !state.status.isLoading &&
-                  selected != null &&
-                  selected != context.locale.languageCode;
-              return ElevatedButton(
-                onPressed: canConfirm
-                    ? () => context.read<LanguageCubit>().updateLanguage(
-                        selected,
-                        shouldSkipBackend: shouldSkipBackend,
-                      )
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.olive,
-                  disabledBackgroundColor: colors.olive.withValues(alpha: 0.4),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
-                ),
-                child: state.status.isLoading
-                    ? SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: colors.canvas,
-                        ),
-                      )
-                    : ResponsiveText(
-                        'change_language',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: colors.canvas,
-                        ),
-                      ),
-              );
-            },
-          ),
-        ),
-      ],
+          height: 46,
+          borderRadius: ZaadRadii.md,
+          fontSize: 12,
+          letterSpacing: 2.16,
+        );
+      },
     );
   }
 }

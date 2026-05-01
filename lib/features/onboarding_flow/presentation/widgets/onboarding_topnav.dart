@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_back_button.dart';
 import '../../../../theme/theme.dart';
 
 /// Top navigation row used across the onboarding flow:
@@ -30,19 +31,7 @@ class OnboardingTopNav extends StatelessWidget {
             height: 38,
             child: onBack == null
                 ? const SizedBox.shrink()
-                : Material(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: onBack,
-                      child: Icon(
-                        Icons.arrow_back_rounded,
-                        size: 18,
-                        color: colors.oliveDeep,
-                      ),
-                    ),
-                  ),
+                : ZaadBackButton(onTap: onBack!),
           ),
           Expanded(
             child: Center(
@@ -51,10 +40,7 @@ class OnboardingTopNav extends StatelessWidget {
                   : (stepLabel != null
                       ? ResponsiveText(
                           stepLabel!,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 10 * 0.32,
+                          style: ZaadType.eyebrow.copyWith(
                             color: colors.oliveSoft,
                           ),
                         )
@@ -115,7 +101,7 @@ class _MiniMark extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         ResponsiveText(
-          'Zad',
+          'Zaad',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,

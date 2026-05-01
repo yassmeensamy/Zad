@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
@@ -30,15 +31,10 @@ class CreateChildrenScreen extends StatelessWidget {
       return;
     }
     if (named.any((d) => d.password.isEmpty)) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please set a password for every child before continuing.',
-            ),
-          ),
-        );
+      SnackBarHelper.showError(
+        context,
+        message: 'create_profiles.password_required_for_all',
+      );
       return;
     }
 
@@ -82,11 +78,10 @@ class CreateChildrenScreen extends StatelessWidget {
               _onContinue(context);
             } else if (state.isActionError &&
                 state.actionErrorMessage != null) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(content: Text(state.actionErrorMessage!)),
-                );
+              SnackBarHelper.showError(
+                context,
+                message: state.actionErrorMessage!,
+              );
             }
           },
           child: Column(
@@ -208,20 +203,13 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'create_profiles.eyebrow'.tr().toUpperCase(),
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 10 * 0.32,
-            color: colors.oliveSoft,
-          ),
+          style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
         ),
         const SizedBox(height: 10),
         Text.rich(
           TextSpan(
-            style: TextStyle(
+            style: ZaadType.titleHero.copyWith(
               fontSize: 28,
-              fontWeight: FontWeight.w300,
-              height: 1.15,
               color: colors.oliveDeep,
             ),
             children: [
@@ -266,12 +254,12 @@ class _AddKidTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(ZaadRadii.xl),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(ZaadRadii.xl),
             border: Border.all(
               color: colors.oliveSoft.withValues(alpha: 0.35),
               width: 1.5,

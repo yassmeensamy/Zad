@@ -210,7 +210,7 @@ class _ReceiptRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: colors.canvas.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZaadRadii.md),
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.10),
           width: 1,

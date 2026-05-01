@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
-import '../../../splash/widgets/zad_brand.dart';
-import '../../../splash/widgets/zad_logo_mark.dart';
+import '../../../splash/widgets/zaad_brand.dart';
+import '../../../splash/widgets/zaad_logo_mark.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -16,7 +16,7 @@ import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_prompt_link.dart';
 import '../widgets/signup_success_dialog.dart';
-import '../widgets/zad_text_field.dart';
+import '../widgets/zaad_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -98,11 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (state.isError) {
       _awaitingSignupResult = false;
       if (state.errorMessage != null) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(content: ResponsiveText(state.errorMessage!)),
-          );
+        SnackBarHelper.showError(context, message: state.errorMessage!);
       }
     }
   }
@@ -122,13 +118,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  const ZadLogoMark(size: 84),
+                  const ZaadLogoMark(size: 84),
                   const SizedBox(height: 22),
-                  const ZadBrand.compact(dateSoft: _dateSoft),
+                  const ZaadBrand.compact(dateSoft: _dateSoft),
                   const SizedBox(height: 24),
                   const _Headline(),
                   const SizedBox(height: 22),
-                  ZadTextField(
+                  ZaadTextField(
                     hintText: 'auth.signup_screen.username_hint',
                     controller: _usernameController,
                     keyboardType: TextInputType.text,
@@ -141,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ZadTextField(
+                  ZaadTextField(
                     hintText: 'auth.email_hint',
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -154,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ZadTextField(
+                  ZaadTextField(
                     hintText: '••••••••',
                     controller: _passwordController,
                     obscureText: true,
@@ -215,11 +211,8 @@ class _Headline extends StatelessWidget {
     final colors = context.appColors;
     return Text.rich(
       TextSpan(
-        style: TextStyle(
+        style: ZaadType.titleHero.copyWith(
           fontSize: 28,
-          fontWeight: FontWeight.w300,
-          height: 1.15,
-          letterSpacing: -0.4,
           color: colors.oliveDeep,
         ),
         children: [

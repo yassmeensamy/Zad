@@ -246,12 +246,7 @@ class _SectionLabel extends StatelessWidget {
           const SizedBox(width: 10),
           ResponsiveText(
             textKey,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: colors.oliveDeep,
-            ),
+            style: ZaadType.sectionLabel.copyWith(color: colors.oliveDeep),
           ),
         ],
       ),
@@ -277,7 +272,7 @@ class _SectionCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [colors.canvas, colors.canvasRaised],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ZaadRadii.card),
         border: Border.all(
           color: colors.accent.withValues(alpha: 0.20),
           width: 0.8,
@@ -291,7 +286,7 @@ class _SectionCard extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ZaadRadii.card),
         child: Column(
           children: [
             for (var i = 0; i < items.length; i++) ...[

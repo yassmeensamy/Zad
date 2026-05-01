@@ -146,20 +146,13 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'profile_select.eyebrow'.tr().toUpperCase(),
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 10 * 0.32,
-            color: colors.oliveSoft,
-          ),
+          style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
         ),
         const SizedBox(height: 12),
         Text.rich(
           TextSpan(
-            style: TextStyle(
+            style: ZaadType.titleHero.copyWith(
               fontSize: 32,
-              fontWeight: FontWeight.w300,
-              height: 1.15,
               color: colors.oliveDeep,
             ),
             children: [
@@ -206,13 +199,13 @@ class _ProfileCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(ZaadRadii.xxl),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.fromLTRB(14, 20, 14, 16),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.55),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(ZaadRadii.xxl),
             border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.20), width: 1.5),
           ),
           child: Stack(
@@ -374,12 +367,12 @@ class _AddTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(ZaadRadii.xxl),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(ZaadRadii.xxl),
             border: Border.all(
               color: colors.oliveSoft.withValues(alpha: 0.35),
               width: 1.5,

@@ -62,13 +62,26 @@ class DesertBackground extends StatelessWidget {
             ),
           ),
         ),
-        // Repeating Islamic pattern, multiply blend at 32% (untinted).
+        // Repeating Islamic pattern, masked so it fades out where content
+        // sits (vertically centred form area) and only reads at the screen's
+        // top/bottom edges. Multiply blend keeps the warm tone.
         Positioned.fill(
           child: IgnorePointer(
-            child: Opacity(
-              opacity: 0.32,
+            child: ShaderMask(
+              blendMode: BlendMode.dstIn,
+              shaderCallback: (rect) => const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0x59FFFFFF), // ~35% — visible at top
+                  Color(0x14FFFFFF), // ~8%  — calm where form sits
+                  Color(0x14FFFFFF), // ~8%
+                  Color(0x40FFFFFF), // ~25% — hint at bottom
+                ],
+                stops: [0.0, 0.32, 0.72, 1.0],
+              ).createShader(rect),
               child: Image.asset(
-                'assets/images/islamic-pattern.png',
+                'assets/images/ChatGPT Image May 1, 2026, 06_04_43 PM.png',
                 repeat: ImageRepeat.repeat,
                 colorBlendMode: BlendMode.multiply,
                 filterQuality: FilterQuality.medium,
@@ -76,18 +89,18 @@ class DesertBackground extends StatelessWidget {
             ),
           ),
         ),
-        // Soft ivory radial veil to lift the centre (78% → 32% → 0%).
+        // Soft ivory veil over the form area to ensure inputs read cleanly.
         DecoratedBox(
           decoration: BoxDecoration(
             gradient: RadialGradient(
-              center: Alignment.center,
-              radius: 0.7,
+              center: Alignment(0, 0.1),
+              radius: 0.95,
               colors: [
-                _ivoryLight.withValues(alpha: 0.78),
-                _ivoryLight.withValues(alpha: 0.32),
+                _ivoryLight.withValues(alpha: 0.62),
+                _ivoryLight.withValues(alpha: 0.28),
                 _ivoryLight.withValues(alpha: 0),
               ],
-              stops: const [0.0, 0.6, 1.0],
+              stops: const [0.0, 0.55, 1.0],
             ),
           ),
         ),

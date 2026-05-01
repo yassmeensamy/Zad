@@ -165,6 +165,7 @@
     "password": "Password",
     "forgot_password": "Forgot password?",
     "email_hint": "you@example.com",
+    "password_hint": "Your password",
     "or_continue": "OR CONTINUE WITH",
     "continue_google": "Continue with Google",
     "login_screen": {

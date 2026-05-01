@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../theme/theme.dart';
+import '../constants/app_animations.dart';
 import '../widgets/responsive_text.dart';
 
 /// Top-of-screen snackbar built on top of [Overlay].
@@ -17,8 +19,11 @@ class SnackBarHelper {
     _show(
       context,
       message: message,
-      icon: Icons.check_circle_rounded,
-      iconColor: AppColors.success,
+      leading: const Icon(
+        Icons.check_circle_rounded,
+        color: AppColors.success,
+        size: 22,
+      ),
     );
   }
 
@@ -26,16 +31,19 @@ class SnackBarHelper {
     _show(
       context,
       message: message,
-      icon: Icons.error_outline_rounded,
-      iconColor: AppColors.error,
+      leading: Lottie.asset(
+        AppAnimations.error,
+        width: 32,
+        height: 32,
+        repeat: false,
+      ),
     );
   }
 
   static void _show(
     BuildContext context, {
     required String message,
-    required IconData icon,
-    required Color iconColor,
+    required Widget leading,
     Duration duration = const Duration(seconds: 3),
   }) {
     _dismiss();
@@ -46,8 +54,7 @@ class SnackBarHelper {
     final entry = OverlayEntry(
       builder: (_) => _TopSnackBar(
         message: message,
-        icon: icon,
-        iconColor: iconColor,
+        leading: leading,
         onDismissed: _dismiss,
       ),
     );
@@ -69,14 +76,12 @@ class SnackBarHelper {
 class _TopSnackBar extends StatefulWidget {
   const _TopSnackBar({
     required this.message,
-    required this.icon,
-    required this.iconColor,
+    required this.leading,
     required this.onDismissed,
   });
 
   final String message;
-  final IconData icon;
-  final Color iconColor;
+  final Widget leading;
   final VoidCallback onDismissed;
 
   @override
@@ -119,13 +124,11 @@ class _TopSnackBarState extends State<_TopSnackBar>
       top: mq.padding.top + 8,
       left: 16,
       right: 16,
-      child: SafeArea(
-        bottom: false,
-        child: SlideTransition(
-          position: _offset,
-          child: FadeTransition(
-            opacity: _fade,
-            child: Material(
+      child: SlideTransition(
+        position: _offset,
+        child: FadeTransition(
+          opacity: _fade,
+          child: Material(
               color: Colors.transparent,
               child: GestureDetector(
                 onTap: widget.onDismissed,
@@ -147,7 +150,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                   ),
                   child: Row(
                     children: [
-                      Icon(widget.icon, color: widget.iconColor, size: 22),
+                      widget.leading,
                       const SizedBox(width: 12),
                       Expanded(
                         child: ResponsiveText(
@@ -166,7 +169,6 @@ class _TopSnackBarState extends State<_TopSnackBar>
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

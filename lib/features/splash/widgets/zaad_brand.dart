@@ -14,7 +14,6 @@ class ZaadBrand extends StatelessWidget {
     this.gap = 14,
     this.ruleGap = 24,
     this.tagGap = 18,
-    this.dateSoft = const Color(0xFF8D5C36),
     this.tag = 'Your daily companion',
   });
 
@@ -22,7 +21,6 @@ class ZaadBrand extends StatelessWidget {
   /// 44px wordmark, 18px Arabic, 9.5px tag, 28px rule.
   const ZaadBrand.compact({
     super.key,
-    this.dateSoft = const Color(0xFF8D5C36),
     this.tag = 'Your daily companion',
   })  : wordSize = 44,
         arabicSize = 18,
@@ -39,7 +37,6 @@ class ZaadBrand extends StatelessWidget {
   final double gap;
   final double ruleGap;
   final double tagGap;
-  final Color dateSoft;
   final String tag;
 
   @override

@@ -9,6 +9,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color textPlaceholder;
   final Color textInverse;
   final Color textArabic;
+  final Color dateSoft;
 
   final Color borderSubtle;
   final Color borderDefault;
@@ -40,6 +41,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.textPlaceholder,
     required this.textInverse,
     required this.textArabic,
+    required this.dateSoft,
     required this.borderSubtle,
     required this.borderDefault,
     required this.borderStrong,
@@ -66,6 +68,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     textPlaceholder: AppColors.dune,
     textInverse: AppColors.ivory,
     textArabic: AppColors.date,
+    dateSoft: AppColors.dateSoft,
     borderSubtle: AppColors.sand,
     borderDefault: AppColors.dune,
     borderStrong: AppColors.date,
@@ -92,6 +95,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     textPlaceholder: AppColors.tobacco,
     textInverse: AppColors.darkOlive,
     textArabic: AppColors.amberSoft,
+    dateSoft: AppColors.amberSoft,
     borderSubtle: AppColors.cocoa,
     borderDefault: AppColors.tobacco,
     borderStrong: AppColors.dune,
@@ -119,6 +123,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? textPlaceholder,
     Color? textInverse,
     Color? textArabic,
+    Color? dateSoft,
     Color? borderSubtle,
     Color? borderDefault,
     Color? borderStrong,
@@ -144,6 +149,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         textPlaceholder: textPlaceholder ?? this.textPlaceholder,
         textInverse: textInverse ?? this.textInverse,
         textArabic: textArabic ?? this.textArabic,
+        dateSoft: dateSoft ?? this.dateSoft,
         borderSubtle: borderSubtle ?? this.borderSubtle,
         borderDefault: borderDefault ?? this.borderDefault,
         borderStrong: borderStrong ?? this.borderStrong,
@@ -173,6 +179,7 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       textPlaceholder: Color.lerp(textPlaceholder, other.textPlaceholder, t)!,
       textInverse: Color.lerp(textInverse, other.textInverse, t)!,
       textArabic: Color.lerp(textArabic, other.textArabic, t)!,
+      dateSoft: Color.lerp(dateSoft, other.dateSoft, t)!,
       borderSubtle: Color.lerp(borderSubtle, other.borderSubtle, t)!,
       borderDefault: Color.lerp(borderDefault, other.borderDefault, t)!,
       borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,

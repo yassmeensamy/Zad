@@ -40,8 +40,6 @@ class _SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<_SplashView>
     with TickerProviderStateMixin {
-  static const _dateSoft = Color(0xFF8D5C36);
-
   late final AnimationController _intro = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2400),
@@ -141,7 +139,7 @@ class _SplashViewState extends State<_SplashView>
                           controller: _intro,
                           start: 0.42,
                           end: 0.6,
-                          child: ZaadBrand(dateSoft: _dateSoft),
+                          child: const ZaadBrand(),
                         ),
                       ],
                     ),

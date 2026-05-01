@@ -61,6 +61,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_slidable: ^4.0.3
   timeago: ^3.7.1
+  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - assets/animations/
     - .env
 
   fonts:

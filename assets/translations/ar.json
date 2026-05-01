@@ -165,6 +165,7 @@
     "password": "كلمة المرور",
     "forgot_password": "هل نسيت كلمة المرور؟",
     "email_hint": "you@example.com",
+    "password_hint": "كلمة المرور",
     "or_continue": "أو تابع باستخدام",
     "continue_google": "المتابعة باستخدام Google",
     "login_screen": {

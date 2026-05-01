@@ -10,13 +10,11 @@ class AuthPromptLink extends StatelessWidget {
     super.key,
     required this.prompt,
     required this.action,
-    required this.dateSoft,
     required this.onTap,
   });
 
   final String prompt;
   final String action;
-  final Color dateSoft;
   final VoidCallback onTap;
 
   @override
@@ -32,7 +30,7 @@ class AuthPromptLink extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               height: 1.4,
-              color: dateSoft,
+              color: colors.dateSoft,
             ),
             children: [
               TextSpan(text: prompt.tr()),

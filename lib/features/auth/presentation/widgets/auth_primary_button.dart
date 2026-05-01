@@ -27,7 +27,6 @@ class AuthPrimaryButton extends StatelessWidget {
       loading: loading,
       enabled: enabled,
       height: 46,
-      trailingIcon: Icons.arrow_forward_rounded,
     );
   }
 }

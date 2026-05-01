@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,8 +34,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _awaitingSignupResult = false;
   bool _successShown = false;
   bool _allFilled = false;
-
-  static const _dateSoft = Color(0xFFA8825C);
 
   @override
   void initState() {
@@ -106,11 +105,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocListener<AuthCubit, AuthState>(
-      listener: _onAuthStateChanged,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: DesertBackground(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: _onAuthStateChanged,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: DesertBackground(
           child: SafeArea(
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
@@ -120,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 24),
                   const ZaadLogoMark(size: 84),
                   const SizedBox(height: 22),
-                  const ZaadBrand.compact(dateSoft: _dateSoft),
+                  const ZaadBrand.compact(),
                   const SizedBox(height: 24),
                   const _Headline(),
                   const SizedBox(height: 22),
@@ -151,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 12),
                   ZaadTextField(
-                    hintText: '••••••••',
+                    hintText: 'auth.password_hint',
                     controller: _passwordController,
                     obscureText: true,
                     passwordToggle: true,
@@ -190,7 +195,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   AuthPromptLink(
                     prompt: 'auth.signup_screen.have_account_prompt',
                     action: 'auth.signup_screen.sign_in',
-                    dateSoft: _dateSoft,
                     onTap: _onGoToLogin,
                   ),
                 ],
@@ -198,6 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

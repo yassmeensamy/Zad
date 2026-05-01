@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,7 +10,6 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
-import '../../../splash/widgets/zaad_logo_mark.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -31,8 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _allFilled = false;
 
-  static const _dateSoft = Color(0xFFA8825C);
-
   @override
   void initState() {
     super.initState();
@@ -48,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _recomputeFilled() {
-    final filled = _emailController.text.trim().isNotEmpty &&
+    final filled =
+        _emailController.text.trim().isNotEmpty &&
         _passwordController.text.isNotEmpty;
     if (filled != _allFilled) {
       setState(() => _allFilled = filled);
@@ -87,11 +86,17 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocListener<AuthCubit, AuthState>(
-      listener: _onAuthStateChanged,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: DesertBackground(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: _onAuthStateChanged,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: DesertBackground(
           child: SafeArea(
             child: SingleChildScrollView(
               physics: ClampingScrollPhysics(),
@@ -99,12 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  const ZaadLogoMark(size: 84),
-                  const SizedBox(height: 22),
-                  const ZaadBrand.compact(dateSoft: _dateSoft),
+                  const ZaadBrand.compact(),
                   const SizedBox(height: 24),
-                  _Headline(dateSoft: _dateSoft),
-                  const SizedBox(height: 22),
+                  const _Headline(),
+                  const SizedBox(height: 24),
                   ZaadTextField(
                     hintText: 'auth.email_hint',
                     controller: _emailController,
@@ -119,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 12),
                   ZaadTextField(
-                    hintText: '••••••••',
+                    hintText: 'auth.password_hint',
                     controller: _passwordController,
                     obscureText: true,
                     passwordToggle: true,
@@ -131,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       size: 20,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: InkWell(
@@ -145,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ResponsiveText(
                           'auth.forgot_password',
                           style: TextStyle(
-                            fontSize: 11.5,
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
                             color: colors.olive,
                           ),
@@ -153,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (previous, current) =>
                         previous.isLoading != current.isLoading,
@@ -164,9 +167,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: _onSignIn,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   const AuthOrDivider(label: 'auth.or_continue'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (previous, current) =>
                         previous.isSocialLoading != current.isSocialLoading,
@@ -176,11 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: _onGoogle,
                     ),
                   ),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 24),
                   AuthPromptLink(
                     prompt: 'auth.login_screen.new_prompt',
                     action: 'auth.login_screen.create_account',
-                    dateSoft: _dateSoft,
                     onTap: _onGoToSignUp,
                   ),
                 ],
@@ -189,13 +191,13 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+      ),
     );
   }
 }
 
 class _Headline extends StatelessWidget {
-  const _Headline({required this.dateSoft});
-  final Color dateSoft;
+  const _Headline();
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +221,7 @@ class _Headline extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 280),
           child: ResponsiveText(
@@ -228,7 +230,7 @@ class _Headline extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               height: 1.6,
-              color: dateSoft,
+              color: colors.dateSoft,
             ),
           ),
         ),

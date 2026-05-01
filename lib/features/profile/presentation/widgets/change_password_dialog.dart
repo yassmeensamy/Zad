@@ -180,9 +180,10 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: ResponsiveText(
                         'edit_profile.change_password_helper',
-                        style: TextStyle(
+                        style: AppTextStyles.labelMedium.copyWith(
                           fontSize: 11,
                           height: 1.5,
+                          letterSpacing: 0,
                           color: colors.textSecondary,
                         ),
                       ),
@@ -248,7 +249,7 @@ class _DialogHeader extends StatelessWidget {
                   TextSpan(text: '${titleLeadKey.tr()} '),
                   TextSpan(
                     text: titleAccentKey.tr(),
-                    style: TextStyle(
+                    style: AppTextStyles.titleLarge.copyWith(
                       fontStyle: FontStyle.italic,
                       color: colors.textArabic,
                     ),
@@ -381,17 +382,15 @@ class _PwdFieldState extends State<_PwdField> {
                             formState.didChange(v);
                           },
                           onSubmitted: widget.onSubmitted,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                          style: AppTextStyles.labelLarge.copyWith(
+                            letterSpacing: 0,
                             color: colors.oliveDeep,
                           ),
                           decoration: InputDecoration(
                             isCollapsed: true,
                             border: InputBorder.none,
                             hintText: widget.hintKey.tr(),
-                            hintStyle: TextStyle(
-                              fontSize: 14,
+                            hintStyle: AppTextStyles.bodyMedium.copyWith(
                               color: colors.textSecondary
                                   .withValues(alpha: 0.7),
                             ),
@@ -427,10 +426,10 @@ class _PwdFieldState extends State<_PwdField> {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   errorMessage,
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
+                    letterSpacing: 0,
                     color: errorColor,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

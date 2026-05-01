@@ -158,8 +158,8 @@ class _SplashViewState extends State<_SplashView>
                       'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
                       textAlign: TextAlign.center,
                       textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: AppTextStyles.titleLarge.copyWith(
+                        fontWeight: FontWeight.w400,
                         color: colors.textArabic,
                       ),
                     ),
@@ -181,8 +181,7 @@ class _SplashViewState extends State<_SplashView>
                         child: ResponsiveText(
                           'LOADING...',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 10,
+                          style: AppTextStyles.labelSmall.copyWith(
                             fontWeight: FontWeight.w600,
                             letterSpacing: 3,
                             color: colors.textArabic,

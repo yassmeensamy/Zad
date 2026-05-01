@@ -118,7 +118,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
           animation: _title,
           child: Text.rich(
             TextSpan(
-              style: TextStyle(
+              style: AppTextStyles.displayMedium.copyWith(
                 fontSize: 26,
                 fontWeight: FontWeight.w300,
                 height: 1.15,
@@ -129,10 +129,11 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
                 TextSpan(text: 'auth.signup_success.title_prefix'.tr()),
                 TextSpan(
                   text: 'auth.signup_success.title_accent'.tr(),
-                  style: TextStyle(
+                  style: AppTextStyles.displayMedium.copyWith(
                     fontSize: 26,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
                     color: colors.textArabic,
                   ),
                 ),
@@ -147,8 +148,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
           child: Text(
             'auth.signup_success.subtitle'.tr(),
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
+            style: AppTextStyles.bodyMedium.copyWith(
               height: 1.5,
               color: colors.textSecondary,
             ),
@@ -169,7 +169,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
                 colors: [colors.olive, colors.oliveDeep],
               ),
               textColor: colors.textInverse,
-              textStyle: TextStyle(
+              textStyle: AppTextStyles.labelLarge.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.6,

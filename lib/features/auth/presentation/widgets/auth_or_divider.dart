@@ -20,9 +20,7 @@ class AuthOrDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: ResponsiveText(
             label,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
+            style: AppTextStyles.labelSmall.copyWith(
               letterSpacing: 3,
               color: labelColor,
             ),

@@ -48,9 +48,8 @@ class ZaadTextField extends StatelessWidget {
       validator: validator,
       autovalidateMode: autovalidateMode,
       iconSize: 20,
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
+      style: AppTextStyles.labelLarge.copyWith(
+        letterSpacing: 0,
         color: colors.oliveDeep,
       ),
     );

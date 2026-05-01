@@ -176,17 +176,16 @@ class _DeleteAccountCard extends StatelessWidget {
           children: [
             ResponsiveText(
               'edit_profile.delete_account',
-              style: TextStyle(
-                fontSize: 18,
+              style: AppTextStyles.titleLarge.copyWith(
                 fontWeight: FontWeight.w700,
-                color: tint,
                 letterSpacing: -0.2,
+                color: tint,
               ),
             ),
             const SizedBox(height: 6),
             ResponsiveText(
               'edit_profile.delete_account_description',
-              style: TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 12.5,
                 height: 1.5,
                 color: colors.textSecondary,
@@ -218,11 +217,10 @@ class _DeleteAccountCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       ResponsiveText(
                         'edit_profile.delete_account_cta',
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: AppTextStyles.labelMedium.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: tint,
                           letterSpacing: 2.16,
+                          color: tint,
                         ),
                       ),
                     ],
@@ -277,7 +275,7 @@ class _DialogHeader extends StatelessWidget {
                   TextSpan(text: '${titleLeadKey.tr()} '),
                   TextSpan(
                     text: titleAccentKey.tr(),
-                    style: TextStyle(
+                    style: AppTextStyles.titleLarge.copyWith(
                       fontStyle: FontStyle.italic,
                       color: accentColor,
                     ),
@@ -410,17 +408,15 @@ class _PwdFieldState extends State<_PwdField> {
                             formState.didChange(v);
                           },
                           onSubmitted: widget.onSubmitted,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                          style: AppTextStyles.labelLarge.copyWith(
+                            letterSpacing: 0,
                             color: colors.oliveDeep,
                           ),
                           decoration: InputDecoration(
                             isCollapsed: true,
                             border: InputBorder.none,
                             hintText: widget.hintKey.tr(),
-                            hintStyle: TextStyle(
-                              fontSize: 14,
+                            hintStyle: AppTextStyles.bodyMedium.copyWith(
                               color: colors.textSecondary
                                   .withValues(alpha: 0.7),
                             ),
@@ -456,10 +452,10 @@ class _PwdFieldState extends State<_PwdField> {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   errorMessage,
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
+                    letterSpacing: 0,
                     color: errorColor,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -569,11 +565,11 @@ class _DeletePasswordDialogState extends State<_DeletePasswordDialog> {
                           Expanded(
                             child: ResponsiveText(
                               'edit_profile.delete_password_helper',
-                              style: TextStyle(
+                              style: AppTextStyles.labelMedium.copyWith(
                                 fontSize: 11,
                                 height: 1.5,
+                                letterSpacing: 0,
                                 color: errorColor.withValues(alpha: 0.85),
-                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),

@@ -155,7 +155,7 @@ class _TopSnackBarState extends State<_TopSnackBar>
                       Expanded(
                         child: ResponsiveText(
                           widget.message.tr(),
-                          style: TextStyle(
+                          style: AppTextStyles.labelLarge.copyWith(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: colors.canvas,

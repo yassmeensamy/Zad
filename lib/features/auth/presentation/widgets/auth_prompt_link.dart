@@ -27,7 +27,7 @@ class AuthPromptLink extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Text.rich(
           TextSpan(
-            style: TextStyle(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontSize: 13,
               height: 1.4,
               color: colors.dateSoft,
@@ -36,9 +36,10 @@ class AuthPromptLink extends StatelessWidget {
               TextSpan(text: prompt.tr()),
               TextSpan(
                 text: action.tr(),
-                style: TextStyle(
+                style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
                   color: colors.olive,
                 ),
               ),

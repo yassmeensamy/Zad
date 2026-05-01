@@ -131,9 +131,9 @@ class _ClearAllButton extends StatelessWidget {
       ),
       child: ResponsiveText(
         'notifications.clear_all',
-        style: TextStyle(
-          fontSize: 12,
+        style: AppTextStyles.labelMedium.copyWith(
           fontWeight: FontWeight.w700,
+          letterSpacing: 0,
           color: colors.accentDeep,
         ),
       ),

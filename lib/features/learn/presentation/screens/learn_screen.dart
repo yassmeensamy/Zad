@@ -279,11 +279,11 @@ class _OverallProgress extends StatelessWidget {
                 ),
                 Text(
                   '$percent%',
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: colors.accentDeep,
                     letterSpacing: 0.2,
+                    color: colors.accentDeep,
                   ),
                 ),
               ],
@@ -296,7 +296,7 @@ class _OverallProgress extends StatelessWidget {
               children: [
                 ResponsiveText(
                   'learn.overall.label',
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,

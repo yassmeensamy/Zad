@@ -47,7 +47,7 @@ class PasswordPill extends StatelessWidget {
                   hasPassword
                       ? 'create_profiles.password_set'
                       : 'create_profiles.password_set_cta',
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 11.5 * 0.18,

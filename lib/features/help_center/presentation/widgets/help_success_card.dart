@@ -70,10 +70,11 @@ class HelpSuccessCard extends StatelessWidget {
             ResponsiveText(
               'help_center.success.title',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: AppTextStyles.headlineLarge.copyWith(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 height: 1.25,
+                letterSpacing: 0,
                 color: colors.oliveDeep,
               ),
             ),
@@ -81,7 +82,7 @@ class HelpSuccessCard extends StatelessWidget {
             ResponsiveText(
               'help_center.success.subtitle',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontSize: 13,
                 height: 1.55,
                 color: colors.textSecondary,
@@ -111,9 +112,9 @@ class HelpSuccessCard extends StatelessWidget {
               ),
               child: ResponsiveText(
                 'help_center.success.send_another',
-                style: TextStyle(
-                  fontSize: 14,
+                style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
                   color: colors.canvas,
                 ),
               ),
@@ -123,9 +124,10 @@ class HelpSuccessCard extends StatelessWidget {
               onPressed: onClose,
               child: ResponsiveText(
                 'help_center.success.close',
-                style: TextStyle(
+                style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
                   color: colors.textSecondary,
                 ),
               ),
@@ -227,29 +229,31 @@ class _ReceiptRow extends StatelessWidget {
           Expanded(
             child: ResponsiveText(
               labelKey,
-              style: TextStyle(
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w700,
-                color: colors.textSecondary,
                 letterSpacing: 0.5,
+                color: colors.textSecondary,
               ),
             ),
           ),
           if (isRaw)
             Text(
               value,
-              style: TextStyle(
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
+                letterSpacing: 0,
                 color: colors.oliveDeep,
               ),
             )
           else
             ResponsiveText(
               value,
-              style: TextStyle(
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
+                letterSpacing: 0,
                 color: colors.oliveDeep,
               ),
             ),

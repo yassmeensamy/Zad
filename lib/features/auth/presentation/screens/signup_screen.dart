@@ -224,10 +224,10 @@ class _Headline extends StatelessWidget {
           TextSpan(text: 'auth.signup_screen.headline_prefix'.tr()),
           TextSpan(
             text: 'auth.signup_screen.headline_accent'.tr(),
-            style: TextStyle(
-              fontSize: 28,
+            style: AppTextStyles.displayMedium.copyWith(
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w400,
+              letterSpacing: 0,
               color: colors.textArabic,
             ),
           ),

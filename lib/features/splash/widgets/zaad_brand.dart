@@ -47,7 +47,7 @@ class ZaadBrand extends StatelessWidget {
       children: [
         ResponsiveText(
           'Zaad',
-          style: TextStyle(
+          style: AppTextStyles.displayLarge.copyWith(
             fontSize: wordSize,
             fontWeight: FontWeight.w400,
             height: 1,
@@ -59,8 +59,9 @@ class ZaadBrand extends StatelessWidget {
         ResponsiveText(
           'زاد',
           textDirection: TextDirection.rtl,
-          style: TextStyle(
+          style: AppTextStyles.displayMedium.copyWith(
             fontSize: arabicSize,
+            letterSpacing: 0,
             color: colors.textArabic,
           ),
         ),
@@ -69,7 +70,7 @@ class ZaadBrand extends StatelessWidget {
         SizedBox(height: tagGap),
         ResponsiveText(
           tag.toUpperCase(),
-          style: TextStyle(
+          style: AppTextStyles.labelSmall.copyWith(
             fontSize: tagSize,
             fontWeight: FontWeight.w600,
             letterSpacing: tagSize * 0.42,

@@ -125,8 +125,7 @@ class CreateChildrenScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(6),
                           child: ResponsiveText(
                             'create_profiles.skip',
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.dateSoft,
                             ),
                           ),
@@ -216,9 +215,10 @@ class _Heading extends StatelessWidget {
               TextSpan(text: 'create_profiles.title_prefix'.tr()),
               TextSpan(
                 text: 'create_profiles.title_accent'.tr(),
-                style: TextStyle(
+                style: AppTextStyles.displayMedium.copyWith(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w400,
+                  letterSpacing: 0,
                   color: colors.textArabic,
                 ),
               ),
@@ -232,7 +232,7 @@ class _Heading extends StatelessWidget {
           child: ResponsiveText(
             'create_profiles.subtitle',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTextStyles.bodySmall.copyWith(
               fontSize: 12.5,
               height: 1.5,
               color: AppColors.dateSoft,
@@ -272,7 +272,7 @@ class _AddKidTile extends StatelessWidget {
               const SizedBox(width: 8),
               ResponsiveText(
                 'create_profiles.add_child',
-                style: TextStyle(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 12.5 * 0.18,

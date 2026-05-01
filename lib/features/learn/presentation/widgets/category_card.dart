@@ -82,12 +82,11 @@ class CategoryCard extends StatelessWidget {
                       category.titleKey,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: colors.textPrimary,
                         height: 1.15,
                         letterSpacing: -0.2,
+                        color: colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -95,11 +94,11 @@ class CategoryCard extends StatelessWidget {
                       category.subtitleKey,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: AppTextStyles.labelMedium.copyWith(
                         fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                        color: colors.textSecondary,
+                        letterSpacing: 0,
                         height: 1.35,
+                        color: colors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -117,11 +116,11 @@ class CategoryCard extends StatelessWidget {
                                       .tr(args: ['$percent'])
                                   : 'learn.progress.not_started'.tr(),
                               maxLines: 1,
-                              style: TextStyle(
+                              style: AppTextStyles.labelMedium.copyWith(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
-                                color: tint,
                                 letterSpacing: 0.2,
+                                color: tint,
                               ),
                             ),
                           ),
@@ -137,9 +136,10 @@ class CategoryCard extends StatelessWidget {
                                 '${category.totalLevels}',
                               ]),
                               maxLines: 1,
-                              style: TextStyle(
+                              style: AppTextStyles.labelMedium.copyWith(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
+                                letterSpacing: 0,
                                 color: colors.textTertiary,
                               ),
                             ),

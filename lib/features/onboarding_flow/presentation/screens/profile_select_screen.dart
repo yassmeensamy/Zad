@@ -105,7 +105,7 @@ class ProfileSelectScreen extends StatelessWidget {
                             const SizedBox(width: 6),
                             ResponsiveText(
                               'profile_select.manage',
-                              style: TextStyle(
+                              style: AppTextStyles.bodySmall.copyWith(
                                 fontSize: 11.5,
                                 color: AppColors.dateSoft,
                               ),
@@ -118,7 +118,7 @@ class ProfileSelectScreen extends StatelessWidget {
                         textDirection: ui.TextDirection.rtl,
                         child: Text(
                           'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-                          style: TextStyle(
+                          style: AppTextStyles.bodyMedium.copyWith(
                             fontSize: 13,
                             color: colors.oliveDeep.withValues(alpha: 0.55),
                           ),
@@ -159,9 +159,8 @@ class _Heading extends StatelessWidget {
               TextSpan(text: 'profile_select.title_prefix'.tr()),
               TextSpan(
                 text: 'profile_select.title_accent'.tr(),
-                style: TextStyle(
+                style: AppTextStyles.bodyLarge.copyWith(
                   fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400,
                   color: colors.textArabic,
                 ),
               ),
@@ -176,7 +175,7 @@ class _Heading extends StatelessWidget {
           child: ResponsiveText(
             'profile_select.subtitle',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontSize: 13,
               height: 1.5,
               color: AppColors.dateSoft,
@@ -292,7 +291,7 @@ class _ProfileCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   ResponsiveText(
                     entry.name,
-                    style: TextStyle(
+                    style: AppTextStyles.headlineMedium.copyWith(
                       fontSize: 19,
                       fontWeight: FontWeight.w400,
                       letterSpacing: -0.2,
@@ -305,8 +304,7 @@ class _ProfileCard extends StatelessWidget {
                         ? 'profile_select.role_parent'.tr().toUpperCase()
                         : 'profile_select.age_label'
                             .tr(args: ['${entry.age}']).toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 10,
+                    style: AppTextStyles.labelSmall.copyWith(
                       fontWeight: FontWeight.w600,
                       letterSpacing: 10 * 0.18,
                       color: entry.isParent
@@ -337,9 +335,10 @@ class _ProfileCard extends StatelessWidget {
                           const SizedBox(width: 5),
                           Text(
                             '${entry.streak} ${'profile_select.days'.tr()}',
-                            style: TextStyle(
+                            style: AppTextStyles.labelSmall.copyWith(
                               fontSize: 10.5,
                               fontWeight: FontWeight.w600,
+                              letterSpacing: 0,
                               color: colors.accentDeep,
                             ),
                           ),
@@ -396,7 +395,7 @@ class _AddTile extends StatelessWidget {
               const SizedBox(height: 14),
               ResponsiveText(
                 'profile_select.add_child',
-                style: TextStyle(
+                style: AppTextStyles.headlineMedium.copyWith(
                   fontSize: 19,
                   fontWeight: FontWeight.w300,
                   fontStyle: FontStyle.italic,

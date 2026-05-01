@@ -18,12 +18,18 @@ class AvatarPickerSheet extends StatelessWidget {
       title: ResponsiveText(
         'create_profiles.sheet_title',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20, color: colors.oliveDeep),
+        style: AppTextStyles.headlineMedium.copyWith(
+          fontWeight: FontWeight.w400,
+          color: colors.oliveDeep,
+        ),
       ),
       subtitle: ResponsiveText(
         'create_profiles.sheet_sub',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 11, color: AppColors.dateSoft),
+        style: AppTextStyles.bodySmall.copyWith(
+          fontSize: 11,
+          color: AppColors.dateSoft,
+        ),
       ),
       child: GridView.builder(
         shrinkWrap: true,

@@ -56,11 +56,11 @@ class NotificationCard extends StatelessWidget {
               children: [
                 ResponsiveText(
                   notification.title,
-                  style: TextStyle(
+                  style: AppTextStyles.titleMedium.copyWith(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: colors.oliveDeep,
                     height: 1.3,
+                    color: colors.oliveDeep,
                   ),
                 ),
                 if (notification.messageBody != null &&
@@ -68,11 +68,10 @@ class NotificationCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   ResponsiveText(
                     notification.messageBody,
-                    style: TextStyle(
+                    style: AppTextStyles.bodyMedium.copyWith(
                       fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: colors.textSecondary,
                       height: 1.45,
+                      color: colors.textSecondary,
                     ),
                   ),
                 ],
@@ -86,9 +85,9 @@ class NotificationCard extends StatelessWidget {
                           notification.createdAt!,
                           locale: context.locale.languageCode,
                         ),
-                        style: TextStyle(
+                        style: AppTextStyles.labelMedium.copyWith(
                           fontSize: 11,
-                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0,
                           color: colors.textTertiary,
                         ),
                       ),

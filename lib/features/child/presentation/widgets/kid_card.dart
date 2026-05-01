@@ -204,7 +204,7 @@ class _MiniField extends StatelessWidget {
         children: [
           ResponsiveText(
             label.toUpperCase(),
-            style: TextStyle(
+            style: AppTextStyles.labelSmall.copyWith(
               fontSize: 8,
               fontWeight: FontWeight.w600,
               letterSpacing: 8 * 0.3,
@@ -215,9 +215,9 @@ class _MiniField extends StatelessWidget {
             initialValue: initial,
             onChanged: onChanged,
             keyboardType: keyboardType,
-            style: TextStyle(
+            style: AppTextStyles.labelLarge.copyWith(
               fontSize: 13.5,
-              fontWeight: FontWeight.w500,
+              letterSpacing: 0,
               color: colors.oliveDeep,
             ),
             decoration: InputDecoration(
@@ -229,7 +229,7 @@ class _MiniField extends StatelessWidget {
               filled: false,
               contentPadding: EdgeInsets.zero,
               hintText: hint,
-              hintStyle: TextStyle(
+              hintStyle: AppTextStyles.bodyMedium.copyWith(
                 fontSize: 13.5,
                 color: colors.oliveSoft.withValues(alpha: 0.45),
               ),

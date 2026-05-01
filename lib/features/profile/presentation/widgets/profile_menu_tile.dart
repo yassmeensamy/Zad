@@ -35,20 +35,20 @@ class ProfileMenuTile extends StatelessWidget {
               Expanded(
                 child: ResponsiveText(
                   item.titleKey,
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: AppTextStyles.labelLarge.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
                     height: 1.2,
+                    letterSpacing: 0,
+                    color: colors.textPrimary,
                   ),
                 ),
               ),
               if (hasTrailingText) ...[
                 ResponsiveText(
                   item.trailingText!,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    letterSpacing: 0,
                     color: colors.accentDeep.withValues(alpha: 0.75),
                   ),
                 ),

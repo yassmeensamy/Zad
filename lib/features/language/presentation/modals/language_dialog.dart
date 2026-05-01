@@ -161,7 +161,7 @@ class _LanguageHeader extends StatelessWidget {
                   TextSpan(text: '${'language_title_lead'.tr()} '),
                   TextSpan(
                     text: 'language_title_accent'.tr(),
-                    style: TextStyle(
+                    style: AppTextStyles.titleLarge.copyWith(
                       fontStyle: FontStyle.italic,
                       color: colors.textArabic,
                     ),
@@ -233,9 +233,8 @@ class _LanguageTile extends StatelessWidget {
                       children: [
                         Text(
                           option.native,
-                          style: TextStyle(
+                          style: AppTextStyles.titleMedium.copyWith(
                             fontSize: option.isArabic ? 18 : 16,
-                            fontWeight: FontWeight.w500,
                             height: 1.1,
                             color: colors.oliveDeep,
                           ),
@@ -243,10 +242,10 @@ class _LanguageTile extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           option.english,
-                          style: TextStyle(
+                          style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 11,
-                            color: colors.textArabic,
                             letterSpacing: 0.4,
+                            color: colors.textArabic,
                           ),
                         ),
                       ],
@@ -293,11 +292,10 @@ class _FlagBadge extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         flag,
-        style: TextStyle(
+        style: AppTextStyles.titleLarge.copyWith(
           fontSize: isArabic ? 18 : 13,
-          fontWeight: FontWeight.w500,
-          color: colors.oliveDeep,
           height: 1,
+          color: colors.oliveDeep,
         ),
       ),
     );

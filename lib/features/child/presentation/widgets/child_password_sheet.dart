@@ -68,12 +68,18 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
       title: ResponsiveText(
         'create_profiles.password_sheet_title',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20, color: colors.oliveDeep),
+        style: AppTextStyles.headlineMedium.copyWith(
+          fontWeight: FontWeight.w400,
+          color: colors.oliveDeep,
+        ),
       ),
       subtitle: Text(
         'create_profiles.password_sheet_sub'.tr(args: [name]),
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 11, color: AppColors.dateSoft),
+        style: AppTextStyles.bodySmall.copyWith(
+          fontSize: 11,
+          color: AppColors.dateSoft,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,7 +99,10 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
             const SizedBox(height: 6),
             Text(
               _error!,
-              style: TextStyle(fontSize: 11.5, color: AppColors.date),
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 11.5,
+                color: AppColors.date,
+              ),
             ),
           ],
           const SizedBox(height: 18),
@@ -144,7 +153,7 @@ class _PasswordField extends StatelessWidget {
               children: [
                 ResponsiveText(
                   'create_profiles.password_label',
-                  style: TextStyle(
+                  style: AppTextStyles.labelSmall.copyWith(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 9 * 0.3,
@@ -158,9 +167,7 @@ class _PasswordField extends StatelessWidget {
                   onChanged: onChanged,
                   onSubmitted: onSubmitted,
                   textInputAction: TextInputAction.done,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                  style: AppTextStyles.labelLarge.copyWith(
                     color: colors.oliveDeep,
                     letterSpacing: obscure ? 3 : 0,
                   ),
@@ -172,7 +179,7 @@ class _PasswordField extends StatelessWidget {
                     filled: false,
                     contentPadding: EdgeInsets.zero,
                     hintText: 'create_profiles.password_hint'.tr(),
-                    hintStyle: TextStyle(
+                    hintStyle: AppTextStyles.bodyMedium.copyWith(
                       fontSize: 13.5,
                       color: colors.oliveSoft.withValues(alpha: 0.45),
                     ),

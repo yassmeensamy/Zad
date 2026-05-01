@@ -53,8 +53,7 @@ class EmptyState extends StatelessWidget {
             ResponsiveText(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
+              style: AppTextStyles.headlineMedium.copyWith(
                 fontWeight: FontWeight.w700,
                 color: colors.oliveDeep,
               ),
@@ -64,9 +63,8 @@ class EmptyState extends StatelessWidget {
               ResponsiveText(
                 subtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 13,
-                  fontWeight: FontWeight.w500,
                   color: colors.olive.withValues(alpha: 0.7),
                   height: 1.4,
                 ),

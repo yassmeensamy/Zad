@@ -147,9 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: ResponsiveText(
                           'auth.forgot_password',
-                          style: TextStyle(
+                          style: AppTextStyles.labelLarge.copyWith(
                             fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0,
                             color: colors.olive,
                           ),
                         ),
@@ -211,9 +211,8 @@ class _Headline extends StatelessWidget {
               TextSpan(text: 'auth.login_screen.welcome_prefix'.tr()),
               TextSpan(
                 text: 'auth.login_screen.welcome_accent'.tr(),
-                style: TextStyle(
+                style: AppTextStyles.bodyLarge.copyWith(
                   fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400,
                   color: colors.textArabic,
                 ),
               ),
@@ -227,9 +226,8 @@ class _Headline extends StatelessWidget {
           child: ResponsiveText(
             'auth.login_screen.subtitle',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTextStyles.bodyMedium.copyWith(
               fontSize: 13,
-              height: 1.6,
               color: colors.dateSoft,
             ),
           ),

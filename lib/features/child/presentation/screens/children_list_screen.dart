@@ -301,9 +301,9 @@ class _BottomBar extends StatelessWidget {
                       backgroundColor: colors.olive,
                       textColor: colors.canvas,
                       borderRadius: 14,
-                      textStyle: TextStyle(
-                        fontSize: 14,
+                      textStyle: AppTextStyles.labelLarge.copyWith(
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
                         color: colors.canvas,
                       ),
                     ),
@@ -330,9 +330,9 @@ class _BottomBar extends StatelessWidget {
                       const SizedBox(width: 8),
                       ResponsiveText(
                         'create_profiles.add_child',
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: AppTextStyles.labelLarge.copyWith(
                           fontWeight: FontWeight.w700,
+                          letterSpacing: 0,
                           color: colors.olive,
                         ),
                       ),

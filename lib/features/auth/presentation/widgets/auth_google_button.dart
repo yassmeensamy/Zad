@@ -42,9 +42,10 @@ class AuthGoogleButton extends StatelessWidget {
           const SizedBox(width: 10),
           ResponsiveText(
             label,
-            style: TextStyle(
+            style: AppTextStyles.labelLarge.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0,
               color: colors.oliveDeep,
             ),
           ),

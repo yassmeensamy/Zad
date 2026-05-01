@@ -82,14 +82,14 @@ class LevelTile extends StatelessWidget {
                                   level.titleKey,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: AppTextStyles.labelLarge.copyWith(
                                     fontSize: 14.5,
                                     fontWeight: FontWeight.w700,
+                                    height: 1.2,
+                                    letterSpacing: -0.1,
                                     color: locked
                                         ? colors.textTertiary
                                         : colors.textPrimary,
-                                    height: 1.2,
-                                    letterSpacing: -0.1,
                                   ),
                                 ),
                               ),
@@ -105,13 +105,11 @@ class LevelTile extends StatelessWidget {
                             level.descriptionKey,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                            style: AppTextStyles.labelMedium.copyWith(
+                              letterSpacing: 0,
                               color: locked
                                   ? colors.textPlaceholder
                                   : colors.textSecondary,
-                              height: 1.4,
                             ),
                           ),
                           if (unlocked) ...[
@@ -125,9 +123,10 @@ class LevelTile extends StatelessWidget {
                               'learn.progress.percent'.tr(
                                 args: ['${(level.progress * 100).round()}'],
                               ),
-                              style: TextStyle(
+                              style: AppTextStyles.labelMedium.copyWith(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
                                 color: tint,
                               ),
                             ),
@@ -210,7 +209,7 @@ class _Rail extends StatelessWidget {
                       )
                     : Text(
                         '${level.index}',
-                        style: TextStyle(
+                        style: AppTextStyles.bodyMedium.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
                           color: badgeFg,
@@ -280,11 +279,10 @@ class _StateChip extends StatelessWidget {
           const SizedBox(width: 4),
           ResponsiveText(
             labelKey,
-            style: TextStyle(
-              fontSize: 10,
+            style: AppTextStyles.labelSmall.copyWith(
               fontWeight: FontWeight.w800,
-              color: fg,
               letterSpacing: 0.6,
+              color: fg,
             ),
           ),
         ],

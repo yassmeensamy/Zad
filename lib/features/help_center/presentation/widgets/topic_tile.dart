@@ -106,11 +106,9 @@ class TopicTile extends StatelessWidget {
                 topic.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14,
+                style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.w800,
                   color: selected ? accent : colors.oliveDeep,
-                  letterSpacing: 0.1,
                 ),
               ),
               const SizedBox(height: 2),
@@ -119,7 +117,7 @@ class TopicTile extends StatelessWidget {
                   topic.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: AppTextStyles.bodySmall.copyWith(
                     fontSize: 11.5,
                     height: 1.3,
                     color: colors.textSecondary,

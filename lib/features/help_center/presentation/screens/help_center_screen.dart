@@ -249,11 +249,11 @@ class _ComposerLayer extends StatelessWidget {
               const SizedBox(width: 6),
               ResponsiveText(
                 'help_center.reply_window',
-                style: TextStyle(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w600,
-                  color: colors.textTertiary,
                   letterSpacing: 0.2,
+                  color: colors.textTertiary,
                 ),
               ),
             ],
@@ -297,11 +297,11 @@ class _Greeting extends StatelessWidget {
               const SizedBox(width: 8),
               ResponsiveText(
                 'help_center.eyebrow',
-                style: TextStyle(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: colors.oliveDeep,
                   letterSpacing: 0.6,
+                  color: colors.oliveDeep,
                 ),
               ),
             ],
@@ -310,17 +310,17 @@ class _Greeting extends StatelessWidget {
         const SizedBox(height: 18),
         ResponsiveText(
           'help_center.heading',
-          style: TextStyle(
-            fontSize: 28,
+          style: AppTextStyles.displayMedium.copyWith(
             fontWeight: FontWeight.w700,
             height: 1.2,
+            letterSpacing: 0,
             color: colors.oliveDeep,
           ),
         ),
         const SizedBox(height: 10),
         ResponsiveText(
           'help_center.lede',
-          style: TextStyle(
+          style: AppTextStyles.bodyMedium.copyWith(
             fontSize: 13.5,
             height: 1.55,
             color: colors.textSecondary,
@@ -423,7 +423,7 @@ class _PromptHint extends StatelessWidget {
           Expanded(
             child: ResponsiveText(
               'help_center.pick_topic_hint',
-              style: TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 12.5,
                 height: 1.45,
                 color: colors.textSecondary,
@@ -490,12 +490,13 @@ class _ComposerCard extends StatelessWidget {
               horizontal: 14,
               vertical: 10,
             ),
-            style: TextStyle(
+            style: AppTextStyles.labelLarge.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0,
               color: colors.oliveDeep,
             ),
-            hintStyle: TextStyle(
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
               fontSize: 13,
               color: colors.textPlaceholder,
             ),
@@ -552,11 +553,10 @@ class _SelectedTopicChip extends StatelessWidget {
               const SizedBox(width: 8),
               ResponsiveText(
                 topic.label,
-                style: TextStyle(
-                  fontSize: 12,
+                style: AppTextStyles.labelMedium.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: accent,
                   letterSpacing: 0.2,
+                  color: accent,
                 ),
               ),
             ],
@@ -613,9 +613,10 @@ class _CharacterFloor extends StatelessWidget {
               reached
                   ? 'help_center.ready_to_send'
                   : 'help_center.char_floor',
-              style: TextStyle(
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w600,
+                letterSpacing: 0,
                 color: reached ? colors.success : colors.textTertiary,
               ),
             ),
@@ -623,9 +624,10 @@ class _CharacterFloor extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '($remaining)',
-                style: TextStyle(
+                style: AppTextStyles.labelMedium.copyWith(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
                   color: colors.textTertiary,
                 ),
               ),
@@ -679,11 +681,10 @@ class _SendButton extends StatelessWidget {
                 state.isSending
                     ? 'help_center.sending'
                     : 'help_center.send_cta',
-                style: TextStyle(
-                  fontSize: 14,
+                style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: colors.canvas,
                   letterSpacing: 0.3,
+                  color: colors.canvas,
                 ),
               ),
             ],

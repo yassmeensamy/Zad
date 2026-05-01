@@ -284,11 +284,10 @@ class _Hero extends StatelessWidget {
                           ]),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16,
+                          style: AppTextStyles.titleMedium.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: colors.textPrimary,
                             height: 1.2,
+                            color: colors.textPrimary,
                           ),
                         ),
                       ],
@@ -331,9 +330,9 @@ class _Hero extends StatelessWidget {
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
                         'learn.progress.percent'.tr(args: ['$percent']),
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: AppTextStyles.labelMedium.copyWith(
                           fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
                           color: tint,
                         ),
                       ),
@@ -349,9 +348,9 @@ class _Hero extends StatelessWidget {
                           '${category.completedLevels}',
                           '${category.totalLevels}',
                         ]),
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: AppTextStyles.labelMedium.copyWith(
                           fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
                           color: colors.textTertiary,
                         ),
                       ),

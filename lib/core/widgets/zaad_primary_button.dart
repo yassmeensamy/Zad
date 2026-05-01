@@ -114,7 +114,7 @@ class ZaadPrimaryButton extends StatelessWidget {
                           ],
                           ResponsiveText(
                             label,
-                            style: TextStyle(
+                            style: AppTextStyles.labelLarge.copyWith(
                               fontSize: fontSize,
                               fontWeight: FontWeight.w600,
                               letterSpacing: letterSpacing,

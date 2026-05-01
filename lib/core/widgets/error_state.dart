@@ -33,7 +33,7 @@ class ErrorState extends StatelessWidget {
             ResponsiveText(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: AppTextStyles.bodyMedium.copyWith(
                 fontSize: 13,
                 color: colors.textArabic,
               ),
@@ -50,7 +50,7 @@ class ErrorState extends StatelessWidget {
                 ),
                 child: ResponsiveText(
                   retryLabelKey,
-                  style: TextStyle(
+                  style: AppTextStyles.labelLarge.copyWith(
                     fontWeight: FontWeight.w700,
                     color: colors.oliveDeep,
                   ),

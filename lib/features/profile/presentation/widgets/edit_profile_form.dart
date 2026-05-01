@@ -145,7 +145,7 @@ class _FieldGroup extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: 4),
             child: ResponsiveText(
               helper!,
-              style: TextStyle(
+              style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 11,
                 color: colors.textSecondary,
               ),
@@ -190,9 +190,10 @@ class _CardAvatar extends StatelessWidget {
             alignment: Alignment.center,
             child: ResponsiveText(
               initial,
-              style: TextStyle(
+              style: AppTextStyles.displayLarge.copyWith(
                 fontSize: 32,
                 fontWeight: FontWeight.w700,
+                letterSpacing: 0,
                 color: colors.canvas,
               ),
             ),
@@ -239,7 +240,7 @@ class _NameFieldState extends State<_NameField> {
         horizontal: 14,
         vertical: 10,
       ),
-      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      style: AppTextStyles.labelLarge.copyWith(letterSpacing: 0),
       onChanged: formCubit.setName,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
@@ -280,9 +281,8 @@ class _ReadOnlyField extends StatelessWidget {
           Expanded(
             child: ResponsiveText(
               text,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+              style: AppTextStyles.labelLarge.copyWith(
+                letterSpacing: 0,
                 color: colors.oliveDeep.withValues(alpha: 0.7),
               ),
               overflow: TextOverflow.ellipsis,
@@ -339,9 +339,8 @@ class _BirthDateField extends StatelessWidget {
               Expanded(
                 child: ResponsiveText(
                   label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                  style: AppTextStyles.labelLarge.copyWith(
+                    letterSpacing: 0,
                     color: hasDate ? colors.oliveDeep : colors.textSecondary,
                   ),
                 ),
@@ -418,8 +417,7 @@ class _CupertinoDatePickerSheetState extends State<_CupertinoDatePickerSheet> {
                     onPressed: () => Navigator.of(context).pop(),
                     child: ResponsiveText(
                       'common.cancel',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: colors.textSecondary,
                       ),
                     ),
@@ -430,9 +428,9 @@ class _CupertinoDatePickerSheetState extends State<_CupertinoDatePickerSheet> {
                     ).pop(_userChanged ? _selectedDate : null),
                     child: ResponsiveText(
                       'common.done',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: AppTextStyles.labelLarge.copyWith(
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
                         color: colors.olive,
                       ),
                     ),

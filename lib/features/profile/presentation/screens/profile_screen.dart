@@ -142,12 +142,12 @@ class _MihrabHero extends StatelessWidget {
           ResponsiveText(
             name.isEmpty ? '—' : name,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTextStyles.headlineLarge.copyWith(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: colors.oliveDeep,
               height: 1.2,
               letterSpacing: -0.2,
+              color: colors.oliveDeep,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -157,11 +157,10 @@ class _MihrabHero extends StatelessWidget {
             ResponsiveText(
               email,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 12.5,
-                fontWeight: FontWeight.w500,
-                color: colors.textSecondary,
                 letterSpacing: 0.2,
+                color: colors.textSecondary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -205,12 +204,12 @@ class _AvatarMedallion extends StatelessWidget {
       alignment: Alignment.center,
       child: ResponsiveText(
         initial,
-        style: TextStyle(
+        style: AppTextStyles.displayMedium.copyWith(
           fontSize: 26,
           fontWeight: FontWeight.w800,
-          color: colors.canvas,
           height: 1,
           letterSpacing: -0.4,
+          color: colors.canvas,
         ),
       ),
     );
@@ -354,11 +353,10 @@ class _SignOutButton extends StatelessWidget {
             const SizedBox(width: 10),
             ResponsiveText(
               'profile.sign_out',
-              style: TextStyle(
-                fontSize: 14,
+              style: AppTextStyles.labelLarge.copyWith(
                 fontWeight: FontWeight.w800,
-                color: errorColor,
                 letterSpacing: 0.4,
+                color: errorColor,
               ),
             ),
           ],
@@ -397,8 +395,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
         ResponsiveText(
           'profile.sign_out_confirm_title',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
+          style: AppTextStyles.titleLarge.copyWith(
             fontWeight: FontWeight.w800,
             color: colors.oliveDeep,
           ),
@@ -407,7 +404,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
         ResponsiveText(
           'profile.sign_out_confirm_subtitle',
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: AppTextStyles.bodyMedium.copyWith(
             fontSize: 13,
             height: 1.5,
             color: colors.textSecondary,
@@ -424,9 +421,9 @@ class _SignOutConfirmDialog extends StatelessWidget {
           ),
           child: ResponsiveText(
             'profile.sign_out_confirm_cta',
-            style: TextStyle(
-              fontSize: 14,
+            style: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.w700,
+              letterSpacing: 0,
               color: colors.canvas,
             ),
           ),
@@ -436,9 +433,9 @@ class _SignOutConfirmDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(false),
           child: ResponsiveText(
             'common.cancel',
-            style: TextStyle(
-              fontSize: 14,
+            style: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.w600,
+              letterSpacing: 0,
               color: colors.textSecondary,
             ),
           ),

@@ -11,6 +11,7 @@ class AppRoutes {
 
   static const String home = '/home';
   static const String learn = '/learn';
+  static const String categoryLevels = '/learn/category/:id';
   static const String leaderboard = '/leaderboard';
   static const String profile = '/profile';
   static const String myChildren = '/my-children';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String profileSelectName = 'profile-select';
   static const String homeName = 'home';
   static const String learnName = 'learn';
+  static const String categoryLevelsName = 'category-levels';
   static const String leaderboardName = 'leaderboard';
   static const String profileName = 'profile';
   static const String myChildrenName = 'my-children';

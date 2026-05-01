@@ -4,6 +4,7 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
+import '../../features/learn/presentation/screens/category_levels_screen.dart';
 import '../../features/learn/presentation/screens/learn_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -78,6 +79,13 @@ class AppRouter {
         path: AppRoutes.helpCenter,
         name: AppRoutes.helpCenterName,
         builder: (context, state) => const HelpCenterScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.categoryLevels,
+        name: AppRoutes.categoryLevelsName,
+        builder: (context, state) => CategoryLevelsScreen(
+          categoryId: state.pathParameters['id']!,
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

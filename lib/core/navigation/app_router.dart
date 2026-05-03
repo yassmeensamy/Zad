@@ -6,7 +6,9 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/categories/data/models/category_model.dart';
 import '../../features/categories/presentation/screens/categories_screen.dart';
+import '../../features/levels/data/models/level_model.dart';
 import '../../features/levels/presentation/screens/levels_screen.dart';
+import '../../features/quiz/presentation/screens/quiz_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
@@ -87,6 +89,14 @@ class AppRouter {
         builder: (context, state) => LevelsScreen(
           categoryId: state.pathParameters['id']!,
           category: state.extra as CategoryModel?,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.quiz,
+        name: AppRoutes.quizName,
+        builder: (context, state) => QuizScreen(
+          levelId: int.tryParse(state.pathParameters['levelId'] ?? '') ?? -1,
+          level: state.extra as LevelModel?,
         ),
       ),
       StatefulShellRoute.indexedStack(

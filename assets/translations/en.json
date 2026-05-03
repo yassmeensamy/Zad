@@ -93,6 +93,63 @@
       "locked": "LOCKED"
     }
   },
+  "quiz": {
+    "eyebrow": "QUIZ",
+    "question_eyebrow": "QUESTION",
+    "feedback": {
+      "correct_eyebrow": "WELL DONE",
+      "incorrect_eyebrow": "TRY AGAIN",
+      "explanation": "EXPLANATION",
+      "reference": "REFERENCE",
+      "correct_title_1": "Mashallah",
+      "correct_title_2": "Excellent",
+      "correct_title_3": "Brilliant",
+      "correct_title_4": "Well Done",
+      "wrong_title_1": "Try Again",
+      "wrong_title_2": "Keep Going",
+      "wrong_title_3": "Almost",
+      "wrong_title_4": "Stay Strong"
+    },
+    "actions": {
+      "save": "Save question",
+      "saved": "Saved for later review",
+      "report": "Report this question",
+      "report_sent": "Thank you, your report was received",
+      "next": "Next",
+      "finish": "Finish"
+    },
+    "report": {
+      "title": "What's wrong with this question?",
+      "reason_wrong_answer": "Incorrect answer",
+      "reason_unclear": "Question is unclear",
+      "reason_typo": "Spelling mistake",
+      "reason_other": "Other"
+    },
+    "result": {
+      "eyebrow": "JOURNEY OF KNOWLEDGE",
+      "points_label": "POINTS",
+      "questions_completed": "{} questions completed",
+      "revisited": "You revisited {} questions until mastery",
+      "closing": "May Allah grant you understanding 🌿",
+      "done": "Done",
+      "stat_correct": "Correct",
+      "stat_time": "Time",
+      "stat_xp_earned": "XP earned",
+      "stat_xp": "XP",
+      "stat_revisits": "Revisits"
+    },
+    "motivation": {
+      "correct_1": "Mashallah! A blessed answer 🌿",
+      "correct_2": "Barakallahu feek, keep going 💚",
+      "correct_3": "Excellent — may Allah increase you in knowledge 📖",
+      "wrong_1": "No worries, try again 🌱",
+      "wrong_2": "Every scholar starts here 📖",
+      "wrong_3": "So close — keep going 💚",
+      "finish_1": "The journey of knowledge continues 🌿",
+      "finish_2": "Knowledge is light — keep going 💡",
+      "finish_3": "May Allah grant you understanding and knowledge"
+    }
+  },
   "profile_select": {
     "eyebrow": "Profiles",
     "title_prefix": "Who's ",

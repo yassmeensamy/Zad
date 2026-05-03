@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/widgets/error_state.dart';
@@ -272,7 +273,13 @@ class _LevelCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: locked ? null : () {},
+        onTap: locked
+            ? null
+            : () => context.pushNamed(
+                  AppRoutes.quizName,
+                  pathParameters: {'levelId': level.id.toString()},
+                  extra: level,
+                ),
         borderRadius: ZaadRadii.xlAll,
         splashColor: tint.withValues(alpha: 0.08),
         child: Ink(

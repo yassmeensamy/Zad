@@ -93,6 +93,63 @@
       "locked": "مغلق"
     }
   },
+  "quiz": {
+    "eyebrow": "اختبار",
+    "question_eyebrow": "السؤال",
+    "feedback": {
+      "correct_eyebrow": "إجابة موفقة",
+      "incorrect_eyebrow": "حاول مرة أخرى",
+      "explanation": "الشرح",
+      "reference": "المصدر",
+      "correct_title_1": "ما شاء الله",
+      "correct_title_2": "أحسنت",
+      "correct_title_3": "ممتاز",
+      "correct_title_4": "بارك الله فيك",
+      "wrong_title_1": "حاول مجدداً",
+      "wrong_title_2": "لا تستسلم",
+      "wrong_title_3": "اقتربت",
+      "wrong_title_4": "واصل المسير"
+    },
+    "actions": {
+      "save": "احفظ السؤال",
+      "saved": "تم الحفظ للمراجعة",
+      "report": "الإبلاغ عن سؤال",
+      "report_sent": "شكراً لك، تم استلام إبلاغك",
+      "next": "التالي",
+      "finish": "إنهاء"
+    },
+    "report": {
+      "title": "ما المشكلة في هذا السؤال؟",
+      "reason_wrong_answer": "الإجابة غير صحيحة",
+      "reason_unclear": "السؤال غير واضح",
+      "reason_typo": "خطأ إملائي",
+      "reason_other": "سبب آخر"
+    },
+    "result": {
+      "eyebrow": "رحلة طلب العلم",
+      "points_label": "نقطة",
+      "questions_completed": "{} سؤال مكتمل",
+      "revisited": "راجعت {} أسئلة حتى أتقنتها",
+      "closing": "زادك الله فهماً وعلماً 🌿",
+      "done": "تم",
+      "stat_correct": "صحيحة",
+      "stat_time": "الوقت",
+      "stat_xp_earned": "النقاط المكتسبة",
+      "stat_xp": "النقاط",
+      "stat_revisits": "مراجعات"
+    },
+    "motivation": {
+      "correct_1": "ما شاء الله! إجابة موفقة 🌿",
+      "correct_2": "بارك الله فيك، استمر 💚",
+      "correct_3": "أحسنت، زادك الله علماً 📖",
+      "wrong_1": "لا بأس، حاول مجدداً 🌱",
+      "wrong_2": "كل طالب علم بدأ من هنا 📖",
+      "wrong_3": "اقتربت كثيراً، استمر 💚",
+      "finish_1": "رحلة طلب العلم مستمرة 🌿",
+      "finish_2": "العلم نور، فاستمر 💡",
+      "finish_3": "زادك الله فهماً وعلماً"
+    }
+  },
   "profile_select": {
     "eyebrow": "الملفات الشخصية",
     "title_prefix": "من ",

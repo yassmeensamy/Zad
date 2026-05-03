@@ -25,4 +25,10 @@ class AppEndpoint {
   // Levels
   String levelsByCategoryId(int categoryId) =>
       '${baseUrl}api/quiz/categories/$categoryId/levels';
+
+  // Quiz
+  String questionsByLevelId(int levelId) =>
+      '${baseUrl}api/quiz/levels/$levelId/questions';
+  String submitQuiz(int levelId) =>
+      '${baseUrl}api/quiz/levels/$levelId/submit';
 }

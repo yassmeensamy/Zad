@@ -10,8 +10,8 @@ class AppRoutes {
   static const String profileSelect = '/profile-select';
 
   static const String home = '/home';
-  static const String learn = '/learn';
-  static const String categoryLevels = '/learn/category/:id';
+  static const String categories = '/categories';
+  static const String categoryLevels = '/categories/:id';
   static const String leaderboard = '/leaderboard';
   static const String profile = '/profile';
   static const String myChildren = '/my-children';
@@ -27,7 +27,7 @@ class AppRoutes {
   static const String createProfilesName = 'create-profiles';
   static const String profileSelectName = 'profile-select';
   static const String homeName = 'home';
-  static const String learnName = 'learn';
+  static const String categoriesName = 'categories';
   static const String categoryLevelsName = 'category-levels';
   static const String leaderboardName = 'leaderboard';
   static const String profileName = 'profile';

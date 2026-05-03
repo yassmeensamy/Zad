@@ -9,27 +9,27 @@ import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
-import '../../data/models/learn_category.dart';
-import '../../data/repositories/learn_repository.dart';
-import '../cubit/learn_cubit.dart';
-import '../cubit/learn_state.dart';
+import '../../data/models/category_model.dart';
+import '../../data/repositories/categories_repository.dart';
+import '../cubit/categories_cubit.dart';
+import '../cubit/categories_state.dart';
 import '../utils/random_tint.dart';
 import '../widgets/category_card.dart';
 
-class LearnScreen extends StatelessWidget {
-  const LearnScreen({super.key});
+class CategoriesScreen extends StatelessWidget {
+  const CategoriesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LearnCubit>(
-      create: (_) => sl<LearnCubit>()..getCategories(),
-      child: const _LearnView(),
+    return BlocProvider<CategoriesCubit>(
+      create: (_) => sl<CategoriesCubit>()..getCategories(),
+      child: const _CategoriesView(),
     );
   }
 }
 
-class _LearnView extends StatelessWidget {
-  const _LearnView();
+class _CategoriesView extends StatelessWidget {
+  const _CategoriesView();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _LearnView extends StatelessWidget {
         child: Stack(
           children: [
             const _BackdropOrnament(),
-            BlocBuilder<LearnCubit, LearnState>(
+            BlocBuilder<CategoriesCubit, CategoriesState>(
               builder: (context, state) {
                 if (state.isLoading || state.isInitial) {
                   return const _LoadingSkeleton();
@@ -51,7 +51,7 @@ class _LearnView extends StatelessWidget {
                   return ErrorState(
                     message: state.errorMessage ?? 'errors.generic',
                     onRetry: () =>
-                        context.read<LearnCubit>().getCategories(),
+                        context.read<CategoriesCubit>().getCategories(),
                   );
                 }
                 return _LoadedView(state: state);
@@ -67,7 +67,7 @@ class _LearnView extends StatelessWidget {
 class _LoadedView extends StatefulWidget {
   const _LoadedView({required this.state});
 
-  final LearnState state;
+  final CategoriesState state;
 
   @override
   State<_LoadedView> createState() => _LoadedViewState();
@@ -109,8 +109,7 @@ class _LoadedViewState extends State<_LoadedView> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
           sliver: SliverGrid.builder(
             itemCount: widget.state.categories.length,
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
@@ -130,10 +129,10 @@ class _LoadedViewState extends State<_LoadedView> {
     );
   }
 
-  void _openCategory(BuildContext context, LearnCategory category) {
+  void _openCategory(BuildContext context, CategoryModel category) {
     context.pushNamed(
       AppRoutes.categoryLevelsName,
-      pathParameters: {'id': category.id.name},
+      pathParameters: {'id': category.id.toString()},
     );
   }
 }
@@ -146,8 +145,8 @@ class _LoadingSkeleton extends StatefulWidget {
 }
 
 class _LoadingSkeletonState extends State<_LoadingSkeleton> {
-  late final List<LearnCategory> _placeholders =
-      sl<LearnRepository>().getPlaceholders();
+  late final List<CategoryModel> _placeholders =
+      sl<CategoriesRepository>().getPlaceholders();
   late final List<Color> _tints = randomTints(_placeholders.length);
 
   @override
@@ -178,8 +177,7 @@ class _LoadingSkeletonState extends State<_LoadingSkeleton> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
             sliver: SliverGrid.builder(
               itemCount: _placeholders.length,
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
@@ -211,19 +209,19 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ResponsiveText(
-          'learn.eyebrow',
+          'categories.eyebrow',
           style: ZaadType.eyebrow.copyWith(
             color: colors.accentDeep.withValues(alpha: 0.85),
           ),
         ),
         const SizedBox(height: 8),
         ResponsiveText(
-          'learn.title',
+          'categories.title',
           style: ZaadType.titleHero.copyWith(color: colors.textPrimary),
         ),
         const SizedBox(height: 6),
         ResponsiveText(
-          'learn.subtitle',
+          'categories.subtitle',
           style: ZaadType.bodySmall.copyWith(color: colors.textSecondary),
         ),
         const SizedBox(height: 18),
@@ -295,7 +293,7 @@ class _OverallProgress extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ResponsiveText(
-                  'learn.overall.label',
+                  'categories.overall.label',
                   style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
@@ -305,8 +303,7 @@ class _OverallProgress extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 ClipRRect(
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(999)),
+                  borderRadius: const BorderRadius.all(Radius.circular(999)),
                   child: Stack(
                     children: [
                       Container(

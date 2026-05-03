@@ -1,45 +1,45 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
-import '../../data/repositories/learn_repository.dart';
-import 'learn_state.dart';
+import '../../data/repositories/categories_repository.dart';
+import 'categories_state.dart';
 
-class LearnCubit extends BaseCubit<LearnState> {
-  LearnCubit({required LearnRepository learnRepository})
-      : _learnRepository = learnRepository,
-        super(const LearnState());
+class CategoriesCubit extends BaseCubit<CategoriesState> {
+  CategoriesCubit({required CategoriesRepository categoriesRepository})
+      : _categoriesRepository = categoriesRepository,
+        super(const CategoriesState());
 
-  final LearnRepository _learnRepository;
+  final CategoriesRepository _categoriesRepository;
 
   Future<void> getCategories({bool refresh = false}) async {
     if (!refresh) {
       emit(
         state.copyWith(
-          status: LearnStatus.loading,
+          status: CategoriesStatus.loading,
           errorMessage: () => null,
         ),
       );
     }
     try {
-      final categories = await _learnRepository.getCategories();
+      final categories = await _categoriesRepository.getCategories();
       emit(
         state.copyWith(
-          status: LearnStatus.loaded,
+          status: CategoriesStatus.loaded,
           categories: categories,
         ),
       );
     } on ServerException catch (e) {
       emit(
         state.copyWith(
-          status: LearnStatus.error,
+          status: CategoriesStatus.error,
           errorMessage: () => e.message,
         ),
       );
     } catch (e) {
-      logger.error('LearnCubit.getCategories failed: $e');
+      logger.error('CategoriesCubit.getCategories failed: $e');
       emit(
         state.copyWith(
-          status: LearnStatus.error,
+          status: CategoriesStatus.error,
           errorMessage: () => 'errors.generic',
         ),
       );

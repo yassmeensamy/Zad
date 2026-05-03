@@ -1,26 +1,26 @@
 import 'package:flutter/foundation.dart';
 
-import '../../data/models/learn_category.dart';
+import '../../data/models/category_model.dart';
 
-enum LearnStatus { initial, loading, loaded, error }
+enum CategoriesStatus { initial, loading, loaded, error }
 
-class LearnState {
-  const LearnState({
-    this.status = LearnStatus.initial,
+class CategoriesState {
+  const CategoriesState({
+    this.status = CategoriesStatus.initial,
     this.categories = const [],
     this.errorMessage,
   });
 
-  final LearnStatus status;
-  final List<LearnCategory> categories;
+  final CategoriesStatus status;
+  final List<CategoryModel> categories;
   final String? errorMessage;
 
-  LearnState copyWith({
-    LearnStatus? status,
-    List<LearnCategory>? categories,
+  CategoriesState copyWith({
+    CategoriesStatus? status,
+    List<CategoryModel>? categories,
     String? Function()? errorMessage,
   }) =>
-      LearnState(
+      CategoriesState(
         status: status ?? this.status,
         categories: categories ?? this.categories,
         errorMessage:
@@ -30,7 +30,7 @@ class LearnState {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is LearnState &&
+    return other is CategoriesState &&
         other.status == status &&
         listEquals(other.categories, categories) &&
         other.errorMessage == errorMessage;
@@ -44,11 +44,11 @@ class LearnState {
       ]);
 }
 
-extension LearnStateX on LearnState {
-  bool get isInitial => status == LearnStatus.initial;
-  bool get isLoading => status == LearnStatus.loading;
-  bool get isLoaded => status == LearnStatus.loaded;
-  bool get isError => status == LearnStatus.error;
+extension CategoriesStateX on CategoriesState {
+  bool get isInitial => status == CategoriesStatus.initial;
+  bool get isLoading => status == CategoriesStatus.loading;
+  bool get isLoaded => status == CategoriesStatus.loaded;
+  bool get isError => status == CategoriesStatus.error;
 
   bool get hasCategories => categories.isNotEmpty;
 
@@ -58,7 +58,7 @@ extension LearnStateX on LearnState {
     return (sum / categories.length).clamp(0, 1);
   }
 
-  LearnCategory? findById(LearnCategoryId id) {
+  CategoryModel? findById(int id) {
     for (final c in categories) {
       if (c.id == id) return c;
     }

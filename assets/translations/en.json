@@ -52,13 +52,13 @@
   },
   "home_nav": {
     "home": "Home",
-    "learn": "Learn",
+    "categories": "Categories",
     "leaderboard": "Leaderboard",
     "profile": "Account"
   },
-  "learn": {
+  "categories": {
     "eyebrow": "YOUR JOURNEY",
-    "title": "Learn",
+    "title": "Categories",
     "subtitle": "Walk the path at your own pace. Each step opens the next.",
     "overall": {
       "label": "OVERALL PROGRESS"
@@ -76,74 +76,6 @@
     "levels_screen": {
       "eyebrow": "LEVELS",
       "heading": "{} of {} levels complete"
-    },
-    "categories": {
-      "companions": {
-        "title": "Companions",
-        "subtitle": "Lives of the Sahaba and the lessons they leave behind.",
-        "levels": {
-          "l1": {"title": "The Closest Companions", "description": "Abu Bakr, Umar, Uthman, and Ali — their first steps in faith."},
-          "l2": {"title": "Sacrifice in Makkah", "description": "Trials of the early believers under persecution."},
-          "l3": {"title": "The Hijrah Generation", "description": "Those who emigrated and those who hosted them."},
-          "l4": {"title": "Companions of Badr", "description": "The believers tested at the first great battle."},
-          "l5": {"title": "The Patient Mothers", "description": "Women among the Sahaba whose words still teach."},
-          "l6": {"title": "Scholars Among Them", "description": "The Sahaba who carried knowledge to the next generation."},
-          "l7": {"title": "The Last Counsels", "description": "Final advice from the elders of the first community."},
-          "l8": {"title": "Their Legacy in Us", "description": "How their lives shape practice today."}
-        }
-      },
-      "fiqh": {
-        "title": "Fiqh",
-        "subtitle": "Practical understanding of worship, conduct, and daily rulings.",
-        "levels": {
-          "l1": {"title": "Foundations of Purity", "description": "Wudu, ghusl, and the etiquettes of cleanliness."},
-          "l2": {"title": "The Pillars of Salah", "description": "Conditions, integrals, and what breaks the prayer."},
-          "l3": {"title": "Zakat in Practice", "description": "Who pays, who receives, and how to calculate."},
-          "l4": {"title": "Fasting Through Ramadan", "description": "Rulings, exceptions, and the heart of the fast."},
-          "l5": {"title": "The Journey of Hajj", "description": "Step-by-step rites of the sacred pilgrimage."},
-          "l6": {"title": "Family and Transactions", "description": "Marriage, contracts, and ethical dealings."}
-        }
-      },
-      "hadith": {
-        "title": "Hadith",
-        "subtitle": "Words and ways of the Prophet ﷺ — preserved with care.",
-        "levels": {
-          "l1": {"title": "The Forty of An-Nawawi", "description": "Foundational hadith every seeker should know."},
-          "l2": {"title": "On Sincerity & Intention", "description": "Innama al-a'mal bi-n-niyyat — and what it shapes."},
-          "l3": {"title": "Manners of the Heart", "description": "Hadith on humility, gratitude, and patience."},
-          "l4": {"title": "Family and Neighbors", "description": "Rights, kindness, and the bonds we keep."},
-          "l5": {"title": "Words and Speech", "description": "Truthfulness, silence, and avoiding harm."},
-          "l6": {"title": "The Path of the Knowing", "description": "Hadith on knowledge and those who carry it."},
-          "l7": {"title": "Closing Reflections", "description": "Hadith on the final journey and meeting Allah."}
-        }
-      },
-      "quran": {
-        "title": "Quran",
-        "subtitle": "Reflective journeys through verses, surahs, and themes.",
-        "levels": {
-          "l1": {"title": "Al-Fatihah Unfolded", "description": "Meanings within the opening of the Book."},
-          "l2": {"title": "Stories of the Prophets", "description": "Lessons from Adam, Nuh, Ibrahim, and Musa."},
-          "l3": {"title": "Surah Yaseen", "description": "The heart of the Quran — verse by verse."},
-          "l4": {"title": "Al-Mulk for Evenings", "description": "A nightly companion and its quiet reminders."},
-          "l5": {"title": "The Mercy of Ar-Rahman", "description": "On blessings counted and uncounted."},
-          "l6": {"title": "Al-Kahf and Patience", "description": "Four stories, four lessons for the soul."},
-          "l7": {"title": "Verses of Du'a", "description": "Supplications drawn from the Book itself."},
-          "l8": {"title": "The Final Juz", "description": "Short surahs with weight beyond their length."},
-          "l9": {"title": "Living with the Quran", "description": "Bringing reflection into the everyday."}
-        }
-      },
-      "sharia": {
-        "title": "Sharia",
-        "subtitle": "The wider path — its purposes, ethics, and gentle guidance.",
-        "levels": {
-          "l1": {"title": "Maqasid: The Aims", "description": "Faith, life, intellect, lineage, and wealth."},
-          "l2": {"title": "Sources of Guidance", "description": "Quran, Sunnah, ijma', and qiyas — at a glance."},
-          "l3": {"title": "Mercy in the Law", "description": "Where ease overrules hardship."},
-          "l4": {"title": "Justice & Public Good", "description": "Maslaha and how rulings serve people."},
-          "l5": {"title": "Ethics of Wealth", "description": "Halal earnings and the spirit of trade."},
-          "l6": {"title": "Living the Path", "description": "Bringing principles into a modern life."}
-        }
-      }
     }
   },
   "profile_select": {

@@ -15,7 +15,7 @@ class HomeShell extends StatelessWidget {
       activeIcon: Icons.home_rounded,
     ),
     ZaadBottomNavItem(
-      label: 'home_nav.learn',
+      label: 'home_nav.categories',
       icon: Icons.menu_book_outlined,
       activeIcon: Icons.menu_book_rounded,
     ),

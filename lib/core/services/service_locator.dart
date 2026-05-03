@@ -17,9 +17,9 @@ import '../../features/help_center/data/remote/help_center_remote_data_source.da
 import '../../features/help_center/data/repositories/help_center_repository.dart';
 import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
-import '../../features/learn/data/remote/learn_remote_data_source.dart';
-import '../../features/learn/data/repositories/learn_repository.dart';
-import '../../features/learn/presentation/cubit/learn_cubit.dart';
+import '../../features/categories/data/remote/categories_remote_data_source.dart';
+import '../../features/categories/data/repositories/categories_repository.dart';
+import '../../features/categories/presentation/cubit/categories_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
@@ -144,15 +144,18 @@ class ServiceLocator {
       () => HelpCenterCubit(helpCenterRepository: sl()),
     );
 
-    // Learn (mock-backed)
-    sl.registerLazySingleton<LearnRemoteDataSource>(
-      () => LearnRemoteDataSourceImpl(),
+    // Categories
+    sl.registerLazySingleton<CategoriesRemoteDataSource>(
+      () => CategoriesRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
     );
-    sl.registerLazySingleton<LearnRepository>(
-      () => LearnRepositoryImpl(remoteDataSource: sl()),
+    sl.registerLazySingleton<CategoriesRepository>(
+      () => CategoriesRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<LearnCubit>(
-      () => LearnCubit(learnRepository: sl()),
+    sl.registerFactory<CategoriesCubit>(
+      () => CategoriesCubit(categoriesRepository: sl()),
     );
   }
 }

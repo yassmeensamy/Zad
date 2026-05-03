@@ -9,12 +9,10 @@ import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
-import '../../data/models/learn_category.dart';
-import '../../data/models/learn_level.dart';
-import '../cubit/learn_cubit.dart';
-import '../cubit/learn_state.dart';
+import '../../data/models/category_model.dart';
+import '../cubit/categories_cubit.dart';
+import '../cubit/categories_state.dart';
 import '../utils/random_tint.dart';
-import '../widgets/level_tile.dart';
 
 class CategoryLevelsScreen extends StatelessWidget {
   const CategoryLevelsScreen({super.key, required this.categoryId});
@@ -23,28 +21,25 @@ class CategoryLevelsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = LearnCategoryId.values.firstWhere(
-      (e) => e.name == categoryId,
-      orElse: () => LearnCategoryId.companions,
-    );
+    final id = int.tryParse(categoryId) ?? -1;
 
     final parentCubit = _readParentCubit(context);
     if (parentCubit != null) {
-      return BlocProvider<LearnCubit>.value(
+      return BlocProvider<CategoriesCubit>.value(
         value: parentCubit,
         child: _CategoryLevelsView(id: id),
       );
     }
 
-    return BlocProvider<LearnCubit>(
-      create: (_) => sl<LearnCubit>()..getCategories(),
+    return BlocProvider<CategoriesCubit>(
+      create: (_) => sl<CategoriesCubit>()..getCategories(),
       child: _CategoryLevelsView(id: id),
     );
   }
 
-  LearnCubit? _readParentCubit(BuildContext context) {
+  CategoriesCubit? _readParentCubit(BuildContext context) {
     try {
-      return context.read<LearnCubit>();
+      return context.read<CategoriesCubit>();
     } catch (_) {
       return null;
     }
@@ -54,7 +49,7 @@ class CategoryLevelsScreen extends StatelessWidget {
 class _CategoryLevelsView extends StatefulWidget {
   const _CategoryLevelsView({required this.id});
 
-  final LearnCategoryId id;
+  final int id;
 
   @override
   State<_CategoryLevelsView> createState() => _CategoryLevelsViewState();
@@ -69,7 +64,7 @@ class _CategoryLevelsViewState extends State<_CategoryLevelsView> {
 
     return Scaffold(
       backgroundColor: colors.canvas,
-      body: BlocBuilder<LearnCubit, LearnState>(
+      body: BlocBuilder<CategoriesCubit, CategoriesState>(
         builder: (context, state) {
           if (state.isLoading || state.isInitial) {
             return const _Scaffolded(child: _LoadingIndicator());
@@ -80,7 +75,7 @@ class _CategoryLevelsViewState extends State<_CategoryLevelsView> {
               child: ErrorState(
                 message: state.errorMessage ?? 'errors.generic',
                 onRetry: () =>
-                    context.read<LearnCubit>().getCategories(),
+                    context.read<CategoriesCubit>().getCategories(),
               ),
             );
           }
@@ -97,7 +92,7 @@ class _CategoryLevelsViewState extends State<_CategoryLevelsView> {
 class _LevelsList extends StatelessWidget {
   const _LevelsList({required this.category, required this.tint});
 
-  final LearnCategory category;
+  final CategoryModel category;
   final Color tint;
 
   @override
@@ -105,8 +100,8 @@ class _LevelsList extends StatelessWidget {
     return Column(
       children: [
         ZaadAppBar(
-          title: category.titleKey,
-          subtitle: category.subtitleKey,
+          title: category.name,
+          subtitle: category.description,
           onBack: context.canPop() ? () => context.pop() : null,
         ),
         Expanded(
@@ -134,30 +129,12 @@ class _LevelsList extends StatelessWidget {
                     child: StarRule(color: tint, starSize: 10),
                   ),
                   const SizedBox(height: 22),
-                  for (var i = 0; i < category.levels.length; i++)
-                    LevelTile(
-                      level: category.levels[i],
-                      tint: tint,
-                      isLast: i == category.levels.length - 1,
-                      onTap: () => _openLevel(context, category.levels[i]),
-                    ),
                 ],
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  void _openLevel(BuildContext context, LearnLevel level) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(level.titleKey.tr()),
-      ),
     );
   }
 }
@@ -172,7 +149,7 @@ class _Scaffolded extends StatelessWidget {
     return Column(
       children: [
         ZaadAppBar(
-          title: 'learn.title',
+          title: 'categories.title',
           onBack: context.canPop() ? () => context.pop() : null,
         ),
         Expanded(child: child),
@@ -203,7 +180,7 @@ class _LoadingIndicator extends StatelessWidget {
 class _Hero extends StatelessWidget {
   const _Hero({required this.category, required this.tint});
 
-  final LearnCategory category;
+  final CategoryModel category;
   final Color tint;
 
   @override
@@ -262,7 +239,26 @@ class _Hero extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Icon(category.icon, size: 24, color: tint),
+                        if (category.iconUrl.isNotEmpty)
+                          ClipOval(
+                            child: Image.network(
+                              category.iconUrl,
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, _, _) => Icon(
+                                Icons.menu_book_outlined,
+                                size: 24,
+                                color: tint,
+                              ),
+                            ),
+                          )
+                        else
+                          Icon(
+                            Icons.menu_book_outlined,
+                            size: 24,
+                            color: tint,
+                          ),
                       ],
                     ),
                   ),
@@ -272,14 +268,14 @@ class _Hero extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ResponsiveText(
-                          'learn.levels_screen.eyebrow',
+                          'categories.levels_screen.eyebrow',
                           style: ZaadType.eyebrowSm.copyWith(color: tint),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'learn.levels_screen.heading'.tr(args: [
+                          'categories.levels_screen.heading'.tr(args: [
                             '${category.completedLevels}',
-                            '${category.totalLevels}',
+                            '${category.levelCount}',
                           ]),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -328,7 +324,7 @@ class _Hero extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
-                        'learn.progress.percent'.tr(args: ['$percent']),
+                        'categories.progress.percent'.tr(args: ['$percent']),
                         style: AppTextStyles.labelMedium.copyWith(
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0,
@@ -343,9 +339,9 @@ class _Hero extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: AlignmentDirectional.centerEnd,
                       child: Text(
-                        'learn.progress.levels'.tr(args: [
+                        'categories.progress.levels'.tr(args: [
                           '${category.completedLevels}',
-                          '${category.totalLevels}',
+                          '${category.levelCount}',
                         ]),
                         style: AppTextStyles.labelMedium.copyWith(
                           fontWeight: FontWeight.w600,

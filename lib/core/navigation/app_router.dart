@@ -4,8 +4,8 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
-import '../../features/learn/presentation/screens/category_levels_screen.dart';
-import '../../features/learn/presentation/screens/learn_screen.dart';
+import '../../features/categories/presentation/screens/categories_screen.dart';
+import '../../features/categories/presentation/screens/category_levels_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
@@ -103,9 +103,9 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.learn,
-                name: AppRoutes.learnName,
-                builder: (context, state) => const LearnScreen(),
+                path: AppRoutes.categories,
+                name: AppRoutes.categoriesName,
+                builder: (context, state) => const CategoriesScreen(),
               ),
             ],
           ),

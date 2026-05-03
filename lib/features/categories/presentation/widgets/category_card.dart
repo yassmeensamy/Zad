@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
-import '../../data/models/learn_category.dart';
+import '../../data/models/category_model.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
@@ -14,7 +14,7 @@ class CategoryCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final LearnCategory category;
+  final CategoryModel category;
   final Color tint;
   final VoidCallback onTap;
 
@@ -64,21 +64,23 @@ class CategoryCard extends StatelessWidget {
             borderRadius: ZaadRadii.xxlAll,
             child: Stack(
               children: [
+                /*
                 IslamicPatternCorner(
                   color: tint,
-                  size: 130,
-                  tile: 22,
-                  opacity: 0.18,
+                  size: 80,
+                  tile: 18,
+                  opacity: 0.16,
                 ),
+                */
                 Padding(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _IconMedallion(tint: tint, icon: category.icon),
+                    _IconMedallion(tint: tint, iconUrl: category.iconUrl),
                     const Spacer(),
                     ResponsiveText(
-                      category.titleKey,
+                      category.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.titleMedium.copyWith(
@@ -90,7 +92,7 @@ class CategoryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     ResponsiveText(
-                      category.subtitleKey,
+                      category.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.labelMedium.copyWith(
@@ -111,9 +113,9 @@ class CategoryCard extends StatelessWidget {
                             alignment: AlignmentDirectional.centerStart,
                             child: Text(
                               isStarted
-                                  ? 'learn.progress.percent'
+                                  ? 'categories.progress.percent'
                                       .tr(args: ['$percent'])
-                                  : 'learn.progress.not_started'.tr(),
+                                  : 'categories.progress.not_started'.tr(),
                               maxLines: 1,
                               style: AppTextStyles.labelMedium.copyWith(
                                 fontSize: 11,
@@ -130,9 +132,9 @@ class CategoryCard extends StatelessWidget {
                             fit: BoxFit.scaleDown,
                             alignment: AlignmentDirectional.centerEnd,
                             child: Text(
-                              'learn.progress.levels'.tr(args: [
+                              'categories.progress.levels'.tr(args: [
                                 '${category.completedLevels}',
-                                '${category.totalLevels}',
+                                '${category.levelCount}',
                               ]),
                               maxLines: 1,
                               style: AppTextStyles.labelMedium.copyWith(
@@ -159,10 +161,10 @@ class CategoryCard extends StatelessWidget {
 }
 
 class _IconMedallion extends StatelessWidget {
-  const _IconMedallion({required this.tint, required this.icon});
+  const _IconMedallion({required this.tint, required this.iconUrl});
 
   final Color tint;
-  final IconData icon;
+  final String iconUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +183,19 @@ class _IconMedallion extends StatelessWidget {
               ),
             ),
           ),
-          Icon(icon, size: 22, color: tint),
+          if (iconUrl.isNotEmpty)
+            ClipOval(
+              child: Image.network(
+                iconUrl,
+                width: 22,
+                height: 22,
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) =>
+                    Icon(Icons.menu_book_outlined, size: 22, color: tint),
+              ),
+            )
+          else
+            Icon(Icons.menu_book_outlined, size: 22, color: tint),
         ],
       ),
     );

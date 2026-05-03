@@ -3,8 +3,10 @@ import 'dart:convert';
 class TokensModel {
   TokensModel({required this.access, required this.refresh});
 
-  factory TokensModel.fromMap(Map<String, dynamic> map) =>
-      TokensModel(access: map['access'], refresh: map['refresh']);
+  factory TokensModel.fromMap(Map<String, dynamic> map) => TokensModel(
+    access: (map['accessToken'] ?? map['access']) as String,
+    refresh: (map['refreshToken'] ?? map['refresh']) as String,
+  );
 
   factory TokensModel.fromJson(String source) =>
       TokensModel.fromMap(json.decode(source));
@@ -15,7 +17,10 @@ class TokensModel {
     refresh: refresh ?? this.refresh,
   );
 
-  Map<String, dynamic> toMap() => {'access': access, 'refresh': refresh};
+  Map<String, dynamic> toMap() => {
+    'accessToken': access,
+    'refreshToken': refresh,
+  };
 
   String toJson() => json.encode(toMap());
 

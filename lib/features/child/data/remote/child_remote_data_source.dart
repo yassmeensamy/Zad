@@ -6,12 +6,7 @@ import '../../models/child_model.dart';
 
 abstract class ChildRemoteDataSource {
   Future<List<ChildModel>> getChildren();
-  Future<ChildModel> createChild({
-    required String username,
-    required String fullName,
-    required String password,
-    DateTime? birthDate,
-  });
+  Future<ChildModel> createChild(NewChild child);
   Future<ChildModel> updateChild({
     required String childId,
     String? username,
@@ -53,19 +48,15 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
   }
 
   @override
-  Future<ChildModel> createChild({
-    required String username,
-    required String fullName,
-    required String password,
-    DateTime? birthDate,
-  }) async {
+  Future<ChildModel> createChild(NewChild child) async {
     final response = await _networkService.post(
       _endpoints.createChild,
       data: {
-        'username': username,
-        'fullName': fullName,
-        'password': password,
-        if (birthDate != null) 'birthDate': birthDate.toIso8601String(),
+        'username': child.username,
+        'fullName': child.fullName,
+        'password': child.password,
+        if (child.birthDate != null)
+          'birthDate': child.birthDate!.toIso8601String(),
       },
     );
     _validateResponse(response);

@@ -60,18 +60,17 @@ class CategoryCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Stack(
-            children: [
-              ClipRRect(
-                borderRadius: ZaadRadii.xxlAll,
-                child: IslamicPatternCorner(
+          child: ClipRRect(
+            borderRadius: ZaadRadii.xxlAll,
+            child: Stack(
+              children: [
+                IslamicPatternCorner(
                   color: tint,
                   size: 130,
                   tile: 22,
                   opacity: 0.18,
                 ),
-              ),
-              Padding(
+                Padding(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +149,8 @@ class CategoryCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -23,92 +23,41 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final sections = profileSections(context);
+    final role = context.read<UserCubit>().state.user?.role;
+    final sections = _visibleSections(profileSections(context), role);
 
     return BlocListener<AuthCubit, AuthState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status && current.isNotLoggedIn,
-      listener: (context, state) {
-        context.goNamed(AppRoutes.loginName);
-      },
+      listenWhen: (a, b) => a.status != b.status && b.isNotLoggedIn,
+      listener: (context, _) => context.goNamed(AppRoutes.loginName),
       child: SafeArea(
         bottom: false,
-        child: BlocBuilder<UserCubit, UserState>(
-          builder: (context, state) => Stack(
-            children: [
-              _BackdropOrnament(colors: colors),
-              ListView(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 120),
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  _MihrabHero(colors: colors, user: state.user),
-                  const SizedBox(height: 22),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: StarRule(color: colors.accent, starSize: 10),
-                  ),
-                  const SizedBox(height: 24),
-                  for (var i = 0; i < sections.length; i++) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _SectionLabel(
-                        textKey: sections[i].titleKey,
-                        colors: colors,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _SectionCard(items: sections[i].items),
-                    ),
-                    const SizedBox(height: 22),
-                  ],
-                  const SizedBox(height: 6),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _SignOutButton(),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────
-// BACKDROP — paper warmth + faint star tessellation behind the hero
-// ─────────────────────────────────────────────────────────────────
-
-class _BackdropOrnament extends StatelessWidget {
-  const _BackdropOrnament({required this.colors});
-  final AppColorsTheme colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: Stack(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+          physics: const BouncingScrollPhysics(),
           children: [
-            Positioned(
-              top: -100,
-              left: -40,
-              right: -40,
-              height: 320,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.topCenter,
-                    radius: 0.95,
-                    colors: [
-                      colors.accentSoft.withValues(alpha: 0.20),
-                      colors.canvas.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
+            BlocSelector<UserCubit, UserState, UserModel?>(
+              selector: (s) => s.user,
+              builder: (_, user) => _MihrabHero(colors: colors, user: user),
+            ),
+            const SizedBox(height: 22),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: StarRule(color: colors.accent, starSize: 10),
+            ),
+            const SizedBox(height: 24),
+            for (final s in sections) ...[
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 4),
+                child: _SectionLabel(textKey: s.titleKey, colors: colors),
               ),
+              const SizedBox(height: 12),
+              _SectionCard(items: s.items),
+              const SizedBox(height: 22),
+            ],
+            const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: const _SignOutButton(),
             ),
           ],
         ),
@@ -116,6 +65,18 @@ class _BackdropOrnament extends StatelessWidget {
     );
   }
 }
+
+List<ProfileSection> _visibleSections(
+  List<ProfileSection> all,
+  UserRole? role,
+) => [
+  for (final s in all)
+    if (s.items.any((i) => i.isVisibleFor(role)))
+      ProfileSection(
+        titleKey: s.titleKey,
+        items: [for (final i in s.items) if (i.isVisibleFor(role)) i],
+      ),
+];
 
 // ─────────────────────────────────────────────────────────────────
 // HERO — Mihrab arch with avatar nested inside, name + role beneath
@@ -291,15 +252,12 @@ class _SectionCard extends StatelessWidget {
             for (var i = 0; i < items.length; i++) ...[
               ProfileMenuTile(item: items[i]),
               if (i != items.length - 1)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 58,
-                    end: 16,
-                  ),
-                  child: Container(
-                    height: 0.6,
-                    color: colors.accent.withValues(alpha: 0.14),
-                  ),
+                Divider(
+                  height: 0.6,
+                  thickness: 0.6,
+                  indent: 58,
+                  endIndent: 16,
+                  color: colors.accent.withValues(alpha: 0.14),
                 ),
             ],
           ],

@@ -232,18 +232,17 @@ class _Hero extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: ZaadRadii.xxlAll,
-            child: IslamicPatternCorner(
+      child: ClipRRect(
+        borderRadius: ZaadRadii.xxlAll,
+        child: Stack(
+          children: [
+            IslamicPatternCorner(
               color: tint,
               size: 140,
               tile: 22,
               opacity: 0.18,
             ),
-          ),
-          Column(
+            Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -360,7 +359,8 @@ class _Hero extends StatelessWidget {
               ),
             ],
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

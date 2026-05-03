@@ -1,11 +1,23 @@
 import 'dart:convert';
 
+enum UserRole {
+  parent('ROLE_PARENT'),
+  child('ROLE_CHILD');
+
+  const UserRole(this.wire);
+
+  final String wire;
+
+  static UserRole fromWire(String value) =>
+      UserRole.values.firstWhere((r) => r.wire == value);
+}
+
 class UserModel {
   final String id;
   final String? email;
   final String? username;
   final String fullName;
-  final String role;
+  final UserRole role;
   final bool googleLinked;
   final DateTime? birthDate;
   final String? parentId;
@@ -28,7 +40,7 @@ class UserModel {
     email: map['email'] as String?,
     username: map['username'] as String?,
     fullName: map['fullName'] as String,
-    role: map['role'] as String,
+    role: UserRole.fromWire(map['role'] as String),
     googleLinked: map['googleLinked'] as bool? ?? false,
     birthDate: map['birthDate'] == null
         ? null
@@ -45,7 +57,7 @@ class UserModel {
     String? email,
     String? username,
     String? fullName,
-    String? role,
+    UserRole? role,
     bool? googleLinked,
     DateTime? birthDate,
     String? parentId,
@@ -67,7 +79,7 @@ class UserModel {
     'email': email,
     'username': username,
     'fullName': fullName,
-    'role': role,
+    'role': role.wire,
     'googleLinked': googleLinked,
     'birthDate': birthDate?.toIso8601String(),
     'parentId': parentId,
@@ -76,8 +88,8 @@ class UserModel {
 
   String toJson() => json.encode(toMap());
 
-  bool get isParent => role == 'ROLE_PARENT';
-  bool get isChild => role == 'ROLE_CHILD';
+  bool get isParent => role == UserRole.parent;
+  bool get isChild => role == UserRole.child;
 
   int? get age {
     if (birthDate == null) return null;

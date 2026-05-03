@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/models/user_model.dart';
+
 class ProfileSection {
   final String titleKey;
   final List<ProfileMenuItem> items;
@@ -14,11 +16,18 @@ class ProfileMenuItem {
   final Widget? trailing;
   final VoidCallback? onTap;
 
+  /// Roles allowed to see this item. `null` means visible to everyone.
+  final List<UserRole>? visibleFor;
+
   const ProfileMenuItem({
     required this.icon,
     required this.titleKey,
     this.trailingText,
     this.trailing,
     this.onTap,
+    this.visibleFor,
   });
+
+  bool isVisibleFor(UserRole? role) =>
+      visibleFor == null || (role != null && visibleFor!.contains(role));
 }

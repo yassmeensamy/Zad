@@ -14,7 +14,7 @@ class ChildPasswordSheet extends StatefulWidget {
     super.key,
     required this.childName,
     this.initialPassword = '',
-    this.minLength = 4,
+    this.minLength = 6,
   });
 
   final String childName;

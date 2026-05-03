@@ -3,12 +3,7 @@ import '../remote/child_remote_data_source.dart';
 
 abstract class ChildRepository {
   Future<List<ChildModel>> getChildren();
-  Future<ChildModel> createChild({
-    required String username,
-    required String fullName,
-    required String password,
-    DateTime? birthDate,
-  });
+  Future<ChildModel> createChild(NewChild child);
   Future<ChildModel> updateChild({
     required String childId,
     String? username,
@@ -29,17 +24,8 @@ class ChildRepositoryImpl implements ChildRepository {
   Future<List<ChildModel>> getChildren() => _remoteDataSource.getChildren();
 
   @override
-  Future<ChildModel> createChild({
-    required String username,
-    required String fullName,
-    required String password,
-    DateTime? birthDate,
-  }) => _remoteDataSource.createChild(
-    username: username,
-    fullName: fullName,
-    password: password,
-    birthDate: birthDate,
-  );
+  Future<ChildModel> createChild(NewChild child) =>
+      _remoteDataSource.createChild(child);
 
   @override
   Future<ChildModel> updateChild({

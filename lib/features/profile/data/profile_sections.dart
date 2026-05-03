@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/models/user_model.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../../language/presentation/modals/language_dialog.dart';
 import '../presentation/widgets/change_password_dialog.dart';
@@ -36,11 +37,13 @@ List<ProfileSection> profileSections(BuildContext context) => [
       const ProfileMenuItem(
         icon: Icons.drafts_outlined,
         titleKey: 'profile.drafts',
+        visibleFor: [UserRole.child],
       ),
       ProfileMenuItem(
         icon: Icons.family_restroom_rounded,
         titleKey: 'profile.my_children',
         onTap: () => context.pushNamed(AppRoutes.myChildrenName),
+        visibleFor: const [UserRole.parent],
       ),
     ],
   ),

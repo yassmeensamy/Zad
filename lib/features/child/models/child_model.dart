@@ -1,5 +1,14 @@
 import 'dart:convert';
 
+/// Payload for creating a new child. Lives next to [ChildModel] so the
+/// repo/remote layers can accept it without depending on presentation.
+typedef NewChild = ({
+  String username,
+  String fullName,
+  String password,
+  DateTime? birthDate,
+});
+
 class ChildModel {
   final String id;
   final String? username;

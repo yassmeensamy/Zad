@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import '../../../../core/models/user_model.dart';
+
 class AuthResponse {
   final String accessToken;
   final String refreshToken;
   final String tokenType;
   final String userId;
-  final String role;
+  final UserRole role;
   final String fullName;
 
   const AuthResponse({
@@ -22,7 +24,7 @@ class AuthResponse {
     refreshToken: map['refreshToken'] as String,
     tokenType: map['tokenType'] as String? ?? 'Bearer',
     userId: map['userId'] as String,
-    role: map['role'] as String,
+    role: UserRole.fromWire(map['role'] as String),
     fullName: map['fullName'] as String,
   );
 
@@ -34,7 +36,7 @@ class AuthResponse {
     String? refreshToken,
     String? tokenType,
     String? userId,
-    String? role,
+    UserRole? role,
     String? fullName,
   }) => AuthResponse(
     accessToken: accessToken ?? this.accessToken,
@@ -50,7 +52,7 @@ class AuthResponse {
     'refreshToken': refreshToken,
     'tokenType': tokenType,
     'userId': userId,
-    'role': role,
+    'role': role.wire,
     'fullName': fullName,
   };
 

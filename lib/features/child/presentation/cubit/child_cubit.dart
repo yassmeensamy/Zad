@@ -5,15 +5,6 @@ import '../../data/repositories/child_repository.dart';
 import '../../models/child_model.dart';
 import 'child_state.dart';
 
-/// Payload accepted by [ChildCubit.createChildren]. Kept as a record so
-/// the cubit doesn't have to know about [ChildDraft] (presentation type).
-typedef NewChild = ({
-  String username,
-  String fullName,
-  String password,
-  DateTime? birthDate,
-});
-
 class ChildCubit extends BaseCubit<ChildState> {
   ChildCubit({required ChildRepository childRepository})
     : _childRepository = childRepository,
@@ -44,12 +35,7 @@ class ChildCubit extends BaseCubit<ChildState> {
     }
   }
 
-  Future<void> createChild({
-    required String username,
-    required String fullName,
-    required String password,
-    DateTime? birthDate,
-  }) async {
+  Future<void> createChild(NewChild child) async {
     emit(
       state.copyWith(
         actionStatus: ChildActionStatus.loading,
@@ -57,12 +43,7 @@ class ChildCubit extends BaseCubit<ChildState> {
       ),
     );
     try {
-      final created = await _childRepository.createChild(
-        username: username,
-        fullName: fullName,
-        password: password,
-        birthDate: birthDate,
-      );
+      final created = await _childRepository.createChild(child);
       emit(
         state.copyWith(
           actionStatus: ChildActionStatus.loaded,
@@ -87,10 +68,6 @@ class ChildCubit extends BaseCubit<ChildState> {
     }
   }
 
-  /// Bulk-create children — used by the create-profiles form. Loops
-  /// sequentially so the server sees one create at a time. The last error
-  /// (if any) is surfaced via [actionErrorMessage]; successful creates
-  /// land in [children] regardless.
   Future<void> createChildren(List<NewChild> children) async {
     if (children.isEmpty) return;
     emit(
@@ -105,12 +82,7 @@ class ChildCubit extends BaseCubit<ChildState> {
 
     for (final c in children) {
       try {
-        final model = await _childRepository.createChild(
-          username: c.username,
-          fullName: c.fullName,
-          password: c.password,
-          birthDate: c.birthDate,
-        );
+        final model = await _childRepository.createChild(c);
         created.add(model);
       } on ServerException catch (e) {
         lastError = e.message;

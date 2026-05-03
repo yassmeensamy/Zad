@@ -99,7 +99,6 @@ class _ChildrenListView extends StatelessWidget {
             listenWhen: (a, b) => a.actionStatus != b.actionStatus,
             listener: (context, state) {
               if (state.isActionLoaded) {
-                context.read<ChildCubit>().fetchChildren();
                 context.read<ChildCubit>().resetActionStatus();
               } else if (state.isActionError &&
                   state.actionErrorMessage != null) {
@@ -271,7 +270,7 @@ class _DraftList extends StatelessWidget {
     }
     return false;
   }
-} 
+}
 
 class _BottomBar extends StatelessWidget {
   const _BottomBar({required this.onSave, required this.onAdd});
@@ -310,33 +309,37 @@ class _BottomBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                 ],
-                CustomButton.full(
-                  onTap: onAdd,
-                  theme: CustomButtonTheme(
-                    height: 48,
-                    backgroundColor: colors.olive.withValues(alpha: 0.06),
-                    borderColor: colors.olive.withValues(alpha: 0.5),
-                    borderRadius: 14,
-                    textColor: colors.olive,
+                CustomPaint(
+                  painter: _DashedBorderPainter(
+                    color: colors.olive.withValues(alpha: 0.5),
+                    radius: 14,
+                    strokeWidth: 1.2,
+                    dashWidth: 6,
+                    dashGap: 4,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add_rounded,
-                        size: 18,
-                        color: colors.olive,
-                      ),
-                      const SizedBox(width: 8),
-                      ResponsiveText(
-                        'create_profiles.add_child',
-                        style: AppTextStyles.labelLarge.copyWith(
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                          color: colors.olive,
+                  child: CustomButton.full(
+                    onTap: onAdd,
+                    theme: CustomButtonTheme(
+                      height: 48,
+                      backgroundColor: colors.olive.withValues(alpha: 0.06),
+                      borderRadius: 14,
+                      textColor: colors.olive,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add_rounded, size: 18, color: colors.olive),
+                        const SizedBox(width: 8),
+                        ResponsiveText(
+                          'create_profiles.add_child',
+                          style: AppTextStyles.labelLarge.copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0,
+                            color: colors.olive,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -348,3 +351,60 @@ class _BottomBar extends StatelessWidget {
   }
 }
 
+class _DashedBorderPainter extends CustomPainter {
+  const _DashedBorderPainter({
+    required this.color,
+    required this.radius,
+    required this.strokeWidth,
+    required this.dashWidth,
+    required this.dashGap,
+  });
+
+  final Color color;
+  final double radius;
+  final double strokeWidth;
+  final double dashWidth;
+  final double dashGap;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    final inset = strokeWidth / 2;
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        inset,
+        inset,
+        size.width - strokeWidth,
+        size.height - strokeWidth,
+      ),
+      Radius.circular(radius),
+    );
+
+    final path = Path()..addRRect(rect);
+    final dashed = Path();
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = distance + dashWidth;
+        dashed.addPath(
+          metric.extractPath(distance, next.clamp(0, metric.length)),
+          Offset.zero,
+        );
+        distance = next + dashGap;
+      }
+    }
+    canvas.drawPath(dashed, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter old) =>
+      old.color != color ||
+      old.radius != radius ||
+      old.strokeWidth != strokeWidth ||
+      old.dashWidth != dashWidth ||
+      old.dashGap != dashGap;
+}

@@ -127,10 +127,12 @@
     },
     "result": {
       "eyebrow": "رحلة طلب العلم",
+      "score": "النتيجة",
       "points_label": "نقطة",
       "questions_completed": "{} سؤال مكتمل",
       "revisited": "راجعت {} أسئلة حتى أتقنتها",
       "closing": "زادك الله فهماً وعلماً 🌿",
+      "blessing": "ما شاء الله",
       "done": "تم",
       "stat_correct": "صحيحة",
       "stat_time": "الوقت",

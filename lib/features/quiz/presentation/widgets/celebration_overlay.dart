@@ -1,22 +1,12 @@
 import 'dart:math';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
+import 'package:my_app/core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-/// Premium answer-feedback overlay shown briefly after the user locks
-/// in their choice — for both correct and wrong answers.
-///
-/// Layered motion:
-///  • A soft radial backdrop washes the canvas in the accent color.
-///  • Three staggered rings sweep outward from the center.
-///  • A rounded badge with a check / close icon springs in with overshoot.
-///  • A title line (e.g. "Mashallah" / "Try Again") slides up while a
-///    shimmer gradient sweeps once across it.
-///  • A subtitle (the localized motivational message) fades in just after.
-///  • Correct answers drift a few sparkles upward; wrong answers stay calm
-///    with a tiny horizontal shake on the badge.
+double _interval(double t, double start, double end) =>
+    ((t - start) / (end - start)).clamp(0.0, 1.0);
+
 class CelebrationOverlay extends StatefulWidget {
   const CelebrationOverlay({
     super.key,
@@ -122,9 +112,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
         builder: (context, _) {
           final t = _ctrl.value;
 
-          final overlayFade = t < 0.86
-              ? 1.0
-              : (1 - (t - 0.86) / 0.14).clamp(0.0, 1.0);
+          final overlayFade = 1 - _interval(t, 0.86, 1.0);
 
           return Opacity(
             opacity: overlayFade,
@@ -200,8 +188,10 @@ class _ParticleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adjusted =
-        ((progress - particle.delay) / (1 - particle.delay)).clamp(0.0, 1.0);
+    final adjusted = ((progress - particle.delay) / (1 - particle.delay)).clamp(
+      0.0,
+      1.0,
+    );
     final eased = Curves.easeOutCubic.transform(adjusted);
     final dx = cos(particle.angle) * particle.distance * eased;
     final dy = sin(particle.angle) * particle.distance * eased - 24 * eased;
@@ -238,8 +228,8 @@ class _Backdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fadeIn = (t / 0.18).clamp(0.0, 1.0);
-    final fadeOut = t < 0.65 ? 1.0 : (1 - (t - 0.65) / 0.35).clamp(0.0, 1.0);
+    final fadeIn = _interval(t, 0.0, 0.18);
+    final fadeOut = 1 - _interval(t, 0.65, 1.0);
     final opacity = fadeIn * fadeOut;
     if (opacity <= 0.001) return const SizedBox.shrink();
     return Opacity(
@@ -306,24 +296,14 @@ class _IconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Spring-in: 0..0.32 with overshoot, then settle.
-    final springT = (t / 0.32).clamp(0.0, 1.0);
-    final spring = Curves.easeOutBack.transform(springT);
-    final scale = 0.0 + spring * 1.0;
+    final scale = Curves.easeOutBack.transform(_interval(t, 0.0, 0.32));
 
-    // Subtle continuing pulse after settle for correct.
-    double pulse = 0;
-    if (isCorrect && t > 0.32) {
-      final p = ((t - 0.32) / 0.28).clamp(0.0, 1.0);
-      pulse = sin(p * pi) * 0.06;
-    }
+    final pulse = isCorrect
+        ? sin(_interval(t, 0.32, 0.60) * pi) * 0.06
+        : 0.0;
 
-    // Wrong: a small horizontal shake right after spring-in.
-    double shake = 0;
-    if (!isCorrect && t > 0.30 && t < 0.62) {
-      final s = ((t - 0.30) / 0.32).clamp(0.0, 1.0);
-      shake = sin(s * pi * 4) * (1 - s) * 6;
-    }
+    final shakeT = isCorrect ? 0.0 : _interval(t, 0.30, 0.62);
+    final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
 
     final badgeSize = isCorrect ? 50.0 : 64.0;
     final iconSize = isCorrect ? 26.0 : 36.0;
@@ -376,60 +356,45 @@ class _MessageBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Title fades & slides up between t=0.20..0.50.
-    final titleT = ((t - 0.20) / 0.30).clamp(0.0, 1.0);
-    final titleEased = Curves.easeOutCubic.transform(titleT);
-    final titleOpacity = titleEased;
-    final titleOffset = (1 - titleEased) * 18;
-
-    // Shimmer pass over the title between t=0.30..0.70.
-    final shimmerT = ((t - 0.30) / 0.40).clamp(0.0, 1.0);
-
-    // Subtitle fades & slides between t=0.40..0.72.
-    final subT = ((t - 0.40) / 0.32).clamp(0.0, 1.0);
-    final subEased = Curves.easeOutCubic.transform(subT);
-    final subOpacity = subEased;
-    final subOffset = (1 - subEased) * 14;
+    final titleEased = Curves.easeOutCubic.transform(_interval(t, 0.20, 0.50));
+    final shimmerT = _interval(t, 0.30, 0.70);
+    final subEased = Curves.easeOutCubic.transform(_interval(t, 0.40, 0.72));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Opacity(
-          opacity: titleOpacity,
-          child: Transform.translate(
-            offset: Offset(0, titleOffset),
-            child: _ShimmerText(
-              text: title,
-              progress: shimmerT,
-              baseColor: titleColor,
-              shimmerColor: accent,
-              style: AppTextStyles.titleLarge.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-                letterSpacing: 0.2,
-                color: titleColor,
-              ),
+        _FadeSlideUp(
+          progress: titleEased,
+          slide: 18,
+          child: _ShimmerText(
+            text: title,
+            progress: shimmerT,
+            baseColor: titleColor,
+            shimmerColor: accent,
+            style: AppTextStyles.titleLarge.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+              letterSpacing: 0.2,
+              color: titleColor,
             ),
           ),
         ),
         if (subtitle != null && subtitle!.isNotEmpty) ...[
           const SizedBox(height: 8),
-          Opacity(
-            opacity: subOpacity,
-            child: Transform.translate(
-              offset: Offset(0, subOffset),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  subtitle!,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
-                    color: subtitleColor,
-                  ),
+          _FadeSlideUp(
+            progress: subEased,
+            slide: 14,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: ResponsiveText(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
+                  color: subtitleColor,
                 ),
               ),
             ),
@@ -459,7 +424,7 @@ class _ShimmerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = Text(text, style: style);
+    final base = ResponsiveText(text, style: style);
     if (progress <= 0 || progress >= 1) return base;
 
     // Highlight is a narrow band traveling across the text.
@@ -480,7 +445,31 @@ class _ShimmerText extends StatelessWidget {
           stops: [start, mid, end],
         ).createShader(Rect.fromLTWH(0, 0, width, rect.height));
       },
-      child: Text(text, style: style.copyWith(color: Colors.white)),
+      child: ResponsiveText(text, style: style.copyWith(color: Colors.white)),
+    );
+  }
+}
+
+/// Fades in from `progress` 0→1 and slides up from `slide` pixels below.
+class _FadeSlideUp extends StatelessWidget {
+  const _FadeSlideUp({
+    required this.progress,
+    required this.slide,
+    required this.child,
+  });
+
+  final double progress;
+  final double slide;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: progress,
+      child: Transform.translate(
+        offset: Offset(0, (1 - progress) * slide),
+        child: child,
+      ),
     );
   }
 }

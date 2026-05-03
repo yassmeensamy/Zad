@@ -127,10 +127,12 @@
     },
     "result": {
       "eyebrow": "JOURNEY OF KNOWLEDGE",
+      "score": "SCORE",
       "points_label": "POINTS",
       "questions_completed": "{} questions completed",
       "revisited": "You revisited {} questions until mastery",
       "closing": "May Allah grant you understanding 🌿",
+      "blessing": "Mashallah",
       "done": "Done",
       "stat_correct": "Correct",
       "stat_time": "Time",

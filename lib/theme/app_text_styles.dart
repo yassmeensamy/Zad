@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// Reusable text style constants. Color is intentionally omitted —
-/// resolve at call site via `.copyWith(color: context.colorScheme.X)`.
-///
-/// Heights are slightly generous to fit the "quiet type, generous whitespace"
-/// hand-made feel of the Desert Sand palette.
 class AppTextStyles {
   AppTextStyles._();
 
+  static const TextStyle numericLarge = TextStyle(
+    fontSize: 96,
+    fontWeight: FontWeight.w300,
+    height: 1.0,
+    letterSpacing: -3.0,
+  );
   static const TextStyle displayLarge = TextStyle(
     fontSize: 34,
     fontWeight: FontWeight.w600,
@@ -19,6 +20,13 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 1.25,
     letterSpacing: -0.3,
+  );
+  static const TextStyle displaySmall = TextStyle(
+    fontSize: 26,
+    fontWeight: FontWeight.w300,
+    fontStyle: FontStyle.italic,
+    height: 1.15,
+    letterSpacing: -0.4,
   );
   static const TextStyle headlineLarge = TextStyle(
     fontSize: 24,
@@ -39,6 +47,11 @@ class AppTextStyles {
   static const TextStyle titleMedium = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
+    height: 1.4,
+  );
+  static const TextStyle bodyXLarge = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
     height: 1.4,
   );
   static const TextStyle bodyLarge = TextStyle(
@@ -76,17 +89,17 @@ class AppTextStyles {
   );
 
   static TextTheme buildTextTheme(Color onSurface) => TextTheme(
-        displayLarge: displayLarge.copyWith(color: onSurface),
-        displayMedium: displayMedium.copyWith(color: onSurface),
-        headlineLarge: headlineLarge.copyWith(color: onSurface),
-        headlineMedium: headlineMedium.copyWith(color: onSurface),
-        titleLarge: titleLarge.copyWith(color: onSurface),
-        titleMedium: titleMedium.copyWith(color: onSurface),
-        bodyLarge: bodyLarge.copyWith(color: onSurface),
-        bodyMedium: bodyMedium.copyWith(color: onSurface),
-        bodySmall: bodySmall.copyWith(color: onSurface),
-        labelLarge: labelLarge.copyWith(color: onSurface),
-        labelMedium: labelMedium.copyWith(color: onSurface),
-        labelSmall: labelSmall.copyWith(color: onSurface),
-      );
+    displayLarge: displayLarge.copyWith(color: onSurface),
+    displayMedium: displayMedium.copyWith(color: onSurface),
+    headlineLarge: headlineLarge.copyWith(color: onSurface),
+    headlineMedium: headlineMedium.copyWith(color: onSurface),
+    titleLarge: titleLarge.copyWith(color: onSurface),
+    titleMedium: titleMedium.copyWith(color: onSurface),
+    bodyLarge: bodyLarge.copyWith(color: onSurface),
+    bodyMedium: bodyMedium.copyWith(color: onSurface),
+    bodySmall: bodySmall.copyWith(color: onSurface),
+    labelLarge: labelLarge.copyWith(color: onSurface),
+    labelMedium: labelMedium.copyWith(color: onSurface),
+    labelSmall: labelSmall.copyWith(color: onSurface),
+  );
 }

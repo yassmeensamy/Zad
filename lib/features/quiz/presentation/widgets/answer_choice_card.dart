@@ -107,7 +107,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
         widget.visualState) {
       AnswerChoiceVisualState.idle => (
           colors.canvasRaised,
-          colors.borderSubtle,
+          colors.olive.withValues(alpha: 0.12),
           colors.textPrimary,
           colors.canvas,
           colors.textSecondary,
@@ -127,7 +127,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
           colors.oliveDeep,
           colors.olive,
           colors.canvas,
-          Icon(Icons.check_rounded, size: 18, color: colors.olive),
+          Icon(Icons.check_rounded, size: 16, color: colors.olive),
         ),
       AnswerChoiceVisualState.revealedWrong => (
           Color.lerp(colors.canvasRaised, wrongColor, 0.14)!,
@@ -135,7 +135,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
           wrongColor,
           wrongColor,
           colors.canvas,
-          Icon(Icons.close_rounded, size: 18, color: wrongColor),
+          Icon(Icons.close_rounded, size: 16, color: wrongColor),
         ),
       AnswerChoiceVisualState.revealedMuted => (
           colors.canvasRaised.withValues(alpha: 0.55),
@@ -147,6 +147,10 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
         ),
     };
 
+    final isMuted =
+        widget.visualState == AnswerChoiceVisualState.revealedMuted;
+    final bgTop = Color.lerp(bg, Colors.white, 0.05) ?? bg;
+
     final card = Material(
       color: Colors.transparent,
       child: InkWell(
@@ -156,11 +160,24 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 240),
           curve: Curves.easeOut,
-          padding: const EdgeInsetsDirectional.fromSTEB(12, 14, 16, 14),
+          padding: const EdgeInsetsDirectional.fromSTEB(11, 12, 14, 12),
           decoration: BoxDecoration(
-            color: bg,
-            borderRadius: ZaadRadii.xlAll,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [bgTop, bg],
+            ),
+            borderRadius: ZaadRadii.lgAll,
             border: Border.all(color: borderColor, width: 0.9),
+            boxShadow: isMuted
+                ? null
+                : [
+                    BoxShadow(
+                      color: colors.oliveDeep.withValues(alpha: 0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
           ),
           child: Row(
             children: [
@@ -171,14 +188,14 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
                 shouldPulse:
                     widget.visualState == AnswerChoiceVisualState.revealedCorrect,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 11),
               Expanded(
                 child: AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 220),
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    height: 1.4,
+                    height: 1.36,
                     color: textColor,
                   ),
                   child: Text(widget.choice.text),
@@ -208,7 +225,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
     );
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 12),
       child: AnimatedBuilder(
         animation: Listenable.merge([_reactCtrl, _haloCtrl]),
         builder: (context, child) {
@@ -275,16 +292,35 @@ class _AnimatedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final badgeTop = Color.lerp(badgeBg, Colors.white, 0.18) ?? badgeBg;
     final badge = AnimatedContainer(
       duration: const Duration(milliseconds: 240),
-      width: 30,
-      height: 30,
+      width: 29,
+      height: 29,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: badgeBg, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [badgeTop, badgeBg],
+        ),
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.35),
+          width: 0.6,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: badgeBg.withValues(alpha: 0.28),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: AnimatedDefaultTextStyle(
         duration: const Duration(milliseconds: 220),
         style: AppTextStyles.labelMedium.copyWith(
-          fontSize: 12,
+          fontSize: 11.5,
           fontWeight: FontWeight.w800,
           letterSpacing: 0.4,
           color: badgeFg,

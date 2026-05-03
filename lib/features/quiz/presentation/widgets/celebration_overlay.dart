@@ -90,12 +90,12 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
       _particles = const [];
       return;
     }
-    _particles = List<_Particle>.generate(9, (i) {
-      final angleStep = (2 * pi) / 9;
+    _particles = List<_Particle>.generate(8, (i) {
+      final angleStep = (2 * pi) / 8;
       return _Particle(
         angle: angleStep * i + (rng.nextDouble() - 0.5) * 0.4,
-        distance: 95 + rng.nextDouble() * 65,
-        size: 9 + rng.nextDouble() * 9,
+        distance: 60 + rng.nextDouble() * 42,
+        size: 7 + rng.nextDouble() * 6,
         delay: 0.10 + rng.nextDouble() * 0.18,
         rotation: (rng.nextDouble() - 0.5) * 1.6,
         isCrescent: rng.nextDouble() < 0.30,
@@ -150,7 +150,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                   canvas: colors.canvas,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 188),
+                  padding: const EdgeInsets.only(top: 130),
                   child: _MessageBlock(
                     t: t,
                     title: _titleKey.tr(),
@@ -245,8 +245,8 @@ class _Backdrop extends StatelessWidget {
     return Opacity(
       opacity: opacity,
       child: Container(
-        width: 360,
-        height: 360,
+        width: 240,
+        height: 240,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
@@ -273,7 +273,7 @@ class _Ring extends StatelessWidget {
   Widget build(BuildContext context) {
     if (progress <= 0 || progress >= 1) return const SizedBox.shrink();
     final eased = Curves.easeOutCubic.transform(progress);
-    final size = 86 + eased * 220;
+    final size = 56 + eased * 140;
     final opacity = (1 - progress).clamp(0.0, 1.0) * 0.7;
     return IgnorePointer(
       child: Container(
@@ -325,8 +325,8 @@ class _IconBadge extends StatelessWidget {
       shake = sin(s * pi * 4) * (1 - s) * 6;
     }
 
-    final badgeSize = isCorrect ? 68.0 : 92.0;
-    final iconSize = isCorrect ? 34.0 : 50.0;
+    final badgeSize = isCorrect ? 50.0 : 64.0;
+    final iconSize = isCorrect ? 26.0 : 36.0;
 
     return Transform.translate(
       offset: Offset(shake, 0),
@@ -340,9 +340,9 @@ class _IconBadge extends StatelessWidget {
             color: accent,
             boxShadow: [
               BoxShadow(
-                color: accent.withValues(alpha: 0.42),
-                blurRadius: 24,
-                spreadRadius: 1,
+                color: accent.withValues(alpha: 0.38),
+                blurRadius: 18,
+                spreadRadius: 0.5,
               ),
             ],
           ),
@@ -404,7 +404,7 @@ class _MessageBlock extends StatelessWidget {
               baseColor: titleColor,
               shimmerColor: accent,
               style: AppTextStyles.titleLarge.copyWith(
-                fontSize: 26,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
                 height: 1.2,
                 letterSpacing: 0.2,
@@ -425,7 +425,7 @@ class _MessageBlock extends StatelessWidget {
                   subtitle!,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    fontSize: 14,
+                    fontSize: 12.5,
                     fontWeight: FontWeight.w500,
                     height: 1.5,
                     color: subtitleColor,

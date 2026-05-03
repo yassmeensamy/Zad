@@ -1,15 +1,14 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/utils/logger.dart';
+import '../../data/repositories/language_repository.dart';
 import 'language_state.dart';
 
-typedef UpdateLanguageCallback = Future<void> Function(String language);
-
 class LanguageCubit extends BaseCubit<LanguageState> {
-  LanguageCubit({UpdateLanguageCallback? updateLanguage})
-    : _updateLanguage = updateLanguage,
+  LanguageCubit({required LanguageRepository repository})
+    : _repository = repository,
       super(LanguageState(status: LanguageStatus.initial));
 
-  final UpdateLanguageCallback? _updateLanguage;
+  final LanguageRepository _repository;
 
   void updateCurrentLanguage(String currentLanguage) {
     emit(state.copyWith(selectedLanguage: () => currentLanguage));
@@ -17,12 +16,12 @@ class LanguageCubit extends BaseCubit<LanguageState> {
 
   Future<void> updateLanguage(
     String language, {
-    bool shouldSkipBackend = true,
+    bool shouldSkipBackend = false,
   }) async {
     try {
       emit(state.copyWith(status: LanguageStatus.loading));
-      if (!shouldSkipBackend && _updateLanguage != null) {
-        await _updateLanguage(language);
+      if (!shouldSkipBackend) {
+        await _repository.updateLanguage(language);
       }
       emit(
         state.copyWith(

@@ -23,10 +23,12 @@ class QuizState {
     this.round = 1,
     this.firstTryCorrect = 0,
     this.totalRetries = 0,
+    this.points = 0,
     this.savedQuestionIds = const {},
     this.motivationalMessageKey,
     this.errorMessage,
     this.startedAt,
+    this.questionShownAt,
     this.elapsed,
   });
 
@@ -40,6 +42,11 @@ class QuizState {
   final int round;
   final int firstTryCorrect;
   final int totalRetries;
+
+  /// Accumulated score. 2 points if a question is answered correctly within
+  /// 10 seconds on the first try, 1 point otherwise on the first try, 0 if
+  /// the first attempt is wrong (no points on retries).
+  final int points;
   final Set<int> savedQuestionIds;
   final String? motivationalMessageKey;
   final String? errorMessage;
@@ -47,6 +54,10 @@ class QuizState {
   /// Timestamp captured the moment the quiz becomes loaded with the first
   /// question — i.e. when the user can start answering.
   final DateTime? startedAt;
+
+  /// Timestamp captured every time a new question becomes visible. Used to
+  /// score the answer based on how fast the user reacted.
+  final DateTime? questionShownAt;
 
   /// Total time from [startedAt] to the moment the user reaches the
   /// finished phase. Set once on transition to [QuizPhase.finished].
@@ -63,10 +74,12 @@ class QuizState {
     int? round,
     int? firstTryCorrect,
     int? totalRetries,
+    int? points,
     Set<int>? savedQuestionIds,
     String? Function()? motivationalMessageKey,
     String? Function()? errorMessage,
     DateTime? Function()? startedAt,
+    DateTime? Function()? questionShownAt,
     Duration? Function()? elapsed,
   }) =>
       QuizState(
@@ -82,6 +95,7 @@ class QuizState {
         round: round ?? this.round,
         firstTryCorrect: firstTryCorrect ?? this.firstTryCorrect,
         totalRetries: totalRetries ?? this.totalRetries,
+        points: points ?? this.points,
         savedQuestionIds: savedQuestionIds ?? this.savedQuestionIds,
         motivationalMessageKey: motivationalMessageKey != null
             ? motivationalMessageKey()
@@ -89,6 +103,9 @@ class QuizState {
         errorMessage:
             errorMessage != null ? errorMessage() : this.errorMessage,
         startedAt: startedAt != null ? startedAt() : this.startedAt,
+        questionShownAt: questionShownAt != null
+            ? questionShownAt()
+            : this.questionShownAt,
         elapsed: elapsed != null ? elapsed() : this.elapsed,
       );
 
@@ -106,15 +123,17 @@ class QuizState {
         other.round == round &&
         other.firstTryCorrect == firstTryCorrect &&
         other.totalRetries == totalRetries &&
+        other.points == points &&
         setEquals(other.savedQuestionIds, savedQuestionIds) &&
         other.motivationalMessageKey == motivationalMessageKey &&
         other.errorMessage == errorMessage &&
         other.startedAt == startedAt &&
+        other.questionShownAt == questionShownAt &&
         other.elapsed == elapsed;
   }
 
   @override
-  int get hashCode => Object.hashAll([
+  int get hashCode => Object.hash(
         status,
         phase,
         Object.hashAll(allQuestions),
@@ -125,12 +144,12 @@ class QuizState {
         round,
         firstTryCorrect,
         totalRetries,
-        Object.hashAll(savedQuestionIds),
+        points,
+        Object.hashAllUnordered(savedQuestionIds),
         motivationalMessageKey,
         errorMessage,
-        startedAt,
-        elapsed,
-      ]);
+        Object.hash(startedAt, questionShownAt, elapsed),
+      );
 }
 
 extension QuizStateX on QuizState {
@@ -161,7 +180,7 @@ extension QuizStateX on QuizState {
   int get positionInRound => currentQueue.isEmpty ? 0 : currentIndex + 1;
   int get roundLength => currentQueue.length;
 
-  /// Score: 10 points per first-try correct answer.
-  int get points => firstTryCorrect * 10;
-  int get maxPoints => totalQuestions * 10;
+  /// Maximum possible score: 2 points per question (achieved if every
+  /// question is answered correctly within 10 seconds on the first try).
+  int get maxPoints => totalQuestions * 2;
 }

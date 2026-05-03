@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class FeedbackPanel extends StatelessWidget {
@@ -63,16 +63,16 @@ class FeedbackPanel extends StatelessWidget {
                   color: accent,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  eyebrowKey.tr(),
+                ResponsiveText(
+                  eyebrowKey,
                   style: ZaadType.eyebrowSm.copyWith(color: accent),
                 ),
               ],
             ),
             if (isCorrect && motivationalKey != null) ...[
               const SizedBox(height: 10),
-              Text(
-                motivationalKey!.tr(),
+              ResponsiveText(
+                motivationalKey,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -83,16 +83,16 @@ class FeedbackPanel extends StatelessWidget {
             ],
             if (explanation != null && explanation!.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Text(
-                'quiz.feedback.explanation'.tr(),
+              ResponsiveText(
+                'quiz.feedback.explanation',
                 style: ZaadType.eyebrowSm.copyWith(
                   color: colors.textTertiary,
                   letterSpacing: 2.4,
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                explanation!,
+              ResponsiveText(
+                explanation,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontSize: 14,
                   height: 1.7,
@@ -111,8 +111,8 @@ class FeedbackPanel extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Flexible(
-                    child: Text(
-                      reference!,
+                    child: ResponsiveText(
+                      reference,
                       style: ZaadType.captionSmall.copyWith(
                         fontSize: 11,
                         color: colors.textTertiary,

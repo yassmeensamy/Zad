@@ -1,7 +1,9 @@
 import 'dart:math';
 
 class MotivationalMessages {
-  MotivationalMessages._();
+  MotivationalMessages({Random? random}) : _random = random ?? Random();
+
+  final Random _random;
 
   static const List<String> correctKeys = [
     'quiz.motivation.correct_1',
@@ -21,11 +23,9 @@ class MotivationalMessages {
     'quiz.motivation.finish_3',
   ];
 
-  static final Random _rng = Random();
+  String randomCorrect() => correctKeys[_random.nextInt(correctKeys.length)];
 
-  static String randomCorrect() => correctKeys[_rng.nextInt(correctKeys.length)];
+  String randomWrong() => wrongKeys[_random.nextInt(wrongKeys.length)];
 
-  static String randomWrong() => wrongKeys[_rng.nextInt(wrongKeys.length)];
-
-  static String randomFinish() => finishKeys[_rng.nextInt(finishKeys.length)];
+  String randomFinish() => finishKeys[_random.nextInt(finishKeys.length)];
 }

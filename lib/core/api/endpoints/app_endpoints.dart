@@ -18,6 +18,7 @@ class AppEndpoint {
   // User Profile
   String get me => '${baseUrl}api/users/me';
   String get changePassword => '${baseUrl}api/users/me/password';
+  String get userLanguage => '${baseUrl}api/users/me/language';
 
   // Categories
   String get quizCategories => '${baseUrl}api/quiz/categories';

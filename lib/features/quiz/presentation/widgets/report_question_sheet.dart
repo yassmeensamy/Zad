@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 /// Bottom sheet to report an issue with a question. Returns the chosen
@@ -53,8 +53,8 @@ class ReportQuestionSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              Text(
-                'quiz.report.title'.tr(),
+              ResponsiveText(
+                'quiz.report.title',
                 style: AppTextStyles.titleMedium.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -93,8 +93,8 @@ class ReportQuestionSheet extends StatelessWidget {
                   Icon(reason.icon, size: 18, color: colors.oliveDeep),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      reason.key.tr(),
+                    child: ResponsiveText(
+                      reason.key,
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

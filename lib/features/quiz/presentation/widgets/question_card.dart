@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/question_model.dart';
 
@@ -78,8 +78,8 @@ class QuestionCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'quiz.question_eyebrow'.tr(),
+                      ResponsiveText(
+                        'quiz.question_eyebrow',
                         style: ZaadType.eyebrowSm.copyWith(color: colors.olive),
                       ),
                       const Spacer(),
@@ -125,7 +125,7 @@ class QuestionCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Text(
+                  ResponsiveText(
                     question.text,
                     style: AppTextStyles.titleLarge.copyWith(
                       fontSize: 18,

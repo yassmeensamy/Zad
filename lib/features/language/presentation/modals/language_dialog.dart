@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -17,7 +18,7 @@ typedef OnLanguageChangedCallback =
 class LanguageDialog extends StatelessWidget {
   const LanguageDialog({
     super.key,
-    this.shouldSkipBackend = true,
+    this.shouldSkipBackend = false,
     this.onLanguageChanged,
   });
 
@@ -42,7 +43,7 @@ class LanguageDialog extends StatelessWidget {
 
   static Future<void> show(
     BuildContext context, {
-    bool shouldSkipBackend = true,
+    bool shouldSkipBackend = false,
     OnLanguageChangedCallback? onLanguageChanged,
   }) => CustomDialog.show<void>(
     context: context,
@@ -58,7 +59,7 @@ class LanguageDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          LanguageCubit()..updateCurrentLanguage(context.locale.languageCode),
+          sl<LanguageCubit>()..updateCurrentLanguage(context.locale.languageCode),
       child: BlocConsumer<LanguageCubit, LanguageState>(
         listener: _handleLanguageStateChange,
         builder: (context, state) {

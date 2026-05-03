@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class QuizActionBar extends StatelessWidget {
@@ -151,8 +152,8 @@ class _NextButton extends StatelessWidget {
               borderRadius: ZaadRadii.lgAll,
             ),
             child: Center(
-              child: Text(
-                labelKey.tr(),
+              child: ResponsiveText(
+                labelKey,
                 style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700,

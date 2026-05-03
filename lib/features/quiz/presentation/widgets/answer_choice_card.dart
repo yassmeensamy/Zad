@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/choice_model.dart';
 
@@ -198,7 +199,15 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
                     height: 1.36,
                     color: textColor,
                   ),
-                  child: Text(widget.choice.text),
+                  // Builder reads the live interpolated DefaultTextStyle from
+                  // AnimatedDefaultTextStyle so ResponsiveText (which sets its
+                  // own style explicitly) still animates with the parent.
+                  child: Builder(
+                    builder: (context) => ResponsiveText(
+                      widget.choice.text,
+                      style: DefaultTextStyle.of(context).style,
+                    ),
+                  ),
                 ),
               ),
               if (trailing != null) ...[
@@ -325,7 +334,12 @@ class _AnimatedBadge extends StatelessWidget {
           letterSpacing: 0.4,
           color: badgeFg,
         ),
-        child: Text(label),
+        child: Builder(
+          builder: (context) => ResponsiveText(
+            label,
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
       ),
     );
     if (!shouldPulse) return badge;

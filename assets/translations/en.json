@@ -78,6 +78,21 @@
       "heading": "{} of {} levels complete"
     }
   },
+  "levels": {
+    "title": "Levels",
+    "eyebrow": "LEVELS",
+    "heading": "{} of {} levels complete",
+    "percent": "{}% complete",
+    "count": "{} / {} levels",
+    "questions": "{} / {} questions",
+    "pass": "Pass: {}%",
+    "state": {
+      "completed": "DONE",
+      "in_progress": "IN PROGRESS",
+      "unlocked": "READY",
+      "locked": "LOCKED"
+    }
+  },
   "profile_select": {
     "eyebrow": "Profiles",
     "title_prefix": "Who's ",

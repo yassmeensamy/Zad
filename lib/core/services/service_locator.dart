@@ -20,6 +20,9 @@ import '../../features/language/presentation/cubit/language_cubit.dart';
 import '../../features/categories/data/remote/categories_remote_data_source.dart';
 import '../../features/categories/data/repositories/categories_repository.dart';
 import '../../features/categories/presentation/cubit/categories_cubit.dart';
+import '../../features/levels/data/remote/levels_remote_data_source.dart';
+import '../../features/levels/data/repositories/levels_repository.dart';
+import '../../features/levels/presentation/cubit/levels_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
@@ -156,6 +159,20 @@ class ServiceLocator {
     );
     sl.registerFactory<CategoriesCubit>(
       () => CategoriesCubit(categoriesRepository: sl()),
+    );
+
+    // Levels
+    sl.registerLazySingleton<LevelsRemoteDataSource>(
+      () => LevelsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<LevelsRepository>(
+      () => LevelsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<LevelsCubit>(
+      () => LevelsCubit(levelsRepository: sl()),
     );
   }
 }

@@ -74,16 +74,6 @@ class _LoadedView extends StatefulWidget {
 }
 
 class _LoadedViewState extends State<_LoadedView> {
-  late List<Color> _tints = randomTints(widget.state.categories.length);
-
-  @override
-  void didUpdateWidget(covariant _LoadedView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.state.categories.length != widget.state.categories.length) {
-      _tints = randomTints(widget.state.categories.length);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
@@ -119,7 +109,7 @@ class _LoadedViewState extends State<_LoadedView> {
               final category = widget.state.categories[index];
               return CategoryCard(
                 category: category,
-                tint: _tints[index],
+                tint: tintFor(category.id),
                 onTap: () => _openCategory(context, category),
               );
             },
@@ -131,8 +121,9 @@ class _LoadedViewState extends State<_LoadedView> {
 
   void _openCategory(BuildContext context, CategoryModel category) {
     context.pushNamed(
-      AppRoutes.categoryLevelsName,
+      AppRoutes.levelsName,
       pathParameters: {'id': category.id.toString()},
+      extra: category,
     );
   }
 }
@@ -147,7 +138,6 @@ class _LoadingSkeleton extends StatefulWidget {
 class _LoadingSkeletonState extends State<_LoadingSkeleton> {
   late final List<CategoryModel> _placeholders =
       sl<CategoriesRepository>().getPlaceholders();
-  late final List<Color> _tints = randomTints(_placeholders.length);
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +175,7 @@ class _LoadingSkeletonState extends State<_LoadingSkeleton> {
               ),
               itemBuilder: (_, i) => CategoryCard(
                 category: _placeholders[i],
-                tint: _tints[i],
+                tint: tintFor(_placeholders[i].id),
                 onTap: () {},
               ),
             ),

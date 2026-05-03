@@ -4,8 +4,9 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
+import '../../features/categories/data/models/category_model.dart';
 import '../../features/categories/presentation/screens/categories_screen.dart';
-import '../../features/categories/presentation/screens/category_levels_screen.dart';
+import '../../features/levels/presentation/screens/levels_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
@@ -81,10 +82,11 @@ class AppRouter {
         builder: (context, state) => const HelpCenterScreen(),
       ),
       GoRoute(
-        path: AppRoutes.categoryLevels,
-        name: AppRoutes.categoryLevelsName,
-        builder: (context, state) => CategoryLevelsScreen(
+        path: AppRoutes.levels,
+        name: AppRoutes.levelsName,
+        builder: (context, state) => LevelsScreen(
           categoryId: state.pathParameters['id']!,
+          category: state.extra as CategoryModel?,
         ),
       ),
       StatefulShellRoute.indexedStack(

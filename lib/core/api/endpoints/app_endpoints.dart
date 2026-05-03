@@ -21,4 +21,8 @@ class AppEndpoint {
 
   // Categories
   String get quizCategories => '${baseUrl}api/quiz/categories';
+
+  // Levels
+  String levelsByCategoryId(int categoryId) =>
+      '${baseUrl}api/quiz/categories/$categoryId/levels';
 }

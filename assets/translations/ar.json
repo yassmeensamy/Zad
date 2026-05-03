@@ -78,6 +78,21 @@
       "heading": "{} من {} مستويات مكتملة"
     }
   },
+  "levels": {
+    "title": "المستويات",
+    "eyebrow": "المستويات",
+    "heading": "{} من {} مستويات مكتملة",
+    "percent": "{}٪ مكتمل",
+    "count": "{} / {} مستويات",
+    "questions": "{} / {} أسئلة",
+    "pass": "النجاح: {}٪",
+    "state": {
+      "completed": "مكتمل",
+      "in_progress": "قيد التقدّم",
+      "unlocked": "متاح",
+      "locked": "مغلق"
+    }
+  },
   "profile_select": {
     "eyebrow": "الملفات الشخصية",
     "title_prefix": "من ",

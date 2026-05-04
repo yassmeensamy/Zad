@@ -9,6 +9,7 @@ class QuestionModel {
     required this.choices,
     required this.correctIndex,
     this.isAnsweredCorrectly = false,
+    this.isDrafted = false,
     this.explanation,
     this.source,
   });
@@ -18,10 +19,17 @@ class QuestionModel {
   final List<ChoiceModel> choices;
   final int correctIndex;
   final bool isAnsweredCorrectly;
+  final bool isDrafted;
   final String? explanation;
   final String? source;
 
   bool isCorrect(int choiceIndex) => choiceIndex == correctIndex;
+
+  /// True when the question carries either an explanation paragraph or a
+  /// source citation worth surfacing to the user.
+  bool get hasFeedback =>
+      (explanation != null && explanation!.isNotEmpty) ||
+      (source != null && source!.isNotEmpty);
 
   factory QuestionModel.fromMap(Map<String, dynamic> map) => QuestionModel(
         id: (map['id'] as num).toInt(),
@@ -31,6 +39,7 @@ class QuestionModel {
             .toList(),
         correctIndex: (map['correctIndex'] as num).toInt(),
         isAnsweredCorrectly: (map['isAnsweredCorrectly'] as bool?) ?? false,
+        isDrafted: (map['isDrafted'] as bool?) ?? false,
         explanation: map['explanation'] as String?,
         source: map['source'] as String?,
       );
@@ -44,6 +53,7 @@ class QuestionModel {
         'choices': choices.map((c) => c.toMap()).toList(),
         'correctIndex': correctIndex,
         'isAnsweredCorrectly': isAnsweredCorrectly,
+        'isDrafted': isDrafted,
         if (explanation != null) 'explanation': explanation,
         if (source != null) 'source': source,
       };
@@ -56,6 +66,7 @@ class QuestionModel {
     List<ChoiceModel>? choices,
     int? correctIndex,
     bool? isAnsweredCorrectly,
+    bool? isDrafted,
     String? explanation,
     String? source,
   }) =>
@@ -65,6 +76,7 @@ class QuestionModel {
         choices: choices ?? this.choices,
         correctIndex: correctIndex ?? this.correctIndex,
         isAnsweredCorrectly: isAnsweredCorrectly ?? this.isAnsweredCorrectly,
+        isDrafted: isDrafted ?? this.isDrafted,
         explanation: explanation ?? this.explanation,
         source: source ?? this.source,
       );
@@ -77,6 +89,7 @@ class QuestionModel {
         other.text == text &&
         other.correctIndex == correctIndex &&
         other.isAnsweredCorrectly == isAnsweredCorrectly &&
+        other.isDrafted == isDrafted &&
         other.explanation == explanation &&
         other.source == source &&
         _listEq(other.choices, choices);
@@ -97,6 +110,7 @@ class QuestionModel {
         Object.hashAll(choices),
         correctIndex,
         isAnsweredCorrectly,
+        isDrafted,
         explanation,
         source,
       );

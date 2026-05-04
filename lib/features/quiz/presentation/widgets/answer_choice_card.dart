@@ -7,20 +7,125 @@ import '../../../../theme/theme.dart';
 import '../../data/models/choice_model.dart';
 
 enum AnswerChoiceVisualState {
-  /// No answer locked in yet — choice is tappable.
-  idle,
+  idle(
+    reactDuration: Duration.zero,
+    scaleAmplitude: 0,
+    shakeAmplitude: 0,
+    showsHalo: false,
+    pulsesBadge: false,
+    showsShadow: true,
+  ),
+  selected(
+    reactDuration: Duration(milliseconds: 220),
+    scaleAmplitude: -0.03,
+    shakeAmplitude: 0,
+    showsHalo: false,
+    pulsesBadge: false,
+    showsShadow: true,
+  ),
+  revealedCorrect(
+    reactDuration: Duration(milliseconds: 540),
+    scaleAmplitude: 0.045,
+    shakeAmplitude: 0,
+    showsHalo: true,
+    pulsesBadge: true,
+    showsShadow: true,
+  ),
+  revealedWrong(
+    reactDuration: Duration(milliseconds: 540),
+    scaleAmplitude: 0,
+    shakeAmplitude: 7,
+    showsHalo: false,
+    pulsesBadge: false,
+    showsShadow: true,
+  ),
+  revealedMuted(
+    reactDuration: Duration.zero,
+    scaleAmplitude: 0,
+    shakeAmplitude: 0,
+    showsHalo: false,
+    pulsesBadge: false,
+    showsShadow: false,
+  );
 
-  /// User picked this choice (transient — feedback hasn't kicked in yet).
-  selected,
+  const AnswerChoiceVisualState({
+    required this.reactDuration,
+    required this.scaleAmplitude,
+    required this.shakeAmplitude,
+    required this.showsHalo,
+    required this.pulsesBadge,
+    required this.showsShadow,
+  });
 
-  /// Answer locked in: this is the correct choice (always highlighted in green).
-  revealedCorrect,
+  final Duration reactDuration;
+  final double scaleAmplitude;
+  final double shakeAmplitude;
+  final bool showsHalo;
+  final bool pulsesBadge;
+  final bool showsShadow;
 
-  /// Answer locked in: user picked this and it was wrong.
-  revealedWrong,
+  AnswerChoiceVisuals visuals(BuildContext context) {
+    final colors = context.appColors;
+    final wrong = context.colorScheme.error;
+    return switch (this) {
+      AnswerChoiceVisualState.idle => AnswerChoiceVisuals(
+          bg: colors.canvasRaised,
+          borderColor: colors.olive.withValues(alpha: 0.12),
+          textColor: colors.textPrimary,
+          badgeBg: colors.canvas,
+          badgeFg: colors.textSecondary,
+        ),
+      AnswerChoiceVisualState.selected => AnswerChoiceVisuals(
+          bg: Color.lerp(colors.canvasRaised, colors.olive, 0.10)!,
+          borderColor: colors.olive.withValues(alpha: 0.55),
+          textColor: colors.textPrimary,
+          badgeBg: colors.olive.withValues(alpha: 0.16),
+          badgeFg: colors.oliveDeep,
+        ),
+      AnswerChoiceVisualState.revealedCorrect => AnswerChoiceVisuals(
+          bg: Color.lerp(colors.canvasRaised, colors.olive, 0.12)!,
+          borderColor: colors.olive,
+          textColor: colors.oliveDeep,
+          badgeBg: colors.olive,
+          badgeFg: colors.canvas,
+          trailing:
+              Icon(Icons.check_rounded, size: 16, color: colors.olive),
+        ),
+      AnswerChoiceVisualState.revealedWrong => AnswerChoiceVisuals(
+          bg: Color.lerp(colors.canvasRaised, wrong, 0.14)!,
+          borderColor: wrong,
+          textColor: wrong,
+          badgeBg: wrong,
+          badgeFg: colors.canvas,
+          trailing: Icon(Icons.close_rounded, size: 16, color: wrong),
+        ),
+      AnswerChoiceVisualState.revealedMuted => AnswerChoiceVisuals(
+          bg: colors.canvasRaised.withValues(alpha: 0.55),
+          borderColor: colors.borderSubtle,
+          textColor: colors.textTertiary,
+          badgeBg: colors.canvas,
+          badgeFg: colors.textTertiary,
+        ),
+    };
+  }
+}
 
-  /// Answer locked in: a non-selected, non-correct choice (muted).
-  revealedMuted,
+class AnswerChoiceVisuals {
+  const AnswerChoiceVisuals({
+    required this.bg,
+    required this.borderColor,
+    required this.textColor,
+    required this.badgeBg,
+    required this.badgeFg,
+    this.trailing,
+  });
+
+  final Color bg;
+  final Color borderColor;
+  final Color textColor;
+  final Color badgeBg;
+  final Color badgeFg;
+  final Widget? trailing;
 }
 
 class AnswerChoiceCard extends StatefulWidget {
@@ -36,6 +141,12 @@ class AnswerChoiceCard extends StatefulWidget {
   final String label;
   final AnswerChoiceVisualState visualState;
   final VoidCallback? onTap;
+
+  static String labelForIndex(int i) {
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    if (i >= 0 && i < letters.length) return letters[i];
+    return '${i + 1}';
+  }
 
   @override
   State<AnswerChoiceCard> createState() => _AnswerChoiceCardState();
@@ -64,31 +175,17 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.visualState == widget.visualState) return;
 
-    switch (widget.visualState) {
-      case AnswerChoiceVisualState.selected:
-        _reactCtrl
-          ..stop()
-          ..duration = const Duration(milliseconds: 220)
-          ..forward(from: 0);
-        break;
-      case AnswerChoiceVisualState.revealedCorrect:
-        _reactCtrl
-          ..stop()
-          ..duration = const Duration(milliseconds: 540)
-          ..forward(from: 0);
-        _haloCtrl
-          ..stop()
-          ..forward(from: 0);
-        break;
-      case AnswerChoiceVisualState.revealedWrong:
-        _reactCtrl
-          ..stop()
-          ..duration = const Duration(milliseconds: 540)
-          ..forward(from: 0);
-        break;
-      case AnswerChoiceVisualState.idle:
-      case AnswerChoiceVisualState.revealedMuted:
-        break;
+    final state = widget.visualState;
+    if (state.reactDuration > Duration.zero) {
+      _reactCtrl
+        ..stop()
+        ..duration = state.reactDuration
+        ..forward(from: 0);
+    }
+    if (state.showsHalo) {
+      _haloCtrl
+        ..stop()
+        ..forward(from: 0);
     }
   }
 
@@ -102,55 +199,9 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final wrongColor = context.colorScheme.error;
-
-    final (bg, borderColor, textColor, badgeBg, badgeFg, trailing) = switch (
-        widget.visualState) {
-      AnswerChoiceVisualState.idle => (
-          colors.canvasRaised,
-          colors.olive.withValues(alpha: 0.12),
-          colors.textPrimary,
-          colors.canvas,
-          colors.textSecondary,
-          null,
-        ),
-      AnswerChoiceVisualState.selected => (
-          Color.lerp(colors.canvasRaised, colors.olive, 0.10)!,
-          colors.olive.withValues(alpha: 0.55),
-          colors.textPrimary,
-          colors.olive.withValues(alpha: 0.16),
-          colors.oliveDeep,
-          null,
-        ),
-      AnswerChoiceVisualState.revealedCorrect => (
-          Color.lerp(colors.canvasRaised, colors.olive, 0.12)!,
-          colors.olive,
-          colors.oliveDeep,
-          colors.olive,
-          colors.canvas,
-          Icon(Icons.check_rounded, size: 16, color: colors.olive),
-        ),
-      AnswerChoiceVisualState.revealedWrong => (
-          Color.lerp(colors.canvasRaised, wrongColor, 0.14)!,
-          wrongColor,
-          wrongColor,
-          wrongColor,
-          colors.canvas,
-          Icon(Icons.close_rounded, size: 16, color: wrongColor),
-        ),
-      AnswerChoiceVisualState.revealedMuted => (
-          colors.canvasRaised.withValues(alpha: 0.55),
-          colors.borderSubtle,
-          colors.textTertiary,
-          colors.canvas,
-          colors.textTertiary,
-          null,
-        ),
-    };
-
-    final isMuted =
-        widget.visualState == AnswerChoiceVisualState.revealedMuted;
-    final bgTop = Color.lerp(bg, Colors.white, 0.05) ?? bg;
+    final state = widget.visualState;
+    final v = state.visuals(context);
+    final bgTop = Color.lerp(v.bg, Colors.white, 0.05) ?? v.bg;
 
     final card = Material(
       color: Colors.transparent,
@@ -166,28 +217,27 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [bgTop, bg],
+              colors: [bgTop, v.bg],
             ),
             borderRadius: ZaadRadii.lgAll,
-            border: Border.all(color: borderColor, width: 0.9),
-            boxShadow: isMuted
-                ? null
-                : [
+            border: Border.all(color: v.borderColor, width: 0.9),
+            boxShadow: state.showsShadow
+                ? [
                     BoxShadow(
                       color: colors.oliveDeep.withValues(alpha: 0.04),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
-                  ],
+                  ]
+                : null,
           ),
           child: Row(
             children: [
               _AnimatedBadge(
-                badgeBg: badgeBg,
-                badgeFg: badgeFg,
+                badgeBg: v.badgeBg,
+                badgeFg: v.badgeFg,
                 label: widget.label,
-                shouldPulse:
-                    widget.visualState == AnswerChoiceVisualState.revealedCorrect,
+                shouldPulse: state.pulsesBadge,
               ),
               const SizedBox(width: 11),
               Expanded(
@@ -197,11 +247,8 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     height: 1.36,
-                    color: textColor,
+                    color: v.textColor,
                   ),
-                  // Builder reads the live interpolated DefaultTextStyle from
-                  // AnimatedDefaultTextStyle so ResponsiveText (which sets its
-                  // own style explicitly) still animates with the parent.
                   child: Builder(
                     builder: (context) => ResponsiveText(
                       widget.choice.text,
@@ -210,7 +257,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
                   ),
                 ),
               ),
-              if (trailing != null) ...[
+              if (v.trailing != null) ...[
                 const SizedBox(width: 8),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 220),
@@ -222,8 +269,8 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
                     child: FadeTransition(opacity: animation, child: child),
                   ),
                   child: KeyedSubtree(
-                    key: ValueKey(widget.visualState),
-                    child: trailing,
+                    key: ValueKey(state),
+                    child: v.trailing!,
                   ),
                 ),
               ],
@@ -238,12 +285,17 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
       child: AnimatedBuilder(
         animation: Listenable.merge([_reactCtrl, _haloCtrl]),
         builder: (context, child) {
-          final scale = _scaleFor(widget.visualState, _reactCtrl.value);
-          final dx = _shakeFor(widget.visualState, _reactCtrl.value);
+          final t = _reactCtrl.value;
+          final scale = (t == 0 || state.scaleAmplitude == 0)
+              ? 1.0
+              : 1 + math.sin(t * math.pi) * state.scaleAmplitude;
+          final dx = (t == 0 || state.shakeAmplitude == 0)
+              ? 0.0
+              : math.sin(t * math.pi * 4) * (1 - t) * state.shakeAmplitude;
           return Stack(
             alignment: Alignment.center,
             children: [
-              if (widget.visualState == AnswerChoiceVisualState.revealedCorrect)
+              if (state.showsHalo)
                 _CorrectHalo(
                   progress: _haloCtrl.value,
                   color: colors.olive,
@@ -258,31 +310,6 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
         child: card,
       ),
     );
-  }
-
-  double _scaleFor(AnswerChoiceVisualState state, double t) {
-    if (t == 0) return 1;
-    switch (state) {
-      case AnswerChoiceVisualState.selected:
-        // Quick tap punch: 1 → 0.97 → 1
-        return 1 - math.sin(t * math.pi) * 0.03;
-      case AnswerChoiceVisualState.revealedCorrect:
-        // Soft pulse up: 1 → 1.045 → 1
-        return 1 + math.sin(t * math.pi) * 0.045;
-      case AnswerChoiceVisualState.revealedWrong:
-        // No scale; the shake handles it.
-        return 1;
-      case AnswerChoiceVisualState.idle:
-      case AnswerChoiceVisualState.revealedMuted:
-        return 1;
-    }
-  }
-
-  double _shakeFor(AnswerChoiceVisualState state, double t) {
-    if (state != AnswerChoiceVisualState.revealedWrong || t == 0) return 0;
-    // 4 oscillations, decaying amplitude, peak ~7px.
-    final decay = 1 - t;
-    return math.sin(t * math.pi * 4) * decay * 7;
   }
 }
 
@@ -355,7 +382,6 @@ class _AnimatedBadge extends StatelessWidget {
   }
 }
 
-/// A green ring that expands and fades out around a correct answer.
 class _CorrectHalo extends StatelessWidget {
   const _CorrectHalo({required this.progress, required this.color});
 
@@ -366,29 +392,26 @@ class _CorrectHalo extends StatelessWidget {
   Widget build(BuildContext context) {
     if (progress == 0 || progress >= 1) return const SizedBox.shrink();
     final eased = Curves.easeOutCubic.transform(progress);
-    final opacity = (1 - progress).clamp(0.0, 1.0) * 0.55;
+    final fade = (1 - progress).clamp(0.0, 1.0) * 0.55;
     final scale = 0.96 + eased * 0.10;
     return Positioned.fill(
       child: IgnorePointer(
         child: Transform.scale(
           scale: scale,
-          child: Opacity(
-            opacity: opacity,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: ZaadRadii.xlAll,
-                border: Border.all(
-                  color: color.withValues(alpha: 0.85),
-                  width: 1.4,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.25),
-                    blurRadius: 18,
-                    spreadRadius: 1,
-                  ),
-                ],
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: ZaadRadii.xlAll,
+              border: Border.all(
+                color: color.withValues(alpha: 0.85 * fade),
+                width: 1.4,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.25 * fade),
+                  blurRadius: 18,
+                  spreadRadius: 1,
+                ),
+              ],
             ),
           ),
         ),

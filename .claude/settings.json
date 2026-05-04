@@ -19,7 +19,10 @@
       "Bash(grep -r AuthStateListenerMixin /Users/yassmeen/Documents/dummy_projects/EramDoctor-app --include=*.dart)",
       "Bash(grep -r \"AuthEndPoints\\\\|auth_endpoints\" /Users/yassmeen/Documents/dummy_projects/EramDoctor-app --include=*.dart)",
       "Bash(flutter analyze:*)",
-      "Bash(wc -l /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/presentation/cubit/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/models/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/enum/*.dart)"
+      "Bash(wc -l /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/presentation/cubit/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/models/*.dart /Users/yassmeen/Documents/dummy_projects/EramDoctor-app/apps/doctor_app/lib/features/survey_results/data/enum/*.dart)",
+      "Bash(grep -n '^  \"notifications\"\\\\|^  },\\\\s*$' /Users/yassmeen/Documents/zad/my_app/assets/translations/en.json)",
+      "Bash(grep -n '^  \"[a-z_]*\"\\\\s*:\\\\s*{\\\\s*$' /Users/yassmeen/Documents/zad/my_app/assets/translations/en.json)",
+      "Bash(awk 'NR>=96 && NR<=120' /Users/yassmeen/Documents/zad/my_app/assets/translations/en.json)"
     ]
   }
 }

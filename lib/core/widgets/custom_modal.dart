@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../theme/theme.dart';
+import '../../theme/theme.dart';
 
-/// Shared chrome for the bottom-sheet modals used in the child feature.
+/// Shared chrome for bottom-sheet modals across the app.
 /// Renders the rounded ivory container, drag handle, title, optional
 /// subtitle, and lifts above the keyboard.
 ///

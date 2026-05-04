@@ -19,6 +19,10 @@ class ZaadTextField extends StatelessWidget {
     this.textInputAction,
     this.validator,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
+    this.enabled = true,
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.errorText,
   });
 
   final String hintText;
@@ -31,6 +35,10 @@ class ZaadTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
   final AutovalidateMode? autovalidateMode;
+  final bool enabled;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,10 @@ class ZaadTextField extends StatelessWidget {
       textInputAction: textInputAction,
       validator: validator,
       autovalidateMode: autovalidateMode,
+      isEnabled: enabled,
+      onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
+      errorText: errorText,
       iconSize: 20,
       style: AppTextStyles.labelLarge.copyWith(
         letterSpacing: 0,

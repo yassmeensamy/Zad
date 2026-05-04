@@ -8,6 +8,7 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_close_button.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
+import '../../../auth/presentation/widgets/zaad_text_field.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 
@@ -33,16 +34,22 @@ class _ChangePasswordDialog extends StatefulWidget {
 }
 
 class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _currentController = TextEditingController();
-  final _newController = TextEditingController();
-  final _confirmController = TextEditingController();
-  String? _serverError;
-  int _strength = 0;
+  late final GlobalKey<FormState> _formKey;
+  late final TextEditingController _currentController;
+  late final TextEditingController _newController;
+  late final TextEditingController _confirmController;
+  late final ValueNotifier<String?> _serverError;
+  late final ValueNotifier<int> _strength;
 
   @override
   void initState() {
     super.initState();
+    _formKey = GlobalKey<FormState>();
+    _currentController = TextEditingController();
+    _newController = TextEditingController();
+    _confirmController = TextEditingController();
+    _serverError = ValueNotifier<String?>(null);
+    _strength = ValueNotifier<int>(0);
     _newController.addListener(_recomputeStrength);
   }
 
@@ -52,6 +59,8 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
     _currentController.dispose();
     _newController.dispose();
     _confirmController.dispose();
+    _serverError.dispose();
+    _strength.dispose();
     super.dispose();
   }
 
@@ -62,12 +71,12 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
     if (RegExp(r'[A-Z]').hasMatch(v) && RegExp(r'[a-z]').hasMatch(v)) score++;
     if (RegExp(r'[0-9]').hasMatch(v)) score++;
     if (RegExp(r'[^A-Za-z0-9]').hasMatch(v)) score++;
-    if (score != _strength) setState(() => _strength = score);
+    if (score != _strength.value) _strength.value = score;
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _serverError = null);
+    _serverError.value = null;
     context.read<UserCubit>().changePassword(
       currentPassword: _currentController.text,
       newPassword: _newController.text,
@@ -84,7 +93,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
       );
       context.read<UserCubit>().resetChangePasswordStatus();
     } else if (state.isPasswordError) {
-      setState(() => _serverError = state.changePasswordErrorMessage);
+      _serverError.value = state.changePasswordErrorMessage;
       context.read<UserCubit>().resetChangePasswordStatus();
     }
   }
@@ -139,41 +148,71 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                       titleAccentKey:
                           'edit_profile.change_password_title_accent',
                     ),
-                    const SizedBox(height: 14),
-                    _PwdField(
-                      controller: _currentController,
-                      labelKey: 'edit_profile.current_password_label',
-                      hintKey: 'edit_profile.current_password_hint',
-                      enabled: !loading,
-                      textInputAction: TextInputAction.next,
-                      errorText: _serverError?.tr(),
-                      onChanged: (_) {
-                        if (_serverError != null) {
-                          setState(() => _serverError = null);
-                        }
+                    const SizedBox(height: 18),
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _serverError,
+                      builder: (context, serverError, _) {
+                        return ZaadTextField(
+                          hintText: 'edit_profile.current_password_hint',
+                          controller: _currentController,
+                          enabled: !loading,
+                          obscureText: true,
+                          passwordToggle: true,
+                          autofillHints: const [AutofillHints.password],
+                          textInputAction: TextInputAction.next,
+                          errorText: serverError?.tr(),
+                          onChanged: (_) {
+                            if (_serverError.value != null) {
+                              _serverError.value = null;
+                            }
+                          },
+                          validator: _validateRequired,
+                          prefixIcon: Icon(
+                            Icons.lock_outline_rounded,
+                            color: colors.oliveSoft,
+                            size: 20,
+                          ),
+                        );
                       },
-                      validator: _validateRequired,
                     ),
-                    const SizedBox(height: 10),
-                    _PwdField(
+                    const SizedBox(height: 12),
+                    ZaadTextField(
+                      hintText: 'edit_profile.new_password_hint',
                       controller: _newController,
-                      labelKey: 'edit_profile.new_password_label',
-                      hintKey: 'edit_profile.new_password_hint',
                       enabled: !loading,
+                      obscureText: true,
+                      passwordToggle: true,
+                      autofillHints: const [AutofillHints.newPassword],
                       textInputAction: TextInputAction.next,
                       validator: _validateNew,
+                      prefixIcon: Icon(
+                        Icons.lock_reset_rounded,
+                        color: colors.oliveSoft,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(height: 8),
-                    _StrengthBars(score: _strength),
-                    const SizedBox(height: 10),
-                    _PwdField(
+                    ValueListenableBuilder<int>(
+                      valueListenable: _strength,
+                      builder: (context, strength, _) =>
+                          _StrengthBars(score: strength),
+                    ),
+                    const SizedBox(height: 12),
+                    ZaadTextField(
+                      hintText: 'edit_profile.confirm_password_hint',
                       controller: _confirmController,
-                      labelKey: 'edit_profile.confirm_password_label',
-                      hintKey: 'edit_profile.confirm_password_hint',
                       enabled: !loading,
+                      obscureText: true,
+                      passwordToggle: true,
+                      autofillHints: const [AutofillHints.newPassword],
                       textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _submit(),
+                      onFieldSubmitted: (_) => _submit(),
                       validator: _validateConfirm,
+                      prefixIcon: Icon(
+                        Icons.check_circle_outline_rounded,
+                        color: colors.oliveSoft,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Padding(
@@ -267,176 +306,6 @@ class _DialogHeader extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PwdField extends StatefulWidget {
-  const _PwdField({
-    required this.controller,
-    required this.labelKey,
-    required this.hintKey,
-    required this.enabled,
-    this.textInputAction,
-    this.validator,
-    this.onChanged,
-    this.onSubmitted,
-    this.errorText,
-  });
-
-  final TextEditingController controller;
-  final String labelKey;
-  final String hintKey;
-  final bool enabled;
-  final TextInputAction? textInputAction;
-  final FormFieldValidator<String>? validator;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmitted;
-  final String? errorText;
-
-  @override
-  State<_PwdField> createState() => _PwdFieldState();
-}
-
-class _PwdFieldState extends State<_PwdField> {
-  bool _obscure = true;
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
-    final focused = _focusNode.hasFocus;
-    final errorColor = context.colorScheme.error;
-
-    return FormField<String>(
-      validator: (_) => widget.validator?.call(widget.controller.text),
-      builder: (formState) {
-        final showError = hasError || formState.hasError;
-        final errorMessage = widget.errorText ?? formState.errorText;
-
-        Color borderColor;
-        if (showError) {
-          borderColor = errorColor.withValues(alpha: 0.6);
-        } else if (focused) {
-          borderColor = colors.olive;
-        } else {
-          borderColor = colors.olive.withValues(alpha: 0.18);
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: colors.canvas,
-                borderRadius: BorderRadius.circular(ZaadRadii.md),
-                border: Border.all(color: borderColor, width: 1.5),
-                boxShadow: focused && !showError
-                    ? [
-                        BoxShadow(
-                          color: colors.olive.withValues(alpha: 0.08),
-                          blurRadius: 0,
-                          spreadRadius: 3,
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ResponsiveText(
-                          widget.labelKey,
-                          style: ZaadType.fieldLabel.copyWith(
-                            color: colors.oliveSoft,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        TextField(
-                          controller: widget.controller,
-                          focusNode: _focusNode,
-                          enabled: widget.enabled,
-                          obscureText: _obscure,
-                          obscuringCharacter: '•',
-                          textInputAction: widget.textInputAction,
-                          onChanged: (v) {
-                            widget.onChanged?.call(v);
-                            formState.didChange(v);
-                          },
-                          onSubmitted: widget.onSubmitted,
-                          style: AppTextStyles.labelLarge.copyWith(
-                            letterSpacing: 0,
-                            color: colors.oliveDeep,
-                          ),
-                          decoration: InputDecoration(
-                            isCollapsed: true,
-                            border: InputBorder.none,
-                            hintText: widget.hintKey.tr(),
-                            hintStyle: AppTextStyles.bodyMedium.copyWith(
-                              color: colors.textSecondary
-                                  .withValues(alpha: 0.7),
-                            ),
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  InkWell(
-                    onTap: widget.enabled
-                        ? () => setState(() => _obscure = !_obscure)
-                        : null,
-                    borderRadius: BorderRadius.circular(6),
-                    child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Icon(
-                        _obscure
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        size: 16,
-                        color: colors.oliveSoft,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (showError && errorMessage != null) ...[
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  errorMessage,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    fontSize: 11,
-                    letterSpacing: 0,
-                    color: errorColor,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        );
-      },
     );
   }
 }

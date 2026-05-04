@@ -253,6 +253,26 @@
       "evening_reminder_body": "مراجعتك الأسبوعية مجدولة في الصباح."
     }
   },
+  "drafts": {
+    "title": "المسودات",
+    "empty_title": "لا توجد أسئلة محفوظة بعد",
+    "empty_subtitle": "انقر على إشارة الحفظ في أي سؤال لمراجعته لاحقًا.",
+    "load_failed": "تعذّر تحميل المسودات",
+    "delete_failed": "تعذّر حذف المسودة",
+    "delete_confirm_title": "إزالة هذه المسودة؟",
+    "delete_confirm_subtitle": "لن تظهر بعد ذلك في قائمتك المحفوظة.",
+    "delete_confirm_cta": "إزالة",
+    "note_label": "ملاحظة",
+    "note_hint": "أضف ملاحظة شخصية…",
+    "note_save": "حفظ الملاحظة",
+    "note_saved": "تم حفظ الملاحظة",
+    "no_note": "لا توجد ملاحظة",
+    "edit_note": "تعديل الملاحظة",
+    "view_details": "اضغط لعرض التفاصيل",
+    "correct_answer": "الإجابة الصحيحة",
+    "your_note": "ملاحظتك",
+    "remove_note": "حذف الملاحظة"
+  },
   "profile": {
     "practice": "الممارسة",
     "library": "المحتوى",

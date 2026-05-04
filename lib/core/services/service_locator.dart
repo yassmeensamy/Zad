@@ -13,6 +13,9 @@ import '../../features/child/data/remote/child_remote_data_source.dart';
 import '../../features/child/data/repositories/child_repository.dart';
 import '../../features/child/presentation/cubit/child_cubit.dart';
 import '../../features/child/presentation/cubit/child_draft_cubit.dart';
+import '../../features/drafts/data/remote/drafts_remote_data_source.dart';
+import '../../features/drafts/data/repositories/drafts_repository.dart';
+import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
 import '../../features/help_center/data/remote/help_center_remote_data_source.dart';
 import '../../features/help_center/data/repositories/help_center_repository.dart';
 import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
@@ -203,6 +206,20 @@ class ServiceLocator {
     );
     sl.registerFactory<QuizCubit>(
       () => QuizCubit(quizRepository: sl()),
+    );
+
+    // Drafts
+    sl.registerLazySingleton<DraftsRemoteDataSource>(
+      () => DraftsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<DraftsRepository>(
+      () => DraftsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<DraftsCubit>(
+      () => DraftsCubit(repository: sl()),
     );
   }
 }

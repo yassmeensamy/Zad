@@ -32,4 +32,9 @@ class AppEndpoint {
       '${baseUrl}api/quiz/levels/$levelId/questions';
   String submitQuiz(int levelId) =>
       '${baseUrl}api/quiz/levels/$levelId/submit';
+
+  // Draft Questions
+  String get drafts => '${baseUrl}api/drafts';
+  String get draftsBulk => '${baseUrl}api/drafts/bulk';
+  String draftById(int id) => '${baseUrl}api/drafts/$id';
 }

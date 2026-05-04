@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
@@ -13,6 +15,10 @@ import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart'
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
 import '../../features/child/presentation/screens/create_children_screen.dart';
+import '../../features/drafts/data/models/draft_model.dart';
+import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
+import '../../features/drafts/presentation/screens/draft_detail_screen.dart';
+import '../../features/drafts/presentation/screens/drafts_screen.dart';
 import '../../features/help_center/presentation/screens/help_center_screen.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
@@ -82,6 +88,26 @@ class AppRouter {
         path: AppRoutes.helpCenter,
         name: AppRoutes.helpCenterName,
         builder: (context, state) => const HelpCenterScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.drafts,
+        name: AppRoutes.draftsName,
+        builder: (context, state) => const DraftsScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.draftDetail,
+            name: AppRoutes.draftDetailName,
+            builder: (context, state) {
+              final extra =
+                  state.extra as ({DraftsCubit cubit, DraftModel draft})?;
+              if (extra == null) return const SizedBox.shrink();
+              return BlocProvider<DraftsCubit>.value(
+                value: extra.cubit,
+                child: DraftDetailScreen(draft: extra.draft),
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.levels,

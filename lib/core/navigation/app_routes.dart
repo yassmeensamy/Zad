@@ -19,6 +19,8 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String editProfile = '/edit-profile';
   static const String helpCenter = '/help-center';
+  static const String drafts = '/drafts';
+  static const String draftDetail = ':id';
 
   static const String splashName = 'splash';
   static const String onboardingName = 'onboarding';
@@ -37,4 +39,6 @@ class AppRoutes {
   static const String notificationsName = 'notifications';
   static const String editProfileName = 'edit-profile';
   static const String helpCenterName = 'help-center';
+  static const String draftsName = 'drafts';
+  static const String draftDetailName = 'draft-detail';
 }

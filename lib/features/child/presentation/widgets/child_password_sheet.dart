@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
-import 'custom_modal.dart';
+import '../../../../core/widgets/custom_modal.dart';
 
 /// Bottom sheet that captures (or edits) the password for a single child
 /// draft. Returns the entered password to the caller via [Navigator.pop],

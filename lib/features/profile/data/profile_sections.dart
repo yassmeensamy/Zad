@@ -20,8 +20,9 @@ List<ProfileSection> profileSections(BuildContext context) => [
       ProfileMenuItem(
         icon: Icons.translate_rounded,
         titleKey: 'profile.language',
-        trailingText:
-            context.locale.languageCode == 'ar' ? 'العربية' : 'English',
+        trailingText: context.locale.languageCode == 'ar'
+            ? 'العربية'
+            : 'English',
         onTap: () => LanguageDialog.show(context),
       ),
       ProfileMenuItem(
@@ -34,10 +35,11 @@ List<ProfileSection> profileSections(BuildContext context) => [
   ProfileSection(
     titleKey: 'profile.library',
     items: [
-      const ProfileMenuItem(
+      ProfileMenuItem(
         icon: Icons.drafts_outlined,
         titleKey: 'profile.drafts',
-        visibleFor: [UserRole.child],
+        onTap: () => context.pushNamed(AppRoutes.draftsName),
+        visibleFor: const [UserRole.child, UserRole.parent],
       ),
       ProfileMenuItem(
         icon: Icons.family_restroom_rounded,

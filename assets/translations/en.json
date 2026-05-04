@@ -253,6 +253,26 @@
       "evening_reminder_body": "Your weekly review is scheduled for the morning."
     }
   },
+  "drafts": {
+    "title": "Drafts",
+    "empty_title": "No saved questions yet",
+    "empty_subtitle": "Tap the bookmark on any quiz question to keep it for later review.",
+    "load_failed": "Couldn't load drafts",
+    "delete_failed": "Couldn't delete draft",
+    "delete_confirm_title": "Remove this draft?",
+    "delete_confirm_subtitle": "It will no longer appear in your saved list.",
+    "delete_confirm_cta": "Remove",
+    "note_label": "Note",
+    "note_hint": "Add a personal note…",
+    "note_save": "Save note",
+    "note_saved": "Note saved",
+    "no_note": "No note added",
+    "edit_note": "Edit note",
+    "view_details": "Tap to view details",
+    "correct_answer": "CORRECT ANSWER",
+    "your_note": "YOUR NOTE",
+    "remove_note": "Remove note"
+  },
   "profile": {
     "practice": "Practice",
     "library": "Library",

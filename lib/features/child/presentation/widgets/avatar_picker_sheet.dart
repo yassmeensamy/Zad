@@ -4,7 +4,7 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../onboarding_flow/data/child_avatar.dart';
 import '../../../onboarding_flow/presentation/widgets/child_avatar_circle.dart';
-import 'custom_modal.dart';
+import '../../../../core/widgets/custom_modal.dart';
 
 class AvatarPickerSheet extends StatelessWidget {
   const AvatarPickerSheet({super.key, required this.current});

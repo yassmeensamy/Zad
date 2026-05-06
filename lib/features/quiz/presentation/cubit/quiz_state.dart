@@ -36,6 +36,7 @@ class QuizState {
     this.submissionStatus = SubmissionStatus.idle,
     this.submissionResult,
     this.isReview = false,
+    this.levelId,
   });
 
   final QuizStatus status;
@@ -80,6 +81,10 @@ class QuizState {
   /// completed.
   final bool isReview;
 
+  /// The level being attempted. Captured on load so [QuizCubit.submit] can
+  /// post results back to the right level.
+  final int? levelId;
+
   QuizState copyWith({
     QuizStatus? status,
     QuizPhase? phase,
@@ -101,6 +106,7 @@ class QuizState {
     SubmissionStatus? submissionStatus,
     QuizSubmissionResponse? Function()? submissionResult,
     bool? isReview,
+    int? levelId,
   }) =>
       QuizState(
         status: status ?? this.status,
@@ -131,6 +137,7 @@ class QuizState {
             ? submissionResult()
             : this.submissionResult,
         isReview: isReview ?? this.isReview,
+        levelId: levelId ?? this.levelId,
       );
 
   @override
@@ -156,7 +163,8 @@ class QuizState {
         other.elapsed == elapsed &&
         other.submissionStatus == submissionStatus &&
         other.submissionResult == submissionResult &&
-        other.isReview == isReview;
+        other.isReview == isReview &&
+        other.levelId == levelId;
   }
 
   @override
@@ -178,6 +186,7 @@ class QuizState {
         Object.hash(startedAt, questionShownAt, elapsed),
         Object.hash(submissionStatus, submissionResult),
         isReview,
+        levelId,
       );
 }
 

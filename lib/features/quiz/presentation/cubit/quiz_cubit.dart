@@ -25,13 +25,11 @@ class QuizCubit extends BaseCubit<QuizState> {
   final DateTime Function() _now;
   final MotivationalMessages _messages;
 
-  int? _levelId;
-
   Future<void> loadQuiz(int levelId, {bool review = false}) async {
-    _levelId = levelId;
     emit(state.copyWith(
       status: QuizStatus.loading,
       isReview: review,
+      levelId: levelId,
     ));
     try {
       final response = await _quizRepository.getQuestions(levelId);
@@ -81,7 +79,7 @@ class QuizCubit extends BaseCubit<QuizState> {
   /// the user reaches [QuizPhase.finished], and can be re-invoked from the
   /// UI to retry on failure.
   Future<void> submit() async {
-    final levelId = _levelId;
+    final levelId = state.levelId;
     if (levelId == null || state.isSubmitting) return;
 
     final request = QuizSubmissionRequest(
@@ -216,6 +214,7 @@ class QuizCubit extends BaseCubit<QuizState> {
       elapsed: !review && empty ? Duration.zero : null,
       motivationalMessageKey:
           !review && empty ? _messages.randomFinish() : null,
+      levelId: state.levelId,
     );
   }
 

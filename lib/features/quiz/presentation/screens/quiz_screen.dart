@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,8 @@ import '../../../levels/data/models/level_model.dart';
 import '../../data/models/choice_model.dart';
 import '../../data/models/question_model.dart';
 import '../cubit/quiz_cubit.dart';
+import '../cubit/quiz_history_cubit.dart';
+import '../cubit/quiz_history_state.dart';
 import '../cubit/quiz_state.dart';
 import '../widgets/answer_choice_card.dart';
 import '../widgets/celebration_overlay.dart';
@@ -37,12 +40,18 @@ class QuizScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<QuizCubit>(create: (_) => sl<QuizCubit>()),
+        BlocProvider<QuizHistoryCubit>(create: (_) => QuizHistoryCubit()),
         BlocProvider<DraftsCubit>(create: (_) => sl<DraftsCubit>()),
       ],
-      child: _QuizBootstrap(
-        levelId: levelId,
-        review: isReview,
-        child: _QuizView(levelId: levelId, level: level),
+      child: BlocListener<QuizCubit, QuizState>(
+        listenWhen: (prev, curr) =>
+            prev.history.isNotEmpty && curr.history.isEmpty,
+        listener: (context, _) => context.read<QuizHistoryCubit>().exit(),
+        child: _QuizBootstrap(
+          levelId: levelId,
+          review: isReview,
+          child: _QuizView(levelId: levelId, level: level),
+        ),
       ),
     );
   }
@@ -218,17 +227,53 @@ class _ActiveView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final question = state.currentQuestion;
+    return BlocBuilder<QuizHistoryCubit, QuizHistoryState>(
+      builder: (context, historyState) => _buildContent(context, historyState),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    QuizHistoryState historyState,
+  ) {
+    final viewingEntry = _viewingEntry(historyState);
+    final question = viewingEntry?.question ?? state.currentQuestion;
     if (question == null) {
       return const SizedBox.shrink();
     }
 
-    final cubit = context.read<QuizCubit>();
+    final quizCubit = context.read<QuizCubit>();
+    final historyCubit = context.read<QuizHistoryCubit>();
     final isReview = state.isReview;
-    final isAnswered = state.isAnswered;
+    final isViewingHistory = historyState.isViewing;
+    final isAnswered = isViewingHistory || state.isAnswered;
     final showFeedback = isReview || isAnswered;
-    final isLastInRound = state.currentIndex + 1 >= state.currentQueue.length;
+    final canTapAnswer = !isReview && !isViewingHistory && !state.isAnswered;
+    final selectedChoiceId =
+        viewingEntry?.choiceId ?? state.selectedChoiceId;
+    final isLastInRound = !isViewingHistory &&
+        state.currentIndex + 1 >= state.currentQueue.length;
     final hasMoreRounds = !isReview && state.retryQueue.isNotEmpty;
+    final canGoPrevious = _canGoPrevious(historyState);
+
+    void onPrevious() {
+      if (isReview) {
+        quizCubit.reviewBack();
+      } else {
+        historyCubit.back(
+          historyLength: state.history.length,
+          liveIsAnswered: state.isAnswered,
+        );
+      }
+    }
+
+    void onNext() {
+      if (isViewingHistory) {
+        historyCubit.forward(state.history.length);
+      } else {
+        quizCubit.next();
+      }
+    }
 
     return Stack(
       children: [
@@ -243,6 +288,10 @@ class _ActiveView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 physics: const BouncingScrollPhysics(),
                 children: [
+                  _PreviousQuestionButton(
+                    onTap: canGoPrevious ? onPrevious : null,
+                  ),
+                  const SizedBox(height: 6),
                   QuizProgressBar(
                     total: state.roundLength,
                     current: state.positionInRound,
@@ -257,19 +306,26 @@ class _ActiveView extends StatelessWidget {
                       visualState: _visualStateFor(
                         choiceId: question.choices[i].index,
                         question: question,
-                        state: state,
+                        isAnswered: isAnswered,
+                        selectedChoiceId: selectedChoiceId,
                       ),
-                      onTap: (isReview || isAnswered)
-                          ? null
-                          : () =>
-                              cubit.selectAnswer(question.choices[i].index),
+                      onTap: canTapAnswer
+                          ? () => quizCubit.selectAnswer(
+                                question.choices[i].index,
+                              )
+                          : null,
                     ),
                   if (showFeedback) ...[
                     const SizedBox(height: 14),
                     FeedbackPanel(
-                      isCorrect: isReview ? true : state.isCorrect,
-                      motivationalKey:
-                          isReview ? null : state.motivationalMessageKey,
+                      isCorrect: isReview
+                          ? true
+                          : isViewingHistory
+                              ? viewingEntry!.isCorrect
+                              : state.isCorrect,
+                      motivationalKey: (isReview || isViewingHistory)
+                          ? null
+                          : state.motivationalMessageKey,
                       explanation: question.explanation,
                       reference: question.source,
                     ),
@@ -290,12 +346,12 @@ class _ActiveView extends StatelessWidget {
                 hasMoreRounds: hasMoreRounds,
                 onSave: () => _onSave(context, question.id),
                 onReport: () => _onReport(context),
-                onNext: cubit.next,
+                onNext: onNext,
               ),
             ),
           ],
         ),
-        if (!isReview && state.isAnswered)
+        if (!isReview && !isViewingHistory && state.isAnswered)
           Positioned.fill(
             child: CelebrationOverlay(
               trigger: question.id + state.round * 1000,
@@ -307,10 +363,26 @@ class _ActiveView extends StatelessWidget {
     );
   }
 
+  QuizHistoryEntry? _viewingEntry(QuizHistoryState historyState) {
+    final i = historyState.viewingIndex;
+    if (i == null || i < 0 || i >= state.history.length) return null;
+    return state.history[i];
+  }
+
+  bool _canGoPrevious(QuizHistoryState historyState) {
+    if (state.isReview) return state.currentIndex > 0;
+    final i = historyState.viewingIndex;
+    if (i != null) return i > 0;
+    final livePos =
+        state.isAnswered ? state.history.length - 1 : state.history.length;
+    return livePos > 0;
+  }
+
   AnswerChoiceVisualState _visualStateFor({
     required int choiceId,
     required QuestionModel question,
-    required QuizState state,
+    required bool isAnswered,
+    required int? selectedChoiceId,
   }) {
     final isCorrectChoice = question.correctIndex == choiceId;
 
@@ -320,10 +392,9 @@ class _ActiveView extends StatelessWidget {
           : AnswerChoiceVisualState.revealedMuted;
     }
 
-    final answered = state.isAnswered;
-    final selected = state.selectedChoiceId == choiceId;
+    final selected = selectedChoiceId == choiceId;
 
-    if (!answered) {
+    if (!isAnswered) {
       return selected
           ? AnswerChoiceVisualState.selected
           : AnswerChoiceVisualState.idle;
@@ -369,5 +440,48 @@ class _ActiveView extends StatelessWidget {
 
   void _confirmExit(BuildContext context) {
     if (context.canPop()) context.pop();
+  }
+}
+
+class _PreviousQuestionButton extends StatelessWidget {
+  const _PreviousQuestionButton({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final disabled = onTap == null;
+    final fg = disabled ? colors.textPlaceholder : colors.oliveDeep;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: ZaadRadii.smAll,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 10,
+              vertical: 6,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.arrow_back_rounded, size: 16, color: fg),
+                const SizedBox(width: 6),
+                Text(
+                  'quiz.actions.previous'.tr(),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: fg,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

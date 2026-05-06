@@ -70,6 +70,15 @@ class QuizCubit extends BaseCubit<QuizState> {
     }
   }
 
+  /// Step backward through the review-mode question list. No-op for active
+  /// play; that path goes through [QuizHistoryCubit].
+  void reviewBack() {
+    if (!state.isReview) return;
+    if (state.currentIndex > 0) {
+      emit(state.copyWith(currentIndex: state.currentIndex - 1));
+    }
+  }
+
   void restart() {
     if (state.allQuestions.isEmpty) return;
     emit(_buildLoadedState(state.allQuestions, review: false));
@@ -126,6 +135,7 @@ class QuizCubit extends BaseCubit<QuizState> {
           : state.firstTryCorrectIds,
       points: state.points + pointsEarned,
       motivationalMessageKey: () => _messages.randomCorrect(),
+      history: _appendHistory(question, choiceId),
     ));
 
     if (state.isLastInCurrentRound && state.retryQueue.isEmpty) {
@@ -140,8 +150,19 @@ class QuizCubit extends BaseCubit<QuizState> {
       retryQueue: [...state.retryQueue, question],
       totalRetries: state.totalRetries + 1,
       motivationalMessageKey: () => _messages.randomWrong(),
+      history: _appendHistory(question, choiceId),
     ));
   }
+
+  List<QuizHistoryEntry> _appendHistory(QuestionModel question, int choiceId) =>
+      [
+        ...state.history,
+        QuizHistoryEntry(
+          question: question,
+          choiceId: choiceId,
+          round: state.round,
+        ),
+      ];
 
   void _advanceWithinRound() {
     emit(state.copyWith(

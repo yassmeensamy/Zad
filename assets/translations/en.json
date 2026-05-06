@@ -116,7 +116,8 @@
       "report": "Report this question",
       "report_sent": "Thank you, your report was received",
       "next": "Next",
-      "finish": "Finish"
+      "finish": "Finish",
+      "previous": "Previous question"
     },
     "report": {
       "title": "What's wrong with this question?",

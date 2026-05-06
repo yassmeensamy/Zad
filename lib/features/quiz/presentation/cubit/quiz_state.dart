@@ -14,6 +14,34 @@ enum QuizPhase {
 
 enum SubmissionStatus { idle, submitting, success, error }
 
+/// One past-tense answer the user has already made. Captured as the user
+/// answers each question so they can scroll back through prior questions
+/// (across rounds) in read-only mode.
+class QuizHistoryEntry {
+  const QuizHistoryEntry({
+    required this.question,
+    required this.choiceId,
+    required this.round,
+  });
+
+  final QuestionModel question;
+  final int choiceId;
+  final int round;
+
+  bool get isCorrect => question.isCorrect(choiceId);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuizHistoryEntry &&
+          other.question == question &&
+          other.choiceId == choiceId &&
+          other.round == round;
+
+  @override
+  int get hashCode => Object.hash(question, choiceId, round);
+}
+
 class QuizState {
   const QuizState({
     this.status = QuizStatus.initial,
@@ -37,6 +65,7 @@ class QuizState {
     this.submissionResult,
     this.isReview = false,
     this.levelId,
+    this.history = const [],
   });
 
   final QuizStatus status;
@@ -85,6 +114,11 @@ class QuizState {
   /// post results back to the right level.
   final int? levelId;
 
+  /// Append-only log of every answer the user has made, in chronological
+  /// order across all rounds. Read by [QuizHistoryCubit] to drive the
+  /// read-only "back" navigation.
+  final List<QuizHistoryEntry> history;
+
   QuizState copyWith({
     QuizStatus? status,
     QuizPhase? phase,
@@ -107,6 +141,7 @@ class QuizState {
     QuizSubmissionResponse? Function()? submissionResult,
     bool? isReview,
     int? levelId,
+    List<QuizHistoryEntry>? history,
   }) =>
       QuizState(
         status: status ?? this.status,
@@ -138,6 +173,7 @@ class QuizState {
             : this.submissionResult,
         isReview: isReview ?? this.isReview,
         levelId: levelId ?? this.levelId,
+        history: history ?? this.history,
       );
 
   @override
@@ -164,7 +200,8 @@ class QuizState {
         other.submissionStatus == submissionStatus &&
         other.submissionResult == submissionResult &&
         other.isReview == isReview &&
-        other.levelId == levelId;
+        other.levelId == levelId &&
+        listEquals(other.history, history);
   }
 
   @override
@@ -187,6 +224,7 @@ class QuizState {
         Object.hash(submissionStatus, submissionResult),
         isReview,
         levelId,
+        Object.hashAll(history),
       );
 }
 

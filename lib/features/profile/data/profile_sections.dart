@@ -71,6 +71,11 @@ List<ProfileSection> profileSections(BuildContext context) => [
         titleKey: 'profile.help_support',
         onTap: () => context.pushNamed(AppRoutes.helpCenterName),
       ),
+      ProfileMenuItem(
+        icon: Icons.support_agent_outlined,
+        titleKey: 'profile.support_tickets',
+        onTap: () => context.pushNamed(AppRoutes.supportTicketsName),
+      ),
     ],
   ),
 ];

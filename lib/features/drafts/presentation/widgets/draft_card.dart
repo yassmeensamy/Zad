@@ -99,66 +99,46 @@ class _DraftLayout extends StatelessWidget {
     final colors = context.appColors;
     final trimmedNote = note?.trim();
     final hasNote = trimmedNote != null && trimmedNote.isNotEmpty;
-    final radius = BorderRadius.circular(ZaadRadii.card);
 
-    return Container(
+    return Card(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.6),
-        borderRadius: radius,
-        border: Border.all(
-          color: colors.olive.withValues(alpha: 0.10),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colors.oliveDeep.withValues(alpha: 0.05),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: radius,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(18, 16, 16, 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: ResponsiveText(
-                        question,
-                        style: AppTextStyles.titleMedium.copyWith(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          height: 1.4,
-                          color: colors.oliveDeep,
-                        ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(18, 16, 16, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ResponsiveText(
+                      question,
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        height: 1.4,
+                        color: colors.oliveDeep,
                       ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(width: 12),
-                    _Trailing(
-                      isMutating: isMutating,
-                      color: colors.accentDeep,
-                    ),
-                  ],
-                ),
-                if (hasNote) ...[
-                  const SizedBox(height: 12),
-                  _Note(text: trimmedNote),
+                  ),
+                  const SizedBox(width: 12),
+                  _Trailing(
+                    isMutating: isMutating,
+                    color: colors.accentDeep,
+                  ),
                 ],
+              ),
+              if (hasNote) ...[
                 const SizedBox(height: 12),
-                _Footer(createdAt: createdAt),
+                _Note(text: trimmedNote),
               ],
-            ),
+              const SizedBox(height: 12),
+              _Footer(createdAt: createdAt),
+            ],
           ),
         ),
       ),

@@ -26,6 +26,10 @@ import '../../features/onboarding_flow/presentation/screens/role_select_screen.d
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/support_tickets/data/models/ticket_model.dart';
+import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.dart';
+import '../../features/support_tickets/presentation/screens/support_tickets_screen.dart';
+import '../../features/support_tickets/presentation/screens/ticket_detail_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -104,6 +108,29 @@ class AppRouter {
               return BlocProvider<DraftsCubit>.value(
                 value: extra.cubit,
                 child: DraftDetailScreen(draft: extra.draft),
+              );
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: AppRoutes.supportTickets,
+        name: AppRoutes.supportTicketsName,
+        builder: (context, state) => const SupportTicketsScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.ticketDetail,
+            name: AppRoutes.ticketDetailName,
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? '';
+              final extra = state.extra
+                  as ({SupportTicketsCubit cubit, TicketModel ticket});
+              return BlocProvider<SupportTicketsCubit>.value(
+                value: extra.cubit,
+                child: TicketDetailScreen(
+                  ticketId: id,
+                  seed: extra.ticket,
+                ),
               );
             },
           ),

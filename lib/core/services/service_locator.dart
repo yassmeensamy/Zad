@@ -16,7 +16,6 @@ import '../../features/child/presentation/cubit/child_draft_cubit.dart';
 import '../../features/drafts/data/remote/drafts_remote_data_source.dart';
 import '../../features/drafts/data/repositories/drafts_repository.dart';
 import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
-import '../../features/help_center/data/remote/help_center_remote_data_source.dart';
 import '../../features/help_center/data/repositories/help_center_repository.dart';
 import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
 import '../../features/language/data/remote/language_remote_data_source.dart';
@@ -37,6 +36,9 @@ import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import '../../features/splash/presentation/cubit/splash_cubit.dart';
+import '../../features/support_tickets/data/remote/support_tickets_remote_data_source.dart';
+import '../../features/support_tickets/data/repositories/support_tickets_repository.dart';
+import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.dart';
 import '../../features/user/data/remote/user_remote_data_source.dart';
 import '../../features/user/data/repositories/user_repository.dart';
 import '../../features/user/presentation/cubit/user_cubit.dart';
@@ -155,12 +157,9 @@ class ServiceLocator {
       () => NotificationCubit(notificationRepository: sl()),
     );
 
-    // Help center (mock-backed)
-    sl.registerLazySingleton<HelpCenterRemoteDataSource>(
-      () => HelpCenterRemoteDataSourceImpl(),
-    );
+    // Help center — adapter over SupportTicketsRepository
     sl.registerLazySingleton<HelpCenterRepository>(
-      () => HelpCenterRepositoryImpl(remoteDataSource: sl()),
+      () => HelpCenterRepositoryImpl(ticketsRepository: sl()),
     );
     sl.registerFactory<HelpCenterCubit>(
       () => HelpCenterCubit(helpCenterRepository: sl()),
@@ -220,6 +219,20 @@ class ServiceLocator {
     );
     sl.registerFactory<DraftsCubit>(
       () => DraftsCubit(repository: sl()),
+    );
+
+    // Support Tickets
+    sl.registerLazySingleton<SupportTicketsRemoteDataSource>(
+      () => SupportTicketsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<SupportTicketsRepository>(
+      () => SupportTicketsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<SupportTicketsCubit>(
+      () => SupportTicketsCubit(repository: sl()),
     );
   }
 }

@@ -286,6 +286,7 @@
     "edit_profile": "تعديل الملف الشخصي",
     "privacy": "الخصوصية",
     "help_support": "المساعدة والدعم",
+    "support_tickets": "تذاكر الدعم",
     "sign_out": "تسجيل الخروج",
     "sign_out_confirm_title": "تسجيل الخروج؟",
     "sign_out_confirm_subtitle": "ستحتاج إلى تسجيل الدخول مجدّدًا للوصول إلى حسابك.",
@@ -378,6 +379,45 @@
       "reference_label": "المرجع",
       "send_another": "إرسال رسالة أخرى",
       "close": "العودة إلى الإعدادات"
+    }
+  },
+  "support_tickets": {
+    "title": "تذاكر الدعم",
+    "new_ticket": "تذكرة جديدة",
+    "empty_title": "لا توجد تذاكر بعد",
+    "empty_subtitle": "أرسل لنا رسالة وسنتابع المحادثة هنا.",
+    "load_failed": "تعذّر تحميل تذاكرك",
+    "reply_count": {
+      "zero": "لا توجد ردود",
+      "one": "ردّ واحد",
+      "two": "ردّان",
+      "few": "{} ردود",
+      "many": "{} ردًّا",
+      "other": "{} ردّ"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "open": "مفتوحة",
+      "in_review": "قيد المراجعة",
+      "resolved": "تم الحل",
+      "closed": "مغلقة",
+      "closed_by_user": "أغلقتها أنت"
+    },
+    "detail": {
+      "title": "تفاصيل التذكرة",
+      "ref_label": "رقم",
+      "replies_section": "المحادثة",
+      "original_message": "الرسالة الأصلية",
+      "no_replies": "استلمنا رسالتك وسيتواصل معك أحد أعضاء الفريق قريبًا.",
+      "from_admin": "فريق الدعم",
+      "from_you": "أنت",
+      "close_ticket": "إغلاق التذكرة",
+      "close_card_lead": "ما زالت مفتوحة",
+      "close_card_body": "أغلقها متى شعرت بأنّ المشكلة قد حُلّت.",
+      "close_confirm_title": "إغلاق هذه التذكرة؟",
+      "close_confirm_body": "إغلاق التذكرة يعني اعتبار المحادثة منتهية. يمكنك دومًا فتح تذكرة جديدة لاحقًا.",
+      "close_success": "تمّ إغلاق التذكرة",
+      "close_failed": "تعذّر إغلاق التذكرة. يرجى المحاولة مرة أخرى."
     }
   }
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/support_request_model.dart';
 
-/// Replaces the form once a request has been accepted. The card opens with
-/// a soft scale-and-fade so the screen feels like it exhales after sending.
+const _ease = Curves.easeOutCubic;
+
+/// Replaces the form once a request has been accepted. The card eases in,
+/// the seal lands with a soft elastic pop and pulses, the body and receipt
+/// rows stagger in, and the surface keeps a subtle accent breath so the
+/// gradient/border/shadow defined inside the decoration feels alive.
 class HelpSuccessCard extends StatelessWidget {
   const HelpSuccessCard({
     super.key,
@@ -24,117 +29,198 @@ class HelpSuccessCard extends StatelessWidget {
     final colors = context.appColors;
     final accent = request.topic.accent(colors);
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutCubic,
-      builder: (_, t, child) => Opacity(
-        opacity: t,
-        child: Transform.translate(
-          offset: Offset(0, (1 - t) * 16),
-          child: Transform.scale(
-            scale: 0.96 + 0.04 * t,
-            alignment: Alignment.topCenter,
-            child: child,
-          ),
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 26),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              colors.canvas.withValues(alpha: 0.96),
-              colors.canvasRaised.withValues(alpha: 0.82),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: colors.olive.withValues(alpha: 0.14),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: colors.oliveDeep.withValues(alpha: 0.08),
-              blurRadius: 22,
-              offset: const Offset(0, 12),
-            ),
+    final card = Container(
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 26),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colors.canvas.withValues(alpha: 0.96),
+            colors.canvasRaised.withValues(alpha: 0.82),
           ],
         ),
-        child: Column(
-          children: [
-            _SealMark(accent: accent),
-            const SizedBox(height: 22),
-            ResponsiveText(
-              'help_center.success.title',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.headlineLarge.copyWith(
-                fontSize: 22,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: colors.olive.withValues(alpha: 0.14),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colors.oliveDeep.withValues(alpha: 0.08),
+            blurRadius: 22,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _SealMark(accent: accent)
+              .animate()
+              .scale(
+                begin: const Offset(0.4, 0.4),
+                end: const Offset(1, 1),
+                delay: 200.ms,
+                duration: 720.ms,
+                curve: Curves.elasticOut,
+              )
+              .fadeIn(delay: 200.ms, duration: 360.ms)
+              .animate(onPlay: (c) => c.repeat())
+              .shimmer(
+                delay: 1800.ms,
+                duration: 1100.ms,
+                color: colors.canvas.withValues(alpha: 0.55),
+              ),
+          const SizedBox(height: 22),
+          ResponsiveText(
+            'help_center.success.title',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.headlineLarge.copyWith(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              height: 1.25,
+              letterSpacing: 0,
+              color: colors.oliveDeep,
+            ),
+          )
+              .animate()
+              .fadeIn(delay: 380.ms, duration: 460.ms, curve: _ease)
+              .moveY(
+                delay: 380.ms,
+                begin: 10,
+                end: 0,
+                duration: 460.ms,
+                curve: _ease,
+              ),
+          const SizedBox(height: 12),
+          ResponsiveText(
+            'help_center.success.subtitle',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontSize: 13,
+              height: 1.55,
+              color: colors.textSecondary,
+            ),
+          )
+              .animate()
+              .fadeIn(delay: 460.ms, duration: 460.ms, curve: _ease)
+              .moveY(
+                delay: 460.ms,
+                begin: 8,
+                end: 0,
+                duration: 460.ms,
+                curve: _ease,
+              ),
+          const SizedBox(height: 28),
+          _ReceiptRow(
+            labelKey: 'help_center.success.topic_label',
+            value: request.topic.label,
+            accent: accent,
+          )
+              .animate()
+              .fadeIn(delay: 580.ms, duration: 440.ms, curve: _ease)
+              .moveX(
+                delay: 580.ms,
+                begin: -12,
+                end: 0,
+                duration: 440.ms,
+                curve: _ease,
+              ),
+          const SizedBox(height: 12),
+          _ReceiptRow(
+            labelKey: 'help_center.success.reference_label',
+            value: '#${request.id?.toString().padLeft(4, '0') ?? '----'}',
+            accent: accent,
+            isRaw: true,
+          )
+              .animate()
+              .fadeIn(delay: 680.ms, duration: 440.ms, curve: _ease)
+              .moveX(
+                delay: 680.ms,
+                begin: 12,
+                end: 0,
+                duration: 440.ms,
+                curve: _ease,
+              ),
+          const SizedBox(height: 32),
+          CustomButton.full(
+            onTap: onSendAnother,
+            theme: CustomButtonTheme(
+              height: 50,
+              backgroundColor: colors.olive,
+              textColor: colors.canvas,
+              borderRadius: 14,
+            ),
+            child: ResponsiveText(
+              'help_center.success.send_another',
+              style: AppTextStyles.labelLarge.copyWith(
                 fontWeight: FontWeight.w700,
-                height: 1.25,
                 letterSpacing: 0,
-                color: colors.oliveDeep,
+                color: colors.canvas,
               ),
             ),
-            const SizedBox(height: 12),
-            ResponsiveText(
-              'help_center.success.subtitle',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(
+          )
+              .animate()
+              .fadeIn(delay: 800.ms, duration: 460.ms, curve: _ease)
+              .moveY(
+                delay: 800.ms,
+                begin: 14,
+                end: 0,
+                duration: 460.ms,
+                curve: _ease,
+              ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: onClose,
+            child: ResponsiveText(
+              'help_center.success.close',
+              style: AppTextStyles.labelLarge.copyWith(
                 fontSize: 13,
-                height: 1.55,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
                 color: colors.textSecondary,
               ),
             ),
-            const SizedBox(height: 28),
-            _ReceiptRow(
-              labelKey: 'help_center.success.topic_label',
-              value: request.topic.label,
-              accent: accent,
-            ),
-            const SizedBox(height: 12),
-            _ReceiptRow(
-              labelKey: 'help_center.success.reference_label',
-              value: '#${request.id?.toString().padLeft(4, '0') ?? '----'}',
-              accent: accent,
-              isRaw: true,
-            ),
-            const SizedBox(height: 32),
-            CustomButton.full(
-              onTap: onSendAnother,
-              theme: CustomButtonTheme(
-                height: 50,
-                backgroundColor: colors.olive,
-                textColor: colors.canvas,
-                borderRadius: 14,
-              ),
-              child: ResponsiveText(
-                'help_center.success.send_another',
-                style: AppTextStyles.labelLarge.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                  color: colors.canvas,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: onClose,
-              child: ResponsiveText(
-                'help_center.success.close',
-                style: AppTextStyles.labelLarge.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                  color: colors.textSecondary,
-                ),
-              ),
-            ),
-          ],
-        ),
+          )
+              .animate()
+              .fadeIn(delay: 920.ms, duration: 460.ms, curve: _ease),
+        ],
       ),
+    );
+
+    // Outer Animate plays the entrance once; the inner repeating Animate
+    // breathes a soft accent glow over the card decoration (L42-65),
+    // adding life to the gradient/border/shadow without distracting from
+    // the success message.
+    return Animate(
+      onPlay: (c) => c.repeat(reverse: true),
+      effects: [
+        BoxShadowEffect(
+          duration: 2400.ms,
+          curve: Curves.easeInOut,
+          begin: BoxShadow(
+            color: accent.withValues(alpha: 0.0),
+            blurRadius: 14,
+            offset: const Offset(0, 10),
+          ),
+          end: BoxShadow(
+            color: accent.withValues(alpha: 0.22),
+            blurRadius: 30,
+            offset: const Offset(0, 16),
+          ),
+          borderRadius: BorderRadius.circular(24),
+        ),
+      ],
+      child: card
+          .animate()
+          .fadeIn(duration: 460.ms, curve: _ease)
+          .scaleXY(
+            begin: 0.94,
+            end: 1,
+            duration: 520.ms,
+            curve: _ease,
+          )
+          .moveY(begin: 16, end: 0, duration: 520.ms, curve: _ease),
     );
   }
 }

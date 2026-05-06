@@ -6,7 +6,7 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zaad_close_button.dart';
+import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
 import '../cubit/language_cubit.dart';
@@ -87,7 +87,7 @@ class LanguageDialog extends StatelessWidget {
               Positioned(
                 top: -6,
                 right: -6,
-                child: ZaadCloseButton(
+                child: ZaadCircleIconButton.close(
                   enabled: !loading,
                   onTap: () => Navigator.of(context).pop(),
                 ),

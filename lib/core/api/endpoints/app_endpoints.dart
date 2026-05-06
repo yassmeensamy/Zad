@@ -37,4 +37,10 @@ class AppEndpoint {
   String get drafts => '${baseUrl}api/drafts';
   String get draftsBulk => '${baseUrl}api/drafts/bulk';
   String draftById(int id) => '${baseUrl}api/drafts/$id';
+
+  // Support Tickets
+  String get supportTickets => '${baseUrl}api/support/tickets';
+  String supportTicketById(String id) => '${baseUrl}api/support/tickets/$id';
+  String closeSupportTicket(String id) =>
+      '${baseUrl}api/support/tickets/$id/close';
 }

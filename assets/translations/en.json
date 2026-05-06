@@ -286,6 +286,7 @@
     "edit_profile": "Edit profile",
     "privacy": "Privacy",
     "help_support": "Help & support",
+    "support_tickets": "My support tickets",
     "sign_out": "Sign out",
     "sign_out_confirm_title": "Sign out?",
     "sign_out_confirm_subtitle": "You'll need to sign in again to access your account.",
@@ -378,6 +379,45 @@
       "reference_label": "REFERENCE",
       "send_another": "Send another message",
       "close": "Back to settings"
+    }
+  },
+  "support_tickets": {
+    "title": "My support tickets",
+    "new_ticket": "New ticket",
+    "empty_title": "No tickets yet",
+    "empty_subtitle": "Send us a message and we'll keep track of the conversation here.",
+    "load_failed": "Couldn't load your tickets",
+    "reply_count": {
+      "zero": "No replies",
+      "one": "1 reply",
+      "two": "{} replies",
+      "few": "{} replies",
+      "many": "{} replies",
+      "other": "{} replies"
+    },
+    "status": {
+      "pending": "Pending",
+      "open": "Open",
+      "in_review": "In review",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "closed_by_user": "Closed by you"
+    },
+    "detail": {
+      "title": "Ticket details",
+      "ref_label": "REF",
+      "replies_section": "CONVERSATION",
+      "original_message": "ORIGINAL MESSAGE",
+      "no_replies": "We've received your message and a real person will get back to you soon.",
+      "from_admin": "Support team",
+      "from_you": "You",
+      "close_ticket": "Close ticket",
+      "close_card_lead": "Still open",
+      "close_card_body": "Wrap this up when you feel the issue is resolved.",
+      "close_confirm_title": "Close this ticket?",
+      "close_confirm_body": "Closing marks the conversation as resolved. You can always open a new ticket later.",
+      "close_success": "Ticket closed",
+      "close_failed": "Couldn't close the ticket. Please try again."
     }
   }
 }

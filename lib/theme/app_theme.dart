@@ -120,12 +120,15 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: colorScheme.surfaceContainerLow,
-        elevation: 0,
+        color: Colors.white.withValues(alpha: 0.6),
+        surfaceTintColor: Colors.transparent,
+        shadowColor: appColors.oliveDeep.withValues(alpha: 0.05),
+        elevation: 1,
         margin: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ZaadRadii.lg),
-          side: BorderSide(color: colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(ZaadRadii.card),
+          side: BorderSide(color: appColors.olive.withValues(alpha: 0.10)),
         ),
       ),
       dividerTheme: DividerThemeData(

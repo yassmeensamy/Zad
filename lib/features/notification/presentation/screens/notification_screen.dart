@@ -38,20 +38,18 @@ class _NotificationView extends StatelessWidget {
       appBar: ZaadAppBar(
         title: 'notifications.title',
         onBack: context.canPop() ? () => context.pop() : null,
-        actions: [
-          BlocBuilder<NotificationCubit, NotificationState>(
-            buildWhen: (a, b) =>
-                a.hasNotifications != b.hasNotifications ||
-                a.deleteStatus != b.deleteStatus,
-            builder: (context, state) {
-              if (!state.hasNotifications) return const SizedBox.shrink();
-              return _ClearAllButton(
-                onTap: () =>
-                    context.read<NotificationCubit>().deleteAllNotifications(),
-              );
-            },
-          ),
-        ],
+        action: BlocBuilder<NotificationCubit, NotificationState>(
+          buildWhen: (a, b) =>
+              a.hasNotifications != b.hasNotifications ||
+              a.deleteStatus != b.deleteStatus,
+          builder: (context, state) {
+            if (!state.hasNotifications) return const SizedBox.shrink();
+            return _ClearAllButton(
+              onTap: () =>
+                  context.read<NotificationCubit>().deleteAllNotifications(),
+            );
+          },
+        ),
       ),
       body: BlocListener<NotificationCubit, NotificationState>(
         listenWhen: (a, b) =>

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
 import 'responsive_text.dart';
-import 'zaad_back_button.dart';
+import 'zaad_circle_button.dart';
 
 class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ZaadAppBar({
@@ -10,13 +10,13 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.subtitle,
     this.onBack,
-    this.actions = const [],
+    this.action,
   });
 
   final String title;
   final String? subtitle;
   final VoidCallback? onBack;
-  final List<Widget> actions;
+  final Widget? action;
 
   static const double _height = 64;
 
@@ -35,11 +35,13 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
           height: _height,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Stack(
-              alignment: Alignment.center,
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                if (onBack != null)
+                  ZaadCircleIconButton.back(onTap: onBack!)
+                else
+                  const SizedBox(width: 38),
+                Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,32 +70,10 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
-                if (onBack != null)
-                  PositionedDirectional(
-                    start: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Center(
-                      child: ZaadBackButton(onTap: onBack!),
-                    ),
-                  ),
-                if (actions.isNotEmpty)
-                  PositionedDirectional(
-                    end: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (var i = 0; i < actions.length; i++) ...[
-                            if (i > 0) const SizedBox(width: 8),
-                            actions[i],
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
+                if (action != null)
+                  action!
+                else
+                  const SizedBox(width: 38),
               ],
             ),
           ),

@@ -28,9 +28,6 @@ class QuizState {
     this.firstTryCorrectIds = const {},
     this.totalRetries = 0,
     this.points = 0,
-    this.savedQuestionIds = const {},
-    this.draftIdByQuestion = const {},
-    this.savingQuestionIds = const {},
     this.motivationalMessageKey,
     this.errorMessage,
     this.startedAt,
@@ -61,15 +58,6 @@ class QuizState {
   /// 10 seconds on the first try, 1 point otherwise on the first try, 0 if
   /// the first attempt is wrong (no points on retries).
   final int points;
-  final Set<int> savedQuestionIds;
-
-  /// Maps question id → server-assigned draft id, for questions the user has
-  /// saved as drafts. Used to delete the right draft when un-saving.
-  final Map<int, int> draftIdByQuestion;
-
-  /// Question ids whose draft is currently being created or deleted on the
-  /// server. Used to avoid double-tapping the save action.
-  final Set<int> savingQuestionIds;
   final String? motivationalMessageKey;
   final String? errorMessage;
 
@@ -107,9 +95,6 @@ class QuizState {
     Set<int>? firstTryCorrectIds,
     int? totalRetries,
     int? points,
-    Set<int>? savedQuestionIds,
-    Map<int, int>? draftIdByQuestion,
-    Set<int>? savingQuestionIds,
     String? Function()? motivationalMessageKey,
     String? Function()? errorMessage,
     DateTime? Function()? startedAt,
@@ -135,9 +120,6 @@ class QuizState {
         firstTryCorrectIds: firstTryCorrectIds ?? this.firstTryCorrectIds,
         totalRetries: totalRetries ?? this.totalRetries,
         points: points ?? this.points,
-        savedQuestionIds: savedQuestionIds ?? this.savedQuestionIds,
-        draftIdByQuestion: draftIdByQuestion ?? this.draftIdByQuestion,
-        savingQuestionIds: savingQuestionIds ?? this.savingQuestionIds,
         motivationalMessageKey: motivationalMessageKey != null
             ? motivationalMessageKey()
             : this.motivationalMessageKey,
@@ -173,9 +155,6 @@ class QuizState {
         setEquals(other.firstTryCorrectIds, firstTryCorrectIds) &&
         other.totalRetries == totalRetries &&
         other.points == points &&
-        setEquals(other.savedQuestionIds, savedQuestionIds) &&
-        mapEquals(other.draftIdByQuestion, draftIdByQuestion) &&
-        setEquals(other.savingQuestionIds, savingQuestionIds) &&
         other.motivationalMessageKey == motivationalMessageKey &&
         other.errorMessage == errorMessage &&
         other.startedAt == startedAt &&
@@ -201,9 +180,6 @@ class QuizState {
         Object.hashAllUnordered(firstTryCorrectIds),
         totalRetries,
         points,
-        Object.hashAllUnordered(savedQuestionIds),
-        Object.hashAll(draftIdByQuestion.entries.map((e) => Object.hash(e.key, e.value))),
-        Object.hashAllUnordered(savingQuestionIds),
         motivationalMessageKey,
         errorMessage,
         Object.hash(startedAt, questionShownAt, elapsed),
@@ -234,14 +210,7 @@ extension QuizStateX on QuizState {
     return currentQueue[currentIndex];
   }
 
-  bool isQuestionSaved(int questionId) =>
-      savedQuestionIds.contains(questionId);
-
-  bool isQuestionSaving(int questionId) =>
-      savingQuestionIds.contains(questionId);
-
   int get totalQuestions => allQuestions.length;
-  int get completedQuestions => totalQuestions; // every question is shown until correct
 
   /// Position within the current round (1-indexed) for the segmented progress.
   int get positionInRound => currentQueue.isEmpty ? 0 : currentIndex + 1;
@@ -250,4 +219,7 @@ extension QuizStateX on QuizState {
   /// Maximum possible score: 2 points per question (achieved if every
   /// question is answered correctly within 10 seconds on the first try).
   int get maxPoints => totalQuestions * 2;
+
+  bool get isLastInCurrentRound =>
+      currentQueue.isNotEmpty && currentIndex + 1 >= currentQueue.length;
 }

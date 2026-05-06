@@ -29,39 +29,19 @@ class QuizCubit extends BaseCubit<QuizState> {
 
   Future<void> loadQuiz(int levelId, {bool review = false}) async {
     _levelId = levelId;
-    emit(
-      state.copyWith(
-        status: QuizStatus.loading,
-        errorMessage: () => null,
-        isReview: review,
-      ),
-    );
+    emit(state.copyWith(
+      status: QuizStatus.loading,
+      errorMessage: () => null,
+      isReview: review,
+    ));
     try {
       final response = await _quizRepository.getQuestions(levelId);
-      if (review) {
-        emit(_reviewState(questions: response.questions));
-        return;
-      }
-      emit(_freshState(
-        questions: response.questions,
-        savedQuestionIds: const {},
-        draftIdByQuestion: const {},
-      ));
+      emit(_buildLoadedState(response.questions, review: review));
     } on ServerException catch (e) {
-      emit(
-        state.copyWith(
-          status: QuizStatus.error,
-          errorMessage: () => e.message,
-        ),
-      );
+      _emitLoadError(e.message);
     } catch (e) {
       logger.error('QuizCubit.loadQuiz failed: $e');
-      emit(
-        state.copyWith(
-          status: QuizStatus.error,
-          errorMessage: () => 'errors.generic',
-        ),
-      );
+      _emitLoadError('errors.generic');
     }
   }
 
@@ -78,102 +58,24 @@ class QuizCubit extends BaseCubit<QuizState> {
   }
 
   void next() {
+    if (state.isReview) {
+      _reviewAdvance();
+      return;
+    }
     if (!state.isAnswered) return;
 
-    if (state.currentIndex + 1 < state.currentQueue.length) {
-      emit(
-        state.copyWith(
-          phase: QuizPhase.question,
-          currentIndex: state.currentIndex + 1,
-          selectedChoiceId: () => null,
-          motivationalMessageKey: () => null,
-          questionShownAt: () => _now(),
-        ),
-      );
-      return;
-    }
-
-    if (state.retryQueue.isNotEmpty) {
-      emit(
-        state.copyWith(
-          phase: QuizPhase.question,
-          currentQueue: state.retryQueue,
-          retryQueue: const [],
-          currentIndex: 0,
-          round: state.round + 1,
-          selectedChoiceId: () => null,
-          motivationalMessageKey: () => null,
-          questionShownAt: () => _now(),
-        ),
-      );
-      return;
-    }
-
-    final startedAt = state.startedAt;
-    final elapsed =
-        startedAt != null ? _now().difference(startedAt) : Duration.zero;
-    emit(
-      state.copyWith(
-        phase: QuizPhase.finished,
-        selectedChoiceId: () => null,
-        motivationalMessageKey: () => _messages.randomFinish(),
-        elapsed: () => elapsed,
-      ),
-    );
-  }
-
-  /// Replaces the saved-questions seed in one shot. Called by the screen
-  /// after fetching the user's existing drafts on quiz load.
-  void seedDrafts({
-    required Set<int> savedQuestionIds,
-    required Map<int, int> draftIdByQuestion,
-  }) {
-    emit(
-      state.copyWith(
-        savedQuestionIds: savedQuestionIds,
-        draftIdByQuestion: draftIdByQuestion,
-      ),
-    );
-  }
-
-  /// Marks a question as saved with its server-assigned draft id.
-  void markSaved({required int questionId, required int draftId}) {
-    emit(
-      state.copyWith(
-        savedQuestionIds: {...state.savedQuestionIds, questionId},
-        draftIdByQuestion: {...state.draftIdByQuestion, questionId: draftId},
-      ),
-    );
-  }
-
-  void markUnsaved(int questionId) {
-    final nextSaved = {...state.savedQuestionIds}..remove(questionId);
-    final nextMap = {...state.draftIdByQuestion}..remove(questionId);
-    emit(
-      state.copyWith(
-        savedQuestionIds: nextSaved,
-        draftIdByQuestion: nextMap,
-      ),
-    );
-  }
-
-  void setSaving({required int questionId, required bool active}) {
-    final next = {...state.savingQuestionIds};
-    if (active) {
-      next.add(questionId);
+    if (!state.isLastInCurrentRound) {
+      _advanceWithinRound();
+    } else if (state.retryQueue.isNotEmpty) {
+      _startRetryRound();
     } else {
-      next.remove(questionId);
+      _finish();
     }
-    emit(state.copyWith(savingQuestionIds: next));
   }
 
   void restart() {
     if (state.allQuestions.isEmpty) return;
-    emit(_freshState(
-      questions: state.allQuestions,
-      savedQuestionIds: state.savedQuestionIds,
-      draftIdByQuestion: state.draftIdByQuestion,
-    ));
+    emit(_buildLoadedState(state.allQuestions, review: false));
   }
 
   /// Submits the quiz attempt to the server. Triggered automatically when
@@ -181,147 +83,155 @@ class QuizCubit extends BaseCubit<QuizState> {
   /// UI to retry on failure.
   Future<void> submit() async {
     final levelId = _levelId;
-    if (levelId == null) return;
-    if (state.isSubmitting) return;
+    if (levelId == null || state.isSubmitting) return;
 
-    final answers = state.allQuestions
-        .map(
-          (q) => QuizAnswerSubmission(
+    final request = QuizSubmissionRequest(
+      pointsEarned: state.points,
+      answers: [
+        for (final q in state.allQuestions)
+          QuizAnswerSubmission(
             questionId: q.id,
             isCorrect: state.firstTryCorrectIds.contains(q.id),
           ),
-        )
-        .toList();
-    final request = QuizSubmissionRequest(
-      pointsEarned: state.points,
-      answers: answers,
+      ],
     );
 
-    emit(
-      state.copyWith(
-        submissionStatus: SubmissionStatus.submitting,
-        submissionError: () => null,
-      ),
-    );
+    emit(state.copyWith(
+      submissionStatus: SubmissionStatus.submitting,
+      submissionError: () => null,
+    ));
 
     try {
       final result = await _quizRepository.submitQuiz(levelId, request);
-      emit(
-        state.copyWith(
-          submissionStatus: SubmissionStatus.success,
-          submissionResult: () => result,
-        ),
-      );
+      emit(state.copyWith(
+        submissionStatus: SubmissionStatus.success,
+        submissionResult: () => result,
+      ));
     } on ServerException catch (e) {
       logger.error('QuizCubit.submit failed: ${e.message}');
-      emit(
-        state.copyWith(
-          submissionStatus: SubmissionStatus.error,
-          submissionError: () => e.message,
-        ),
-      );
+      _emitSubmitError(e.message);
     } catch (e) {
       logger.error('QuizCubit.submit failed: $e');
-      emit(
-        state.copyWith(
-          submissionStatus: SubmissionStatus.error,
-          submissionError: () => 'errors.generic',
-        ),
-      );
+      _emitSubmitError('errors.generic');
     }
   }
 
   void _emitCorrect(int choiceId, QuestionModel question) {
-    var pointsEarned = 0;
-    var firstTryCorrect = state.firstTryCorrect;
-    var firstTryCorrectIds = state.firstTryCorrectIds;
-    if (state.round == 1) {
-      firstTryCorrect++;
-      pointsEarned = _scoreFor(_elapsedSinceShown());
-      firstTryCorrectIds = {...firstTryCorrectIds, question.id};
-    }
-    emit(
-      state.copyWith(
-        phase: QuizPhase.answeredCorrect,
-        selectedChoiceId: () => choiceId,
-        firstTryCorrect: firstTryCorrect,
-        firstTryCorrectIds: firstTryCorrectIds,
-        points: state.points + pointsEarned,
-        motivationalMessageKey: () => _messages.randomCorrect(),
-      ),
-    );
+    final isFirstTry = state.round == 1;
+    final pointsEarned = isFirstTry ? _scoreFor(_elapsedSinceShown()) : 0;
 
-    final isLastInRound =
-        state.currentIndex + 1 >= state.currentQueue.length;
-    if (isLastInRound && state.retryQueue.isEmpty) {
+    emit(state.copyWith(
+      phase: QuizPhase.answeredCorrect,
+      selectedChoiceId: () => choiceId,
+      firstTryCorrect:
+          isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect,
+      firstTryCorrectIds: isFirstTry
+          ? {...state.firstTryCorrectIds, question.id}
+          : state.firstTryCorrectIds,
+      points: state.points + pointsEarned,
+      motivationalMessageKey: () => _messages.randomCorrect(),
+    ));
+
+    if (state.isLastInCurrentRound && state.retryQueue.isEmpty) {
       submit();
     }
   }
 
   void _emitIncorrect(int choiceId, QuestionModel question) {
-    emit(
-      state.copyWith(
-        phase: QuizPhase.answeredIncorrect,
-        selectedChoiceId: () => choiceId,
-        retryQueue: [...state.retryQueue, question],
-        totalRetries: state.totalRetries + 1,
-        motivationalMessageKey: () => _messages.randomWrong(),
-      ),
-    );
+    emit(state.copyWith(
+      phase: QuizPhase.answeredIncorrect,
+      selectedChoiceId: () => choiceId,
+      retryQueue: [...state.retryQueue, question],
+      totalRetries: state.totalRetries + 1,
+      motivationalMessageKey: () => _messages.randomWrong(),
+    ));
+  }
+
+  void _advanceWithinRound() {
+    emit(state.copyWith(
+      phase: QuizPhase.question,
+      currentIndex: state.currentIndex + 1,
+      selectedChoiceId: () => null,
+      motivationalMessageKey: () => null,
+      questionShownAt: () => _now(),
+    ));
+  }
+
+  void _startRetryRound() {
+    emit(state.copyWith(
+      phase: QuizPhase.question,
+      currentQueue: state.retryQueue,
+      retryQueue: const [],
+      currentIndex: 0,
+      round: state.round + 1,
+      selectedChoiceId: () => null,
+      motivationalMessageKey: () => null,
+      questionShownAt: () => _now(),
+    ));
+  }
+
+  void _finish() {
+    final startedAt = state.startedAt;
+    final elapsed =
+        startedAt != null ? _now().difference(startedAt) : Duration.zero;
+    emit(state.copyWith(
+      phase: QuizPhase.finished,
+      selectedChoiceId: () => null,
+      motivationalMessageKey: () => _messages.randomFinish(),
+      elapsed: () => elapsed,
+    ));
+  }
+
+  void _reviewAdvance() {
+    if (state.isLastInCurrentRound) {
+      emit(state.copyWith(phase: QuizPhase.finished));
+    } else {
+      emit(state.copyWith(currentIndex: state.currentIndex + 1));
+    }
   }
 
   Duration _elapsedSinceShown() {
     final shownAt = state.questionShownAt;
-    if (shownAt == null) return Duration.zero;
-    return _now().difference(shownAt);
+    return shownAt == null ? Duration.zero : _now().difference(shownAt);
   }
 
   int _scoreFor(Duration elapsed) =>
       elapsed < _fastAnswerThreshold ? 2 : 1;
 
-  QuizState _freshState({
-    required List<QuestionModel> questions,
-    required Set<int> savedQuestionIds,
-    required Map<int, int> draftIdByQuestion,
+  /// Builds the loaded state for both fresh and review runs. Review mode
+  /// skips the timer/scoring fields since the user is just walking through
+  /// previously-completed questions.
+  QuizState _buildLoadedState(
+    List<QuestionModel> questions, {
+    required bool review,
   }) {
-    final now = _now();
     final empty = questions.isEmpty;
+    final now = review ? null : _now();
     return QuizState(
       status: QuizStatus.loaded,
       phase: empty ? QuizPhase.finished : QuizPhase.question,
       allQuestions: questions,
       currentQueue: questions,
-      savedQuestionIds: savedQuestionIds,
-      draftIdByQuestion: draftIdByQuestion,
+      isReview: review,
       startedAt: now,
       questionShownAt: empty ? null : now,
-      elapsed: empty ? Duration.zero : null,
-      motivationalMessageKey: empty ? _messages.randomFinish() : null,
+      elapsed: !review && empty ? Duration.zero : null,
+      motivationalMessageKey:
+          !review && empty ? _messages.randomFinish() : null,
     );
   }
 
-  /// Read-only state for revisiting an already-completed level. The cubit
-  /// neither scores nor submits; the UI walks through the questions one by
-  /// one with the correct answer revealed.
-  QuizState _reviewState({required List<QuestionModel> questions}) {
-    final empty = questions.isEmpty;
-    return QuizState(
-      status: QuizStatus.loaded,
-      phase: empty ? QuizPhase.finished : QuizPhase.question,
-      allQuestions: questions,
-      currentQueue: questions,
-      isReview: true,
-    );
+  void _emitLoadError(String? message) {
+    emit(state.copyWith(
+      status: QuizStatus.error,
+      errorMessage: () => message,
+    ));
   }
 
-  /// Advances to the next question in review mode, or marks the review as
-  /// finished when there are no more questions.
-  void reviewNext() {
-    if (!state.isReview) return;
-    if (state.currentIndex + 1 < state.currentQueue.length) {
-      emit(state.copyWith(currentIndex: state.currentIndex + 1));
-      return;
-    }
-    emit(state.copyWith(phase: QuizPhase.finished));
+  void _emitSubmitError(String? message) {
+    emit(state.copyWith(
+      submissionStatus: SubmissionStatus.error,
+      submissionError: () => message,
+    ));
   }
 }

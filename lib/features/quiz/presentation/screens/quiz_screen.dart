@@ -48,9 +48,9 @@ class QuizScreen extends StatelessWidget {
   }
 }
 
-/// Loads the quiz and, once we know if any of the questions are already
-/// drafted server-side, fetches the user's drafts so we can seed the
-/// quiz cubit with the corresponding draft ids (needed to delete on un-save).
+/// Loads the quiz, then loads the user's drafts when at least one question
+/// is already drafted server-side. The drafts list is read directly off
+/// [DraftsCubit] from the screen — no manual sync into [QuizCubit].
 class _QuizBootstrap extends StatefulWidget {
   const _QuizBootstrap({
     required this.levelId,
@@ -75,32 +75,12 @@ class _QuizBootstrapState extends State<_QuizBootstrap> {
 
   Future<void> _bootstrap() async {
     final quizCubit = context.read<QuizCubit>();
-    final draftsCubit = context.read<DraftsCubit>();
-
     await quizCubit.loadQuiz(widget.levelId, review: widget.review);
     if (!mounted) return;
 
-    final questions = quizCubit.state.allQuestions;
-    if (!questions.any((q) => q.isDrafted)) return;
-
-    await draftsCubit.load();
-    if (!mounted) return;
-
-    final byQuestion = <int, int>{
-      for (final d in draftsCubit.state.drafts) d.question.id: d.id,
-    };
-    final savedIds = <int>{
-      for (final q in questions)
-        if (byQuestion.containsKey(q.id)) q.id,
-    };
-    final filteredMap = <int, int>{
-      for (final q in questions)
-        if (byQuestion[q.id] != null) q.id: byQuestion[q.id]!,
-    };
-    quizCubit.seedDrafts(
-      savedQuestionIds: savedIds,
-      draftIdByQuestion: filteredMap,
-    );
+    if (quizCubit.state.allQuestions.any((q) => q.isDrafted)) {
+      await context.read<DraftsCubit>().load();
+    }
   }
 
   @override
@@ -298,14 +278,20 @@ class _ActiveView extends StatelessWidget {
                 ],
               ),
             ),
-            QuizActionBar(
-              canAct: showFeedback,
-              isSaved: state.isQuestionSaved(question.id),
-              isLastInRound: isLastInRound,
-              hasMoreRounds: hasMoreRounds,
-              onSave: () => _onSave(context, cubit),
-              onReport: () => _onReport(context),
-              onNext: isReview ? cubit.reviewNext : cubit.next,
+            BlocBuilder<DraftsCubit, DraftsState>(
+              buildWhen: (prev, curr) =>
+                  prev.drafts != curr.drafts ||
+                  prev.crudStatus != curr.crudStatus,
+              builder: (context, draftsState) => QuizActionBar(
+                canAct: showFeedback,
+                isSaved:
+                    draftsState.findByQuestionId(question.id) != null,
+                isLastInRound: isLastInRound,
+                hasMoreRounds: hasMoreRounds,
+                onSave: () => _onSave(context, question.id),
+                onReport: () => _onReport(context),
+                onNext: cubit.next,
+              ),
             ),
           ],
         ),
@@ -349,35 +335,21 @@ class _ActiveView extends StatelessWidget {
   }
 
 
-  Future<void> _onSave(BuildContext context, QuizCubit cubit) async {
-    final question = state.currentQuestion;
-    if (question == null) return;
-    if (state.isQuestionSaving(question.id)) return;
-
+  Future<void> _onSave(BuildContext context, int questionId) async {
     final draftsCubit = context.read<DraftsCubit>();
-    final wasSaved = state.isQuestionSaved(question.id);
+    if (draftsCubit.state.isCrudLoading) return;
 
-    if (wasSaved) {
-      final draftId = state.draftIdByQuestion[question.id];
-      if (draftId == null) return;
-      cubit.setSaving(questionId: question.id, active: true);
-      await draftsCubit.delete(draftId);
-      final stillExists = draftsCubit.state.drafts.any((d) => d.id == draftId);
-      if (!stillExists) cubit.markUnsaved(question.id);
-      cubit.setSaving(questionId: question.id, active: false);
+    final existing = draftsCubit.state.findByQuestionId(questionId);
+    if (existing != null) {
+      await draftsCubit.delete(existing.id);
       return;
     }
 
     final ok = await DraftNoteSheet.show(
       context,
       onSubmit: (note) async {
-        cubit.setSaving(questionId: question.id, active: true);
-        await draftsCubit.create(questionId: question.id, note: note);
-        cubit.setSaving(questionId: question.id, active: false);
-        final created = draftsCubit.state.findByQuestionId(question.id);
-        if (created == null) return false;
-        cubit.markSaved(questionId: question.id, draftId: created.id);
-        return true;
+        await draftsCubit.create(questionId: questionId, note: note);
+        return draftsCubit.state.findByQuestionId(questionId) != null;
       },
     );
     if (ok && context.mounted) {

@@ -58,7 +58,6 @@ extension HelpCenterStateX on HelpCenterState {
   bool get isSent => status == HelpCenterStatus.sent;
   bool get isError => status == HelpCenterStatus.error;
 
-  /// Send is allowed only with a topic + non-empty message of at least 10 chars.
   bool get canSubmit =>
-      topic != null && message.trim().length >= 10 && !isSending;
+      topic != null && message.trim().isNotEmpty && !isSending;
 }

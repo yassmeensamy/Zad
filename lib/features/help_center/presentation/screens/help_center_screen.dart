@@ -75,88 +75,31 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
             context.read<HelpCenterCubit>().dismissError();
           }
         },
-        child: Stack(
-          children: [
-            const _BackdropOrnament(),
-            BlocBuilder<HelpCenterCubit, HelpCenterState>(
-              builder: (context, state) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 320),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: state.isSent && state.lastSent != null
-                      ? _SuccessLayer(
-                          key: const ValueKey('success'),
-                          request: state.lastSent!,
-                          onSendAnother: () {
-                            _resetControllers();
-                            context.read<HelpCenterCubit>().resetForm();
-                          },
-                          onClose: () {
-                            if (context.canPop()) context.pop();
-                          },
-                        )
-                      : _ComposerLayer(
-                          key: const ValueKey('composer'),
-                          subjectController: _subjectController,
-                          messageController: _messageController,
-                        ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BackdropOrnament extends StatelessWidget {
-  const _BackdropOrnament();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: Stack(
-          children: [
-            Positioned(
-              top: -100,
-              left: -80,
-              right: -80,
-              height: 320,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.topCenter,
-                    radius: 1.0,
-                    colors: [
-                      colors.oliveLeaf.withValues(alpha: 0.18),
-                      colors.olive.withValues(alpha: 0.0),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -120,
-              right: -100,
-              width: 260,
-              height: 260,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      colors.accent.withValues(alpha: 0.10),
-                      colors.accent.withValues(alpha: 0.0),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+        child: BlocBuilder<HelpCenterCubit, HelpCenterState>(
+          builder: (context, state) {
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 320),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              child: state.isSent && state.lastSent != null
+                  ? _SuccessLayer(
+                      key: const ValueKey('success'),
+                      request: state.lastSent!,
+                      onSendAnother: () {
+                        _resetControllers();
+                        context.read<HelpCenterCubit>().resetForm();
+                      },
+                      onClose: () {
+                        if (context.canPop()) context.pop();
+                      },
+                    )
+                  : _ComposerLayer(
+                      key: const ValueKey('composer'),
+                      subjectController: _subjectController,
+                      messageController: _messageController,
+                    ),
+            );
+          },
         ),
       ),
     );
@@ -177,16 +120,14 @@ class _SuccessLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 36, 20, 40),
       physics: const BouncingScrollPhysics(),
-      children: [
-        HelpSuccessCard(
-          request: request,
-          onSendAnother: onSendAnother,
-          onClose: onClose,
-        ),
-      ],
+      child: HelpSuccessCard(
+        request: request,
+        onSendAnother: onSendAnother,
+        onClose: onClose,
+      ),
     );
   }
 }
@@ -214,7 +155,7 @@ class _ComposerLayer extends StatelessWidget {
         const _SectionLabel(textKey: 'help_center.choose_topic'),
         const SizedBox(height: 16),
         const _TopicGrid(),
-        const SizedBox(height: 32),
+        const SizedBox(height: 16),
         BlocBuilder<HelpCenterCubit, HelpCenterState>(
           buildWhen: (a, b) => a.topic != b.topic,
           builder: (context, state) {
@@ -273,38 +214,25 @@ class _Greeting extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
+        _Pill(
+          accent: colors.olive,
+          fillAlpha: 0.08,
+          borderAlpha: 0.18,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: colors.olive.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(40),
-            border: Border.all(
-              color: colors.olive.withValues(alpha: 0.18),
-              width: 1,
+          leading: Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colors.success,
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colors.success,
-                ),
-              ),
-              const SizedBox(width: 8),
-              ResponsiveText(
-                'help_center.eyebrow',
-                style: AppTextStyles.labelMedium.copyWith(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: colors.oliveDeep,
-                ),
-              ),
-            ],
+          label: 'help_center.eyebrow',
+          labelStyle: AppTextStyles.labelMedium.copyWith(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.6,
+            color: colors.oliveDeep,
           ),
         ),
         const SizedBox(height: 18),
@@ -327,6 +255,49 @@ class _Greeting extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  const _Pill({
+    required this.accent,
+    required this.leading,
+    required this.label,
+    required this.labelStyle,
+    this.fillAlpha = 0.10,
+    this.borderAlpha = 0.35,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  });
+
+  final Color accent;
+  final Widget leading;
+  final String label;
+  final TextStyle labelStyle;
+  final double fillAlpha;
+  final double borderAlpha;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: fillAlpha),
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(
+          color: accent.withValues(alpha: borderAlpha),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          leading,
+          const SizedBox(width: 8),
+          ResponsiveText(label, style: labelStyle),
+        ],
+      ),
     );
   }
 }
@@ -409,7 +380,6 @@ class _PromptHint extends StatelessWidget {
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.10),
           width: 1,
-          style: BorderStyle.solid,
         ),
       ),
       child: Row(
@@ -511,11 +481,8 @@ class _ComposerCard extends StatelessWidget {
             textCapitalization: TextCapitalization.sentences,
             minLines: 4,
             maxLines: 8,
-            maxLength: 1000,
             onChanged: context.read<HelpCenterCubit>().updateMessage,
           ),
-          const SizedBox(height: 12),
-          const _CharacterFloor(),
           const SizedBox(height: 24),
           const _SendButton(),
         ],
@@ -536,30 +503,14 @@ class _SelectedTopicChip extends StatelessWidget {
         final topic = state.topic;
         if (topic == null) return const SizedBox.shrink();
         final accent = topic.accent(colors);
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: accent.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(40),
-            border: Border.all(
-              color: accent.withValues(alpha: 0.35),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(topic.icon, size: 14, color: accent),
-              const SizedBox(width: 8),
-              ResponsiveText(
-                topic.label,
-                style: AppTextStyles.labelMedium.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.2,
-                  color: accent,
-                ),
-              ),
-            ],
+        return _Pill(
+          accent: accent,
+          leading: Icon(topic.icon, size: 14, color: accent),
+          label: topic.label,
+          labelStyle: AppTextStyles.labelMedium.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.2,
+            color: accent,
           ),
         );
       },
@@ -581,60 +532,6 @@ class _FieldLabel extends StatelessWidget {
         letterSpacing: 0.7,
         color: colors.textSecondary,
       ),
-    );
-  }
-}
-
-class _CharacterFloor extends StatelessWidget {
-  const _CharacterFloor();
-
-  static const int _minChars = 10;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return BlocBuilder<HelpCenterCubit, HelpCenterState>(
-      buildWhen: (a, b) => a.message.length != b.message.length,
-      builder: (context, state) {
-        final length = state.message.trim().length;
-        final reached = length >= _minChars;
-        final remaining = (_minChars - length).clamp(0, _minChars);
-        return Row(
-          children: [
-            Icon(
-              reached
-                  ? Icons.check_circle_rounded
-                  : Icons.edit_note_rounded,
-              size: 14,
-              color: reached ? colors.success : colors.textTertiary,
-            ),
-            const SizedBox(width: 6),
-            ResponsiveText(
-              reached
-                  ? 'help_center.ready_to_send'
-                  : 'help_center.char_floor',
-              style: AppTextStyles.labelMedium.copyWith(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0,
-                color: reached ? colors.success : colors.textTertiary,
-              ),
-            ),
-            if (!reached) ...[
-              const SizedBox(width: 4),
-              Text(
-                '($remaining)',
-                style: AppTextStyles.labelMedium.copyWith(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                  color: colors.textTertiary,
-                ),
-              ),
-            ],
-          ],
-        );
-      },
     );
   }
 }

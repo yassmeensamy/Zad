@@ -3,9 +3,15 @@ import '../../../../core/api/network_service.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/quiz_questions_response.dart';
+import '../models/quiz_submission_request.dart';
+import '../models/quiz_submission_response.dart';
 
 abstract class QuizRemoteDataSource {
   Future<QuizQuestionsResponse> getQuestions(int levelId);
+  Future<QuizSubmissionResponse> submitQuiz(
+    int levelId,
+    QuizSubmissionRequest request,
+  );
 }
 
 class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
@@ -35,6 +41,21 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
     );
     _validateResponse(response);
     return QuizQuestionsResponse.fromMap(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<QuizSubmissionResponse> submitQuiz(
+    int levelId,
+    QuizSubmissionRequest request,
+  ) async {
+    final response = await _networkService.post(
+      _endpoints.submitQuiz(levelId),
+      data: request.toMap(),
+    );
+    _validateResponse(response);
+    return QuizSubmissionResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
   }

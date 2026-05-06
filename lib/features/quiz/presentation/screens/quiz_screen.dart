@@ -8,6 +8,9 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
+import '../../../drafts/presentation/cubit/drafts_cubit.dart';
+import '../../../drafts/presentation/cubit/drafts_state.dart';
+import '../../../drafts/presentation/widgets/draft_note_sheet.dart';
 import '../../../levels/data/models/level_model.dart';
 import '../../data/models/choice_model.dart';
 import '../../data/models/question_model.dart';
@@ -30,11 +33,71 @@ class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<QuizCubit>(
-      create: (_) => sl<QuizCubit>()..loadQuiz(levelId),
-      child: _QuizView(levelId: levelId, level: level),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<QuizCubit>(create: (_) => sl<QuizCubit>()),
+        BlocProvider<DraftsCubit>(create: (_) => sl<DraftsCubit>()),
+      ],
+      child: _QuizBootstrap(
+        levelId: levelId,
+        child: _QuizView(levelId: levelId, level: level),
+      ),
     );
   }
+}
+
+/// Loads the quiz and, once we know if any of the questions are already
+/// drafted server-side, fetches the user's drafts so we can seed the
+/// quiz cubit with the corresponding draft ids (needed to delete on un-save).
+class _QuizBootstrap extends StatefulWidget {
+  const _QuizBootstrap({required this.levelId, required this.child});
+
+  final int levelId;
+  final Widget child;
+
+  @override
+  State<_QuizBootstrap> createState() => _QuizBootstrapState();
+}
+
+class _QuizBootstrapState extends State<_QuizBootstrap> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
+  }
+
+  Future<void> _bootstrap() async {
+    final quizCubit = context.read<QuizCubit>();
+    final draftsCubit = context.read<DraftsCubit>();
+
+    await quizCubit.loadQuiz(widget.levelId);
+    if (!mounted) return;
+
+    final questions = quizCubit.state.allQuestions;
+    if (!questions.any((q) => q.isDrafted)) return;
+
+    await draftsCubit.load();
+    if (!mounted) return;
+
+    final byQuestion = <int, int>{
+      for (final d in draftsCubit.state.drafts) d.question.id: d.id,
+    };
+    final savedIds = <int>{
+      for (final q in questions)
+        if (byQuestion.containsKey(q.id)) q.id,
+    };
+    final filteredMap = <int, int>{
+      for (final q in questions)
+        if (byQuestion[q.id] != null) q.id: byQuestion[q.id]!,
+    };
+    quizCubit.seedDrafts(
+      savedQuestionIds: savedIds,
+      draftIdByQuestion: filteredMap,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _QuizView extends StatelessWidget {
@@ -195,7 +258,7 @@ class _ActiveView extends StatelessWidget {
                   for (var i = 0; i < question.choices.length; i++)
                     AnswerChoiceCard(
                       choice: question.choices[i],
-                      label: _letterForIndex(i),
+                      label: AnswerChoiceCard.labelForIndex(i),
                       visualState: _visualStateFor(
                         choiceId: question.choices[i].index,
                         question: question,
@@ -262,20 +325,40 @@ class _ActiveView extends StatelessWidget {
     return AnswerChoiceVisualState.revealedMuted;
   }
 
-  String _letterForIndex(int i) {
-    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
-    if (i >= 0 && i < letters.length) return letters[i];
-    return '${i + 1}';
-  }
 
-  void _onSave(BuildContext context, QuizCubit cubit) {
-    final wasSaved = state.isQuestionSaved(state.currentQuestion!.id);
-    cubit.toggleSave();
-    if (!wasSaved) {
-      SnackBarHelper.showSuccess(
-        context,
-        message: 'quiz.actions.saved',
-      );
+  Future<void> _onSave(BuildContext context, QuizCubit cubit) async {
+    final question = state.currentQuestion;
+    if (question == null) return;
+    if (state.isQuestionSaving(question.id)) return;
+
+    final draftsCubit = context.read<DraftsCubit>();
+    final wasSaved = state.isQuestionSaved(question.id);
+
+    if (wasSaved) {
+      final draftId = state.draftIdByQuestion[question.id];
+      if (draftId == null) return;
+      cubit.setSaving(questionId: question.id, active: true);
+      await draftsCubit.delete(draftId);
+      final stillExists = draftsCubit.state.drafts.any((d) => d.id == draftId);
+      if (!stillExists) cubit.markUnsaved(question.id);
+      cubit.setSaving(questionId: question.id, active: false);
+      return;
+    }
+
+    final ok = await DraftNoteSheet.show(
+      context,
+      onSubmit: (note) async {
+        cubit.setSaving(questionId: question.id, active: true);
+        await draftsCubit.create(questionId: question.id, note: note);
+        cubit.setSaving(questionId: question.id, active: false);
+        final created = draftsCubit.state.findByQuestionId(question.id);
+        if (created == null) return false;
+        cubit.markSaved(questionId: question.id, draftId: created.id);
+        return true;
+      },
+    );
+    if (ok && context.mounted) {
+      SnackBarHelper.showSuccess(context, message: 'quiz.actions.saved');
     }
   }
 

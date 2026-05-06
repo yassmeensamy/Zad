@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../data/models/question_model.dart';
+import '../../data/models/quiz_submission_response.dart';
 
 enum QuizStatus { initial, loading, loaded, error }
 
@@ -10,6 +11,8 @@ enum QuizPhase {
   answeredIncorrect,
   finished,
 }
+
+enum SubmissionStatus { idle, submitting, success, error }
 
 class QuizState {
   const QuizState({
@@ -22,14 +25,20 @@ class QuizState {
     this.selectedChoiceId,
     this.round = 1,
     this.firstTryCorrect = 0,
+    this.firstTryCorrectIds = const {},
     this.totalRetries = 0,
     this.points = 0,
     this.savedQuestionIds = const {},
+    this.draftIdByQuestion = const {},
+    this.savingQuestionIds = const {},
     this.motivationalMessageKey,
     this.errorMessage,
     this.startedAt,
     this.questionShownAt,
     this.elapsed,
+    this.submissionStatus = SubmissionStatus.idle,
+    this.submissionResult,
+    this.submissionError,
   });
 
   final QuizStatus status;
@@ -41,6 +50,10 @@ class QuizState {
   final int? selectedChoiceId;
   final int round;
   final int firstTryCorrect;
+
+  /// Question ids the user answered correctly on their first attempt
+  /// (round 1). Used to mark `isCorrect` per question on submission.
+  final Set<int> firstTryCorrectIds;
   final int totalRetries;
 
   /// Accumulated score. 2 points if a question is answered correctly within
@@ -48,6 +61,14 @@ class QuizState {
   /// the first attempt is wrong (no points on retries).
   final int points;
   final Set<int> savedQuestionIds;
+
+  /// Maps question id → server-assigned draft id, for questions the user has
+  /// saved as drafts. Used to delete the right draft when un-saving.
+  final Map<int, int> draftIdByQuestion;
+
+  /// Question ids whose draft is currently being created or deleted on the
+  /// server. Used to avoid double-tapping the save action.
+  final Set<int> savingQuestionIds;
   final String? motivationalMessageKey;
   final String? errorMessage;
 
@@ -63,6 +84,10 @@ class QuizState {
   /// finished phase. Set once on transition to [QuizPhase.finished].
   final Duration? elapsed;
 
+  final SubmissionStatus submissionStatus;
+  final QuizSubmissionResponse? submissionResult;
+  final String? submissionError;
+
   QuizState copyWith({
     QuizStatus? status,
     QuizPhase? phase,
@@ -73,14 +98,20 @@ class QuizState {
     int? Function()? selectedChoiceId,
     int? round,
     int? firstTryCorrect,
+    Set<int>? firstTryCorrectIds,
     int? totalRetries,
     int? points,
     Set<int>? savedQuestionIds,
+    Map<int, int>? draftIdByQuestion,
+    Set<int>? savingQuestionIds,
     String? Function()? motivationalMessageKey,
     String? Function()? errorMessage,
     DateTime? Function()? startedAt,
     DateTime? Function()? questionShownAt,
     Duration? Function()? elapsed,
+    SubmissionStatus? submissionStatus,
+    QuizSubmissionResponse? Function()? submissionResult,
+    String? Function()? submissionError,
   }) =>
       QuizState(
         status: status ?? this.status,
@@ -94,9 +125,12 @@ class QuizState {
             : this.selectedChoiceId,
         round: round ?? this.round,
         firstTryCorrect: firstTryCorrect ?? this.firstTryCorrect,
+        firstTryCorrectIds: firstTryCorrectIds ?? this.firstTryCorrectIds,
         totalRetries: totalRetries ?? this.totalRetries,
         points: points ?? this.points,
         savedQuestionIds: savedQuestionIds ?? this.savedQuestionIds,
+        draftIdByQuestion: draftIdByQuestion ?? this.draftIdByQuestion,
+        savingQuestionIds: savingQuestionIds ?? this.savingQuestionIds,
         motivationalMessageKey: motivationalMessageKey != null
             ? motivationalMessageKey()
             : this.motivationalMessageKey,
@@ -107,6 +141,12 @@ class QuizState {
             ? questionShownAt()
             : this.questionShownAt,
         elapsed: elapsed != null ? elapsed() : this.elapsed,
+        submissionStatus: submissionStatus ?? this.submissionStatus,
+        submissionResult: submissionResult != null
+            ? submissionResult()
+            : this.submissionResult,
+        submissionError:
+            submissionError != null ? submissionError() : this.submissionError,
       );
 
   @override
@@ -122,14 +162,20 @@ class QuizState {
         other.selectedChoiceId == selectedChoiceId &&
         other.round == round &&
         other.firstTryCorrect == firstTryCorrect &&
+        setEquals(other.firstTryCorrectIds, firstTryCorrectIds) &&
         other.totalRetries == totalRetries &&
         other.points == points &&
         setEquals(other.savedQuestionIds, savedQuestionIds) &&
+        mapEquals(other.draftIdByQuestion, draftIdByQuestion) &&
+        setEquals(other.savingQuestionIds, savingQuestionIds) &&
         other.motivationalMessageKey == motivationalMessageKey &&
         other.errorMessage == errorMessage &&
         other.startedAt == startedAt &&
         other.questionShownAt == questionShownAt &&
-        other.elapsed == elapsed;
+        other.elapsed == elapsed &&
+        other.submissionStatus == submissionStatus &&
+        other.submissionResult == submissionResult &&
+        other.submissionError == submissionError;
   }
 
   @override
@@ -143,12 +189,16 @@ class QuizState {
         selectedChoiceId,
         round,
         firstTryCorrect,
+        Object.hashAllUnordered(firstTryCorrectIds),
         totalRetries,
         points,
         Object.hashAllUnordered(savedQuestionIds),
+        Object.hashAll(draftIdByQuestion.entries.map((e) => Object.hash(e.key, e.value))),
+        Object.hashAllUnordered(savingQuestionIds),
         motivationalMessageKey,
         errorMessage,
         Object.hash(startedAt, questionShownAt, elapsed),
+        Object.hash(submissionStatus, submissionResult, submissionError),
       );
 }
 
@@ -164,6 +214,10 @@ extension QuizStateX on QuizState {
       phase == QuizPhase.answeredIncorrect;
   bool get isCorrect => phase == QuizPhase.answeredCorrect;
 
+  bool get isSubmitting => submissionStatus == SubmissionStatus.submitting;
+  bool get isSubmitted => submissionStatus == SubmissionStatus.success;
+  bool get isSubmissionError => submissionStatus == SubmissionStatus.error;
+
   QuestionModel? get currentQuestion {
     if (currentQueue.isEmpty) return null;
     if (currentIndex < 0 || currentIndex >= currentQueue.length) return null;
@@ -172,6 +226,9 @@ extension QuizStateX on QuizState {
 
   bool isQuestionSaved(int questionId) =>
       savedQuestionIds.contains(questionId);
+
+  bool isQuestionSaving(int questionId) =>
+      savingQuestionIds.contains(questionId);
 
   int get totalQuestions => allQuestions.length;
   int get completedQuestions => totalQuestions; // every question is shown until correct

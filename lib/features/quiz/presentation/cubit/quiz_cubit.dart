@@ -27,16 +27,21 @@ class QuizCubit extends BaseCubit<QuizState> {
   /// slower (still on the first try) scores 1 pt.
   static const _fastAnswerThreshold = Duration(seconds: 10);
 
-  Future<void> loadQuiz(int levelId) async {
+  Future<void> loadQuiz(int levelId, {bool review = false}) async {
     _levelId = levelId;
     emit(
       state.copyWith(
         status: QuizStatus.loading,
         errorMessage: () => null,
+        isReview: review,
       ),
     );
     try {
       final response = await _quizRepository.getQuestions(levelId);
+      if (review) {
+        emit(_reviewState(questions: response.questions));
+        return;
+      }
       emit(_freshState(
         questions: response.questions,
         savedQuestionIds: const {},
@@ -293,5 +298,30 @@ class QuizCubit extends BaseCubit<QuizState> {
       elapsed: empty ? Duration.zero : null,
       motivationalMessageKey: empty ? _messages.randomFinish() : null,
     );
+  }
+
+  /// Read-only state for revisiting an already-completed level. The cubit
+  /// neither scores nor submits; the UI walks through the questions one by
+  /// one with the correct answer revealed.
+  QuizState _reviewState({required List<QuestionModel> questions}) {
+    final empty = questions.isEmpty;
+    return QuizState(
+      status: QuizStatus.loaded,
+      phase: empty ? QuizPhase.finished : QuizPhase.question,
+      allQuestions: questions,
+      currentQueue: questions,
+      isReview: true,
+    );
+  }
+
+  /// Advances to the next question in review mode, or marks the review as
+  /// finished when there are no more questions.
+  void reviewNext() {
+    if (!state.isReview) return;
+    if (state.currentIndex + 1 < state.currentQueue.length) {
+      emit(state.copyWith(currentIndex: state.currentIndex + 1));
+      return;
+    }
+    emit(state.copyWith(phase: QuizPhase.finished));
   }
 }

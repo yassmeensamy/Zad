@@ -39,6 +39,7 @@ class QuizState {
     this.submissionStatus = SubmissionStatus.idle,
     this.submissionResult,
     this.submissionError,
+    this.isReview = false,
   });
 
   final QuizStatus status;
@@ -88,6 +89,11 @@ class QuizState {
   final QuizSubmissionResponse? submissionResult;
   final String? submissionError;
 
+  /// When true, the quiz is shown read-only with the correct answer revealed
+  /// for every question. Used when revisiting a level the user has already
+  /// completed.
+  final bool isReview;
+
   QuizState copyWith({
     QuizStatus? status,
     QuizPhase? phase,
@@ -112,6 +118,7 @@ class QuizState {
     SubmissionStatus? submissionStatus,
     QuizSubmissionResponse? Function()? submissionResult,
     String? Function()? submissionError,
+    bool? isReview,
   }) =>
       QuizState(
         status: status ?? this.status,
@@ -147,6 +154,7 @@ class QuizState {
             : this.submissionResult,
         submissionError:
             submissionError != null ? submissionError() : this.submissionError,
+        isReview: isReview ?? this.isReview,
       );
 
   @override
@@ -175,7 +183,8 @@ class QuizState {
         other.elapsed == elapsed &&
         other.submissionStatus == submissionStatus &&
         other.submissionResult == submissionResult &&
-        other.submissionError == submissionError;
+        other.submissionError == submissionError &&
+        other.isReview == isReview;
   }
 
   @override
@@ -199,6 +208,7 @@ class QuizState {
         errorMessage,
         Object.hash(startedAt, questionShownAt, elapsed),
         Object.hash(submissionStatus, submissionResult, submissionError),
+        isReview,
       );
 }
 

@@ -33,6 +33,7 @@ class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isReview = level?.isCompleted ?? false;
     return MultiBlocProvider(
       providers: [
         BlocProvider<QuizCubit>(create: (_) => sl<QuizCubit>()),
@@ -40,6 +41,7 @@ class QuizScreen extends StatelessWidget {
       ],
       child: _QuizBootstrap(
         levelId: levelId,
+        review: isReview,
         child: _QuizView(levelId: levelId, level: level),
       ),
     );
@@ -50,9 +52,14 @@ class QuizScreen extends StatelessWidget {
 /// drafted server-side, fetches the user's drafts so we can seed the
 /// quiz cubit with the corresponding draft ids (needed to delete on un-save).
 class _QuizBootstrap extends StatefulWidget {
-  const _QuizBootstrap({required this.levelId, required this.child});
+  const _QuizBootstrap({
+    required this.levelId,
+    required this.child,
+    this.review = false,
+  });
 
   final int levelId;
+  final bool review;
   final Widget child;
 
   @override
@@ -70,7 +77,7 @@ class _QuizBootstrapState extends State<_QuizBootstrap> {
     final quizCubit = context.read<QuizCubit>();
     final draftsCubit = context.read<DraftsCubit>();
 
-    await quizCubit.loadQuiz(widget.levelId);
+    await quizCubit.loadQuiz(widget.levelId, review: widget.review);
     if (!mounted) return;
 
     final questions = quizCubit.state.allQuestions;
@@ -134,6 +141,12 @@ class _QuizView extends StatelessWidget {
             );
           }
           if (state.isFinished) {
+            if (state.isReview) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) _exit(context);
+              });
+              return _LoadingView(level: level);
+            }
             return ResultView(
               points: state.points,
               questionsCompleted: state.totalQuestions,
@@ -231,9 +244,11 @@ class _ActiveView extends StatelessWidget {
     }
 
     final cubit = context.read<QuizCubit>();
+    final isReview = state.isReview;
     final isAnswered = state.isAnswered;
+    final showFeedback = isReview || isAnswered;
     final isLastInRound = state.currentIndex + 1 >= state.currentQueue.length;
-    final hasMoreRounds = state.retryQueue.isNotEmpty;
+    final hasMoreRounds = !isReview && state.retryQueue.isNotEmpty;
 
     return Stack(
       children: [
@@ -264,16 +279,17 @@ class _ActiveView extends StatelessWidget {
                         question: question,
                         state: state,
                       ),
-                      onTap: isAnswered
+                      onTap: (isReview || isAnswered)
                           ? null
                           : () =>
                               cubit.selectAnswer(question.choices[i].index),
                     ),
-                  if (isAnswered) ...[
+                  if (showFeedback) ...[
                     const SizedBox(height: 14),
                     FeedbackPanel(
-                      isCorrect: state.isCorrect,
-                      motivationalKey: state.motivationalMessageKey,
+                      isCorrect: isReview ? true : state.isCorrect,
+                      motivationalKey:
+                          isReview ? null : state.motivationalMessageKey,
                       explanation: question.explanation,
                       reference: question.source,
                     ),
@@ -283,17 +299,17 @@ class _ActiveView extends StatelessWidget {
               ),
             ),
             QuizActionBar(
-              canAct: isAnswered,
+              canAct: showFeedback,
               isSaved: state.isQuestionSaved(question.id),
               isLastInRound: isLastInRound,
               hasMoreRounds: hasMoreRounds,
               onSave: () => _onSave(context, cubit),
               onReport: () => _onReport(context),
-              onNext: cubit.next,
+              onNext: isReview ? cubit.reviewNext : cubit.next,
             ),
           ],
         ),
-        if (state.isAnswered)
+        if (!isReview && state.isAnswered)
           Positioned.fill(
             child: CelebrationOverlay(
               trigger: question.id + state.round * 1000,
@@ -310,9 +326,16 @@ class _ActiveView extends StatelessWidget {
     required QuestionModel question,
     required QuizState state,
   }) {
+    final isCorrectChoice = question.correctIndex == choiceId;
+
+    if (state.isReview) {
+      return isCorrectChoice
+          ? AnswerChoiceVisualState.revealedCorrect
+          : AnswerChoiceVisualState.revealedMuted;
+    }
+
     final answered = state.isAnswered;
     final selected = state.selectedChoiceId == choiceId;
-    final isCorrectChoice = question.correctIndex == choiceId;
 
     if (!answered) {
       return selected

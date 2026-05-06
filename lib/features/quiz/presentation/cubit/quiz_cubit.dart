@@ -17,21 +17,20 @@ class QuizCubit extends BaseCubit<QuizState> {
         _messages = messages ?? MotivationalMessages(),
         super(const QuizState());
 
+  /// Answer faster than this on the first try and the question scores 2 pts;
+  /// slower (still on the first try) scores 1 pt.
+  static const _fastAnswerThreshold = Duration(seconds: 10);
+
   final QuizRepository _quizRepository;
   final DateTime Function() _now;
   final MotivationalMessages _messages;
 
   int? _levelId;
 
-  /// Answer faster than this on the first try and the question scores 2 pts;
-  /// slower (still on the first try) scores 1 pt.
-  static const _fastAnswerThreshold = Duration(seconds: 10);
-
   Future<void> loadQuiz(int levelId, {bool review = false}) async {
     _levelId = levelId;
     emit(state.copyWith(
       status: QuizStatus.loading,
-      errorMessage: () => null,
       isReview: review,
     ));
     try {
@@ -98,7 +97,6 @@ class QuizCubit extends BaseCubit<QuizState> {
 
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.submitting,
-      submissionError: () => null,
     ));
 
     try {
@@ -224,14 +222,14 @@ class QuizCubit extends BaseCubit<QuizState> {
   void _emitLoadError(String? message) {
     emit(state.copyWith(
       status: QuizStatus.error,
-      errorMessage: () => message,
+      errorMessage: message,
     ));
   }
 
   void _emitSubmitError(String? message) {
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.error,
-      submissionError: () => message,
+      errorMessage: message,
     ));
   }
 }

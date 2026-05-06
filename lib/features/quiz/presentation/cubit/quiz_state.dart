@@ -35,7 +35,6 @@ class QuizState {
     this.elapsed,
     this.submissionStatus = SubmissionStatus.idle,
     this.submissionResult,
-    this.submissionError,
     this.isReview = false,
   });
 
@@ -75,7 +74,6 @@ class QuizState {
 
   final SubmissionStatus submissionStatus;
   final QuizSubmissionResponse? submissionResult;
-  final String? submissionError;
 
   /// When true, the quiz is shown read-only with the correct answer revealed
   /// for every question. Used when revisiting a level the user has already
@@ -96,13 +94,12 @@ class QuizState {
     int? totalRetries,
     int? points,
     String? Function()? motivationalMessageKey,
-    String? Function()? errorMessage,
+    String? errorMessage,
     DateTime? Function()? startedAt,
     DateTime? Function()? questionShownAt,
     Duration? Function()? elapsed,
     SubmissionStatus? submissionStatus,
     QuizSubmissionResponse? Function()? submissionResult,
-    String? Function()? submissionError,
     bool? isReview,
   }) =>
       QuizState(
@@ -123,8 +120,7 @@ class QuizState {
         motivationalMessageKey: motivationalMessageKey != null
             ? motivationalMessageKey()
             : this.motivationalMessageKey,
-        errorMessage:
-            errorMessage != null ? errorMessage() : this.errorMessage,
+        errorMessage: errorMessage,
         startedAt: startedAt != null ? startedAt() : this.startedAt,
         questionShownAt: questionShownAt != null
             ? questionShownAt()
@@ -134,8 +130,6 @@ class QuizState {
         submissionResult: submissionResult != null
             ? submissionResult()
             : this.submissionResult,
-        submissionError:
-            submissionError != null ? submissionError() : this.submissionError,
         isReview: isReview ?? this.isReview,
       );
 
@@ -162,7 +156,6 @@ class QuizState {
         other.elapsed == elapsed &&
         other.submissionStatus == submissionStatus &&
         other.submissionResult == submissionResult &&
-        other.submissionError == submissionError &&
         other.isReview == isReview;
   }
 
@@ -183,7 +176,7 @@ class QuizState {
         motivationalMessageKey,
         errorMessage,
         Object.hash(startedAt, questionShownAt, elapsed),
-        Object.hash(submissionStatus, submissionResult, submissionError),
+        Object.hash(submissionStatus, submissionResult),
         isReview,
       );
 }

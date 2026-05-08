@@ -78,12 +78,7 @@ class AuthCubit extends BaseCubit<AuthState> {
   }
 
   Future<void> loginWithGoogle() async {
-    emit(
-      state.copyWith(
-        status: AuthStatus.loading,
-        socialAuthStatus: SocialAuthStatus.loading,
-      ),
-    );
+    emit(state.copyWith(socialAuthStatus: SocialAuthStatus.loading));
 
     try {
       await _repository.loginWithGoogle();

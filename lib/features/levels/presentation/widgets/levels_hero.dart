@@ -33,7 +33,6 @@ class LevelsHero extends StatelessWidget {
     final percent = (progress * 100).round();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
       decoration: BoxDecoration(
         borderRadius: ZaadRadii.xxlAll,
         gradient: LinearGradient(
@@ -57,132 +56,134 @@ class LevelsHero extends StatelessWidget {
         borderRadius: ZaadRadii.xxlAll,
         child: Stack(
           children: [
-            IslamicPatternSide(
-              color: tint,
-              width: 70,
-              tile: 18,
-              opacity: 0.18,
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Image.asset('assets/images/Vector.png'),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 52,
-                      height: 52,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Positioned.fill(
-                            child: CustomPaint(
-                              painter: KhatimStarPainter(
-                                fill: tint.withValues(alpha: 0.10),
-                                stroke: tint.withValues(alpha: 0.55),
-                                strokeWidth: 0.9,
-                              ),
-                            ),
-                          ),
-                          if (_iconUrl != null && _iconUrl!.isNotEmpty)
-                            ClipOval(
-                              child: Image.network(
-                                _iconUrl!,
-                                width: 24,
-                                height: 24,
-                                fit: BoxFit.contain,
-                                errorBuilder: (_, _, _) => Icon(
-                                  Icons.menu_book_outlined,
-                                  size: 24,
-                                  color: tint,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 52,
+                        height: 52,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned.fill(
+                              child: CustomPaint(
+                                painter: KhatimStarPainter(
+                                  fill: tint.withValues(alpha: 0.10),
+                                  stroke: tint.withValues(alpha: 0.55),
+                                  strokeWidth: 0.9,
                                 ),
                               ),
-                            )
-                          else
-                            Icon(
-                              Icons.menu_book_outlined,
-                              size: 24,
-                              color: tint,
                             ),
-                        ],
+                            if (_iconUrl != null && _iconUrl!.isNotEmpty)
+                              ClipOval(
+                                child: Image.network(
+                                  _iconUrl!,
+                                  width: 24,
+                                  height: 24,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, _, _) => Icon(
+                                    Icons.menu_book_outlined,
+                                    size: 24,
+                                    color: tint,
+                                  ),
+                                ),
+                              )
+                            else
+                              Icon(
+                                Icons.menu_book_outlined,
+                                size: 24,
+                                color: tint,
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ResponsiveText(
-                            'levels.eyebrow',
-                            style: ZaadType.eyebrowSm.copyWith(color: tint),
-                          ),
-                          const SizedBox(height: 4),
-                          ResponsiveText(
-                            'levels.heading'.tr(args: [
-                              '$completed',
-                              '$total',
-                            ]),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.titleMedium.copyWith(
-                              fontWeight: FontWeight.w700,
-                              height: 1.2,
-                              color: colors.textPrimary,
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ResponsiveText(
+                              'levels.eyebrow',
+                              style: ZaadType.eyebrowSm.copyWith(color: tint),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(999)),
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 8,
-                        color: tint.withValues(alpha: 0.12),
-                      ),
-                      FractionallySizedBox(
-                        widthFactor: progress,
-                        child: Container(
-                          height: 8,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color.lerp(tint, colors.accent, 0.25)!,
-                                tint,
-                              ],
+                            const SizedBox(height: 4),
+                            ResponsiveText(
+                              'levels.heading'.tr(args: [
+                                '$completed',
+                                '$total',
+                              ]),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.titleMedium.copyWith(
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                                color: colors.textPrimary,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    ResponsiveText(
-                      'levels.percent'.tr(args: ['$percent']),
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                        color: tint,
-                      ),
+                  const SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(999)),
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 8,
+                          color: tint.withValues(alpha: 0.12),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: progress,
+                          child: Container(
+                            height: 8,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.lerp(tint, colors.accent, 0.25)!,
+                                  tint,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
-                    ResponsiveText(
-                      'levels.count'.tr(args: ['$completed', '$total']),
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0,
-                        color: colors.textTertiary,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      ResponsiveText(
+                        'levels.percent'.tr(args: ['$percent']),
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
+                          color: tint,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const Spacer(),
+                      ResponsiveText(
+                        'levels.count'.tr(args: ['$completed', '$total']),
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                          color: colors.textTertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

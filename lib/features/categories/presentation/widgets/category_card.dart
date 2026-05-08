@@ -64,14 +64,14 @@ class CategoryCard extends StatelessWidget {
             borderRadius: ZaadRadii.xxlAll,
             child: Stack(
               children: [
-                /*
-                IslamicPatternCorner(
-                  color: tint,
-                  size: 80,
-                  tile: 18,
-                  opacity: 0.16,
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Image.asset(
+                    'assets/images/Vector.png',
+                    width: 200,
+                  ),
                 ),
-                */
                 Padding(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
                 child: Column(

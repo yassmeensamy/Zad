@@ -177,7 +177,10 @@ class ServiceLocator {
       () => CategoriesRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<CategoriesCubit>(
-      () => CategoriesCubit(categoriesRepository: sl()),
+      () => CategoriesCubit(
+        categoriesRepository: sl(),
+        quizEventService: sl(),
+      ),
     );
 
     // Levels

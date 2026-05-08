@@ -88,7 +88,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
         child: BlocBuilder<SupportTicketsCubit, SupportTicketsState>(
           buildWhen: (a, b) =>
               a.detailStatus != b.detailStatus ||
-              a.selectedTicket != b.selectedTicket,
+              a.selectedTicket?.id != b.selectedTicket?.id,
           builder: (context, state) {
             if (state.isDetailError &&
                 state.selectedTicket == null &&

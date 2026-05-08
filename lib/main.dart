@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await initializeDateFormatting('ar');
   timeago.setLocaleMessages('ar', timeago.ArMessages());
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await ServiceLocator().init(
     baseUrl: dotenv.env['BASE_URL'] ?? '',
@@ -35,7 +36,7 @@ Future<void> main() async {
 
   runApp(
     RequestsInspector(
-      enabled: true,
+      enabled: kDebugMode,
       showInspectorOn: ShowInspectorOn.Both,
       child: EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

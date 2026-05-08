@@ -162,30 +162,34 @@ class _ResultViewState extends State<ResultView>
           alignment: Alignment.center,
           children: [
             Positioned.fill(
-              child: AnimatedBuilder(
-                animation: _gauge,
-                builder: (context, _) {
-                  return CustomPaint(
-                    painter: GaugePainter(
-                      progress: _arc.value * (_scorePercent / 100),
-                      ticksProgress: _ticks.value,
-                      endpointVisible: _endpoint.value,
-                      scoreFraction: _scorePercent / 100,
-                      trackColor: colors.oliveDeep.withValues(alpha: 0.08),
-                      gradientStart: colors.accentDeep,
-                      gradientMid: colors.accent,
-                      gradientEnd: Color.lerp(
-                        colors.accent,
-                        colors.canvas,
-                        0.30,
-                      )!,
-                      tickColor: colors.oliveDeep.withValues(alpha: 0.18),
-                      endpointFill: colors.canvas,
-                      endpointStroke: colors.accentDeep,
-                      glowColor: colors.accent,
-                    ),
-                  );
-                },
+              child: RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _gauge,
+                  builder: (context, _) {
+                    return CustomPaint(
+                      painter: GaugePainter(
+                        progress: _arc.value * (_scorePercent / 100),
+                        ticksProgress: _ticks.value,
+                        endpointVisible: _endpoint.value,
+                        scoreFraction: _scorePercent / 100,
+                        trackColor:
+                            colors.oliveDeep.withValues(alpha: 0.08),
+                        gradientStart: colors.accentDeep,
+                        gradientMid: colors.accent,
+                        gradientEnd: Color.lerp(
+                          colors.accent,
+                          colors.canvas,
+                          0.30,
+                        )!,
+                        tickColor:
+                            colors.oliveDeep.withValues(alpha: 0.18),
+                        endpointFill: colors.canvas,
+                        endpointStroke: colors.accentDeep,
+                        glowColor: colors.accent,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             // Anchor the text to the bottom-center of the painter so the

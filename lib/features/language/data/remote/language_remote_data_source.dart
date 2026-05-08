@@ -23,7 +23,7 @@ class LanguageRemoteDataSourceImpl implements LanguageRemoteDataSource {
       data: {'language': language},
     );
     if (response.statusCode != 200 && response.statusCode != 204) {
-      throw ServerException.fromMap(response.data);
+      throw ServerException.fromResponse(response);
     }
   }
 }

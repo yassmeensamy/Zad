@@ -255,33 +255,37 @@ class _AnimatedBadge extends StatelessWidget {
           ),
 
           // Continuous pulse rings emanating outward (loops forever).
-          AnimatedBuilder(
-            animation: Listenable.merge([rings, ambientFade]),
-            builder: (_, _) => Opacity(
-              opacity: ambientFade.value,
-              child: CustomPaint(
-                size: Size.square(_badgeSize + _ringMaxExtent * 2),
-                painter: _PulseRingPainter(
-                  t: rings.value,
-                  baseRadius: _badgeSize / 2,
-                  maxRadius: _badgeSize / 2 + _ringMaxExtent,
-                  color: colors.olive,
+          RepaintBoundary(
+            child: FadeTransition(
+              opacity: ambientFade,
+              child: AnimatedBuilder(
+                animation: rings,
+                builder: (_, _) => CustomPaint(
+                  size: Size.square(_badgeSize + _ringMaxExtent * 2),
+                  painter: _PulseRingPainter(
+                    t: rings.value,
+                    baseRadius: _badgeSize / 2,
+                    maxRadius: _badgeSize / 2 + _ringMaxExtent,
+                    color: colors.olive,
+                  ),
                 ),
               ),
             ),
           ),
 
           // Twinkling sparkle stars around the badge.
-          AnimatedBuilder(
-            animation: Listenable.merge([sparkles, ambientFade]),
-            builder: (_, _) => Opacity(
-              opacity: ambientFade.value,
-              child: CustomPaint(
-                size: Size.square(_badgeSize + _ringMaxExtent * 2),
-                painter: _SparklesPainter(
-                  t: sparkles.value,
-                  orbitRadius: _badgeSize / 2 + 16,
-                  color: colors.accent,
+          RepaintBoundary(
+            child: FadeTransition(
+              opacity: ambientFade,
+              child: AnimatedBuilder(
+                animation: sparkles,
+                builder: (_, _) => CustomPaint(
+                  size: Size.square(_badgeSize + _ringMaxExtent * 2),
+                  painter: _SparklesPainter(
+                    t: sparkles.value,
+                    orbitRadius: _badgeSize / 2 + 16,
+                    color: colors.accent,
+                  ),
                 ),
               ),
             ),
@@ -342,11 +346,13 @@ class _AnimatedBadge extends StatelessWidget {
                         ),
                       ),
                       // Check stroke.
-                      CustomPaint(
-                        size: const Size.square(_badgeSize),
-                        painter: _CheckPainter(
-                          progress: check.value,
-                          color: colors.textInverse,
+                      RepaintBoundary(
+                        child: CustomPaint(
+                          size: const Size.square(_badgeSize),
+                          painter: _CheckPainter(
+                            progress: check.value,
+                            color: colors.textInverse,
+                          ),
                         ),
                       ),
                     ],
@@ -399,7 +405,9 @@ class _PulseRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_PulseRingPainter old) =>
-      old.t != t || old.color != color;
+      // Sub-frame deltas are visually imperceptible on a continuously-looping
+      // ring; throttle to ~0.5% so we roughly halve repaints.
+      (old.t - t).abs() > 0.005 || old.color != color;
 }
 
 class _SparklesPainter extends CustomPainter {
@@ -461,7 +469,9 @@ class _SparklesPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SparklesPainter old) =>
-      old.t != t || old.color != color || old.orbitRadius != orbitRadius;
+      (old.t - t).abs() > 0.005 ||
+      old.color != color ||
+      old.orbitRadius != orbitRadius;
 }
 
 class _CheckPainter extends CustomPainter {

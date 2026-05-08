@@ -20,40 +20,53 @@ class LevelsList extends StatelessWidget {
   final Color tint;
   final CategoryModel? category;
 
+  static const _headerSlot = 0;
+  static const _dividerSlot = 1;
+  static const _firstRowIndex = 2;
+
   @override
   Widget build(BuildContext context) {
     final levels = state.levels;
-    return ListView(
+    final showLoadingTail = state.isLoadingMore;
+    final itemCount = _firstRowIndex + levels.length + (showLoadingTail ? 1 : 0);
+
+    return ListView.builder(
       controller: controller,
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 80),
       physics: const BouncingScrollPhysics(),
-      children: [
-        LevelsHero(state: state, tint: tint, category: category),
-        const SizedBox(height: 18),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: StarRule(color: tint, starSize: 10),
-        ),
-        const SizedBox(height: 22),
-        for (var i = 0; i < levels.length; i++)
-          LevelTimelineRow(
-            level: levels[i],
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        if (index == _headerSlot) {
+          return LevelsHero(state: state, tint: tint, category: category);
+        }
+        if (index == _dividerSlot) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+            child: StarRule(color: tint, starSize: 10),
+          );
+        }
+        final rowIndex = index - _firstRowIndex;
+        if (rowIndex < levels.length) {
+          final level = levels[rowIndex];
+          return LevelTimelineRow(
+            key: ValueKey(level.id),
+            level: level,
             tint: tint,
-            isFirst: i == 0,
-            isLast: i == levels.length - 1,
-          ),
-        if (state.isLoadingMore)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Center(
-              child: SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.2, color: tint),
-              ),
+            isFirst: rowIndex == 0,
+            isLast: rowIndex == levels.length - 1,
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(strokeWidth: 2.2, color: tint),
             ),
           ),
-      ],
+        );
+      },
     );
   }
 }

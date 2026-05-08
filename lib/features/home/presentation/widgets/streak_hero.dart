@@ -330,49 +330,67 @@ class _StreakNumberRow extends StatelessWidget {
   }
 }
 
-class _AnimatedNumber extends StatelessWidget {
+class _AnimatedNumber extends StatefulWidget {
   const _AnimatedNumber({required this.controller, required this.target});
 
   final AnimationController controller;
   final int target;
 
   @override
+  State<_AnimatedNumber> createState() => _AnimatedNumberState();
+}
+
+class _AnimatedNumberState extends State<_AnimatedNumber> {
+  static const _gradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0.0, 0.5, 1.0],
+    colors: [
+      AppColors.flameLight,
+      AppColors.flameGold,
+      AppColors.amber,
+    ],
+  );
+
+  Rect? _cachedRect;
+  Shader? _cachedShader;
+
+  Shader _shaderFor(Rect rect) {
+    if (_cachedRect == rect && _cachedShader != null) return _cachedShader!;
+    _cachedRect = rect;
+    return _cachedShader = _gradient.createShader(rect);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
-        final eased = Curves.easeOutCubic.transform(controller.value);
-        final value = (target * eased).round();
-        return ShaderMask(
-          shaderCallback: (rect) => const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.5, 1.0],
-            colors: [
-              AppColors.flameLight,
-              AppColors.flameGold,
-              AppColors.amber,
-            ],
-          ).createShader(rect),
-          child: Text(
-            '$value',
-            style: AppTextStyles.numericLarge.copyWith(
-              fontStyle: FontStyle.italic,
-              fontSize: 56,
-              height: 0.85,
-              letterSpacing: -1.8,
-              color: AppColors.white,
-              shadows: [
-                Shadow(
-                  color: AppColors.amber.withValues(alpha: 0.18),
-                  blurRadius: 14,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    return RepaintBoundary(
+      child: ShaderMask(
+        shaderCallback: _shaderFor,
+        child: AnimatedBuilder(
+          animation: widget.controller,
+          builder: (context, _) {
+            final eased = Curves.easeOutCubic.transform(widget.controller.value);
+            final value = (widget.target * eased).round();
+            return Text(
+              '$value',
+              style: AppTextStyles.numericLarge.copyWith(
+                fontStyle: FontStyle.italic,
+                fontSize: 56,
+                height: 0.85,
+                letterSpacing: -1.8,
+                color: AppColors.white,
+                shadows: [
+                  Shadow(
+                    color: AppColors.amber.withValues(alpha: 0.18),
+                    blurRadius: 14,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

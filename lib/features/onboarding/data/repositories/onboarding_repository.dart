@@ -18,26 +18,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   final CacheService _cacheService;
   List<OnboardingModel>? _cached;
 
-  static const _mockPages = <OnboardingModel>[
-    OnboardingModel(
-      pk: 1,
-      text: 'Learn the Quran daily',
-      subText: 'Build a consistent reading habit with bite-sized lessons.',
-      image: 'https://picsum.photos/seed/zad-1/800/1200',
-    ),
-    OnboardingModel(
-      pk: 2,
-      text: 'Track your progress',
-      subText: 'See your streak, points, and weekly goals at a glance.',
-      image: 'https://picsum.photos/seed/zad-2/800/1200',
-    ),
-    OnboardingModel(
-      pk: 3,
-      text: 'Compete with friends',
-      subText: 'Climb the leaderboard and stay motivated together.',
-      image: 'https://picsum.photos/seed/zad-3/800/1200',
-    ),
-  ];
+  static const _mockPages = <OnboardingModel>[];
 
   @override
   List<OnboardingModel>? get cachedOnboarding => _cached;

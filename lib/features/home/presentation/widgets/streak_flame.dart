@@ -74,14 +74,16 @@ class _StreakFlameState extends State<StreakFlame>
               );
             },
           ),
-          AnimatedBuilder(
-            animation: _flicker,
-            builder: (context, _) {
-              return CustomPaint(
-                size: Size(w * (54 / 64), h * (68 / 78)),
-                painter: _FlamePainter(progress: _flicker.value),
-              );
-            },
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _flicker,
+              builder: (context, _) {
+                return CustomPaint(
+                  size: Size(w * (54 / 64), h * (68 / 78)),
+                  painter: _FlamePainter(progress: _flicker.value),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -93,6 +95,9 @@ class _FlamePainter extends CustomPainter {
   _FlamePainter({required this.progress});
 
   final double progress;
+
+  static const _outerRect = Rect.fromLTWH(0, 6, 64, 72);
+  static const _innerRect = Rect.fromLTWH(22, 22, 20, 52);
 
   static const _outerStops = [
     AppColors.flameLight,
@@ -107,6 +112,51 @@ class _FlamePainter extends CustomPainter {
     AppColors.amber.withValues(alpha: 0.6),
   ];
 
+  // Shaders depend only on rect (which is constant) and gradient colors —
+  // cache once, reuse across every paint.
+  static final Shader _outerShader = const LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: _outerStops,
+    stops: [0.0, 0.45, 0.78, 1.0],
+  ).createShader(_outerRect);
+
+  static final Shader _innerShader = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: _innerStops,
+    stops: const [0.0, 0.6, 1.0],
+  ).createShader(_innerRect);
+
+  static final Path _outerPath = Path()
+    ..moveTo(32, 4)
+    ..cubicTo(38, 18, 50, 24, 52, 40)
+    ..cubicTo(54, 56, 46, 70, 32, 74)
+    ..cubicTo(18, 70, 10, 56, 12, 40)
+    ..cubicTo(14, 28, 22, 22, 26, 12)
+    ..cubicTo(28, 18, 30, 22, 32, 4)
+    ..close();
+
+  static final Path _innerPath = Path()
+    ..moveTo(32, 22)
+    ..cubicTo(36, 30, 42, 36, 42, 48)
+    ..cubicTo(42, 60, 36, 68, 32, 70)
+    ..cubicTo(28, 68, 22, 60, 22, 48)
+    ..cubicTo(22, 38, 28, 32, 32, 22)
+    ..close();
+
+  static final Paint _outerStrokePaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.6
+    ..color = AppColors.date.withValues(alpha: 0.5);
+
+  static final Paint _outerFillPaint = Paint()..shader = _outerShader;
+  static final Paint _innerFillPaint = Paint()..shader = _innerShader;
+  static final Paint _corePaint = Paint()
+    ..color = AppColors.flameCore.withValues(alpha: 0.85);
+
+  static const _coreRect = Rect.fromLTWH(26, 47, 12, 18);
+
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
@@ -120,72 +170,21 @@ class _FlamePainter extends CustomPainter {
     canvas.scale(sx, sy);
     canvas.translate(-32, -80);
 
-    // Soft amber drop shadow under the silhouette.
-    final shadowPaint = Paint()
-      ..color = AppColors.flameHalo.withValues(alpha: 0.4)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-    canvas.drawPath(_outerPath(), shadowPaint);
+    // Outer flame body. (Glow comes from the parent _pulse halo — no
+    // MaskFilter.blur here; that was the dominant per-frame cost.)
+    canvas.drawPath(_outerPath, _outerFillPaint);
+    canvas.drawPath(_outerPath, _outerStrokePaint);
 
-    // Outer flame body.
-    const outerRect = Rect.fromLTWH(0, 6, 64, 72);
-    final outerPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: _outerStops,
-        stops: [0.0, 0.45, 0.78, 1.0],
-      ).createShader(outerRect);
-    canvas.drawPath(_outerPath(), outerPaint);
-
-    canvas.drawPath(
-      _outerPath(),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.6
-        ..color = AppColors.date.withValues(alpha: 0.5),
-    );
-
-    // Brighter inner flame.
-    const innerRect = Rect.fromLTWH(22, 22, 20, 52);
-    final innerPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: _innerStops,
-        stops: const [0.0, 0.6, 1.0],
-      ).createShader(innerRect);
-    canvas.drawPath(_innerPath(), innerPaint);
-
-    // Glowing core ellipse.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: const Offset(32, 56),
-        width: 12,
-        height: 18,
-      ),
-      Paint()..color = AppColors.flameCore.withValues(alpha: 0.85),
-    );
+    // Brighter inner flame + glowing core ellipse.
+    canvas.drawPath(_innerPath, _innerFillPaint);
+    canvas.drawOval(_coreRect, _corePaint);
 
     canvas.restore();
   }
 
-  Path _outerPath() => Path()
-    ..moveTo(32, 4)
-    ..cubicTo(38, 18, 50, 24, 52, 40)
-    ..cubicTo(54, 56, 46, 70, 32, 74)
-    ..cubicTo(18, 70, 10, 56, 12, 40)
-    ..cubicTo(14, 28, 22, 22, 26, 12)
-    ..cubicTo(28, 18, 30, 22, 32, 4)
-    ..close();
-
-  Path _innerPath() => Path()
-    ..moveTo(32, 22)
-    ..cubicTo(36, 30, 42, 36, 42, 48)
-    ..cubicTo(42, 60, 36, 68, 32, 70)
-    ..cubicTo(28, 68, 22, 60, 22, 48)
-    ..cubicTo(22, 38, 28, 32, 32, 22)
-    ..close();
-
   @override
-  bool shouldRepaint(covariant _FlamePainter old) => old.progress != progress;
+  bool shouldRepaint(covariant _FlamePainter old) =>
+      // Sub-frame progress changes are visually imperceptible; throttle to
+      // ~0.5% deltas to roughly halve repaint frequency.
+      (old.progress - progress).abs() > 0.005;
 }

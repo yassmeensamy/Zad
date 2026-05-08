@@ -108,7 +108,7 @@ class ServiceLocator {
     sl.registerLazySingleton<UserRepository>(
       () => UserRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
-    sl.registerLazySingleton<UserCubit>(
+    sl.registerFactory<UserCubit>(
       () => UserCubit(userRepository: sl(), authEventService: sl()),
     );
 

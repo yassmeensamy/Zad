@@ -156,9 +156,9 @@ class _ComposerLayer extends StatelessWidget {
         const SizedBox(height: 16),
         const _TopicGrid(),
         const SizedBox(height: 16),
-        BlocBuilder<HelpCenterCubit, HelpCenterState>(
-          buildWhen: (a, b) => a.topic != b.topic,
-          builder: (context, state) {
+        BlocSelector<HelpCenterCubit, HelpCenterState, SupportTopicEnum?>(
+          selector: (state) => state.topic,
+          builder: (context, topic) {
             return AnimatedSize(
               duration: const Duration(milliseconds: 260),
               curve: Curves.easeOutCubic,
@@ -166,7 +166,7 @@ class _ComposerLayer extends StatelessWidget {
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 260),
                 switchInCurve: Curves.easeOut,
-                child: state.topic == null
+                child: topic == null
                     ? const _PromptHint(key: ValueKey('prompt'))
                     : _ComposerCard(
                         key: const ValueKey('composer-card'),
@@ -341,9 +341,9 @@ class _TopicGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HelpCenterCubit, HelpCenterState>(
-      buildWhen: (a, b) => a.topic != b.topic,
-      builder: (context, state) {
+    return BlocSelector<HelpCenterCubit, HelpCenterState, SupportTopicEnum?>(
+      selector: (state) => state.topic,
+      builder: (context, selectedTopic) {
         final cubit = context.read<HelpCenterCubit>();
         return GridView.count(
           crossAxisCount: 2,
@@ -356,7 +356,7 @@ class _TopicGrid extends StatelessWidget {
             for (final topic in SupportTopicEnum.values)
               TopicTile(
                 topic: topic,
-                selected: state.topic == topic,
+                selected: selectedTopic == topic,
                 onTap: () => cubit.selectTopic(topic),
               ),
           ],
@@ -497,10 +497,9 @@ class _SelectedTopicChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocBuilder<HelpCenterCubit, HelpCenterState>(
-      buildWhen: (a, b) => a.topic != b.topic,
-      builder: (context, state) {
-        final topic = state.topic;
+    return BlocSelector<HelpCenterCubit, HelpCenterState, SupportTopicEnum?>(
+      selector: (state) => state.topic,
+      builder: (context, topic) {
         if (topic == null) return const SizedBox.shrink();
         final accent = topic.accent(colors);
         return _Pill(

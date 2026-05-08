@@ -15,13 +15,8 @@ class CelebrationOverlay extends StatefulWidget {
     this.messageKey,
   });
 
-  /// Increment to replay the animation.
   final int trigger;
-
-  /// Drives color & icon choice, particle behavior, etc.
   final bool isCorrect;
-
-  /// Translation key for the subtitle line under the title.
   final String? messageKey;
 
   @override
@@ -107,51 +102,45 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     final accentSoft = widget.isCorrect ? colors.oliveLeaf : errorColor;
 
     return IgnorePointer(
-      child: AnimatedBuilder(
-        animation: _ctrl,
-        builder: (context, _) {
-          final t = _ctrl.value;
-
-          final overlayFade = 1 - _interval(t, 0.86, 1.0);
-
-          return Opacity(
-            opacity: overlayFade,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                _Backdrop(t: t, accent: accent),
-                for (var i = 0; i < 3; i++)
-                  _Ring(
-                    progress: ((t - i * 0.09) / 0.55).clamp(0.0, 1.0),
-                    accent: i.isOdd ? accentSoft : accent,
-                  ),
-                for (final p in _particles)
-                  _ParticleView(
-                    particle: p,
-                    progress: t,
-                    color: p.isCrescent ? colors.accent : colors.olive,
-                  ),
-                _IconBadge(
-                  t: t,
-                  isCorrect: widget.isCorrect,
+      child: RepaintBoundary(
+        child: FadeTransition(
+          opacity: CurvedAnimation(
+            parent: _ctrl,
+            curve: const Interval(0.86, 1.0, curve: Curves.linear),
+          ).drive(Tween<double>(begin: 1.0, end: 0.0)),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              _Backdrop(animation: _ctrl, accent: accent),
+              for (var i = 0; i < 3; i++)
+                _Ring(animation: _ctrl, ringIndex: i,
+                    accent: i.isOdd ? accentSoft : accent),
+              for (final p in _particles)
+                _ParticleView(
+                  animation: _ctrl,
+                  particle: p,
+                  color: p.isCrescent ? colors.accent : colors.olive,
+                ),
+              _IconBadge(
+                animation: _ctrl,
+                isCorrect: widget.isCorrect,
+                accent: accent,
+                canvas: colors.canvas,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 130),
+                child: _MessageBlock(
+                  animation: _ctrl,
+                  title: _titleKey.tr(),
+                  subtitle: widget.messageKey?.tr(),
                   accent: accent,
-                  canvas: colors.canvas,
+                  titleColor: colors.textPrimary,
+                  subtitleColor: colors.textSecondary,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 130),
-                  child: _MessageBlock(
-                    t: t,
-                    title: _titleKey.tr(),
-                    subtitle: widget.messageKey?.tr(),
-                    accent: accent,
-                    titleColor: colors.textPrimary,
-                    subtitleColor: colors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -177,169 +166,189 @@ class _Particle {
 
 class _ParticleView extends StatelessWidget {
   const _ParticleView({
+    required this.animation,
     required this.particle,
-    required this.progress,
     required this.color,
   });
 
+  final Animation<double> animation;
   final _Particle particle;
-  final double progress;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final adjusted = ((progress - particle.delay) / (1 - particle.delay)).clamp(
-      0.0,
-      1.0,
-    );
-    final eased = Curves.easeOutCubic.transform(adjusted);
-    final dx = cos(particle.angle) * particle.distance * eased;
-    final dy = sin(particle.angle) * particle.distance * eased - 24 * eased;
-    final opacity = adjusted < 0.65 ? 1.0 : ((1 - adjusted) / 0.35);
-    final scale = 0.5 + 0.6 * eased;
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final progress = animation.value;
+        final adjusted =
+            ((progress - particle.delay) / (1 - particle.delay)).clamp(0.0, 1.0);
+        if (adjusted <= 0) return const SizedBox.shrink();
+        final eased = Curves.easeOutCubic.transform(adjusted);
+        final dx = cos(particle.angle) * particle.distance * eased;
+        final dy = sin(particle.angle) * particle.distance * eased - 24 * eased;
+        final opacity = adjusted < 0.65 ? 1.0 : ((1 - adjusted) / 0.35);
+        final scale = 0.5 + 0.6 * eased;
 
-    return Transform.translate(
-      offset: Offset(dx, dy),
-      child: Opacity(
-        opacity: opacity.clamp(0.0, 1.0),
-        child: Transform.rotate(
-          angle: particle.rotation * eased,
-          child: Transform.scale(
-            scale: scale,
-            child: Icon(
-              particle.isCrescent
-                  ? Icons.nightlight_round
-                  : Icons.auto_awesome_rounded,
-              size: particle.size,
-              color: color,
+        return Transform.translate(
+          offset: Offset(dx, dy),
+          child: Transform.rotate(
+            angle: particle.rotation * eased,
+            child: Transform.scale(
+              scale: scale,
+              child: Icon(
+                particle.isCrescent
+                    ? Icons.nightlight_round
+                    : Icons.auto_awesome_rounded,
+                size: particle.size,
+                color: color.withValues(alpha: opacity.clamp(0.0, 1.0)),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _Backdrop extends StatelessWidget {
-  const _Backdrop({required this.t, required this.accent});
+  const _Backdrop({required this.animation, required this.accent});
 
-  final double t;
+  final Animation<double> animation;
   final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    final fadeIn = _interval(t, 0.0, 0.18);
-    final fadeOut = 1 - _interval(t, 0.65, 1.0);
-    final opacity = fadeIn * fadeOut;
-    if (opacity <= 0.001) return const SizedBox.shrink();
-    return Opacity(
-      opacity: opacity,
-      child: Container(
-        width: 240,
-        height: 240,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [
-              accent.withValues(alpha: 0.18),
-              accent.withValues(alpha: 0.0),
-            ],
-            stops: const [0.0, 1.0],
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        final fadeIn = _interval(t, 0.0, 0.18);
+        final fadeOut = 1 - _interval(t, 0.65, 1.0);
+        final opacity = fadeIn * fadeOut;
+        if (opacity <= 0.001) return const SizedBox.shrink();
+        return Container(
+          width: 240,
+          height: 240,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                accent.withValues(alpha: 0.18 * opacity),
+                accent.withValues(alpha: 0.0),
+              ],
+              stops: const [0.0, 1.0],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _Ring extends StatelessWidget {
-  const _Ring({required this.progress, required this.accent});
+  const _Ring({
+    required this.animation,
+    required this.ringIndex,
+    required this.accent,
+  });
 
-  /// 0..1 mapped within this ring's lifetime.
-  final double progress;
+  final Animation<double> animation;
+  final int ringIndex;
   final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    if (progress <= 0 || progress >= 1) return const SizedBox.shrink();
-    final eased = Curves.easeOutCubic.transform(progress);
-    final size = 56 + eased * 140;
-    final opacity = (1 - progress).clamp(0.0, 1.0) * 0.7;
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: accent.withValues(alpha: opacity),
-            width: 1.4,
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        final progress = ((t - ringIndex * 0.09) / 0.55).clamp(0.0, 1.0);
+        if (progress <= 0 || progress >= 1) return const SizedBox.shrink();
+        final eased = Curves.easeOutCubic.transform(progress);
+        final size = 56 + eased * 140;
+        final opacity = (1 - progress).clamp(0.0, 1.0) * 0.7;
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: accent.withValues(alpha: opacity),
+              width: 1.4,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _IconBadge extends StatelessWidget {
   const _IconBadge({
-    required this.t,
+    required this.animation,
     required this.isCorrect,
     required this.accent,
     required this.canvas,
   });
 
-  final double t;
+  final Animation<double> animation;
   final bool isCorrect;
   final Color accent;
   final Color canvas;
 
   @override
   Widget build(BuildContext context) {
-    final scale = Curves.easeOutBack.transform(_interval(t, 0.0, 0.32));
-
-    final pulse = isCorrect
-        ? sin(_interval(t, 0.32, 0.60) * pi) * 0.06
-        : 0.0;
-
-    final shakeT = isCorrect ? 0.0 : _interval(t, 0.30, 0.62);
-    final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
-
     final badgeSize = isCorrect ? 50.0 : 64.0;
     final iconSize = isCorrect ? 26.0 : 36.0;
-
-    return Transform.translate(
-      offset: Offset(shake, 0),
-      child: Transform.scale(
-        scale: scale + pulse,
-        child: Container(
-          width: badgeSize,
-          height: badgeSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: accent,
-            boxShadow: [
-              BoxShadow(
-                color: accent.withValues(alpha: 0.38),
-                blurRadius: 18,
-                spreadRadius: 0.5,
-              ),
-            ],
+    final badge = Container(
+      width: badgeSize,
+      height: badgeSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: accent,
+        boxShadow: [
+          BoxShadow(
+            color: accent.withValues(alpha: 0.38),
+            blurRadius: 18,
+            spreadRadius: 0.5,
           ),
-          child: Icon(
-            isCorrect ? Icons.check_rounded : Icons.close_rounded,
-            color: canvas,
-            size: iconSize,
-          ),
-        ),
+        ],
       ),
+      child: Icon(
+        isCorrect ? Icons.check_rounded : Icons.close_rounded,
+        color: canvas,
+        size: iconSize,
+      ),
+    );
+
+    return AnimatedBuilder(
+      animation: animation,
+      child: badge,
+      builder: (context, child) {
+        final t = animation.value;
+        final scale = Curves.easeOutBack.transform(_interval(t, 0.0, 0.32));
+        final pulse = isCorrect
+            ? sin(_interval(t, 0.32, 0.60) * pi) * 0.06
+            : 0.0;
+        final shakeT = isCorrect ? 0.0 : _interval(t, 0.30, 0.62);
+        final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
+
+        return Transform.translate(
+          offset: Offset(shake, 0),
+          child: Transform.scale(
+            scale: scale + pulse,
+            child: child,
+          ),
+        );
+      },
     );
   }
 }
 
 class _MessageBlock extends StatelessWidget {
   const _MessageBlock({
-    required this.t,
+    required this.animation,
     required this.title,
     required this.subtitle,
     required this.accent,
@@ -347,7 +356,7 @@ class _MessageBlock extends StatelessWidget {
     required this.subtitleColor,
   });
 
-  final double t;
+  final Animation<double> animation;
   final String title;
   final String? subtitle;
   final Color accent;
@@ -356,57 +365,63 @@ class _MessageBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleEased = Curves.easeOutCubic.transform(_interval(t, 0.20, 0.50));
-    final shimmerT = _interval(t, 0.30, 0.70);
-    final subEased = Curves.easeOutCubic.transform(_interval(t, 0.40, 0.72));
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        final titleEased =
+            Curves.easeOutCubic.transform(_interval(t, 0.20, 0.50));
+        final shimmerT = _interval(t, 0.30, 0.70);
+        final subEased =
+            Curves.easeOutCubic.transform(_interval(t, 0.40, 0.72));
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _FadeSlideUp(
-          progress: titleEased,
-          slide: 18,
-          child: _ShimmerText(
-            text: title,
-            progress: shimmerT,
-            baseColor: titleColor,
-            shimmerColor: accent,
-            style: AppTextStyles.titleLarge.copyWith(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              height: 1.2,
-              letterSpacing: 0.2,
-              color: titleColor,
-            ),
-          ),
-        ),
-        if (subtitle != null && subtitle!.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          _FadeSlideUp(
-            progress: subEased,
-            slide: 14,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: ResponsiveText(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w500,
-                  height: 1.5,
-                  color: subtitleColor,
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _FadeSlideUp(
+              progress: titleEased,
+              slide: 18,
+              child: _ShimmerText(
+                text: title,
+                progress: shimmerT,
+                baseColor: titleColor,
+                shimmerColor: accent,
+                style: AppTextStyles.titleLarge.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                  letterSpacing: 0.2,
+                  color: titleColor,
                 ),
               ),
             ),
-          ),
-        ],
-      ],
+            if (subtitle != null && subtitle!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              _FadeSlideUp(
+                progress: subEased,
+                slide: 14,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: ResponsiveText(
+                    subtitle,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                      color: subtitleColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
 
-/// Renders [text] with a single highlight that sweeps from start to end
-/// as [progress] goes 0→1. Past 1 the highlight is fully gone.
 class _ShimmerText extends StatelessWidget {
   const _ShimmerText({
     required this.text,
@@ -427,10 +442,7 @@ class _ShimmerText extends StatelessWidget {
     final base = ResponsiveText(text, style: style);
     if (progress <= 0 || progress >= 1) return base;
 
-    // Highlight is a narrow band traveling across the text.
-    // We reuse a horizontal LinearGradient with three stops:
-    // [base, shimmerColor, base], sliding the middle stop along.
-    final pos = progress; // 0..1
+    final pos = progress;
     return ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (rect) {
@@ -450,7 +462,6 @@ class _ShimmerText extends StatelessWidget {
   }
 }
 
-/// Fades in from `progress` 0→1 and slides up from `slide` pixels below.
 class _FadeSlideUp extends StatelessWidget {
   const _FadeSlideUp({
     required this.progress,
@@ -464,12 +475,12 @@ class _FadeSlideUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: progress,
-      child: Transform.translate(
-        offset: Offset(0, (1 - progress) * slide),
-        child: child,
-      ),
+    if (progress <= 0.001) return const SizedBox.shrink();
+    final translated = Transform.translate(
+      offset: Offset(0, (1 - progress) * slide),
+      child: child,
     );
+    if (progress >= 0.999) return translated;
+    return Opacity(opacity: progress, child: translated);
   }
 }

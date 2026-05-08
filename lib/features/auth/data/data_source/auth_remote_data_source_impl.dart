@@ -22,7 +22,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   ]) {
     if (!validCodes.contains(response.statusCode)) {
       logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromMap(response.data);
+      throw ServerException.fromResponse(response);
     }
   }
 

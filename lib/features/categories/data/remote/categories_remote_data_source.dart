@@ -25,7 +25,7 @@ class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
   ]) {
     if (!validCodes.contains(response.statusCode)) {
       logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromMap(response.data);
+      throw ServerException.fromResponse(response);
     }
   }
 

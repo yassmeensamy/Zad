@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
@@ -134,11 +135,11 @@ class _SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      buildWhen: (a, b) => a.user != b.user || a.updateStatus != b.updateStatus,
-      builder: (context, userState) {
+    return BlocSelector<UserCubit, UserState, UserModel?>(
+      selector: (state) => state.user,
+      builder: (context, user) {
         return BlocSelector<EditProfileFormCubit, EditProfileFormState, bool>(
-          selector: (state) => state.isDirtyAgainst(userState.user),
+          selector: (state) => state.isDirtyAgainst(user),
           builder: (context, isDirty) {
             return AuthPrimaryButton(
               label: 'common.save',

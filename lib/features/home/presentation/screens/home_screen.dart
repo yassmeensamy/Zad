@@ -92,12 +92,12 @@ class _LoadedContent extends StatelessWidget {
         parent: BouncingScrollPhysics(),
       ),
       children: [
-        BlocBuilder<UserCubit, UserState>(
-          buildWhen: (a, b) => a.user?.fullName != b.user?.fullName,
-          builder: (context, state) {
+        BlocSelector<UserCubit, UserState, String?>(
+          selector: (state) => state.user?.fullName,
+          builder: (context, fullName) {
             return HomeHeader(
               firstName: _firstName(
-                state.user?.fullName,
+                fullName,
                 fallback: 'home.fallback_name'.tr(),
               ),
               onBellTap: () => context.pushNamed(AppRoutes.notificationsName),

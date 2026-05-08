@@ -9,7 +9,6 @@ import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
-import '../../data/models/category_model.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../cubit/categories_cubit.dart';
 import '../cubit/categories_state.dart';
@@ -34,7 +33,6 @@ class _CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-
     return ColoredBox(
       color: colors.canvas,
       child: SafeArea(
@@ -44,9 +42,6 @@ class _CategoriesView extends StatelessWidget {
             const _BackdropOrnament(),
             BlocBuilder<CategoriesCubit, CategoriesState>(
               builder: (context, state) {
-                if (state.isLoading || state.isInitial) {
-                  return const _LoadingSkeleton();
-                }
                 if (state.isError && !state.hasCategories) {
                   return ErrorState(
                     message: state.errorMessage ?? 'errors.generic',
@@ -54,7 +49,71 @@ class _CategoriesView extends StatelessWidget {
                         context.read<CategoriesCubit>().getCategories(),
                   );
                 }
-                return _LoadedView(state: state);
+
+                final isLoading = state.isLoading || state.isInitial;
+                final categories = isLoading
+                    ? sl<CategoriesRepository>().getPlaceholders()
+                    : state.categories;
+
+                return Skeletonizer(
+                  enabled: isLoading,
+                  effect: ShimmerEffect(
+                    baseColor: colors.olive.withValues(alpha: 0.10),
+                    highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
+                  ),
+                  child: CustomScrollView(
+                    physics: isLoading
+                        ? const NeverScrollableScrollPhysics()
+                        : const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
+                        sliver: SliverToBoxAdapter(
+                          child: _Header(
+                            overallProgress:
+                                isLoading ? 0 : state.overallProgress,
+                          ),
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        sliver: SliverToBoxAdapter(
+                          child: StarRule(color: colors.accent, starSize: 10),
+                        ),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 22)),
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+                        sliver: SliverGrid.builder(
+                          itemCount: categories.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 16,
+                            childAspectRatio: 0.82,
+                          ),
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            return CategoryCard(
+                              category: category,
+                              tint: tintFor(category.id),
+                              onTap: isLoading
+                                  ? () {}
+                                  : () => context.pushNamed(
+                                        AppRoutes.levelsName,
+                                        pathParameters: {
+                                          'id': category.id.toString(),
+                                        },
+                                        extra: category,
+                                      ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ],
@@ -64,137 +123,14 @@ class _CategoriesView extends StatelessWidget {
   }
 }
 
-class _LoadedView extends StatefulWidget {
-  const _LoadedView({required this.state});
-
-  final CategoriesState state;
-
-  @override
-  State<_LoadedView> createState() => _LoadedViewState();
-}
-
-class _LoadedViewState extends State<_LoadedView> {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final overall = widget.state.overallProgress;
-
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
-          sliver: SliverToBoxAdapter(
-            child: _Header(colors: colors, overallProgress: overall),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          sliver: SliverToBoxAdapter(
-            child: StarRule(color: colors.accent, starSize: 10),
-          ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 22)),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-          sliver: SliverGrid.builder(
-            itemCount: widget.state.categories.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.82,
-            ),
-            itemBuilder: (context, index) {
-              final category = widget.state.categories[index];
-              return CategoryCard(
-                category: category,
-                tint: tintFor(category.id),
-                onTap: () => _openCategory(context, category),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _openCategory(BuildContext context, CategoryModel category) {
-    context.pushNamed(
-      AppRoutes.levelsName,
-      pathParameters: {'id': category.id.toString()},
-      extra: category,
-    );
-  }
-}
-
-class _LoadingSkeleton extends StatefulWidget {
-  const _LoadingSkeleton();
-
-  @override
-  State<_LoadingSkeleton> createState() => _LoadingSkeletonState();
-}
-
-class _LoadingSkeletonState extends State<_LoadingSkeleton> {
-  late final List<CategoryModel> _placeholders =
-      sl<CategoriesRepository>().getPlaceholders();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Skeletonizer(
-      effect: ShimmerEffect(
-        baseColor: colors.olive.withValues(alpha: 0.10),
-        highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-      ),
-      child: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
-            sliver: SliverToBoxAdapter(
-              child: _Header(colors: colors, overallProgress: 0.42),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            sliver: SliverToBoxAdapter(
-              child: StarRule(color: colors.accent, starSize: 10),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 22)),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-            sliver: SliverGrid.builder(
-              itemCount: _placeholders.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 0.82,
-              ),
-              itemBuilder: (_, i) => CategoryCard(
-                category: _placeholders[i],
-                tint: tintFor(_placeholders[i].id),
-                onTap: () {},
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Header extends StatelessWidget {
-  const _Header({required this.colors, required this.overallProgress});
+  const _Header({required this.overallProgress});
 
-  final AppColorsTheme colors;
   final double overallProgress;
 
   @override
   Widget build(BuildContext context) {
-    final percent = (overallProgress * 100).round();
+    final colors = context.appColors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,29 +151,21 @@ class _Header extends StatelessWidget {
           style: ZaadType.bodySmall.copyWith(color: colors.textSecondary),
         ),
         const SizedBox(height: 18),
-        _OverallProgress(
-          colors: colors,
-          progress: overallProgress,
-          percent: percent,
-        ),
+        _OverallProgress(progress: overallProgress),
       ],
     );
   }
 }
 
 class _OverallProgress extends StatelessWidget {
-  const _OverallProgress({
-    required this.colors,
-    required this.progress,
-    required this.percent,
-  });
+  const _OverallProgress({required this.progress});
 
-  final AppColorsTheme colors;
   final double progress;
-  final int percent;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final percent = (progress * 100).round();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
@@ -257,11 +185,13 @@ class _OverallProgress extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 Positioned.fill(
-                  child: CustomPaint(
-                    painter: KhatimStarPainter(
-                      fill: colors.accent.withValues(alpha: 0.10),
-                      stroke: colors.accent.withValues(alpha: 0.55),
-                      strokeWidth: 0.9,
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      painter: KhatimStarPainter(
+                        fill: colors.accent.withValues(alpha: 0.10),
+                        stroke: colors.accent.withValues(alpha: 0.55),
+                        strokeWidth: 0.9,
+                      ),
                     ),
                   ),
                 ),
@@ -328,14 +258,15 @@ class _BackdropOrnament extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Positioned.fill(
       child: IgnorePointer(
-        child: CustomPaint(
-          painter: StarTessellationPainter(
-            color: colors.accent,
-            tile: 56,
-            opacity: 0.035,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: StarTessellationPainter(
+              color: context.appColors.accent,
+              tile: 56,
+              opacity: 0.035,
+            ),
           ),
         ),
       ),

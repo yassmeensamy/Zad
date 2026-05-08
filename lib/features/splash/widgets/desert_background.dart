@@ -67,24 +67,26 @@ class DesertBackground extends StatelessWidget {
         // top/bottom edges. Multiply blend keeps the warm tone.
         Positioned.fill(
           child: IgnorePointer(
-            child: ShaderMask(
-              blendMode: BlendMode.dstIn,
-              shaderCallback: (rect) => const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x59FFFFFF), // ~35% — visible at top
-                  Color(0x14FFFFFF), // ~8%  — calm where form sits
-                  Color(0x14FFFFFF), // ~8%
-                  Color(0x40FFFFFF), // ~25% — hint at bottom
-                ],
-                stops: [0.0, 0.32, 0.72, 1.0],
-              ).createShader(rect),
-              child: Image.asset(
-                'assets/images/ChatGPT Image May 1, 2026, 06_04_43 PM.png',
-                repeat: ImageRepeat.repeat,
-                colorBlendMode: BlendMode.multiply,
-                filterQuality: FilterQuality.medium,
+            child: RepaintBoundary(
+              child: ShaderMask(
+                blendMode: BlendMode.dstIn,
+                shaderCallback: (rect) => const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x59FFFFFF), // ~35% — visible at top
+                    Color(0x14FFFFFF), // ~8%  — calm where form sits
+                    Color(0x14FFFFFF), // ~8%
+                    Color(0x40FFFFFF), // ~25% — hint at bottom
+                  ],
+                  stops: [0.0, 0.32, 0.72, 1.0],
+                ).createShader(rect),
+                child: Image.asset(
+                  'assets/images/ChatGPT Image May 1, 2026, 06_04_43 PM.png',
+                  repeat: ImageRepeat.repeat,
+                  colorBlendMode: BlendMode.multiply,
+                  filterQuality: FilterQuality.medium,
+                ),
               ),
             ),
           ),

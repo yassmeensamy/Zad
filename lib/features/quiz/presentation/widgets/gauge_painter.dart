@@ -65,14 +65,14 @@ class GaugePainter extends CustomPainter {
         stops: const [0.0, 0.55, 1.0],
       ).createShader(rect);
 
-      // Soft outer glow under the arc
+      // Soft outer glow under the arc — wider stroke at low alpha replaces
+      // the previous MaskFilter.blur, which dominated the per-frame paint cost.
       final glow = Paint()
         ..shader = shader
         ..style = PaintingStyle.stroke
-        ..strokeWidth = _stroke + 6
+        ..strokeWidth = _stroke + 8
         ..strokeCap = StrokeCap.round
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8)
-        ..color = glowColor.withValues(alpha: 0.35);
+        ..color = glowColor.withValues(alpha: 0.25);
       canvas.drawArc(rect, math.pi, sweep, false, glow);
 
       final prog = Paint()

@@ -114,6 +114,11 @@ class _QuizView extends StatelessWidget {
           message: 'quiz.actions.report_sent',
         ),
         child: BlocBuilder<QuizCubit, QuizState>(
+          buildWhen: (a, b) =>
+              a.status != b.status ||
+              a.phase != b.phase ||
+              a.isReview != b.isReview ||
+              a.errorMessage != b.errorMessage,
           builder: (context, state) {
           if (state.isInitial || state.isLoading) {
             return _LoadingView(level: level);
@@ -171,23 +176,23 @@ class _LoadingView extends StatelessWidget {
 
   final LevelModel? level;
 
+  static final QuestionModel _placeholderQuestion = QuestionModel(
+    id: 0,
+    text: '________________________________________',
+    correctIndex: 1,
+    explanation: null,
+    source: null,
+    choices: const [
+      ChoiceModel(index: 1, text: '____________________'),
+      ChoiceModel(index: 2, text: '____________________'),
+      ChoiceModel(index: 3, text: '____________________'),
+      ChoiceModel(index: 4, text: '____________________'),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final placeholderQuestion = QuestionModel(
-      id: 0,
-      text: '________________________________________',
-      correctIndex: 1,
-      explanation: null,
-      source: null,
-      choices: const [
-        ChoiceModel(index: 1, text: '____________________'),
-        ChoiceModel(index: 2, text: '____________________'),
-        ChoiceModel(index: 3, text: '____________________'),
-        ChoiceModel(index: 4, text: '____________________'),
-      ],
-    );
-
     return Column(
       children: [
         ZaadAppBar(
@@ -203,11 +208,11 @@ class _LoadingView extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [
-                QuizProgressBar(total: 8, current: 1),
+                const QuizProgressBar(total: 8, current: 1),
                 const SizedBox(height: 22),
-                QuestionCard(question: placeholderQuestion),
+                QuestionCard(question: _placeholderQuestion),
                 const SizedBox(height: 18),
-                for (final c in placeholderQuestion.choices)
+                for (final c in _placeholderQuestion.choices)
                   AnswerChoiceCard(
                     choice: c,
                     label: 'A',

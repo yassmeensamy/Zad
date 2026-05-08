@@ -18,6 +18,9 @@ import '../../features/drafts/data/repositories/drafts_repository.dart';
 import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
 import '../../features/help_center/data/repositories/help_center_repository.dart';
 import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
+import '../../features/home/data/remote/home_remote_data_source.dart';
+import '../../features/home/data/repositories/home_repository.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/language/data/remote/language_remote_data_source.dart';
 import '../../features/language/data/repositories/language_repository.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
@@ -156,6 +159,17 @@ class ServiceLocator {
     );
     sl.registerFactory<NotificationCubit>(
       () => NotificationCubit(notificationRepository: sl()),
+    );
+
+    // Home (mock-backed)
+    sl.registerLazySingleton<HomeRemoteDataSource>(
+      () => HomeRemoteDataSourceImpl(),
+    );
+    sl.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<HomeCubit>(
+      () => HomeCubit(homeRepository: sl()),
     );
 
     // Help center — adapter over SupportTicketsRepository

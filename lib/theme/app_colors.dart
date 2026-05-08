@@ -40,6 +40,23 @@ class AppColors {
   static const Color creamBorderLight = Color(0xFFF0E1BD);
   static const Color creamBorderDark = Color(0xFFA88C68);
 
+  // Cream paper surfaces — page backdrop & ornamental cream cards.
+  static const Color creamLight = Color(0xFFFBF6E8);
+  static const Color creamSand = Color(0xFFF2E7CC);
+  static const Color creamMid = Color(0xFFFAF1D8);
+  static const Color creamDeep = Color(0xFFF1E3C2);
+
+  // Decorative flame palette — used by the streak flame painter.
+  static const Color amberGlow = Color(0xFFE0A560);
+  static const Color flameHalo = Color(0xFFF0B862);
+  static const Color flameLight = Color(0xFFFCE5BC);
+  static const Color flameGold = Color(0xFFF1C57A);
+  static const Color flameCore = Color(0xFFFFF6D9);
+
+  // Hero card — deep brown-black shadow + abyss olive gradient stop.
+  static const Color shadowDeep = Color(0xFF14100C);
+  static const Color oliveAbyss = Color(0xFF161D0F);
+
   // Status — tinted slightly toward the warm palette
   static const Color success = Color(0xFF6B8E3D);
   static const Color warning = Color(0xFFD4933A);

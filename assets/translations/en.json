@@ -56,6 +56,46 @@
     "leaderboard": "Leaderboard",
     "profile": "Account"
   },
+  "home": {
+    "greeting_morning": "Good morning,",
+    "greeting_afternoon": "Good afternoon,",
+    "greeting_evening": "Good evening,",
+    "salam_arabic": "السلام عليكم",
+    "fallback_name": "friend",
+    "load_failed": "Couldn't load your home — please try again",
+    "streak": {
+      "eyebrow_prefix": "Your ",
+      "eyebrow_accent": "streak",
+      "days_word": "days",
+      "in_a_row": "IN A ROW",
+      "motto_en": "A constant deed, however small, is most beloved to Allāh.",
+      "motto_ar": "أحب الأعمال إلى الله أدومها",
+      "personal_best": "PERSONAL BEST",
+      "personal_best_value": "{} days",
+      "next_milestone": "NEXT MILESTONE",
+      "next_milestone_value": "{} · two weeks"
+    },
+    "team": {
+      "eyebrow": "Compete with friends",
+      "title_prefix": "Join a ",
+      "title_accent": "team",
+      "subtitle": "Climb the leaderboard together",
+      "modal": {
+        "eyebrow": "Friends",
+        "title_prefix": "Join a ",
+        "title_accent": "team",
+        "code_label": "Team code",
+        "code_placeholder": "ABCD-1234",
+        "submit": "Join team"
+      }
+    },
+    "hadith": {
+      "section_title": "Hadith of the day",
+      "view_all": "VIEW ALL",
+      "narrator_prefix": "Narrated by ",
+      "hadith_no": "Hadith №{}"
+    }
+  },
   "categories": {
     "eyebrow": "YOUR JOURNEY",
     "title": "Categories",

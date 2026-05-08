@@ -34,6 +34,18 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color overlayLight;
   final Color overlayDark;
 
+  // Page backdrop gradient (home screen).
+  final Color backdropTop;
+  final Color backdropBottom;
+
+  // Cream-paper surfaces for amber CTA cards & the join-team dialog.
+  final Color creamSurfaceTop;
+  final Color creamSurfaceBottom;
+
+  // Translucent surfaces for hadith-style cards & the dialog input field.
+  final Color cardSurface;
+  final Color inputSurface;
+
   const AppColorsTheme({
     required this.textPrimary,
     required this.textSecondary,
@@ -59,6 +71,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.info,
     required this.overlayLight,
     required this.overlayDark,
+    required this.backdropTop,
+    required this.backdropBottom,
+    required this.creamSurfaceTop,
+    required this.creamSurfaceBottom,
+    required this.cardSurface,
+    required this.inputSurface,
   });
 
   static const AppColorsTheme light = AppColorsTheme(
@@ -86,6 +104,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     info: AppColors.info,
     overlayLight: Color(0x14F4ECD8),
     overlayDark: Color(0x147A4A29),
+    backdropTop: AppColors.creamLight,
+    backdropBottom: AppColors.creamSand,
+    creamSurfaceTop: AppColors.creamMid,
+    creamSurfaceBottom: AppColors.creamDeep,
+    cardSurface: Color(0x8CFFFFFF),
+    inputSurface: AppColors.white,
   );
 
   static const AppColorsTheme dark = AppColorsTheme(
@@ -113,6 +137,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     info: AppColors.info,
     overlayLight: Color(0x14F4ECD8),
     overlayDark: Color(0x14000000),
+    backdropTop: AppColors.sepia,
+    backdropBottom: AppColors.cocoa,
+    creamSurfaceTop: AppColors.cocoa,
+    creamSurfaceBottom: AppColors.tobacco,
+    cardSurface: Color(0x14FFFFFF),
+    inputSurface: AppColors.cocoa,
   );
 
   @override
@@ -141,6 +171,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? info,
     Color? overlayLight,
     Color? overlayDark,
+    Color? backdropTop,
+    Color? backdropBottom,
+    Color? creamSurfaceTop,
+    Color? creamSurfaceBottom,
+    Color? cardSurface,
+    Color? inputSurface,
   }) =>
       AppColorsTheme(
         textPrimary: textPrimary ?? this.textPrimary,
@@ -167,6 +203,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         info: info ?? this.info,
         overlayLight: overlayLight ?? this.overlayLight,
         overlayDark: overlayDark ?? this.overlayDark,
+        backdropTop: backdropTop ?? this.backdropTop,
+        backdropBottom: backdropBottom ?? this.backdropBottom,
+        creamSurfaceTop: creamSurfaceTop ?? this.creamSurfaceTop,
+        creamSurfaceBottom: creamSurfaceBottom ?? this.creamSurfaceBottom,
+        cardSurface: cardSurface ?? this.cardSurface,
+        inputSurface: inputSurface ?? this.inputSurface,
       );
 
   @override
@@ -197,6 +239,13 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       info: Color.lerp(info, other.info, t)!,
       overlayLight: Color.lerp(overlayLight, other.overlayLight, t)!,
       overlayDark: Color.lerp(overlayDark, other.overlayDark, t)!,
+      backdropTop: Color.lerp(backdropTop, other.backdropTop, t)!,
+      backdropBottom: Color.lerp(backdropBottom, other.backdropBottom, t)!,
+      creamSurfaceTop: Color.lerp(creamSurfaceTop, other.creamSurfaceTop, t)!,
+      creamSurfaceBottom:
+          Color.lerp(creamSurfaceBottom, other.creamSurfaceBottom, t)!,
+      cardSurface: Color.lerp(cardSurface, other.cardSurface, t)!,
+      inputSurface: Color.lerp(inputSurface, other.inputSurface, t)!,
     );
   }
 }

@@ -56,6 +56,46 @@
     "leaderboard": "المتصدّرون",
     "profile": "حسابي"
   },
+  "home": {
+    "greeting_morning": "صباح الخير،",
+    "greeting_afternoon": "مساء الخير،",
+    "greeting_evening": "مساء الخير،",
+    "salam_arabic": "السلام عليكم",
+    "fallback_name": "صديقي",
+    "load_failed": "تعذّر تحميل الصفحة — حاول مرة أخرى",
+    "streak": {
+      "eyebrow_prefix": "تتابعك ",
+      "eyebrow_accent": "اليومي",
+      "days_word": "أيام",
+      "in_a_row": "متتالية",
+      "motto_en": "أحبّ الأعمال إلى الله أدومها وإن قلّ.",
+      "motto_ar": "أحب الأعمال إلى الله أدومها",
+      "personal_best": "أفضل رقم لك",
+      "personal_best_value": "{} يومًا",
+      "next_milestone": "الهدف القادم",
+      "next_milestone_value": "{} · أسبوعان"
+    },
+    "team": {
+      "eyebrow": "نافِس أصدقاءك",
+      "title_prefix": "انضمّ إلى ",
+      "title_accent": "فريق",
+      "subtitle": "اصعدوا قائمة المتصدّرين معًا",
+      "modal": {
+        "eyebrow": "الأصدقاء",
+        "title_prefix": "انضمّ إلى ",
+        "title_accent": "فريق",
+        "code_label": "رمز الفريق",
+        "code_placeholder": "ABCD-1234",
+        "submit": "انضمّ للفريق"
+      }
+    },
+    "hadith": {
+      "section_title": "حديث اليوم",
+      "view_all": "عرض الكل",
+      "narrator_prefix": "رواه ",
+      "hadith_no": "حديث رقم {}"
+    }
+  },
   "categories": {
     "eyebrow": "رحلتك",
     "title": "الفئات",

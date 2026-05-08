@@ -1,14 +1,13 @@
 import '../../child/models/child_model.dart';
-import 'child_avatar.dart';
+import 'avatar_model.dart';
 
 /// View-layer entity that drives [ProfileCard]. The card is rendered for
 /// three flavors: the signed-in parent, a real child (mapped from
 /// [ChildModel]), or a skeleton placeholder for the loading state.
 class ProfileEntity {
-  const ProfileEntity.parent({required this.name})
+  const ProfileEntity.parent({required this.name, this.avatar})
       : isParent = true,
         childId = null,
-        avatar = null,
         age = null,
         progress = null,
         streak = null,
@@ -28,18 +27,16 @@ class ProfileEntity {
     required this.name,
     this.isParent = false,
   })  : childId = null,
-        avatar = ChildAvatar.palm,
+        avatar = null,
         age = 7,
         progress = 0.5,
         streak = 5,
         isPlaceholder = true;
 
   /// Maps a server-side [ChildModel] into a presentation [ProfileEntity].
-  /// The avatar is selected by the caller (e.g. cycled from the enum) so
-  /// the entity stays decoupled from any avatar-picking strategy.
   factory ProfileEntity.fromChildModel(
     ChildModel model, {
-    required ChildAvatar avatar,
+    AvatarModel? avatar,
   }) =>
       ProfileEntity._child(
         childId: model.id,
@@ -54,7 +51,7 @@ class ProfileEntity {
   final bool isParent;
   final String name;
   final int? age;
-  final ChildAvatar? avatar;
+  final AvatarModel? avatar;
   final double? progress;
   final int? streak;
   final bool isPlaceholder;

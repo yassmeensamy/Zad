@@ -10,6 +10,7 @@ abstract class ChildRepository {
     String? fullName,
     String? password,
     DateTime? birthDate,
+    String? avatarId,
   });
   Future<void> deleteChild(String childId);
 }
@@ -34,12 +35,14 @@ class ChildRepositoryImpl implements ChildRepository {
     String? fullName,
     String? password,
     DateTime? birthDate,
+    String? avatarId,
   }) => _remoteDataSource.updateChild(
     childId: childId,
     username: username,
     fullName: fullName,
     password: password,
     birthDate: birthDate,
+    avatarId: avatarId,
   );
 
   @override

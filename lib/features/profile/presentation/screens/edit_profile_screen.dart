@@ -52,9 +52,11 @@ class _EditProfileViewState extends State<_EditProfileView> {
     if (!_formKey.currentState!.validate()) return;
     final updated = context.read<EditProfileFormCubit>().state.updatedUser;
     if (updated == null) return;
+
     context.read<UserCubit>().updateProfile(
       fullName: updated.fullName.trim(),
       birthDate: updated.birthDate,
+      avatar: updated.avatar,
     );
   }
 

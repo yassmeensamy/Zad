@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/textforms/main_text_form.dart';
+import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../child/presentation/widgets/avatar_picker_sheet.dart';
+import '../../../onboarding_flow/data/avatar_model.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../cubit/edit_profile_form_cubit.dart';
@@ -160,43 +163,87 @@ class _FieldGroup extends StatelessWidget {
 class _CardAvatar extends StatelessWidget {
   const _CardAvatar();
 
+  Future<void> _pickAvatar(BuildContext context) async {
+    final formCubit = context.read<EditProfileFormCubit>();
+    final current = formCubit.state.updatedUser?.avatar;
+    final picked = await showModalBottomSheet<AvatarModel>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => AvatarPickerSheet(current: current),
+    );
+    if (picked != null) {
+      formCubit.setAvatar(picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocBuilder<UserCubit, UserState>(
-      buildWhen: (a, b) => a.user?.fullName != b.user?.fullName,
-      builder: (context, state) {
-        final name = state.user?.fullName ?? '';
-        final initial = name.isNotEmpty ? name.characters.first : '؟';
+    final canEdit = context.select<UserCubit, bool>(
+      (c) => c.state.user?.isChild ?? false,
+    );
+    final name = context.select<UserCubit, String>(
+      (c) => c.state.user?.fullName ?? '',
+    );
+    return BlocSelector<EditProfileFormCubit, EditProfileFormState, AvatarModel?>(
+      selector: (state) => state.updatedUser?.avatar,
+      builder: (context, draftAvatar) {
+        final avatar = Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colors.olive.withValues(alpha: 0.22),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: InitialAvatar(
+            name: name,
+            imageUrl: draftAvatar?.imageUrl,
+            size: 72,
+            fontSize: 32,
+          ),
+        );
+
+        if (!canEdit) return Center(child: avatar);
+
         return Center(
-          child: Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [colors.olive, colors.oliveDeep],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.olive.withValues(alpha: 0.22),
-                  blurRadius: 14,
-                  offset: const Offset(0, 6),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Material(
+                color: Colors.transparent,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => _pickAvatar(context),
+                  child: avatar,
                 ),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: ResponsiveText(
-              initial,
-              style: AppTextStyles.displayLarge.copyWith(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0,
-                color: colors.canvas,
               ),
-            ),
+              Positioned(
+                bottom: -2,
+                right: -2,
+                child: Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: colors.olive,
+                    border: Border.all(color: colors.canvas, width: 2),
+                  ),
+                  child: Icon(
+                    Icons.edit_rounded,
+                    size: 13,
+                    color: colors.canvas,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

@@ -8,6 +8,7 @@ abstract class UserRemoteDataSource {
   Future<UserModel> updateProfile({
     required String fullName,
     DateTime? birthDate,
+    String? avatarId,
   });
   Future<void> changePassword({
     required String currentPassword,
@@ -39,12 +40,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<UserModel> updateProfile({
     required String fullName,
     DateTime? birthDate,
+    String? avatarId,
   }) async {
     final response = await _networkService.put(
       _endpoints.me,
       data: {
         'fullName': fullName,
         'birthDate': birthDate?.toIso8601String(),
+        'avatarId': ?avatarId,
       },
     );
     if (response.statusCode != 200) {

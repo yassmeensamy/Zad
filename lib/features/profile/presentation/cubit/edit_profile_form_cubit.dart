@@ -1,5 +1,6 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/models/user_model.dart';
+import '../../../onboarding_flow/data/avatar_model.dart';
 import 'edit_profile_form_state.dart';
 
 class EditProfileFormCubit extends BaseCubit<EditProfileFormState> {
@@ -17,6 +18,12 @@ class EditProfileFormCubit extends BaseCubit<EditProfileFormState> {
 
   void setBirthDate(DateTime date) {
     final updated = state.updatedUser?.copyWith(birthDate: date);
+    if (updated == null || updated == state.updatedUser) return;
+    emit(state.copyWith(updatedUser: updated));
+  }
+
+  void setAvatar(AvatarModel avatar) {
+    final updated = state.updatedUser?.copyWith(avatar: avatar);
     if (updated == null || updated == state.updatedUser) return;
     emit(state.copyWith(updatedUser: updated));
   }

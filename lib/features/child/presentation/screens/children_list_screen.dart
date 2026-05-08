@@ -174,21 +174,18 @@ class _LoadingSkeleton extends StatelessWidget {
       name: 'Yusuf Ali',
       age: '7',
       password: '••••',
-      avatar: ChildAvatar.palm,
     ),
     ChildDraft(
       id: 'mock-2',
       name: 'Maryam Hassan',
       age: '9',
       password: '••••',
-      avatar: ChildAvatar.crescent,
     ),
     ChildDraft(
       id: 'mock-3',
       name: 'Omar Ahmed',
       age: '5',
       password: '••••',
-      avatar: ChildAvatar.star,
     ),
   ];
 

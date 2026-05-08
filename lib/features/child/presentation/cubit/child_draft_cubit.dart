@@ -1,6 +1,7 @@
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/cubits/base_cubit.dart';
+import '../../../onboarding_flow/data/avatar_model.dart';
 import '../../../onboarding_flow/data/child_avatar.dart';
 import '../../models/child_model.dart';
 import 'child_draft_state.dart';
@@ -12,11 +13,7 @@ class ChildDraftCubit extends BaseCubit<ChildDraftState> {
 
   void init() {
     if (state.drafts.isNotEmpty) return;
-    emit(
-      state.copyWith(
-        drafts: [ChildDraft(id: _uuid.v4(), avatar: _nextAvatar(const []))],
-      ),
-    );
+    emit(state.copyWith(drafts: [ChildDraft(id: _uuid.v4())]));
   }
 
   void clear() => emit(const ChildDraftState());
@@ -62,8 +59,7 @@ class ChildDraftCubit extends BaseCubit<ChildDraftState> {
   }
 
   void add() {
-    final draft = ChildDraft(id: _uuid.v4(), avatar: _nextAvatar(state.drafts));
-    emit(state.copyWith(drafts: [...state.drafts, draft]));
+    emit(state.copyWith(drafts: [...state.drafts, ChildDraft(id: _uuid.v4())]));
   }
 
   void remove(String id) {
@@ -86,26 +82,23 @@ class ChildDraftCubit extends BaseCubit<ChildDraftState> {
     String? name,
     String? age,
     String? password,
-    ChildAvatar? avatar,
+    AvatarModel? avatar,
   }) {
     emit(
       state.copyWith(
         drafts: [
           for (final d in state.drafts)
             if (d.id == id)
-              d.copyWith(name: name, age: age, password: password, avatar: avatar)
+              d.copyWith(
+                name: name,
+                age: age,
+                password: password,
+                avatar: avatar,
+              )
             else
               d,
         ],
       ),
-    );
-  }
-
-  ChildAvatar _nextAvatar(List<ChildDraft> existing) {
-    final used = existing.map((d) => d.avatar).toSet();
-    return ChildAvatar.values.firstWhere(
-      (a) => !used.contains(a),
-      orElse: () => ChildAvatar.values.first,
     );
   }
 }

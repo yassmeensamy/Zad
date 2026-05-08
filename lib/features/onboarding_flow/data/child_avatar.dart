@@ -1,77 +1,22 @@
-import 'package:flutter/material.dart';
+import 'avatar_model.dart';
 
-import '../../../theme/app_colors.dart';
-
-/// One of 8 illustrated avatars used for child profiles.
-/// All choices are drawn from Islamic visual culture so the picker feels
-/// familiar to Muslim families (mosque, crescent, lantern, Qur'an, etc.).
-enum ChildAvatar {
-  mosque,
-  crescent,
-  star,
-  lantern,
-  quran,
-  prayerBeads,
-  palm,
-  dates;
-
-  String get label => switch (this) {
-    ChildAvatar.mosque => 'Mosque',
-    ChildAvatar.crescent => 'Crescent',
-    ChildAvatar.star => 'Star',
-    ChildAvatar.lantern => 'Lantern',
-    ChildAvatar.quran => 'Qur\'an',
-    ChildAvatar.prayerBeads => 'Tasbih',
-    ChildAvatar.palm => 'Date palm',
-    ChildAvatar.dates => 'Dates',
-  };
-
-  IconData get icon => switch (this) {
-    ChildAvatar.mosque => Icons.mosque_rounded,
-    ChildAvatar.crescent => Icons.nightlight_round,
-    ChildAvatar.star => Icons.auto_awesome_rounded,
-    ChildAvatar.lantern => Icons.light_mode_rounded,
-    ChildAvatar.quran => Icons.menu_book_rounded,
-    ChildAvatar.prayerBeads => Icons.bubble_chart_rounded,
-    ChildAvatar.palm => Icons.park_rounded,
-    ChildAvatar.dates => Icons.eco_rounded,
-  };
-
-  /// Background gradient for the avatar tile, chosen to feel kid-friendly
-  /// while staying inside the desert/olive palette.
-  List<Color> get gradient => switch (this) {
-    ChildAvatar.mosque => const [AppColors.oliveDeep, AppColors.olive],
-    ChildAvatar.crescent => const [Color(0xFFEDDFB6), AppColors.oliveSoft],
-    ChildAvatar.star => const [Color(0xFFF1E2BE), AppColors.amber],
-    ChildAvatar.lantern => const [Color(0xFFF6E6C4), AppColors.amberDeep],
-    ChildAvatar.quran => const [Color(0xFFE5DAB6), AppColors.oliveLeaf],
-    ChildAvatar.prayerBeads => const [Color(0xFFF1E2BE), Color(0xFFE8C088)],
-    ChildAvatar.palm => const [Color(0xFFEDDFB6), AppColors.olive],
-    ChildAvatar.dates => const [Color(0xFFF6E6C4), Color(0xFFE8C088)],
-  };
-
-  Color get foreground => switch (this) {
-    ChildAvatar.mosque => AppColors.ivory,
-    ChildAvatar.quran => AppColors.ivory,
-    ChildAvatar.palm => AppColors.ivory,
-    _ => AppColors.dateDeep,
-  };
-}
-
+/// In-progress child profile assembled in the create-profiles form. The
+/// avatar is fetched from the remote `/api/avatars` endpoint and stays null
+/// until the parent picks one for this child.
 class ChildDraft {
   const ChildDraft({
     required this.id,
     this.name = '',
     this.age = '',
     this.password = '',
-    this.avatar = ChildAvatar.mosque,
+    this.avatar,
   });
 
   final String id;
   final String name;
   final String age;
   final String password;
-  final ChildAvatar avatar;
+  final AvatarModel? avatar;
 
   bool get hasPassword => password.isNotEmpty;
 
@@ -88,7 +33,7 @@ class ChildDraft {
     String? name,
     String? age,
     String? password,
-    ChildAvatar? avatar,
+    AvatarModel? avatar,
   }) => ChildDraft(
     id: id,
     name: name ?? this.name,

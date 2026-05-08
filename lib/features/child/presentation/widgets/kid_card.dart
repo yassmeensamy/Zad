@@ -2,10 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../onboarding_flow/data/avatar_model.dart';
 import '../../../onboarding_flow/data/child_avatar.dart';
-import '../../../onboarding_flow/presentation/widgets/child_avatar_circle.dart';
 import '../cubit/child_draft_cubit.dart';
 import 'avatar_picker_sheet.dart';
 import 'child_password_sheet.dart';
@@ -23,7 +24,7 @@ class KidCard extends StatelessWidget {
 
   Future<void> _pickAvatar(BuildContext context) async {
     final cubit = context.read<ChildDraftCubit>();
-    final picked = await showModalBottomSheet<ChildAvatar>(
+    final picked = await showModalBottomSheet<AvatarModel>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -82,7 +83,15 @@ class KidCard extends StatelessWidget {
                         ),
                       ),
                       child: ClipOval(
-                        child: ChildAvatarCircle(avatar: draft.avatar),
+                        // Empty name → InitialAvatar renders '?' on the
+                        // neutral gradient. Used until the parent picks an
+                        // avatar from the remote list, regardless of
+                        // whether the draft has a typed name.
+                        child: InitialAvatar(
+                          name: draft.avatar == null ? '' : draft.name,
+                          imageUrl: draft.avatar?.imageUrl,
+                          size: 60,
+                        ),
                       ),
                     ),
                     Positioned(

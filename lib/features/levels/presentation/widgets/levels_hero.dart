@@ -57,11 +57,11 @@ class LevelsHero extends StatelessWidget {
         borderRadius: ZaadRadii.xxlAll,
         child: Stack(
           children: [
-            IslamicPatternCorner(
+            IslamicPatternSide(
               color: tint,
-              size: 100,
-              tile: 20,
-              opacity: 0.16,
+              width: 70,
+              tile: 18,
+              opacity: 0.18,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

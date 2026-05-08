@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../features/onboarding_flow/data/avatar_model.dart';
+
 enum UserRole {
   parent('ROLE_PARENT'),
   child('ROLE_CHILD');
@@ -22,6 +24,7 @@ class UserModel {
   final DateTime? birthDate;
   final String? parentId;
   final DateTime createdAt;
+  final AvatarModel? avatar;
 
   const UserModel({
     required this.id,
@@ -33,6 +36,7 @@ class UserModel {
     this.googleLinked = false,
     this.birthDate,
     this.parentId,
+    this.avatar,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
@@ -47,6 +51,9 @@ class UserModel {
         : DateTime.parse(map['birthDate'] as String).toLocal(),
     parentId: map['parentId'] as String?,
     createdAt: DateTime.parse(map['createdAt'] as String).toLocal(),
+    avatar: map['avatar'] == null
+        ? null
+        : AvatarModel.fromMap(map['avatar'] as Map<String, dynamic>),
   );
 
   factory UserModel.fromJson(String source) =>
@@ -62,6 +69,7 @@ class UserModel {
     DateTime? birthDate,
     String? parentId,
     DateTime? createdAt,
+    AvatarModel? avatar,
   }) => UserModel(
     id: id ?? this.id,
     email: email ?? this.email,
@@ -72,6 +80,7 @@ class UserModel {
     birthDate: birthDate ?? this.birthDate,
     parentId: parentId ?? this.parentId,
     createdAt: createdAt ?? this.createdAt,
+    avatar: avatar ?? this.avatar,
   );
 
   Map<String, dynamic> toMap() => {
@@ -84,6 +93,7 @@ class UserModel {
     'birthDate': birthDate?.toIso8601String(),
     'parentId': parentId,
     'createdAt': createdAt.toIso8601String(),
+    'avatar': avatar?.toMap(),
   };
 
   String toJson() => json.encode(toMap());
@@ -120,7 +130,8 @@ class UserModel {
         other.googleLinked == googleLinked &&
         other.birthDate == birthDate &&
         other.parentId == parentId &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.avatar == avatar;
   }
 
   @override
@@ -134,5 +145,6 @@ class UserModel {
     birthDate,
     parentId,
     createdAt,
+    avatar,
   );
 }

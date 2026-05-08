@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/widgets/error_state.dart';
-import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
@@ -57,36 +56,29 @@ class _LevelsScreenState extends State<LevelsScreen>
               onBack: context.canPop() ? () => context.pop() : null,
             ),
             Expanded(
-              child: CustomPaint(
-                painter: StarTessellationPainter(
-                  color: _tint,
-                  tile: 56,
-                  opacity: 0.04,
-                ),
-                child: BlocBuilder<LevelsCubit, LevelsState>(
-                  bloc: _cubit,
-                  builder: (context, state) {
-                    if ((state.isLoading || state.isInitial) &&
-                        !state.hasLevels) {
-                      return LevelsLoading(
-                        tint: _tint,
-                        category: widget.category,
-                      );
-                    }
-                    if (state.isError && !state.hasLevels) {
-                      return ErrorState(
-                        message: state.errorMessage ?? 'errors.generic',
-                        onRetry: () => _cubit.getLevels(_categoryId),
-                      );
-                    }
-                    return LevelsList(
-                      controller: scrollController,
-                      state: state,
+              child: BlocBuilder<LevelsCubit, LevelsState>(
+                bloc: _cubit,
+                builder: (context, state) {
+                  if ((state.isLoading || state.isInitial) &&
+                      !state.hasLevels) {
+                    return LevelsLoading(
                       tint: _tint,
                       category: widget.category,
                     );
-                  },
-                ),
+                  }
+                  if (state.isError && !state.hasLevels) {
+                    return ErrorState(
+                      message: state.errorMessage ?? 'errors.generic',
+                      onRetry: () => _cubit.getLevels(_categoryId),
+                    );
+                  }
+                  return LevelsList(
+                    controller: scrollController,
+                    state: state,
+                    tint: _tint,
+                    category: widget.category,
+                  );
+                },
               ),
             ),
           ],

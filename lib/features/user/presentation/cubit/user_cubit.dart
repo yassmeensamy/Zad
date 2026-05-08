@@ -3,6 +3,7 @@ import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../auth/core/auth_event_service.dart';
 import '../../../auth/core/auth_state_listener_mixin.dart';
+import '../../../onboarding_flow/data/avatar_model.dart';
 import '../../data/repositories/user_repository.dart';
 import 'user_state.dart';
 
@@ -55,19 +56,35 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   Future<void> updateProfile({
     required String fullName,
     DateTime? birthDate,
+    AvatarModel? avatar,
   }) async {
+    final current = state.user;
+    // Only send avatarId when it actually changed, so unrelated saves
+    // (name/birthday) don't reassign the avatar field on the server.
+    final avatarChanged = avatar != null && avatar != current?.avatar;
+    final avatarId = avatarChanged ? avatar.id : null;
     emit(state.copyWith(updateStatus: UpdateProfileStatus.loading));
     try {
-      final user = await _userRepository.updateProfile(
+      final updated = await _userRepository.updateProfile(
         fullName: fullName,
         birthDate: birthDate,
+        avatarId: avatarId,
+      );
+
+      final merged = (current ?? state.user)?.copyWith(
+        fullName: updated.fullName,
+        birthDate: updated.birthDate,
+        avatar: avatarChanged ? avatar : null,
       );
       emit(
         state.copyWith(
           updateStatus: UpdateProfileStatus.success,
-          user: user,
+          user: merged ?? updated,
         ),
       );
+      if (merged != null) {
+        await _userRepository.saveProfileToCache(merged);
+      }
     } on ServerException catch (e) {
       emit(
         state.copyWith(

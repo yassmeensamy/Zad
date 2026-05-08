@@ -44,4 +44,8 @@ class AppEndpoint {
   String supportTicketById(String id) => '${baseUrl}api/support/tickets/$id';
   String closeSupportTicket(String id) =>
       '${baseUrl}api/support/tickets/$id/close';
+
+  // Avatars
+  String get avatars => '${baseUrl}api/avatars';
+  String avatarImage(String id) => '${baseUrl}api/avatars/$id/image';
 }

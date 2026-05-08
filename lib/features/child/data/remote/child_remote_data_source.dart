@@ -13,6 +13,7 @@ abstract class ChildRemoteDataSource {
     String? fullName,
     String? password,
     DateTime? birthDate,
+    String? avatarId,
   });
   Future<void> deleteChild(String childId);
 }
@@ -71,6 +72,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
     String? fullName,
     String? password,
     DateTime? birthDate,
+    String? avatarId,
   }) async {
     final response = await _networkService.put(
       _endpoints.childById(childId),
@@ -78,6 +80,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
         'username': ?username,
         'fullName': ?fullName,
         'password': ?password,
+        'avatarId': ?avatarId,
         if (birthDate != null) 'birthDate': birthDate.toIso8601String(),
       },
     );

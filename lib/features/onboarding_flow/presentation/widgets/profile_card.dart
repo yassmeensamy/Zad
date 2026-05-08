@@ -3,10 +3,10 @@ import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/profile_entity.dart';
-import 'child_avatar_circle.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key, required this.entry, required this.onTap});
@@ -161,14 +161,15 @@ class _Avatar extends StatelessWidget {
               ),
             ),
             clipBehavior: Clip.antiAlias,
-            child: entry.isParent
+            child: entry.isParent && entry.avatar == null
                 ? const Icon(
                     Icons.person_rounded,
                     size: 44,
                     color: AppColors.ivory,
                   )
-                : ChildAvatarCircle(
-                    avatar: entry.avatar!,
+                : InitialAvatar(
+                    name: entry.name,
+                    imageUrl: entry.avatar?.imageUrl,
                     size: ProfileCard._avatarInner,
                   ),
           ),

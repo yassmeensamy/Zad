@@ -1,6 +1,9 @@
 import '../api/endpoints/app_endpoints.dart';
 import '../api/network_service.dart';
 import '../../features/auth/core/auth_event_service.dart';
+import '../../features/onboarding_flow/data/avatars_remote_data_source.dart';
+import '../../features/onboarding_flow/data/avatars_repository.dart';
+import '../../features/onboarding_flow/presentation/cubit/avatars_cubit.dart';
 import '../../features/auth/core/auth_status.dart';
 import '../../features/auth/data/data_source/auth_remote_data_source.dart';
 import '../../features/auth/data/data_source/auth_remote_data_source_impl.dart';
@@ -258,6 +261,20 @@ class ServiceLocator {
     );
     sl.registerFactory<SupportTicketsCubit>(
       () => SupportTicketsCubit(repository: sl()),
+    );
+
+    // Avatars
+    sl.registerLazySingleton<AvatarsRemoteDataSource>(
+      () => AvatarsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<AvatarsRepository>(
+      () => AvatarsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<AvatarsCubit>(
+      () => AvatarsCubit(avatarsRepository: sl()),
     );
   }
 }

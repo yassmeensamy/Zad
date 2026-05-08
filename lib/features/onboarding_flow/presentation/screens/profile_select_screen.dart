@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -19,7 +20,7 @@ import '../../../child/presentation/cubit/child_cubit.dart';
 import '../../../child/presentation/cubit/child_state.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
-import '../../data/child_avatar.dart';
+import '../../data/avatar_model.dart';
 import '../../data/profile_entity.dart';
 import '../widgets/onboarding_topnav.dart';
 import '../widgets/profile_card.dart';
@@ -69,10 +70,26 @@ class ProfileSelectScreen extends StatelessWidget {
     );
   }
 
+  /// Back-button policy for this screen: pop if the navigation stack has
+  /// somewhere to go, otherwise exit the app. Prevents the OS back gesture
+  /// from blanking out into a stale GoRouter location.
+  Future<void> _onPopInvoked(BuildContext context, bool didPop) async {
+    if (didPop) return;
+    final router = GoRouter.of(context);
+    if (router.canPop()) {
+      router.pop();
+    } else {
+      await SystemNavigator.pop();
+    }
+  }
+
   Widget _buildScaffold(BuildContext context) {
     final colors = context.appColors;
-    return Scaffold(
-      body: BlocListener<AuthCubit, AuthState>(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) => _onPopInvoked(context, didPop),
+      child: Scaffold(
+        body: BlocListener<AuthCubit, AuthState>(
         // Only react to a switch we initiated from this screen: the auth
         // status flips loading → loggedIn (success) or loading → error.
         listenWhen: (a, b) => a.isLoading && a.status != b.status,
@@ -149,6 +166,7 @@ class ProfileSelectScreen extends StatelessWidget {
           ),
         ),
       ),
+      ),
     );
   }
 }
@@ -179,6 +197,9 @@ class _ProfilesGrid extends StatelessWidget {
       (c) => c.state.user?.fullName,
     );
 
+    final parentAvatar = context.select<UserCubit, AvatarModel?>(
+      (c) => c.state.user?.avatar,
+    );
     final entries = loading
         ? _mockEntries
         : <ProfileEntity>[
@@ -186,12 +207,9 @@ class _ProfilesGrid extends StatelessWidget {
               name: parentName?.trim().isNotEmpty == true
                   ? parentName!
                   : 'profile_select.role_parent'.tr(),
+              avatar: parentAvatar,
             ),
-            for (var i = 0; i < children.length; i++)
-              ProfileEntity.fromChildModel(
-                children[i],
-                avatar: ChildAvatar.values[i % ChildAvatar.values.length],
-              ),
+            for (final c in children) ProfileEntity.fromChildModel(c),
           ];
 
     return Skeletonizer(

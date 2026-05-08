@@ -99,6 +99,19 @@ class AuthCubit extends BaseCubit<AuthState> {
     }
   }
 
+  Future<void> switchAccount(String childId) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+    try {
+      final response = await _repository.switchAccount(childId);
+      _emitLoggedIn(response);
+    } on ServerException catch (e) {
+      _emitError(_errorMessage(e));
+    } catch (e) {
+      logger.debug('Error in switchAccount: $e');
+      _emitError('general_error');
+    }
+  }
+
   Future<void> logout() async {
     emit(state.copyWith(status: AuthStatus.loading));
     try {

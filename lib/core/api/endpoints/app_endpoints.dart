@@ -9,6 +9,7 @@ class AppEndpoint {
   String get logout => '${baseUrl}api/auth/logout';
   String get refresh => '${baseUrl}api/auth/refresh';
   String get google => '${baseUrl}api/auth/google';
+  String get switchAccount => '${baseUrl}api/auth/switch';
 
   // Child Management
   String get children => '${baseUrl}api/children';

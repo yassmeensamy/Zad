@@ -14,6 +14,8 @@ abstract class AuthRepository {
 
   Future<AuthResponse> loginWithGoogle();
 
+  Future<AuthResponse> switchAccount(String childId);
+
   Future<void> logout();
 
   Future<void> deleteAccount(String password);

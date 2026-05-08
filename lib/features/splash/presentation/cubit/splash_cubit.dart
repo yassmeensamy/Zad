@@ -35,7 +35,11 @@ class SplashCubit extends BaseCubit<SplashStates> {
       if (isFirstAppLaunch) {
         await _handleFirstLaunch();
       } else {
-        _emitSuccess(SplashDestination.authCheck);
+        logger.debug('Not first launch, skipping onboarding');
+        Future.delayed(const Duration(seconds: 2), () {
+                  _emitSuccess(SplashDestination.authCheck);
+
+        });
       }
     } catch (e) {
       logger.error('SplashCubit.init failed: $e');
@@ -54,10 +58,7 @@ class SplashCubit extends BaseCubit<SplashStates> {
 
   void _emitSuccess(SplashDestination destination) {
     emit(
-      state.copyWith(
-        status: SplashStatus.success,
-        destination: destination,
-      ),
+      state.copyWith(status: SplashStatus.success, destination: destination),
     );
   }
 }

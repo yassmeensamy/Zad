@@ -1,19 +1,25 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
+import '../../../child/presentation/cubit/child_cubit.dart';
+import '../../../child/presentation/cubit/child_state.dart';
 import '../widgets/onboarding_topnav.dart';
 import '../widgets/role_card.dart';
+
+enum _RoleKind { individual, family }
 
 typedef _RoleOption = ({
   IconData icon,
   String labelKey,
   String descKey,
-  String route,
+  _RoleKind kind,
 });
 
 const List<_RoleOption> _roleOptions = [
@@ -21,25 +27,38 @@ const List<_RoleOption> _roleOptions = [
     icon: Icons.person_outline_rounded,
     labelKey: 'role_select.individual_label',
     descKey: 'role_select.individual_desc',
-    route: AppRoutes.home,
+    kind: _RoleKind.individual,
   ),
   (
     icon: Icons.family_restroom_rounded,
     labelKey: 'role_select.family_label',
     descKey: 'role_select.family_desc',
-    route: AppRoutes.createProfiles,
+    kind: _RoleKind.family,
   ),
 ];
 
-class RoleSelectScreen extends StatefulWidget {
+class RoleSelectScreen extends StatelessWidget {
   const RoleSelectScreen({super.key});
 
   @override
-  State<RoleSelectScreen> createState() => _RoleSelectScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<ChildCubit>(
+      create: (_) => sl<ChildCubit>(),
+      child: const _RoleSelectView(),
+    );
+  }
 }
 
-class _RoleSelectScreenState extends State<RoleSelectScreen> {
+class _RoleSelectView extends StatefulWidget {
+  const _RoleSelectView();
+
+  @override
+  State<_RoleSelectView> createState() => _RoleSelectViewState();
+}
+
+class _RoleSelectViewState extends State<_RoleSelectView> {
   final ValueNotifier<_RoleOption?> _selected = ValueNotifier(null);
+  bool _resolving = false;
 
   @override
   void dispose() {
@@ -47,10 +66,39 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
     super.dispose();
   }
 
-  void _proceed() {
+  void _onSelect(_RoleOption option) {
+    _selected.value = option;
+    // Pre-fetch the children list as soon as the user shows family intent so
+    // the routing decision on continue is usually instant.
+    if (option.kind == _RoleKind.family) {
+      final cubit = context.read<ChildCubit>();
+      if (cubit.state.isInitial || cubit.state.isError) {
+        cubit.fetchChildren();
+      }
+    }
+  }
+
+  Future<void> _proceed() async {
     final option = _selected.value;
-    if (option == null) return;
-    context.go(option.route);
+    if (option == null || _resolving) return;
+
+    if (option.kind == _RoleKind.individual) {
+      context.go(AppRoutes.home);
+      return;
+    }
+
+    final cubit = context.read<ChildCubit>();
+    if (!cubit.state.isLoaded) {
+      setState(() => _resolving = true);
+      await cubit.fetchChildren();
+      if (!mounted) return;
+      setState(() => _resolving = false);
+    }
+
+    final destination = cubit.state.children.isEmpty
+        ? AppRoutes.createProfiles
+        : AppRoutes.profileSelect;
+    context.go(destination);
   }
 
   @override
@@ -81,20 +129,31 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
                                 label: option.labelKey.tr(),
                                 desc: option.descKey.tr(),
                                 selected: selected == option,
-                                onTap: () => _selected.value = option,
+                                onTap: () => _onSelect(option),
                               ),
                             ),
                           ],
                         ],
                       ),
                     ),
-                    ValueListenableBuilder<_RoleOption?>(
-                      valueListenable: _selected,
-                      builder: (context, selected, _) => AuthPrimaryButton(
-                        label: 'common.continue',
-                        onTap: _proceed,
-                        enabled: selected != null,
-                      ),
+                    BlocBuilder<ChildCubit, ChildState>(
+                      buildWhen: (a, b) => a.status != b.status,
+                      builder: (context, childState) {
+                        return ValueListenableBuilder<_RoleOption?>(
+                          valueListenable: _selected,
+                          builder: (context, selected, _) {
+                            final familyLoading =
+                                selected?.kind == _RoleKind.family &&
+                                    (_resolving || childState.isLoading);
+                            return AuthPrimaryButton(
+                              label: 'common.continue',
+                              onTap: _proceed,
+                              enabled: selected != null && !familyLoading,
+                              loading: familyLoading,
+                            );
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     Text.rich(
@@ -171,4 +230,3 @@ class _Heading extends StatelessWidget {
     );
   }
 }
-

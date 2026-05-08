@@ -162,7 +162,9 @@
     "age_label": "Age {}",
     "days": "days",
     "add_child": "Add a child",
-    "manage": "Manage profiles"
+    "manage": "Manage profiles",
+    "continue_current_account": "Continue with current account",
+    "current_account": "Current account"
   },
   "auth": {
     "login": "Login",

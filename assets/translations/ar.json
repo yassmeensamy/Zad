@@ -162,7 +162,9 @@
     "age_label": "العمر {}",
     "days": "أيام",
     "add_child": "إضافة طفل",
-    "manage": "إدارة الملفات"
+    "manage": "إدارة الملفات",
+    "continue_current_account": "المتابعة بالحساب الحالي",
+    "current_account": "الحساب الحالي"
   },
   "auth": {
     "login": "تسجيل الدخول",

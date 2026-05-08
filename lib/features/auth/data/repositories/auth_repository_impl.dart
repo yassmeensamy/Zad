@@ -62,6 +62,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthResponse> switchAccount(String childId) async {
+    final response = await _remoteDataSource.switchAccount(childId);
+    await _localService.onLoginSuccess(response);
+    return response;
+  }
+
+  @override
   Future<void> logout() async {
     final refreshToken = await _localService.getRefreshToken();
     if (refreshToken != null && refreshToken.isNotEmpty) {

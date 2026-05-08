@@ -100,7 +100,7 @@ class _SplashViewState extends State<_SplashView>
         _go(AppRoutes.login);
         return;
       }
-      if (user.isSuccess) _go(AppRoutes.home);
+      if (user.isSuccess) _go(AppRoutes.profileSelect);
     }
   }
 

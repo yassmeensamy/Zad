@@ -67,6 +67,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<AuthResponse> switchAccount(String childId) async {
+    final response = await _networkService.post(
+      _endpoints.switchAccount,
+      data: {'childId': childId},
+    );
+    _validateResponse(response);
+    return AuthResponse.fromMap(response.data);
+  }
+
+  @override
   Future<void> logout(String refreshToken) async {
     final response = await _networkService.post(
       _endpoints.logout,

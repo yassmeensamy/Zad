@@ -123,8 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  const ZaadLogoMark(size: 84),
-                  const SizedBox(height: 22),
+             
                   const ZaadBrand.compact(),
                   const SizedBox(height: 24),
                   const _Headline(),

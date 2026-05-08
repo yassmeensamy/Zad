@@ -107,8 +107,14 @@ class _QuizView extends StatelessWidget {
     final colors = context.appColors;
     return Scaffold(
       backgroundColor: colors.canvas,
-      body: BlocBuilder<QuizCubit, QuizState>(
-        builder: (context, state) {
+      body: BlocListener<QuizCubit, QuizState>(
+        listenWhen: (a, b) => a.reportCount != b.reportCount,
+        listener: (context, _) => SnackBarHelper.showSuccess(
+          context,
+          message: 'quiz.actions.report_sent',
+        ),
+        child: BlocBuilder<QuizCubit, QuizState>(
+          builder: (context, state) {
           if (state.isInitial || state.isLoading) {
             return _LoadingView(level: level);
           }
@@ -148,6 +154,7 @@ class _QuizView extends StatelessWidget {
           }
           return _ActiveView(level: level, state: state);
         },
+        ),
       ),
     );
   }
@@ -345,7 +352,7 @@ class _ActiveView extends StatelessWidget {
                 isLastInRound: isLastInRound,
                 hasMoreRounds: hasMoreRounds,
                 onSave: () => _onSave(context, question.id),
-                onReport: () => _onReport(context),
+                onReport: () => _onReport(context, question.id),
                 onNext: onNext,
               ),
             ),
@@ -428,14 +435,14 @@ class _ActiveView extends StatelessWidget {
     }
   }
 
-  Future<void> _onReport(BuildContext context) async {
+  Future<void> _onReport(BuildContext context, int questionId) async {
     final reasonKey = await ReportQuestionSheet.show(context);
     if (reasonKey == null) return;
     if (!context.mounted) return;
-    SnackBarHelper.showSuccess(
-      context,
-      message: 'quiz.actions.report_sent',
-    );
+    context.read<QuizCubit>().reportQuestion(
+          questionId: questionId,
+          reasonKey: reasonKey,
+        );
   }
 
   void _confirmExit(BuildContext context) {

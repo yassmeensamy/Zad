@@ -176,8 +176,8 @@
     "or_continue": "أو تابع باستخدام",
     "continue_google": "المتابعة باستخدام Google",
     "login_screen": {
-      "welcome_prefix": "مرحبًا بعودتك إلى ",
-      "welcome_accent": "زاد",
+      "welcome_prefix": "مرحبا بعودتك",
+      "welcome_accent": "",
       "subtitle": "سجّل الدخول لمواصلة ممارستك اليومية.",
       "sign_in": "تسجيل الدخول",
       "new_prompt": "جديد في زاد؟ ",

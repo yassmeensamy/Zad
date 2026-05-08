@@ -27,6 +27,7 @@ import '../../features/categories/presentation/cubit/categories_cubit.dart';
 import '../../features/levels/data/remote/levels_remote_data_source.dart';
 import '../../features/levels/data/repositories/levels_repository.dart';
 import '../../features/levels/presentation/cubit/levels_cubit.dart';
+import '../../features/quiz/core/quiz_event_service.dart';
 import '../../features/quiz/data/remote/quiz_remote_data_source.dart';
 import '../../features/quiz/data/repositories/quiz_repository.dart';
 import '../../features/quiz/presentation/cubit/quiz_cubit.dart';
@@ -190,10 +191,14 @@ class ServiceLocator {
       () => LevelsRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<LevelsCubit>(
-      () => LevelsCubit(levelsRepository: sl()),
+      () => LevelsCubit(
+        levelsRepository: sl(),
+        quizEventService: sl(),
+      ),
     );
 
     // Quiz
+    sl.registerLazySingleton<QuizEventService>(() => QuizEventService());
     sl.registerLazySingleton<QuizRemoteDataSource>(
       () => QuizRemoteDataSourceImpl(
         networkService: sl(),
@@ -204,7 +209,10 @@ class ServiceLocator {
       () => QuizRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<QuizCubit>(
-      () => QuizCubit(quizRepository: sl()),
+      () => QuizCubit(
+        quizRepository: sl(),
+        quizEventService: sl(),
+      ),
     );
 
     // Drafts

@@ -1,17 +1,27 @@
+import 'dart:async';
+
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../quiz/core/quiz_event_service.dart';
 import '../../data/repositories/levels_repository.dart';
 import 'levels_state.dart';
 
 class LevelsCubit extends BaseCubit<LevelsState> {
-  LevelsCubit({required LevelsRepository levelsRepository})
-      : _levelsRepository = levelsRepository,
-        super(const LevelsState());
+  LevelsCubit({
+    required LevelsRepository levelsRepository,
+    required QuizEventService quizEventService,
+  })  : _levelsRepository = levelsRepository,
+        super(const LevelsState()) {
+    _quizSub = quizEventService.onSubmitted.listen((_) => refreshCurrent());
+  }
 
   final LevelsRepository _levelsRepository;
+  int? _lastCategoryId;
+  StreamSubscription<int>? _quizSub;
 
   Future<void> getLevels(int categoryId, {bool refresh = false}) async {
+    _lastCategoryId = categoryId;
     if (!refresh) {
       emit(
         state.copyWith(
@@ -47,6 +57,15 @@ class LevelsCubit extends BaseCubit<LevelsState> {
     }
   }
 
+  /// Re-fetch the currently-loaded category in the background. Used after
+  /// the user finishes a quiz so the levels list reflects new completion
+  /// state and points without flashing the skeleton.
+  Future<void> refreshCurrent() async {
+    final id = _lastCategoryId;
+    if (id == null) return;
+    await getLevels(id, refresh: true);
+  }
+
   Future<void> loadMore(int categoryId) async {
     if (state.isLoadingMore || !state.hasMore) return;
     emit(state.copyWith(isLoadingMore: true));
@@ -76,5 +95,11 @@ class LevelsCubit extends BaseCubit<LevelsState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await _quizSub?.cancel();
+    return super.close();
   }
 }

@@ -1,6 +1,7 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
+import '../../core/quiz_event_service.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_submission_request.dart';
 import '../../data/repositories/quiz_repository.dart';
@@ -10,9 +11,11 @@ import 'quiz_state.dart';
 class QuizCubit extends BaseCubit<QuizState> {
   QuizCubit({
     required QuizRepository quizRepository,
+    required QuizEventService quizEventService,
     DateTime Function() now = DateTime.now,
     MotivationalMessages? messages,
   })  : _quizRepository = quizRepository,
+        _events = quizEventService,
         _now = now,
         _messages = messages ?? MotivationalMessages(),
         super(const QuizState());
@@ -22,6 +25,7 @@ class QuizCubit extends BaseCubit<QuizState> {
   static const _fastAnswerThreshold = Duration(seconds: 10);
 
   final QuizRepository _quizRepository;
+  final QuizEventService _events;
   final DateTime Function() _now;
   final MotivationalMessages _messages;
 
@@ -84,6 +88,13 @@ class QuizCubit extends BaseCubit<QuizState> {
     emit(_buildLoadedState(state.allQuestions, review: false));
   }
 
+  /// Records a user-submitted question report. Currently a UI-only signal
+  /// (no backend call yet) — bumps [QuizState.reportCount] so the screen's
+  /// [BlocListener] can surface the confirmation snackbar.
+  void reportQuestion({required int questionId, required String reasonKey}) {
+    emit(state.copyWith(reportCount: state.reportCount + 1));
+  }
+
   /// Submits the quiz attempt to the server. Triggered automatically when
   /// the user reaches [QuizPhase.finished], and can be re-invoked from the
   /// UI to retry on failure.
@@ -112,6 +123,7 @@ class QuizCubit extends BaseCubit<QuizState> {
         submissionStatus: SubmissionStatus.success,
         submissionResult: () => result,
       ));
+      _events.notifySubmitted(levelId);
     } on ServerException catch (e) {
       logger.error('QuizCubit.submit failed: ${e.message}');
       _emitSubmitError(e.message);

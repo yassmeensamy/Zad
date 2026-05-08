@@ -80,7 +80,7 @@ class ProfileTileShell extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.fromLTRB(14, 20, 14, 16),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.55),
+            color: AppColors.white.withValues(alpha: 0.55),
             borderRadius: _radius,
             border: Border.all(
               color: colors.oliveSoft.withValues(alpha: 0.20),

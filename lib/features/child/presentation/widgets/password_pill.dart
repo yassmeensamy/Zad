@@ -30,7 +30,7 @@ class PasswordPill extends StatelessWidget {
           decoration: BoxDecoration(
             color: hasPassword
                 ? colors.olive.withValues(alpha: 0.10)
-                : Colors.white.withValues(alpha: 0.55),
+                : AppColors.white.withValues(alpha: 0.55),
             borderRadius: BorderRadius.circular(ZaadRadii.sm),
             border: Border.all(color: accent.withValues(alpha: 0.35)),
           ),

@@ -136,7 +136,7 @@ class _PasswordField extends StatelessWidget {
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(14, 6, 6, 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.6),
+        color: AppColors.white.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(ZaadRadii.md),
         border: Border.all(
           color: hasError

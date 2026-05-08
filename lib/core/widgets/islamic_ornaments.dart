@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../theme/app_colors.dart';
+
 /// Eight-pointed star (khatim) — the foundational rosette of Islamic
 /// geometric design. Used here as a decorative medallion that frames
 /// menu icons and punctuates ornamental rules.
@@ -190,9 +192,9 @@ class IslamicPatternCorner extends StatelessWidget {
               radius: 0.7,
               stops: const [0.0, 0.55, 1.0],
               colors: [
-                Colors.black.withValues(alpha: opacity),
-                Colors.black.withValues(alpha: opacity * 0.4),
-                Colors.black.withValues(alpha: 0),
+                AppColors.shadowDeep.withValues(alpha: opacity),
+                AppColors.shadowDeep.withValues(alpha: opacity * 0.4),
+                AppColors.shadowDeep.withValues(alpha: 0),
               ],
             ).createShader(rect),
             child: CustomPaint(

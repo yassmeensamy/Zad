@@ -204,8 +204,8 @@ class _LanguageTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.85)
-                    : Colors.white.withValues(alpha: 0.5),
+                    ? AppColors.white.withValues(alpha: 0.85)
+                    : AppColors.white.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(ZaadRadii.lg),
                 border: Border.all(
                   color: isSelected

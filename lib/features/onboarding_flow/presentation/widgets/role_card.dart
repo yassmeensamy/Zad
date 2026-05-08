@@ -34,7 +34,7 @@ class RoleCard extends StatelessWidget {
           padding: const EdgeInsets.all(22),
           constraints: const BoxConstraints(minHeight: 128),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: selected ? 0.85 : 0.55),
+            color: AppColors.white.withValues(alpha: selected ? 0.85 : 0.55),
             borderRadius: radius,
             border: Border.all(
               color: selected

@@ -527,7 +527,7 @@ class _CloseFooter extends StatelessWidget {
                     vertical: 10,
                   ),
                   backgroundColor: colors.oliveDeep,
-                  textColor: Colors.white,
+                  textColor: AppColors.white,
                   borderRadius: ZaadRadii.md,
                   textStyle: AppTextStyles.labelLarge.copyWith(
                     fontWeight: FontWeight.w700,
@@ -603,7 +603,7 @@ class _CloseConfirmDialog extends StatelessWidget {
           theme: CustomButtonTheme(
             height: 48,
             backgroundColor: colors.oliveDeep,
-            textColor: Colors.white,
+            textColor: AppColors.white,
             borderRadius: ZaadRadii.lg,
             textStyle: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.w700,

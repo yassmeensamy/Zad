@@ -26,7 +26,7 @@ class AuthGoogleButton extends StatelessWidget {
       theme: CustomButtonTheme(
         height: 46,
         borderRadius: 14,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         borderColor: colors.oliveSoft.withValues(alpha: 0.22),
         textColor: colors.oliveDeep,
       ),

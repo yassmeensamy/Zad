@@ -201,7 +201,7 @@ class _AnswerChoiceCardState extends State<AnswerChoiceCard>
     final colors = context.appColors;
     final state = widget.visualState;
     final v = state.visuals(context);
-    final bgTop = Color.lerp(v.bg, Colors.white, 0.05) ?? v.bg;
+    final bgTop = Color.lerp(v.bg, AppColors.white, 0.05) ?? v.bg;
 
     final card = Material(
       color: Colors.transparent,
@@ -328,7 +328,7 @@ class _AnimatedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final badgeTop = Color.lerp(badgeBg, Colors.white, 0.18) ?? badgeBg;
+    final badgeTop = Color.lerp(badgeBg, AppColors.white, 0.18) ?? badgeBg;
     final badge = AnimatedContainer(
       duration: const Duration(milliseconds: 240),
       width: 29,
@@ -342,7 +342,7 @@ class _AnimatedBadge extends StatelessWidget {
         ),
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.35),
+          color: AppColors.white.withValues(alpha: 0.35),
           width: 0.6,
         ),
         boxShadow: [

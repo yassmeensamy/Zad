@@ -10,6 +10,11 @@ class AppColors {
   static const Color sand = Color(0xFFE9D9B8);
   static const Color dune = Color(0xFFDBC59A);
 
+  // Lighter desert variants — used by the splash/login backdrop.
+  static const Color ivoryLight = Color(0xFFF6EEDB);
+  static const Color sandLight = Color(0xFFECDCBC);
+  static const Color duneLight = Color(0xFFDFC79A);
+
   // Accents & ink
   static const Color amber = Color(0xFFC78B3E);
   static const Color amberDeep = Color(0xFFA76E22);

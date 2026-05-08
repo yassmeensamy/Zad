@@ -12,10 +12,17 @@ class DesertBackground extends StatelessWidget {
 
   final Widget child;
 
-  // Lighter cream stops from the Olive v2 design (linear-gradient 165deg).
-  static const _ivoryLight = Color(0xFFF6EEDB);
-  static const _sandLight = Color(0xFFECDCBC);
-  static const _duneLight = Color(0xFFDFC79A);
+  static final LinearGradient _patternMaskGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      AppColors.white.withValues(alpha: 0.35),
+      AppColors.white.withValues(alpha: 0.08),
+      AppColors.white.withValues(alpha: 0.08),
+      AppColors.white.withValues(alpha: 0.25),
+    ],
+    stops: const [0.0, 0.32, 0.72, 1.0],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,11 @@ class DesertBackground extends StatelessWidget {
               begin: Alignment(-0.3, -1),
               end: Alignment(0.3, 1),
               stops: [0.0, 0.5, 1.0],
-              colors: [_ivoryLight, _sandLight, _duneLight],
+              colors: [
+                AppColors.ivoryLight,
+                AppColors.sandLight,
+                AppColors.duneLight,
+              ],
             ),
           ),
         ),
@@ -70,17 +81,7 @@ class DesertBackground extends StatelessWidget {
             child: RepaintBoundary(
               child: ShaderMask(
                 blendMode: BlendMode.dstIn,
-                shaderCallback: (rect) => const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x59FFFFFF), // ~35% — visible at top
-                    Color(0x14FFFFFF), // ~8%  — calm where form sits
-                    Color(0x14FFFFFF), // ~8%
-                    Color(0x40FFFFFF), // ~25% — hint at bottom
-                  ],
-                  stops: [0.0, 0.32, 0.72, 1.0],
-                ).createShader(rect),
+                shaderCallback: (rect) => _patternMaskGradient.createShader(rect),
                 child: Image.asset(
                   'assets/images/ChatGPT Image May 1, 2026, 06_04_43 PM.png',
                   repeat: ImageRepeat.repeat,
@@ -98,9 +99,9 @@ class DesertBackground extends StatelessWidget {
               center: Alignment(0, 0.1),
               radius: 0.95,
               colors: [
-                _ivoryLight.withValues(alpha: 0.62),
-                _ivoryLight.withValues(alpha: 0.28),
-                _ivoryLight.withValues(alpha: 0),
+                AppColors.ivoryLight.withValues(alpha: 0.62),
+                AppColors.ivoryLight.withValues(alpha: 0.28),
+                AppColors.ivoryLight.withValues(alpha: 0),
               ],
               stops: const [0.0, 0.55, 1.0],
             ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../../theme/app_colors.dart';
 import '../../theme/custom_button_theme.dart';
 import 'responsive_text.dart';
 
@@ -61,7 +62,8 @@ class _CustomButtonState extends State<CustomButton> {
     };
 
     final textStyle = _resolveTextStyle(context, theme);
-    final indicatorColor = theme.textColor ?? textStyle?.color ?? Colors.white;
+    final indicatorColor =
+        theme.textColor ?? textStyle?.color ?? AppColors.white;
 
     final content = _isLoading
         ? (theme.loadingWidget ??

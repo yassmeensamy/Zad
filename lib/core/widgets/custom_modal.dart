@@ -36,7 +36,7 @@ class CustomModal extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: AppColors.black.withValues(alpha: 0.2),
               offset: const Offset(0, -8),
               blurRadius: 24,
             ),

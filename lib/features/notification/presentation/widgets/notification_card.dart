@@ -28,7 +28,7 @@ class NotificationCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.55),
+        color: AppColors.white.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(ZaadRadii.card),
         border: Border.all(
           color: colors.olive.withValues(alpha: 0.16),

@@ -20,7 +20,7 @@ class QuestionCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.lerp(colors.canvasRaised, Colors.white, 0.06) ??
+            Color.lerp(colors.canvasRaised, AppColors.white, 0.06) ??
                 colors.canvasRaised,
             colors.canvasRaised,
             Color.lerp(colors.canvas, colors.olive, 0.06) ?? colors.canvas,

@@ -328,8 +328,8 @@ class _AnimatedBadge extends StatelessWidget {
                             center: const Alignment(0, -0.55),
                             radius: 0.9,
                             colors: [
-                              Colors.white.withValues(alpha: 0.22),
-                              Colors.white.withValues(alpha: 0.0),
+                              AppColors.white.withValues(alpha: 0.22),
+                              AppColors.white.withValues(alpha: 0.0),
                             ],
                           ),
                         ),

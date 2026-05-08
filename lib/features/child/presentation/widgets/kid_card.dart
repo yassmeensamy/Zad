@@ -58,7 +58,7 @@ class KidCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.55),
+        color: AppColors.white.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(ZaadRadii.xl),
         border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.22)),
       ),
@@ -203,7 +203,7 @@ class _MiniField extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(11, 6, 11, 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.6),
+        color: AppColors.white.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(ZaadRadii.sm),
         border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.2)),
       ),

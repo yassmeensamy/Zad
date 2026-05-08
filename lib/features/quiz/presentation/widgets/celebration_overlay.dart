@@ -457,7 +457,7 @@ class _ShimmerText extends StatelessWidget {
           stops: [start, mid, end],
         ).createShader(Rect.fromLTWH(0, 0, width, rect.height));
       },
-      child: ResponsiveText(text, style: style.copyWith(color: Colors.white)),
+      child: ResponsiveText(text, style: style.copyWith(color: AppColors.white)),
     );
   }
 }

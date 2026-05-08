@@ -129,7 +129,7 @@ class _Page extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withValues(alpha: 0.55),
+                AppColors.black.withValues(alpha: 0.55),
               ],
               stops: const [0.5, 1],
             ),
@@ -146,7 +146,7 @@ class _Page extends StatelessWidget {
                 ResponsiveText(
                   model.text,
                   style: context.textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -154,7 +154,7 @@ class _Page extends StatelessWidget {
                 ResponsiveText(
                   model.subText,
                   style: context.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: AppColors.white.withValues(alpha: 0.85),
                   ),
                 ),
               ],

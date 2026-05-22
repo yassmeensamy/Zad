@@ -7,7 +7,7 @@ import '../../../../theme/theme.dart';
 double _interval(double t, double start, double end) =>
     ((t - start) / (end - start)).clamp(0.0, 1.0);
 
-enum CelebrationStyle { bloom, stardust, random }
+enum CelebrationStyle { bloom, stardust, crescent, shootingStar, random }
 
 class CelebrationOverlay extends StatefulWidget {
   const CelebrationOverlay({
@@ -53,6 +53,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
   late List<_Particle> _particles;
   late List<_Sparkle> _sparkles;
   late List<_Confetti> _confetti;
+  late List<_Twinkle> _twinkles;
   late double _ornamentSpin;
   late String _titleKey;
 
@@ -82,7 +83,12 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
   }
 
   Duration _durationFor(CelebrationStyle style) => Duration(
-        milliseconds: style == CelebrationStyle.stardust ? 2800 : 2200,
+        milliseconds: switch (style) {
+          CelebrationStyle.stardust => 2800,
+          CelebrationStyle.crescent => 2600,
+          CelebrationStyle.shootingStar => 2900,
+          _ => 2200,
+        },
       );
 
   void _seed() {
@@ -91,7 +97,12 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     _titleKey = titles[rng.nextInt(titles.length)];
 
     _effectiveStyle = widget.style == CelebrationStyle.random
-        ? (rng.nextBool() ? CelebrationStyle.stardust : CelebrationStyle.bloom)
+        ? const [
+            CelebrationStyle.bloom,
+            CelebrationStyle.stardust,
+            CelebrationStyle.crescent,
+            CelebrationStyle.shootingStar,
+          ][rng.nextInt(4)]
         : widget.style;
 
     _ornamentSpin = (rng.nextDouble() - 0.5) * 0.6;
@@ -145,6 +156,26 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
       _sparkles = const [];
       _confetti = const [];
     }
+
+    // Crescent twinkling-star backdrop — only when correct.
+    final needsTwinkles = widget.isCorrect &&
+        (_effectiveStyle == CelebrationStyle.crescent ||
+            _effectiveStyle == CelebrationStyle.shootingStar);
+    if (needsTwinkles) {
+      _twinkles = List<_Twinkle>.generate(9, (i) {
+        final angle = (i / 9) * 2 * pi + (rng.nextDouble() - 0.5) * 0.5;
+        return _Twinkle(
+          angle: angle,
+          distance: 72 + rng.nextDouble() * 56,
+          size: 4 + rng.nextDouble() * 5,
+          delay: 0.18 + rng.nextDouble() * 0.28,
+          phase: rng.nextDouble() * 2 * pi,
+          warm: rng.nextDouble() < 0.6,
+        );
+      });
+    } else {
+      _twinkles = const [];
+    }
   }
 
   @override
@@ -167,9 +198,15 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             parent: _ctrl,
             curve: const Interval(0.88, 1.0, curve: Curves.linear),
           ).drive(Tween<double>(begin: 1.0, end: 0.0)),
-          child: _effectiveStyle == CelebrationStyle.stardust
-              ? _buildStardust(colors, accent, accentSoft)
-              : _buildBloom(colors, accent, accentSoft),
+          child: switch (_effectiveStyle) {
+            CelebrationStyle.stardust =>
+              _buildStardust(colors, accent, accentSoft),
+            CelebrationStyle.crescent =>
+              _buildCrescent(colors, accent, accentSoft),
+            CelebrationStyle.shootingStar =>
+              _buildShootingStar(colors, accent, accentSoft),
+            _ => _buildBloom(colors, accent, accentSoft),
+          },
         ),
       ),
     );
@@ -281,6 +318,166 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             subtitle: widget.messageKey?.tr(),
             accent: accent,
             warm: warmAccent,
+            titleColor: colors.textPrimary,
+            subtitleColor: colors.textSecondary,
+            canvas: colors.canvas,
+            isCorrect: widget.isCorrect,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ----- Crescent (moon + star, no checkmark) -----------------------------
+
+  Widget _buildCrescent(
+    AppColorsTheme colors,
+    Color accent,
+    Color accentSoft,
+  ) {
+    final warmAccent = colors.accent; // amber
+    final warmDeep = colors.accentDeep;
+    final warmSoft = colors.accentSoft;
+
+    // For correct, lead with warm amber (the "moon" is gold). Olive
+    // becomes the supporting accent. For wrong, fall back to the
+    // error-tinted accent passed in.
+    final primary = widget.isCorrect ? warmAccent : accent;
+    final secondary = widget.isCorrect ? warmDeep : accentSoft;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        _AuroraHalo(
+          animation: _ctrl,
+          inner: primary,
+          outer: widget.isCorrect ? accent : accentSoft,
+        ),
+        if (widget.isCorrect) ...[
+          _DottedOrbit(
+            animation: _ctrl,
+            color: accent,
+            radius: 78,
+            dotCount: 18,
+            dotSize: 2.4,
+            appearStart: 0.06,
+            appearEnd: 0.36,
+          ),
+          _DottedOrbit(
+            animation: _ctrl,
+            color: warmSoft,
+            radius: 110,
+            dotCount: 26,
+            dotSize: 1.8,
+            appearStart: 0.14,
+            appearEnd: 0.44,
+            reverse: true,
+          ),
+        ],
+        for (var i = 0; i < 2; i++)
+          _PulseRing(
+            animation: _ctrl,
+            startDelay: 0.05 + i * 0.11,
+            accent: i.isOdd ? primary : accent,
+          ),
+        for (final tw in _twinkles)
+          _TwinkleView(
+            animation: _ctrl,
+            twinkle: tw,
+            warm: warmAccent,
+            cool: accent,
+          ),
+        _MoonBadge(
+          animation: _ctrl,
+          isCorrect: widget.isCorrect,
+          primary: primary,
+          secondary: secondary,
+          canvas: colors.canvas,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 142),
+          child: _StardustMessage(
+            animation: _ctrl,
+            title: _titleKey.tr(),
+            subtitle: widget.messageKey?.tr(),
+            accent: accent,
+            warm: primary,
+            titleColor: colors.textPrimary,
+            subtitleColor: colors.textSecondary,
+            canvas: colors.canvas,
+            isCorrect: widget.isCorrect,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ----- Shooting Star (diagonal streak + landing flash) ------------------
+
+  Widget _buildShootingStar(
+    AppColorsTheme colors,
+    Color accent,
+    Color accentSoft,
+  ) {
+    final warmAccent = colors.accent;
+    final warmDeep = colors.accentDeep;
+
+    final primary = widget.isCorrect ? warmAccent : accent;
+    final secondary = widget.isCorrect ? warmDeep : accentSoft;
+
+    // Deterministic streak direction — pulled from the trigger seed so the
+    // same question always comes in from the same diagonal.
+    final fromAngle = -pi * 3 / 4 + _ornamentSpin * 0.6; // upper-left-ish
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        _AuroraHalo(
+          animation: _ctrl,
+          inner: primary,
+          outer: widget.isCorrect ? warmAccent : accentSoft,
+        ),
+        // Faint background twinkles set the night-sky stage.
+        for (final tw in _twinkles)
+          _TwinkleView(
+            animation: _ctrl,
+            twinkle: tw,
+            warm: warmAccent,
+            cool: accent,
+          ),
+        // Flash burst on impact.
+        if (widget.isCorrect)
+          _FlashBurst(animation: _ctrl, color: warmAccent),
+        // Two pulse rings rippling outward from the landing point.
+        _PulseRing(
+          animation: _ctrl,
+          startDelay: 0.32,
+          accent: primary,
+        ),
+        _PulseRing(
+          animation: _ctrl,
+          startDelay: 0.44,
+          accent: warmAccent,
+        ),
+        // Sharp radiating sparks at the moment of impact.
+        if (widget.isCorrect)
+          _ImpactSparks(animation: _ctrl, color: warmAccent),
+        _ShootingStarBadge(
+          animation: _ctrl,
+          isCorrect: widget.isCorrect,
+          primary: primary,
+          secondary: secondary,
+          canvas: colors.canvas,
+          fromAngle: fromAngle,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 142),
+          child: _StardustMessage(
+            animation: _ctrl,
+            title: _titleKey.tr(),
+            subtitle: widget.messageKey?.tr(),
+            accent: accent,
+            warm: primary,
             titleColor: colors.textPrimary,
             subtitleColor: colors.textSecondary,
             canvas: colors.canvas,
@@ -1400,6 +1597,636 @@ class _OrnamentDivider extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ===========================================================================
+// Crescent variant pieces
+// ===========================================================================
+
+class _Twinkle {
+  const _Twinkle({
+    required this.angle,
+    required this.distance,
+    required this.size,
+    required this.delay,
+    required this.phase,
+    required this.warm,
+  });
+
+  final double angle;
+  final double distance;
+  final double size;
+  final double delay;
+  final double phase;
+  final bool warm;
+}
+
+class _TwinkleView extends StatelessWidget {
+  const _TwinkleView({
+    required this.animation,
+    required this.twinkle,
+    required this.warm,
+    required this.cool,
+  });
+
+  final Animation<double> animation;
+  final _Twinkle twinkle;
+  final Color warm;
+  final Color cool;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        final adjusted =
+            ((t - twinkle.delay) / (1 - twinkle.delay)).clamp(0.0, 1.0);
+        if (adjusted <= 0) return const SizedBox.shrink();
+
+        // Two slow twinkle cycles over the visible window.
+        final twinkleWave =
+            0.5 + 0.5 * sin(twinkle.phase + adjusted * pi * 3.2);
+        final fadeIn = (adjusted / 0.18).clamp(0.0, 1.0);
+        final fadeOut = 1 - _interval(t, 0.82, 1.0);
+        final opacity = twinkleWave * fadeIn * fadeOut;
+        if (opacity < 0.02) return const SizedBox.shrink();
+
+        final dx = cos(twinkle.angle) * twinkle.distance;
+        final dy = sin(twinkle.angle) * twinkle.distance;
+        final scale = 0.6 + 0.4 * twinkleWave;
+        final color = twinkle.warm ? warm : cool;
+
+        return Transform.translate(
+          offset: Offset(dx, dy),
+          child: Transform.scale(
+            scale: scale,
+            child: Icon(
+              Icons.star_rounded,
+              size: twinkle.size,
+              color: color.withValues(alpha: opacity.clamp(0.0, 1.0)),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DottedOrbit extends StatelessWidget {
+  const _DottedOrbit({
+    required this.animation,
+    required this.color,
+    required this.radius,
+    required this.dotCount,
+    required this.dotSize,
+    required this.appearStart,
+    required this.appearEnd,
+    this.reverse = false,
+  });
+
+  final Animation<double> animation;
+  final Color color;
+  final double radius;
+  final int dotCount;
+  final double dotSize;
+  final double appearStart;
+  final double appearEnd;
+  final bool reverse;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        final appear = Curves.easeOutCubic.transform(
+          _interval(t, appearStart, appearEnd),
+        );
+        final fadeOut = 1 - _interval(t, 0.76, 1.0);
+        final opacity = appear * fadeOut;
+        if (opacity <= 0.001) return const SizedBox.shrink();
+        final rotation = (reverse ? -1 : 1) * t * 2 * pi * 0.22;
+
+        return Transform.rotate(
+          angle: rotation,
+          child: CustomPaint(
+            size: Size((radius + dotSize) * 2, (radius + dotSize) * 2),
+            painter: _OrbitDotsPainter(
+              color: color,
+              opacity: opacity,
+              radius: radius,
+              dotCount: dotCount,
+              dotSize: dotSize,
+              appear: appear,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _OrbitDotsPainter extends CustomPainter {
+  _OrbitDotsPainter({
+    required this.color,
+    required this.opacity,
+    required this.radius,
+    required this.dotCount,
+    required this.dotSize,
+    required this.appear,
+  });
+
+  final Color color;
+  final double opacity;
+  final double radius;
+  final int dotCount;
+  final double dotSize;
+  final double appear;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final paint = Paint()
+      ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
+      ..style = PaintingStyle.fill;
+
+    for (var i = 0; i < dotCount; i++) {
+      final a = (i / dotCount) * 2 * pi;
+      final x = cx + cos(a) * radius;
+      final y = cy + sin(a) * radius;
+      // Every 4th dot is larger — gives rotation a visible cadence.
+      final s = (i % 4 == 0 ? dotSize * 1.7 : dotSize * 0.75) * appear;
+      canvas.drawCircle(Offset(x, y), s, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_OrbitDotsPainter old) =>
+      old.color != color ||
+      old.opacity != opacity ||
+      old.appear != appear ||
+      old.radius != radius;
+}
+
+class _MoonBadge extends StatelessWidget {
+  const _MoonBadge({
+    required this.animation,
+    required this.isCorrect,
+    required this.primary,
+    required this.secondary,
+    required this.canvas,
+  });
+
+  final Animation<double> animation;
+  final bool isCorrect;
+  final Color primary;
+  final Color secondary;
+  final Color canvas;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        // Moonrise: enter from below, then settle.
+        final rise = Curves.easeOutCubic.transform(_interval(t, 0.0, 0.40));
+        final pop = Curves.easeOutBack.transform(_interval(t, 0.10, 0.50));
+        final fadeIn = _interval(t, 0.0, 0.30);
+        final settle = isCorrect
+            ? sin(_interval(t, 0.42, 0.92) * pi) * 0.05
+            : 0.0;
+        final bob = isCorrect
+            ? sin(_interval(t, 0.40, 0.95) * pi * 2) * 2
+            : 0.0;
+        final shakeT = isCorrect ? 0.0 : _interval(t, 0.30, 0.62);
+        final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
+
+        final dyRise = (1 - rise) * 36;
+        final scale = 0.65 + 0.35 * pop + settle;
+
+        final child = isCorrect
+            ? _CrescentVisual(primary: primary, secondary: secondary)
+            : _WrongVisual(primary: primary, canvas: canvas);
+
+        return Opacity(
+          opacity: fadeIn.clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(shake, dyRise - bob),
+            child: Transform.scale(scale: scale, child: child),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CrescentVisual extends StatelessWidget {
+  const _CrescentVisual({required this.primary, required this.secondary});
+
+  final Color primary;
+  final Color secondary;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 96,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: primary.withValues(alpha: 0.50),
+            blurRadius: 30,
+            spreadRadius: 4,
+          ),
+          BoxShadow(
+            color: primary.withValues(alpha: 0.22),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: CustomPaint(
+        painter: _CrescentPainter(primary: primary, secondary: secondary),
+      ),
+    );
+  }
+}
+
+class _WrongVisual extends StatelessWidget {
+  const _WrongVisual({required this.primary, required this.canvas});
+
+  final Color primary;
+  final Color canvas;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: primary,
+        boxShadow: [
+          BoxShadow(
+            color: primary.withValues(alpha: 0.42),
+            blurRadius: 22,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Icon(Icons.close_rounded, color: canvas, size: 34),
+    );
+  }
+}
+
+class _CrescentPainter extends CustomPainter {
+  _CrescentPainter({required this.primary, required this.secondary});
+
+  final Color primary;
+  final Color secondary;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = size.width * 0.36;
+
+    // Build the crescent by subtracting an offset inner disk from the outer.
+    final outer = Path()
+      ..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
+    final inner = Path()
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + r * 0.42, cy - r * 0.12),
+          radius: r * 0.90,
+        ),
+      );
+    final crescent = Path.combine(PathOperation.difference, outer, inner);
+
+    final shader = LinearGradient(
+      colors: [primary, secondary],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final paint = Paint()..shader = shader;
+    canvas.drawPath(crescent, paint);
+
+    // Small companion star next to the crescent opening.
+    final starCenter = Offset(cx + r * 0.92, cy - r * 0.50);
+    final starR = r * 0.22;
+    _drawStar(canvas, starCenter, starR, paint);
+  }
+
+  void _drawStar(Canvas canvas, Offset center, double outerR, Paint paint) {
+    final path = Path();
+    const points = 5;
+    final innerR = outerR * 0.46;
+    for (var i = 0; i < points * 2; i++) {
+      final angle = -pi / 2 + i * pi / points;
+      final r = i.isEven ? outerR : innerR;
+      final x = center.dx + cos(angle) * r;
+      final y = center.dy + sin(angle) * r;
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_CrescentPainter old) =>
+      old.primary != primary || old.secondary != secondary;
+}
+
+// ===========================================================================
+// Shooting Star variant pieces
+// ===========================================================================
+
+/// Bright circular flash that pops on the star's impact at center.
+class _FlashBurst extends StatelessWidget {
+  const _FlashBurst({required this.animation, required this.color});
+
+  final Animation<double> animation;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        // Flash centered on the moment the star lands (~0.34).
+        final progress = _interval(t, 0.26, 0.64);
+        if (progress <= 0 || progress >= 1) return const SizedBox.shrink();
+        final eased = Curves.easeOutCubic.transform(progress);
+        final size = 70 + eased * 210;
+        // Bright at start, fades fast.
+        final opacity = ((1 - progress) * (1 - progress) * 1.15).clamp(0.0, 1.0);
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                color.withValues(alpha: 0.95 * opacity),
+                color.withValues(alpha: 0.45 * opacity),
+                color.withValues(alpha: 0.0),
+              ],
+              stops: const [0.0, 0.45, 1.0],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ShootingStarBadge extends StatelessWidget {
+  const _ShootingStarBadge({
+    required this.animation,
+    required this.isCorrect,
+    required this.primary,
+    required this.secondary,
+    required this.canvas,
+    required this.fromAngle,
+  });
+
+  final Animation<double> animation;
+  final bool isCorrect;
+  final Color primary;
+  final Color secondary;
+  final Color canvas;
+  final double fromAngle;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final t = animation.value;
+        // Flight from off-screen toward the center, decelerating.
+        final flight = Curves.easeOutCubic.transform(_interval(t, 0.0, 0.36));
+        // Pop on landing.
+        final pop = Curves.easeOutBack.transform(_interval(t, 0.30, 0.58));
+        final settle = isCorrect
+            ? sin(_interval(t, 0.55, 0.95) * pi) * 0.06
+            : 0.0;
+        final shakeT = isCorrect ? 0.0 : _interval(t, 0.36, 0.70);
+        final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
+
+        // Position: starts ~180px away along fromAngle, lands at 0,0.
+        const flightDistance = 180.0;
+        final remaining = 1 - flight;
+        final dx = cos(fromAngle) * flightDistance * remaining;
+        final dy = sin(fromAngle) * flightDistance * remaining;
+
+        final scale = 0.55 + 0.45 * pop + settle;
+        final trailOpacity = (1 - flight).clamp(0.0, 1.0);
+        final landed = (flight - 0.7) / 0.3;
+        final glowOpacity = landed.clamp(0.0, 1.0);
+
+        final child = isCorrect
+            ? CustomPaint(
+                size: const Size(200, 200),
+                painter: _ShootingStarPainter(
+                  primary: primary,
+                  secondary: secondary,
+                  highlight: canvas,
+                  fromAngle: fromAngle,
+                  trailLength: 140 * (1 - flight * 0.82),
+                  trailOpacity: trailOpacity,
+                  glowOpacity: glowOpacity,
+                ),
+              )
+            : _WrongVisual(primary: primary, canvas: canvas);
+
+        return Transform.translate(
+          offset: Offset(dx + shake, dy),
+          child: Transform.scale(scale: scale, child: child),
+        );
+      },
+    );
+  }
+}
+
+class _ShootingStarPainter extends CustomPainter {
+  _ShootingStarPainter({
+    required this.primary,
+    required this.secondary,
+    required this.highlight,
+    required this.fromAngle,
+    required this.trailLength,
+    required this.trailOpacity,
+    required this.glowOpacity,
+  });
+
+  final Color primary;
+  final Color secondary;
+  final Color highlight;
+  final double fromAngle;
+  final double trailLength;
+  final double trailOpacity;
+  final double glowOpacity;
+
+  void _drawStar(
+    Canvas canvas,
+    Offset center,
+    double outerR,
+    Paint paint,
+  ) {
+    final path = Path();
+    const points = 5;
+    final innerR = outerR * 0.42;
+    for (var i = 0; i < points * 2; i++) {
+      final angle = -pi / 2 + i * pi / points;
+      final r = i.isEven ? outerR : innerR;
+      final x = center.dx + cos(angle) * r;
+      final y = center.dy + sin(angle) * r;
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final center = Offset(cx, cy);
+
+    // Trail: a tapered streak pointing back along fromAngle.
+    if (trailOpacity > 0.02 && trailLength > 2) {
+      final tailEnd = Offset(
+        cx + cos(fromAngle) * trailLength,
+        cy + sin(fromAngle) * trailLength,
+      );
+      final trailRect = Rect.fromPoints(tailEnd, center);
+
+      // Outer wide glow stripe.
+      final glowPaint = Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            secondary.withValues(alpha: 0.0),
+            secondary.withValues(alpha: trailOpacity * 0.55),
+            primary.withValues(alpha: trailOpacity * 0.85),
+          ],
+        ).createShader(trailRect)
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 20;
+      canvas.drawLine(tailEnd, center, glowPaint);
+
+      // Bright core stripe.
+      final corePaint = Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            primary.withValues(alpha: 0.0),
+            primary.withValues(alpha: trailOpacity),
+            highlight.withValues(alpha: trailOpacity),
+          ],
+        ).createShader(trailRect)
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 6.5;
+      canvas.drawLine(tailEnd, center, corePaint);
+    }
+
+    // Soft halo behind the star (grows once landed).
+    if (glowOpacity > 0.02) {
+      final haloPaint = Paint()
+        ..shader = RadialGradient(
+          colors: [
+            primary.withValues(alpha: 0.70 * glowOpacity),
+            primary.withValues(alpha: 0.0),
+          ],
+        ).createShader(Rect.fromCircle(center: center, radius: 60));
+      canvas.drawCircle(center, 60, haloPaint);
+    }
+
+    // The star itself — gradient gold with a bright inner highlight.
+    const outerR = 32.0;
+    final starShader = RadialGradient(
+      colors: [highlight, primary, secondary],
+      stops: const [0.0, 0.55, 1.0],
+    ).createShader(Rect.fromCircle(center: center, radius: outerR));
+    _drawStar(canvas, center, outerR, Paint()..shader = starShader);
+
+    // Small specular highlight near the upper-left of the star.
+    final highlightPaint = Paint()
+      ..color = highlight.withValues(alpha: 0.9);
+    canvas.drawCircle(
+      Offset(cx - outerR * 0.22, cy - outerR * 0.30),
+      outerR * 0.20,
+      highlightPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ShootingStarPainter old) =>
+      old.primary != primary ||
+      old.secondary != secondary ||
+      old.fromAngle != fromAngle ||
+      old.trailLength != trailLength ||
+      old.trailOpacity != trailOpacity ||
+      old.glowOpacity != glowOpacity;
+}
+
+/// A single centered radial flare that pops at the moment the star lands.
+/// Uses a positioned-absolute layout so it is rigidly anchored to the
+/// exact center of the overlay, never offset by sibling layout flow.
+class _ImpactSparks extends StatelessWidget {
+  const _ImpactSparks({required this.animation, required this.color});
+
+  final Animation<double> animation;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Align(
+          alignment: Alignment.center,
+          child: AnimatedBuilder(
+            animation: animation,
+            builder: (context, _) {
+              final t = animation.value;
+              final progress = _interval(t, 0.30, 0.66);
+              if (progress <= 0 || progress >= 1) {
+                return const SizedBox.shrink();
+              }
+              final eased = Curves.easeOutCubic.transform(progress);
+              final fade = (1 - progress).clamp(0.0, 1.0);
+              final size = 38 + eased * 32; // 38 → 70 px, tight
+              return Opacity(
+                opacity: fade,
+                child: Icon(
+                  Icons.flare_rounded,
+                  size: size,
+                  color: color,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }

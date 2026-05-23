@@ -560,24 +560,17 @@
       "empty_filter": "لا أعضاء يطابقون هذا الفلتر.",
       "filter": {
         "all": "الكل",
-        "leaders": "القادة",
-        "active": "النشطون",
-        "quiet": "الهادئون"
+        "leaders": "القادة"
       }
     },
     "progress": {
       "title": "التقدم",
-      "this_week": "تقدم الفريق · هذا الأسبوع",
-      "weekly_goal": "هدف الأسبوع",
+      "overall": "تقدم الفريق",
+      "goal": "هدف الفريق",
       "avg_member": "المتوسّط لكل عضو",
-      "vs_last_week": "مقابل الأسبوع الماضي",
+      "levels_done": "مراحل مكتملة",
       "top_contributors": "أكثر المساهمين",
-      "no_contributors": "لا مساهمات بعد.",
-      "window": {
-        "week": "أسبوع",
-        "month": "شهر",
-        "all": "الكل"
-      }
+      "no_contributors": "لا مساهمات بعد."
     },
     "leave": {
       "confirm_title": "تأكيد المغادرة",

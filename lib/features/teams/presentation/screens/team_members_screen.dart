@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/team_member_model.dart';
 import '../../data/models/team_member_progress_model.dart';
@@ -17,8 +16,6 @@ import '../widgets/team_scaffold.dart';
 import '../widgets/team_tab_bar.dart';
 import '../widgets/zaad_pill.dart';
 
-enum _MemberFilter { all, leaders, active, quiet }
-
 class TeamMembersScreen extends StatefulWidget {
   const TeamMembersScreen({super.key});
 
@@ -27,8 +24,6 @@ class TeamMembersScreen extends StatefulWidget {
 }
 
 class _TeamMembersScreenState extends State<TeamMembersScreen> {
-  _MemberFilter _filter = _MemberFilter.all;
-
   @override
   void initState() {
     super.initState();
@@ -39,16 +34,6 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
     });
   }
 
-  List<TeamMemberModel> _filtered(List<TeamMemberModel> members) {
-    return switch (_filter) {
-      _MemberFilter.all => members,
-      _MemberFilter.leaders =>
-        members.where((m) => m.role == TeamRoleEnum.owner).toList(),
-      _MemberFilter.active => members.take((members.length / 2).ceil()).toList(),
-      _MemberFilter.quiet => members.skip((members.length / 2).ceil()).toList(),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TeamsCubit, TeamsState>(
@@ -56,7 +41,6 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
       builder: (context, state) {
         final team = state.team;
         final members = state.members?.members ?? const [];
-        final filtered = _filtered(members);
 
         return TeamScaffold(
           extendBody: true,
@@ -69,21 +53,11 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
                 ),
                 subtitle: team?.name ?? '',
                 onBack: context.canPop() ? () => context.pop() : null,
-                action: ZaadCircleIconButton(
-                  icon: Icons.add_rounded,
-                  onTap: () {},
-                ),
               ),
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
                   children: [
-                    _FilterChips(
-                      counts: members.length,
-                      filter: _filter,
-                      onChange: (f) => setState(() => _filter = f),
-                    ),
-                    const SizedBox(height: 14),
                     if (state.members == null)
                       const Center(
                         child: Padding(
@@ -91,10 +65,10 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
                           child: CircularProgressIndicator.adaptive(),
                         ),
                       )
-                    else if (filtered.isEmpty)
+                    else if (members.isEmpty)
                       _EmptyMembers()
                     else
-                      for (final m in filtered)
+                      for (final m in members)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: _MemberRow(
@@ -121,53 +95,6 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
       if (p.userId == member.userId) return p;
     }
     return null;
-  }
-}
-
-class _FilterChips extends StatelessWidget {
-  const _FilterChips({
-    required this.counts,
-    required this.filter,
-    required this.onChange,
-  });
-
-  final int counts;
-  final _MemberFilter filter;
-  final ValueChanged<_MemberFilter> onChange;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = <(_MemberFilter, String)>[
-      (_MemberFilter.all, '${'teams.members.filter.all'.tr()} · $counts'),
-      (_MemberFilter.leaders, 'teams.members.filter.leaders'.tr()),
-      (_MemberFilter.active, 'teams.members.filter.active'.tr()),
-      (_MemberFilter.quiet, 'teams.members.filter.quiet'.tr()),
-    ];
-
-    return SizedBox(
-      height: 32,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 7),
-        itemBuilder: (context, i) {
-          final (f, label) = items[i];
-          final active = f == filter;
-          return InkWell(
-            onTap: () => onChange(f),
-            borderRadius: ZaadRadii.pillAll,
-            child: ZaadPill(
-              label: label,
-              tone: active ? ZaadPillTone.oliveOnDark : ZaadPillTone.olive,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 6,
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 }
 

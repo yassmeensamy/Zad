@@ -16,8 +16,6 @@ import '../widgets/team_scaffold.dart';
 import '../widgets/team_tab_bar.dart';
 import '../widgets/zaad_pill.dart';
 
-enum _Window { week, month, all }
-
 class TeamProgressScreen extends StatefulWidget {
   const TeamProgressScreen({super.key});
 
@@ -26,8 +24,6 @@ class TeamProgressScreen extends StatefulWidget {
 }
 
 class _TeamProgressScreenState extends State<TeamProgressScreen> {
-  _Window _window = _Window.week;
-
   @override
   void initState() {
     super.initState();
@@ -59,11 +55,6 @@ class _TeamProgressScreenState extends State<TeamProgressScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
                   children: [
-                    _Segmented(
-                      window: _window,
-                      onChange: (w) => setState(() => _window = w),
-                    ),
-                    const SizedBox(height: 14),
                     _BigStatCard(state: state),
                     const SizedBox(height: 12),
                     Row(
@@ -86,69 +77,6 @@ class _TeamProgressScreenState extends State<TeamProgressScreen> {
   }
 }
 
-class _Segmented extends StatelessWidget {
-  const _Segmented({required this.window, required this.onChange});
-  final _Window window;
-  final ValueChanged<_Window> onChange;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final items = <(_Window, String)>[
-      (_Window.week, 'teams.progress.window.week'.tr()),
-      (_Window.month, 'teams.progress.window.month'.tr()),
-      (_Window.all, 'teams.progress.window.all'.tr()),
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: colors.oliveDeep.withValues(alpha: 0.08),
-        borderRadius: ZaadRadii.smAll,
-      ),
-      child: Row(
-        children: [
-          for (final (w, label) in items)
-            Expanded(
-              child: InkWell(
-                onTap: () => onChange(w),
-                borderRadius: ZaadRadii.smAll,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: w == window ? colors.canvas : Colors.transparent,
-                    borderRadius: ZaadRadii.smAll,
-                    boxShadow: w == window
-                        ? [
-                            BoxShadow(
-                              color: colors.oliveDeep.withValues(alpha: 0.1),
-                              blurRadius: 2,
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Center(
-                    child: ResponsiveText(
-                      label.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.6,
-                        color: w == window
-                            ? colors.oliveDeep
-                            : colors.oliveSoft,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 class _BigStatCard extends StatelessWidget {
   const _BigStatCard({required this.state});
   final TeamsState state;
@@ -160,16 +88,13 @@ class _BigStatCard extends StatelessWidget {
     final pct = progress?.overallProgressPercent ?? 0;
     final completed = progress?.totalCompleted ?? 0;
 
-    const heights = [0.60, 0.78, 0.54, 0.96, 0.42, 0.20, 0.20];
-    const labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
     return OliveHeroCard(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ResponsiveText(
-            'teams.progress.this_week'.tr().toUpperCase(),
+            'teams.progress.overall'.tr().toUpperCase(),
             style: ZaadType.fieldLabel.copyWith(
               color: colors.canvas.withValues(alpha: 0.55),
             ),
@@ -214,72 +139,6 @@ class _BigStatCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          SizedBox(
-            height: 90,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (var i = 0; i < heights.length; i++) ...[
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: 70 * heights[i],
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: i == 3
-                                  ? const [
-                                      AppColors.amberGlow,
-                                      AppColors.amberDeep,
-                                    ]
-                                  : i < 5
-                                  ? [
-                                      AppColors.amberGlow.withValues(alpha: 0.8),
-                                      AppColors.amberDeep.withValues(alpha: 0.7),
-                                    ]
-                                  : [
-                                      colors.canvas.withValues(alpha: 0.10),
-                                      colors.canvas.withValues(alpha: 0.10),
-                                    ],
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              topRight: Radius.circular(4),
-                            ),
-                            boxShadow: i == 3
-                                ? [
-                                    BoxShadow(
-                                      color: colors.accent
-                                          .withValues(alpha: 0.5),
-                                      blurRadius: 10,
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        ResponsiveText(
-                          labels[i],
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: i == 3
-                                ? colors.accentSoft
-                                : colors.canvas.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (i < heights.length - 1) const SizedBox(width: 6),
-                ],
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -309,7 +168,7 @@ class _GoalCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ResponsiveText(
-            'teams.progress.weekly_goal'.tr().toUpperCase(),
+            'teams.progress.goal'.tr().toUpperCase(),
             style: ZaadType.fieldLabel.copyWith(color: colors.oliveSoft),
           ),
           const SizedBox(height: 10),
@@ -391,24 +250,13 @@ class _AverageCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.arrow_upward_rounded,
-                  size: 12,
-                  color: colors.success,
-                ),
-                const SizedBox(width: 2),
-                ResponsiveText(
-                  'teams.progress.vs_last_week'.tr(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: colors.success,
-                  ),
-                ),
-              ],
+            child: ResponsiveText(
+              'teams.progress.levels_done'.tr(),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: colors.oliveSoft,
+              ),
             ),
           ),
         ],

@@ -560,24 +560,17 @@
       "empty_filter": "No members match this filter.",
       "filter": {
         "all": "All",
-        "leaders": "Leaders",
-        "active": "Active",
-        "quiet": "Quiet"
+        "leaders": "Leaders"
       }
     },
     "progress": {
       "title": "Progress",
-      "this_week": "Team progress · this week",
-      "weekly_goal": "Weekly goal",
+      "overall": "Team progress",
+      "goal": "Team goal",
       "avg_member": "Avg / member",
-      "vs_last_week": "vs last week",
+      "levels_done": "levels done",
       "top_contributors": "Top contributors",
-      "no_contributors": "No contributions yet.",
-      "window": {
-        "week": "Week",
-        "month": "Month",
-        "all": "All time"
-      }
+      "no_contributors": "No contributions yet."
     },
     "leave": {
       "confirm_title": "Confirm leaving",

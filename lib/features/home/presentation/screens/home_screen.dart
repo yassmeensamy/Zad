@@ -18,7 +18,6 @@ import '../cubit/home_state.dart';
 import '../widgets/hadith_card.dart';
 import '../widgets/home_header.dart';
 import '../widgets/join_team_card.dart';
-import '../widgets/join_team_dialog.dart';
 import '../widgets/streak_hero.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -117,7 +116,7 @@ class _LoadedContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: JoinTeamCard(
-            onTap: () => showJoinTeamDialog(context),
+            onTap: () => context.pushNamed(AppRoutes.teamsName),
           ),
         ),
         const SizedBox(height: 26),

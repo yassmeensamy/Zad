@@ -46,6 +46,41 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color cardSurface;
   final Color inputSurface;
 
+  // Bottom-sheet gradient bottom (paired with [canvas] for the top stop).
+  final Color sheetSurface;
+
+  // Peach-rose tint that backs warning icons & error-state input fills.
+  final Color warningSurface;
+
+  // Illuminated-manuscript palette — gilded surfaces & inks for the
+  // Decree and Join-Team screens.
+  final Color goldLight;
+  final Color goldMid;
+  final Color goldDeep;
+  final Color goldDark;
+  final Color goldInk;
+  final Color manuscriptCream;
+  final Color keyholeInk;
+
+  // Brighter parchment gradient used by the Decree celebration screen.
+  final Color parchmentTop;
+  final Color parchmentBottom;
+
+  // Brown inks used on the parchment Decree screen (medallion monogram,
+  // body copy, close-button glyph).
+  final Color inkBrown;
+  final Color inkBrownDeep;
+
+  // Green confirmation seal on the Decree medallion.
+  final Color sealGreen;
+  final Color sealGreenDeep;
+
+  // Closed-keyhole error palette (paired with the manuscript golds).
+  final Color errRimLight;
+  final Color errRimDark;
+  final Color errRose;
+  final Color errStroke;
+
   const AppColorsTheme({
     required this.textPrimary,
     required this.textSecondary,
@@ -77,6 +112,25 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.creamSurfaceBottom,
     required this.cardSurface,
     required this.inputSurface,
+    required this.sheetSurface,
+    required this.warningSurface,
+    required this.goldLight,
+    required this.goldMid,
+    required this.goldDeep,
+    required this.goldDark,
+    required this.goldInk,
+    required this.manuscriptCream,
+    required this.keyholeInk,
+    required this.parchmentTop,
+    required this.parchmentBottom,
+    required this.inkBrown,
+    required this.inkBrownDeep,
+    required this.sealGreen,
+    required this.sealGreenDeep,
+    required this.errRimLight,
+    required this.errRimDark,
+    required this.errRose,
+    required this.errStroke,
   });
 
   static const AppColorsTheme light = AppColorsTheme(
@@ -110,6 +164,25 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     creamSurfaceBottom: AppColors.creamDeep,
     cardSurface: Color(0x8CFFFFFF),
     inputSurface: AppColors.white,
+    sheetSurface: AppColors.paperSand,
+    warningSurface: AppColors.roseBlush,
+    goldLight: AppColors.flameLight,
+    goldMid: AppColors.goldMid,
+    goldDeep: AppColors.goldDeep,
+    goldDark: AppColors.goldDark,
+    goldInk: AppColors.manuscriptInk,
+    manuscriptCream: AppColors.creamLight,
+    keyholeInk: AppColors.date,
+    parchmentTop: AppColors.parchmentTop,
+    parchmentBottom: AppColors.parchmentBottom,
+    inkBrown: AppColors.inkBrown,
+    inkBrownDeep: AppColors.inkBrownDeep,
+    sealGreen: AppColors.sealGreen,
+    sealGreenDeep: AppColors.sealGreenDeep,
+    errRimLight: AppColors.errRimLight,
+    errRimDark: AppColors.errRimDark,
+    errRose: AppColors.roseBlush,
+    errStroke: AppColors.errStroke,
   );
 
   static const AppColorsTheme dark = AppColorsTheme(
@@ -143,6 +216,25 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     creamSurfaceBottom: AppColors.tobacco,
     cardSurface: Color(0x14FFFFFF),
     inputSurface: AppColors.cocoa,
+    sheetSurface: AppColors.cocoa,
+    warningSurface: AppColors.tobacco,
+    goldLight: AppColors.flameLight,
+    goldMid: AppColors.goldMid,
+    goldDeep: AppColors.goldDeep,
+    goldDark: AppColors.goldDark,
+    goldInk: AppColors.manuscriptInk,
+    manuscriptCream: AppColors.creamLight,
+    keyholeInk: AppColors.date,
+    parchmentTop: AppColors.parchmentTop,
+    parchmentBottom: AppColors.parchmentBottom,
+    inkBrown: AppColors.inkBrown,
+    inkBrownDeep: AppColors.inkBrownDeep,
+    sealGreen: AppColors.sealGreen,
+    sealGreenDeep: AppColors.sealGreenDeep,
+    errRimLight: AppColors.errRimLight,
+    errRimDark: AppColors.errRimDark,
+    errRose: AppColors.roseBlush,
+    errStroke: AppColors.errStroke,
   );
 
   @override
@@ -177,6 +269,25 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? creamSurfaceBottom,
     Color? cardSurface,
     Color? inputSurface,
+    Color? sheetSurface,
+    Color? warningSurface,
+    Color? goldLight,
+    Color? goldMid,
+    Color? goldDeep,
+    Color? goldDark,
+    Color? goldInk,
+    Color? manuscriptCream,
+    Color? keyholeInk,
+    Color? parchmentTop,
+    Color? parchmentBottom,
+    Color? inkBrown,
+    Color? inkBrownDeep,
+    Color? sealGreen,
+    Color? sealGreenDeep,
+    Color? errRimLight,
+    Color? errRimDark,
+    Color? errRose,
+    Color? errStroke,
   }) =>
       AppColorsTheme(
         textPrimary: textPrimary ?? this.textPrimary,
@@ -209,6 +320,25 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         creamSurfaceBottom: creamSurfaceBottom ?? this.creamSurfaceBottom,
         cardSurface: cardSurface ?? this.cardSurface,
         inputSurface: inputSurface ?? this.inputSurface,
+        sheetSurface: sheetSurface ?? this.sheetSurface,
+        warningSurface: warningSurface ?? this.warningSurface,
+        goldLight: goldLight ?? this.goldLight,
+        goldMid: goldMid ?? this.goldMid,
+        goldDeep: goldDeep ?? this.goldDeep,
+        goldDark: goldDark ?? this.goldDark,
+        goldInk: goldInk ?? this.goldInk,
+        manuscriptCream: manuscriptCream ?? this.manuscriptCream,
+        keyholeInk: keyholeInk ?? this.keyholeInk,
+        parchmentTop: parchmentTop ?? this.parchmentTop,
+        parchmentBottom: parchmentBottom ?? this.parchmentBottom,
+        inkBrown: inkBrown ?? this.inkBrown,
+        inkBrownDeep: inkBrownDeep ?? this.inkBrownDeep,
+        sealGreen: sealGreen ?? this.sealGreen,
+        sealGreenDeep: sealGreenDeep ?? this.sealGreenDeep,
+        errRimLight: errRimLight ?? this.errRimLight,
+        errRimDark: errRimDark ?? this.errRimDark,
+        errRose: errRose ?? this.errRose,
+        errStroke: errStroke ?? this.errStroke,
       );
 
   @override
@@ -246,6 +376,27 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
           Color.lerp(creamSurfaceBottom, other.creamSurfaceBottom, t)!,
       cardSurface: Color.lerp(cardSurface, other.cardSurface, t)!,
       inputSurface: Color.lerp(inputSurface, other.inputSurface, t)!,
+      sheetSurface: Color.lerp(sheetSurface, other.sheetSurface, t)!,
+      warningSurface: Color.lerp(warningSurface, other.warningSurface, t)!,
+      goldLight: Color.lerp(goldLight, other.goldLight, t)!,
+      goldMid: Color.lerp(goldMid, other.goldMid, t)!,
+      goldDeep: Color.lerp(goldDeep, other.goldDeep, t)!,
+      goldDark: Color.lerp(goldDark, other.goldDark, t)!,
+      goldInk: Color.lerp(goldInk, other.goldInk, t)!,
+      manuscriptCream:
+          Color.lerp(manuscriptCream, other.manuscriptCream, t)!,
+      keyholeInk: Color.lerp(keyholeInk, other.keyholeInk, t)!,
+      parchmentTop: Color.lerp(parchmentTop, other.parchmentTop, t)!,
+      parchmentBottom:
+          Color.lerp(parchmentBottom, other.parchmentBottom, t)!,
+      inkBrown: Color.lerp(inkBrown, other.inkBrown, t)!,
+      inkBrownDeep: Color.lerp(inkBrownDeep, other.inkBrownDeep, t)!,
+      sealGreen: Color.lerp(sealGreen, other.sealGreen, t)!,
+      sealGreenDeep: Color.lerp(sealGreenDeep, other.sealGreenDeep, t)!,
+      errRimLight: Color.lerp(errRimLight, other.errRimLight, t)!,
+      errRimDark: Color.lerp(errRimDark, other.errRimDark, t)!,
+      errRose: Color.lerp(errRose, other.errRose, t)!,
+      errStroke: Color.lerp(errStroke, other.errStroke, t)!,
     );
   }
 }

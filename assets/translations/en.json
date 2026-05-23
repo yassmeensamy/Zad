@@ -462,5 +462,137 @@
       "close_success": "Ticket closed",
       "close_failed": "Couldn't close the ticket. Please try again."
     }
+  },
+  "teams": {
+    "loader": {
+      "title": "Gathering your companions…",
+      "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
+    },
+    "empty": {
+      "eyebrow": "Companions",
+      "title": "Your team",
+      "title_lede": "No team yet — begin together.",
+      "hadith_ar": "المؤمن للمؤمن كالبنيان",
+      "lede": "Form a circle of companions to study, recite, and grow together — or join one with an invite code.",
+      "cta_create": "Create a team",
+      "cta_join": "Join with code"
+    },
+    "create": {
+      "title": "Create a team",
+      "step": "Step 1 of 1",
+      "sheet_eyebrow": "Companions",
+      "sheet_title_lead": "Name your",
+      "sheet_title_accent": "team",
+      "sheet_title": "Name your team",
+      "sheet_lede": "Give your circle a name — you can always change it later.",
+      "name_label": "Team name",
+      "name_hint": "e.g. The Companions of Madinah",
+      "name_error": "Name must be at least 3 characters.",
+      "intent_label": "Intent — optional",
+      "intent_hint": "What does this team study together?",
+      "intent_helper": "Visible to members on the team home.",
+      "add_banner": "Add banner · optional",
+      "add_avatar": "Add avatar",
+      "avatar_set": "Avatar ✓",
+      "cta": "Create team",
+      "submitting": "Sending invitation to the unseen…",
+      "success_arabic": "بَارَكَ اللهُ فِيكُم",
+      "success_open": "is now sealed and open.",
+      "success_lede": "Share your invite code with up to 19 companions, or wait quietly — we'll lead you home.",
+      "success_eyebrow": "Decree of Companionship",
+      "success_invite_label": "Invite Code",
+      "success_expires": "Expires in 7 days · up to 19 companions",
+      "success_cta": "Enter your team home",
+      "success_skip": "Share invite later",
+      "copied": "Invite code copied",
+      "share_subject": "Join my Zaad team",
+      "share_message": "Join my circle on Zaad — use invite code {code}"
+    },
+    "join": {
+      "title": "Join a team",
+      "eyebrow": "Companions",
+      "find_circle": "Find your circle",
+      "lede_title": "Have an invite?",
+      "lede": "Enter the eight-character code your team leader shared with you.",
+      "code_label": "Invite code",
+      "code_hint": "XXXX-XXXX",
+      "code_helper": "Or open a Zad invite link from any chat — it lands here.",
+      "paste": "Paste",
+      "or": "or",
+      "deep_link_hint": "Open a Zad invite link from any chat — it lands here automatically.",
+      "cta": "Knock on the door",
+      "submitting": "Knocking…",
+      "error_title": "No door opens here.",
+      "error_lede": "This invite has expired or no longer exists. Ask the team leader for a fresh code.",
+      "error_try_again": "Try again",
+      "error_help": "Need help",
+      "success_arabic": "أَهْلًا وَسَهْلًا",
+      "success_youre_in": "You're in",
+      "success_lede": "{count} companions reading together — your first chapter is waiting.",
+      "success_cta": "See the team"
+    },
+    "home": {
+      "eyebrow": "My team",
+      "subtitle": "Companions",
+      "companions": "Companions",
+      "progress": "Progress",
+      "categories": "Categories",
+      "next_rank": "To the next rank",
+      "view_all": "View all →",
+      "week_title": "This week's path",
+      "week_chip": "Mon · 3 ahead",
+      "recent": "Recent",
+      "activity": {
+        "completed": "{name} finished Chapter {chapter}",
+        "streak": "{name} kept his {days}-day streak",
+        "goal": "{name} set this week's goal"
+      }
+    },
+    "tabs": {
+      "home": "Home",
+      "members": "Members",
+      "progress": "Progress"
+    },
+    "members": {
+      "title": "Members · {count}",
+      "role_leader": "Leader",
+      "meta": "{done} / {total} levels",
+      "empty_filter": "No members match this filter.",
+      "filter": {
+        "all": "All",
+        "leaders": "Leaders",
+        "active": "Active",
+        "quiet": "Quiet"
+      }
+    },
+    "progress": {
+      "title": "Progress",
+      "this_week": "Team progress · this week",
+      "weekly_goal": "Weekly goal",
+      "avg_member": "Avg / member",
+      "vs_last_week": "vs last week",
+      "top_contributors": "Top contributors",
+      "no_contributors": "No contributions yet.",
+      "window": {
+        "week": "Week",
+        "month": "Month",
+        "all": "All time"
+      }
+    },
+    "leave": {
+      "confirm_title": "Confirm leaving",
+      "confirm_lede_title": "One more breath.",
+      "confirm_lede": "Type the team name below to confirm leaving {name}.",
+      "team_name_label": "Team name",
+      "cta": "Leave team",
+      "never_mind": "Never mind",
+      "warning_title": "Leave the team?",
+      "warning_arabic": "إِنَّ الجَمَاعَةَ بَرَكَة",
+      "warning_bullet_1": "Your contribution to this week's path stays with the team.",
+      "warning_bullet_2": "Your personal XP and streak are kept.",
+      "warning_bullet_3": "You'll need a new invite to return.",
+      "warning_cta": "Continue to leave",
+      "warning_stay": "Stay with the team"
+    }
   }
 }

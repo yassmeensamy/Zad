@@ -24,6 +24,17 @@ class AppRoutes {
   static const String supportTickets = '/support-tickets';
   static const String ticketDetail = ':id';
 
+  // Teams flow
+  static const String teams = '/teams';
+  static const String teamEmpty = '/teams/empty';
+  static const String teamCreate = '/teams/create';
+  static const String teamCreateSuccess = '/teams/create/success';
+  static const String teamJoin = '/teams/join';
+  static const String teamJoinSuccess = '/teams/join/success';
+  static const String teamHome = '/teams/home';
+  static const String teamMembers = '/teams/members';
+  static const String teamProgress = '/teams/progress';
+
   static const String splashName = 'splash';
   static const String onboardingName = 'onboarding';
   static const String loginName = 'login';
@@ -45,4 +56,14 @@ class AppRoutes {
   static const String draftDetailName = 'draft-detail';
   static const String supportTicketsName = 'support-tickets';
   static const String ticketDetailName = 'ticket-detail';
+
+  static const String teamsName = 'teams';
+  static const String teamEmptyName = 'team-empty';
+  static const String teamCreateName = 'team-create';
+  static const String teamCreateSuccessName = 'team-create-success';
+  static const String teamJoinName = 'team-join';
+  static const String teamJoinSuccessName = 'team-join-success';
+  static const String teamHomeName = 'team-home';
+  static const String teamMembersName = 'team-members';
+  static const String teamProgressName = 'team-progress';
 }

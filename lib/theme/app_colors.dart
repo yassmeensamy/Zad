@@ -62,9 +62,41 @@ class AppColors {
   static const Color shadowDeep = Color(0xFF14100C);
   static const Color oliveAbyss = Color(0xFF161D0F);
 
+  // Bottom-sheet gradient bottom — a warm sand softer than `canvasRaised`.
+  static const Color paperSand = Color(0xFFEEE0BD);
+
+  // Peach-rose tint used to back warning icons & error-state input fills.
+  static const Color roseBlush = Color(0xFFF5E0DC);
+
   // Status — tinted slightly toward the warm palette
   static const Color success = Color(0xFF6B8E3D);
   static const Color warning = Color(0xFFD4933A);
   static const Color error = Color(0xFFB44A2C);
   static const Color info = Color(0xFF4A6B8A);
+
+  // Illuminated-manuscript palette — gilded surfaces & inks for the
+  // Decree and Join-Team screens. `goldLight` reuses [flameLight].
+  static const Color goldMid = Color(0xFFE8B968);
+  static const Color goldDeep = Color(0xFFA67027);
+  static const Color goldDark = Color(0xFF8E5C1F);
+  static const Color manuscriptInk = Color(0xFF2A1B0A);
+
+  // Brighter parchment gradient used by the Decree (create-success)
+  // celebration screen — distinct from the standard cream-paper canvas.
+  static const Color parchmentTop = Color(0xFFFDF7E6);
+  static const Color parchmentBottom = Color(0xFFF3E5C0);
+
+  // Brown inks used on the parchment for the medallion monogram and the
+  // close-button glyph on the Decree screen.
+  static const Color inkBrown = Color(0xFF3E2614);
+  static const Color inkBrownDeep = Color(0xFF5E3820);
+
+  // Green confirmation seal on the Decree medallion.
+  static const Color sealGreen = Color(0xFF7AAE6F);
+  static const Color sealGreenDeep = Color(0xFF4F7A47);
+
+  // Closed-keyhole error tones paired with the manuscript golds.
+  static const Color errRimLight = Color(0xFFD27866);
+  static const Color errRimDark = Color(0xFF8B3A30);
+  static const Color errStroke = Color(0xFFB5564A);
 }

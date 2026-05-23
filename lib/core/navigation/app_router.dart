@@ -30,6 +30,17 @@ import '../../features/support_tickets/data/models/ticket_model.dart';
 import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.dart';
 import '../../features/support_tickets/presentation/screens/support_tickets_screen.dart';
 import '../../features/support_tickets/presentation/screens/ticket_detail_screen.dart';
+import '../../features/teams/presentation/cubit/teams_cubit.dart';
+import '../../features/teams/presentation/screens/team_create_screen.dart';
+import '../../features/teams/presentation/screens/team_create_success_screen.dart';
+import '../../features/teams/presentation/screens/team_empty_screen.dart';
+import '../../features/teams/presentation/screens/team_home_screen.dart';
+import '../../features/teams/presentation/screens/team_join_screen.dart';
+import '../../features/teams/presentation/screens/team_join_success_screen.dart';
+import '../../features/teams/presentation/screens/team_loader_screen.dart';
+import '../../features/teams/presentation/screens/team_members_screen.dart';
+import '../../features/teams/presentation/screens/team_progress_screen.dart';
+import '../services/core_service_locator.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -151,6 +162,69 @@ class AppRouter {
           levelId: int.tryParse(state.pathParameters['levelId'] ?? '') ?? -1,
           level: state.extra as LevelModel?,
         ),
+      ),
+      ShellRoute(
+        builder: (context, state, child) {
+          return BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: child,
+          );
+        },
+        routes: [
+          GoRoute(
+            path: AppRoutes.teams,
+            name: AppRoutes.teamsName,
+            builder: (context, state) => const TeamLoaderScreen(),
+            routes: [
+              GoRoute(
+                path: 'empty',
+                name: AppRoutes.teamEmptyName,
+                builder: (context, state) => const TeamEmptyScreen(),
+              ),
+              GoRoute(
+                path: 'create',
+                name: AppRoutes.teamCreateName,
+                builder: (context, state) => const TeamCreateScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'success',
+                    name: AppRoutes.teamCreateSuccessName,
+                    builder: (context, state) =>
+                        const TeamCreateSuccessScreen(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'join',
+                name: AppRoutes.teamJoinName,
+                builder: (context, state) => const TeamJoinScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'success',
+                    name: AppRoutes.teamJoinSuccessName,
+                    builder: (context, state) =>
+                        const TeamJoinSuccessScreen(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'home',
+                name: AppRoutes.teamHomeName,
+                builder: (context, state) => const TeamHomeScreen(),
+              ),
+              GoRoute(
+                path: 'members',
+                name: AppRoutes.teamMembersName,
+                builder: (context, state) => const TeamMembersScreen(),
+              ),
+              GoRoute(
+                path: 'progress',
+                name: AppRoutes.teamProgressName,
+                builder: (context, state) => const TeamProgressScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

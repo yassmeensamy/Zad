@@ -31,5 +31,7 @@ class CustomTextFormField extends MainTextFormField {
     super.style,
     super.autocorrect,
     super.enableSuggestions,
+    super.textCapitalization,
+    super.counterText,
   }) : super(hintText: hintText?.tr());
 }

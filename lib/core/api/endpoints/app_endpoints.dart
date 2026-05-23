@@ -48,4 +48,14 @@ class AppEndpoint {
   // Avatars
   String get avatars => '${baseUrl}api/avatars';
   String avatarImage(String id) => '${baseUrl}api/avatars/$id/image';
+
+  // Teams
+  String get teams => '${baseUrl}api/teams';
+  String get joinTeam => '${baseUrl}api/teams/join';
+  String get leaveTeam => '${baseUrl}api/teams/leave';
+  String get myTeam => '${baseUrl}api/teams/my-team';
+  String get myTeamMembers => '${baseUrl}api/teams/my-team/members';
+  String get myTeamProgress => '${baseUrl}api/teams/my-team/progress';
+  String get myTeamProgressSummary =>
+      '${baseUrl}api/teams/my-team/progress/summary';
 }

@@ -46,6 +46,9 @@ import '../../features/splash/presentation/cubit/splash_cubit.dart';
 import '../../features/support_tickets/data/remote/support_tickets_remote_data_source.dart';
 import '../../features/support_tickets/data/repositories/support_tickets_repository.dart';
 import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.dart';
+import '../../features/teams/data/remote/teams_remote_data_source.dart';
+import '../../features/teams/data/repositories/teams_repository.dart';
+import '../../features/teams/presentation/cubit/teams_cubit.dart';
 import '../../features/user/data/remote/user_remote_data_source.dart';
 import '../../features/user/data/repositories/user_repository.dart';
 import '../../features/user/presentation/cubit/user_cubit.dart';
@@ -275,6 +278,20 @@ class ServiceLocator {
     );
     sl.registerFactory<AvatarsCubit>(
       () => AvatarsCubit(avatarsRepository: sl()),
+    );
+
+    // Teams
+    sl.registerLazySingleton<TeamsRemoteDataSource>(
+      () => TeamsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<TeamsRepository>(
+      () => TeamsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<TeamsCubit>(
+      () => TeamsCubit(repository: sl()),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../data/models/leaderboard_timeframe_enum.dart';
+import '../../data/models/team_member_progress_model.dart';
 import '../../data/models/team_members_model.dart';
 import '../../data/models/team_model.dart';
 import '../../data/models/team_progress_model.dart';
@@ -19,6 +21,8 @@ enum JoinStatus { idle, validating, preview, submitting, success, error }
 
 enum LeaveStatus { idle, submitting, success, error }
 
+enum LeaderboardStatus { idle, loading, success, error }
+
 class TeamsState {
   const TeamsState({
     this.status = TeamsStatus.idle,
@@ -31,6 +35,9 @@ class TeamsState {
     this.joinStatus = JoinStatus.idle,
     this.joinedTeam,
     this.leaveStatus = LeaveStatus.idle,
+    this.leaderboardStatus = LeaderboardStatus.idle,
+    this.leaderboardTimeframe = LeaderboardTimeframe.week,
+    this.leaderboardMembers,
     this.errorMessage,
   });
 
@@ -48,6 +55,10 @@ class TeamsState {
 
   final LeaveStatus leaveStatus;
 
+  final LeaderboardStatus leaderboardStatus;
+  final LeaderboardTimeframe leaderboardTimeframe;
+  final List<TeamMemberProgressModel>? leaderboardMembers;
+
   final String? errorMessage;
 
   TeamsState copyWith({
@@ -61,6 +72,9 @@ class TeamsState {
     JoinStatus? joinStatus,
     TeamModel? Function()? joinedTeam,
     LeaveStatus? leaveStatus,
+    LeaderboardStatus? leaderboardStatus,
+    LeaderboardTimeframe? leaderboardTimeframe,
+    List<TeamMemberProgressModel>? Function()? leaderboardMembers,
     String? errorMessage,
   }) => TeamsState(
     status: status ?? this.status,
@@ -73,6 +87,11 @@ class TeamsState {
     joinStatus: joinStatus ?? this.joinStatus,
     joinedTeam: joinedTeam != null ? joinedTeam() : this.joinedTeam,
     leaveStatus: leaveStatus ?? this.leaveStatus,
+    leaderboardStatus: leaderboardStatus ?? this.leaderboardStatus,
+    leaderboardTimeframe: leaderboardTimeframe ?? this.leaderboardTimeframe,
+    leaderboardMembers: leaderboardMembers != null
+        ? leaderboardMembers()
+        : this.leaderboardMembers,
     errorMessage: errorMessage ?? this.errorMessage,
   );
 
@@ -90,6 +109,9 @@ class TeamsState {
         other.joinStatus == joinStatus &&
         other.joinedTeam == joinedTeam &&
         other.leaveStatus == leaveStatus &&
+        other.leaderboardStatus == leaderboardStatus &&
+        other.leaderboardTimeframe == leaderboardTimeframe &&
+        listEquals(other.leaderboardMembers, leaderboardMembers) &&
         other.errorMessage == errorMessage;
   }
 
@@ -105,6 +127,9 @@ class TeamsState {
     joinStatus,
     joinedTeam,
     leaveStatus,
+    leaderboardStatus,
+    leaderboardTimeframe,
+    leaderboardMembers == null ? null : Object.hashAll(leaderboardMembers!),
     errorMessage,
   ]);
 }

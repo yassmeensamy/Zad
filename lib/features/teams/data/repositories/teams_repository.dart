@@ -2,6 +2,8 @@ import '../models/create_team_request.dart';
 import '../models/created_team_model.dart';
 import '../models/join_team_request.dart';
 import '../models/joined_team_model.dart';
+import '../models/leaderboard_timeframe_enum.dart';
+import '../models/team_member_progress_model.dart';
 import '../models/team_members_model.dart';
 import '../models/team_model.dart';
 import '../models/team_progress_model.dart';
@@ -13,6 +15,9 @@ abstract class TeamsRepository {
   Future<TeamMembersModel> getMyTeamMembers();
   Future<TeamProgressModel> getMyTeamProgress();
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary();
+  Future<List<TeamMemberProgressModel>> getMyTeamLeaderboard(
+    LeaderboardTimeframe timeframe,
+  );
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
   Future<void> leaveTeam();
@@ -38,6 +43,11 @@ class TeamsRepositoryImpl implements TeamsRepository {
   @override
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary() =>
       _remoteDataSource.getMyTeamProgressSummary();
+
+  @override
+  Future<List<TeamMemberProgressModel>> getMyTeamLeaderboard(
+    LeaderboardTimeframe timeframe,
+  ) => _remoteDataSource.getMyTeamLeaderboard(timeframe);
 
   @override
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request) =>

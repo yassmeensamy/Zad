@@ -14,7 +14,6 @@ import '../widgets/olive_hero_card.dart';
 import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
 import '../widgets/team_leave_sheet.dart';
-import '../widgets/team_tab_bar.dart';
 import '../widgets/zaad_pill.dart';
 
 class TeamHomeScreen extends StatefulWidget {
@@ -58,8 +57,6 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
           );
         }
         return TeamScaffold(
-          extendBody: true,
-          bottomNav: const TeamTabBar(active: TeamTab.home),
           child: RefreshIndicator.adaptive(
             onRefresh: () async {
               final cubit = context.read<TeamsCubit>();

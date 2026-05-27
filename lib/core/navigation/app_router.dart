@@ -163,68 +163,77 @@ class AppRouter {
           level: state.extra as LevelModel?,
         ),
       ),
-      ShellRoute(
-        builder: (context, state, child) {
-          return BlocProvider<TeamsCubit>(
-            create: (_) => sl<TeamsCubit>(),
-            child: child,
-          );
-        },
-        routes: [
-          GoRoute(
-            path: AppRoutes.teams,
-            name: AppRoutes.teamsName,
-            builder: (context, state) => const TeamLoaderScreen(),
-            routes: [
-              GoRoute(
-                path: 'empty',
-                name: AppRoutes.teamEmptyName,
-                builder: (context, state) => const TeamEmptyScreen(),
-              ),
-              GoRoute(
-                path: 'create',
-                name: AppRoutes.teamCreateName,
-                builder: (context, state) => const TeamCreateScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'success',
-                    name: AppRoutes.teamCreateSuccessName,
-                    builder: (context, state) =>
-                        const TeamCreateSuccessScreen(),
-                  ),
-                ],
-              ),
-              GoRoute(
-                path: 'join',
-                name: AppRoutes.teamJoinName,
-                builder: (context, state) => const TeamJoinScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'success',
-                    name: AppRoutes.teamJoinSuccessName,
-                    builder: (context, state) =>
-                        const TeamJoinSuccessScreen(),
-                  ),
-                ],
-              ),
-              GoRoute(
-                path: 'home',
-                name: AppRoutes.teamHomeName,
-                builder: (context, state) => const TeamHomeScreen(),
-              ),
-              GoRoute(
-                path: 'members',
-                name: AppRoutes.teamMembersName,
-                builder: (context, state) => const TeamMembersScreen(),
-              ),
-              GoRoute(
-                path: 'progress',
-                name: AppRoutes.teamProgressName,
-                builder: (context, state) => const TeamProgressScreen(),
-              ),
-            ],
-          ),
-        ],
+      GoRoute(
+        path: AppRoutes.teams,
+        name: AppRoutes.teamsName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamLoaderScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamEmpty,
+        name: AppRoutes.teamEmptyName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamEmptyScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamCreate,
+        name: AppRoutes.teamCreateName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamCreateScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamCreateSuccess,
+        name: AppRoutes.teamCreateSuccessName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamCreateSuccessScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamJoin,
+        name: AppRoutes.teamJoinName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamJoinScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamJoinSuccess,
+        name: AppRoutes.teamJoinSuccessName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamJoinSuccessScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamHome,
+        name: AppRoutes.teamHomeName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamHomeScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamMembers,
+        name: AppRoutes.teamMembersName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamMembersScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teamProgress,
+        name: AppRoutes.teamProgressName,
+        builder: (context, state) => BlocProvider<TeamsCubit>(
+          create: (_) => sl<TeamsCubit>(),
+          child: const TeamProgressScreen(),
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
@@ -253,7 +262,10 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.leaderboard,
                 name: AppRoutes.leaderboardName,
-                builder: (context, state) => const LeaderboardScreen(),
+                builder: (context, state) => BlocProvider<TeamsCubit>(
+                  create: (_) => sl<TeamsCubit>(),
+                  child: const LeaderboardScreen(),
+                ),
               ),
             ],
           ),

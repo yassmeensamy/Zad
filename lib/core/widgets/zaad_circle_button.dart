@@ -28,6 +28,14 @@ class ZaadCircleIconButton extends StatelessWidget {
     double iconSize,
   }) = _ZaadCloseButton;
 
+  const factory ZaadCircleIconButton.share({
+    Key? key,
+    required VoidCallback onTap,
+    bool enabled,
+    double size,
+    double iconSize,
+  }) = _ZaadShareButton;
+
   final VoidCallback onTap;
   final IconData icon;
   final bool enabled;
@@ -88,4 +96,14 @@ class _ZaadCloseButton extends ZaadCircleIconButton {
     super.size = 30,
     super.iconSize = 14,
   }) : super(icon: Icons.close_rounded);
+}
+
+class _ZaadShareButton extends ZaadCircleIconButton {
+  const _ZaadShareButton({
+    super.key,
+    required super.onTap,
+    super.enabled = true,
+    super.size = 32,
+    super.iconSize = 16,
+  }) : super(icon: Icons.ios_share_rounded);
 }

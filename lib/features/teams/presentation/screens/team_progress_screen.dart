@@ -13,7 +13,6 @@ import '../cubit/teams_state.dart';
 import '../widgets/olive_hero_card.dart';
 import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
-import '../widgets/team_tab_bar.dart';
 import '../widgets/zaad_pill.dart';
 
 class TeamProgressScreen extends StatefulWidget {
@@ -42,8 +41,6 @@ class _TeamProgressScreenState extends State<TeamProgressScreen> {
         final team = state.team;
 
         return TeamScaffold(
-          extendBody: true,
-          bottomNav: const TeamTabBar(active: TeamTab.progress),
           child: Column(
             children: [
               ZaadAppBar(

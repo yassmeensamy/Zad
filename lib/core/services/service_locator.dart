@@ -59,6 +59,7 @@ import 'core_service_locator.dart';
 import 'device_info_service.dart';
 import 'notification_service.dart';
 import 'permession_service.dart';
+import 'share_service.dart';
 
 class ServiceLocator {
   Future<void> init({
@@ -71,6 +72,7 @@ class ServiceLocator {
     sl.registerLazySingleton<DeviceInfoService>(() => DeviceInfoServiceImpl());
     sl.registerLazySingleton<AppInfoService>(() => AppInfoServiceImpl());
     sl.registerLazySingleton<PermissionService>(() => PermissionServiceImpl());
+    sl.registerLazySingleton<ShareService>(() => ShareServiceImpl());
     sl.registerLazySingleton<NotificationService>(
       () => NotificationService(permissionService: sl()),
     );

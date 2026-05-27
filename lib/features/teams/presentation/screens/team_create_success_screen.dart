@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
+import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/share_service.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../theme/theme.dart';
@@ -790,16 +791,10 @@ class _GildedInviteChip extends StatelessWidget {
   final String code;
 
   Future<void> _share(BuildContext context) async {
-    final box = context.findRenderObject() as RenderBox?;
-    final origin = box != null
-        ? box.localToGlobal(Offset.zero) & box.size
-        : null;
-    await SharePlus.instance.share(
-      ShareParams(
-        text: 'teams.create.share_message'.tr(namedArgs: {'code': code}),
-        subject: 'teams.create.share_subject'.tr(),
-        sharePositionOrigin: origin,
-      ),
+    await sl<ShareService>().shareFrom(
+      context: context,
+      text: 'teams.create.share_message'.tr(namedArgs: {'code': code}),
+      subject: 'teams.create.share_subject'.tr(),
     );
   }
 

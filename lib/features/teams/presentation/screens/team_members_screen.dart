@@ -13,7 +13,6 @@ import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
 import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
-import '../widgets/team_tab_bar.dart';
 import '../widgets/zaad_pill.dart';
 
 class TeamMembersScreen extends StatefulWidget {
@@ -43,8 +42,6 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
         final members = state.members?.members ?? const [];
 
         return TeamScaffold(
-          extendBody: true,
-          bottomNav: const TeamTabBar(active: TeamTab.members),
           child: Column(
             children: [
               ZaadAppBar(

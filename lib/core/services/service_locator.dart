@@ -24,6 +24,9 @@ import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
 import '../../features/home/data/remote/home_remote_data_source.dart';
 import '../../features/home/data/repositories/home_repository.dart';
 import '../../features/home/presentation/cubit/home_cubit.dart';
+import '../../features/leaderboard/data/remote/rankings_remote_data_source.dart';
+import '../../features/leaderboard/data/repositories/rankings_repository.dart';
+import '../../features/leaderboard/presentation/cubit/rankings_cubit.dart';
 import '../../features/language/data/remote/language_remote_data_source.dart';
 import '../../features/language/data/repositories/language_repository.dart';
 import '../../features/language/presentation/cubit/language_cubit.dart';
@@ -294,6 +297,20 @@ class ServiceLocator {
     );
     sl.registerFactory<TeamsCubit>(
       () => TeamsCubit(repository: sl()),
+    );
+
+    // Rankings (global leaderboards)
+    sl.registerLazySingleton<RankingsRemoteDataSource>(
+      () => RankingsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<RankingsRepository>(
+      () => RankingsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<RankingsCubit>(
+      () => RankingsCubit(repository: sl()),
     );
   }
 }

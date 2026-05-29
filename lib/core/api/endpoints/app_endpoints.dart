@@ -58,4 +58,8 @@ class AppEndpoint {
   String get myTeamProgress => '${baseUrl}api/teams/my-team/progress';
   String get myTeamProgressSummary =>
       '${baseUrl}api/teams/my-team/progress/summary';
+
+  // Rankings (global leaderboards)
+  String get rankingTeams => '${baseUrl}api/rankings/teams';
+  String get rankingIndividuals => '${baseUrl}api/rankings/individuals';
 }

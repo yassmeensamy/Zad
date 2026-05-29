@@ -4,11 +4,6 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../../theme/theme.dart';
 
-/// Horizontal chip strip that filters the individual leaderboard by category.
-/// The leading "All" chip clears the filter (`category_id` omitted).
-///
-/// Tapping a chip animates the strip so that chip is centered in the viewport,
-/// bringing partly/fully off-screen chips into view on either end.
 class RankingsCategoryFilter extends StatelessWidget {
   const RankingsCategoryFilter({
     super.key,
@@ -19,7 +14,6 @@ class RankingsCategoryFilter extends StatelessWidget {
 
   final List<CategoryModel> categories;
 
-  /// `null` means the "All" chip is active.
   final int? selectedId;
   final ValueChanged<int?> onSelected;
 
@@ -33,7 +27,7 @@ class RankingsCategoryFilter extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           _Chip(
-            label: 'All',
+            label: 'leaderboard.category_all',
             selected: selectedId == null,
             onTap: () => onSelected(null),
           ),
@@ -69,8 +63,6 @@ class _Chip extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: () {
           onTap();
-          // Center this chip in the strip — `context` sits inside the
-          // horizontal ListView, so ensureVisible scrolls to reveal it.
           Scrollable.ensureVisible(
             context,
             alignment: 0.5,

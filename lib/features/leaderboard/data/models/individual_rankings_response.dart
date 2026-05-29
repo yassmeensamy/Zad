@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'individual_ranking_model.dart';
 import 'ranking_pagination.dart';
 
-/// Response envelope for `GET /api/rankings/individuals`.
 class IndividualRankingsResponse {
   const IndividualRankingsResponse({
     required this.pagination,

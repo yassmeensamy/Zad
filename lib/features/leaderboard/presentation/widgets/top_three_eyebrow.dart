@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class TopThreeEyebrow extends StatelessWidget {
@@ -21,9 +23,9 @@ class TopThreeEyebrow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Text(
-          'Top three'.toUpperCase(),
-          style: TextStyle(
+        ResponsiveText(
+          'leaderboard.top_three'.tr().toUpperCase(),
+          style: AppTextStyles.labelSmall.copyWith(
             fontFamily: 'monospace',
             fontSize: 8.5,
             fontWeight: FontWeight.w600,

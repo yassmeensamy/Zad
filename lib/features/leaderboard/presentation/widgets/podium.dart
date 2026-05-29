@@ -20,7 +20,7 @@ class Podium extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
           child: ResponsiveText(
-            'No team progress yet.',
+            'leaderboard.podium_empty',
             style: AppTextStyles.bodySmall.copyWith(
               color: colors.oliveSoft,
               fontStyle: FontStyle.italic,

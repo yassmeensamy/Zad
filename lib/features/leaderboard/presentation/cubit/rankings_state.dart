@@ -4,14 +4,13 @@ import '../../data/models/individual_ranking_model.dart';
 import '../../data/models/ranking_pagination.dart';
 import '../../data/models/team_ranking_model.dart';
 
-/// Which global leaderboard is currently shown.
 enum RankingsScope {
   individuals,
   teams;
 
-  String get label => switch (this) {
-    RankingsScope.individuals => 'Individuals',
-    RankingsScope.teams => 'Teams',
+  String get labelKey => switch (this) {
+    RankingsScope.individuals => 'leaderboard.scope.individuals',
+    RankingsScope.teams => 'leaderboard.scope.teams',
   };
 }
 
@@ -35,23 +34,18 @@ class RankingsState {
 
   final RankingsScope scope;
 
-  /// Optional category filter applied to the individual leaderboard.
-  /// `null` means "all categories".
   final int? categoryId;
 
-  // ─── Individuals ───────────────────────────────────────────────
   final RankingsStatus individualStatus;
   final List<IndividualRankingModel> individuals;
   final MyIndividualRank? myRank;
   final RankingPagination? individualPagination;
 
-  // ─── Teams ─────────────────────────────────────────────────────
   final RankingsStatus teamStatus;
   final List<TeamRankingModel> teams;
   final MyTeamRank? myTeamRank;
   final RankingPagination? teamPagination;
 
-  // ─── Shared ────────────────────────────────────────────────────
   final bool loadingMore;
   final String? errorMessage;
 
@@ -126,14 +120,12 @@ extension RankingsStateX on RankingsState {
   bool get isIndividuals => scope == RankingsScope.individuals;
   bool get isTeams => scope == RankingsScope.teams;
 
-  /// Load status of the currently visible scope.
   RankingsStatus get activeStatus =>
       isIndividuals ? individualStatus : teamStatus;
 
   bool get activeIsEmpty =>
       isIndividuals ? individuals.isEmpty : teams.isEmpty;
 
-  /// Whether another page exists for the visible scope.
   bool get canLoadMore {
     final p = isIndividuals ? individualPagination : teamPagination;
     return p != null && p.hasNext;

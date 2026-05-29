@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class AllMembersHeader extends StatelessWidget {
@@ -28,9 +30,11 @@ class AllMembersHeader extends StatelessWidget {
       children: [
         line,
         const SizedBox(width: 8),
-        Text(
-          'All members · $count'.toUpperCase(),
-          style: TextStyle(
+        ResponsiveText(
+          'leaderboard.all_members'
+              .tr(namedArgs: {'count': '$count'})
+              .toUpperCase(),
+          style: AppTextStyles.labelSmall.copyWith(
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.4,

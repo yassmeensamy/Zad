@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-/// A single row in the global individual leaderboard.
 class IndividualRankingModel {
   const IndividualRankingModel({
     required this.rank,
@@ -68,10 +67,6 @@ class IndividualRankingModel {
       '$completedLevels/$totalLevels)';
 }
 
-/// The authenticated user's own position in the individual leaderboard.
-/// Note the API does not echo `userId`/`username` here — only the rank and
-/// progress — so matching the row in the list requires the current user id
-/// from the session.
 class MyIndividualRank {
   const MyIndividualRank({
     required this.rank,

@@ -1,11 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../cubit/rankings_state.dart';
 
-/// Segmented control that switches the global leaderboard between the
-/// individual and team boards. Mirrors the styling of the timeframe tabs.
 class RankingsScopeTabs extends StatelessWidget {
   const RankingsScopeTabs({
     super.key,
@@ -33,7 +32,7 @@ class RankingsScopeTabs extends StatelessWidget {
           for (final scope in RankingsScope.values)
             Expanded(
               child: _ScopeChip(
-                label: scope.label,
+                label: scope.labelKey,
                 selected: scope == value,
                 onTap: () => onChanged(scope),
               ),
@@ -82,7 +81,7 @@ class _ScopeChip extends StatelessWidget {
               : null,
         ),
         child: ResponsiveText(
-          label.toUpperCase(),
+          label.tr().toUpperCase(),
           textAlign: TextAlign.center,
           style: AppTextStyles.labelSmall.copyWith(
             fontSize: 9.5,

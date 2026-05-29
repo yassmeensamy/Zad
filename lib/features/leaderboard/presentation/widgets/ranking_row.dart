@@ -1,13 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_disc.dart';
 
-/// A single global-leaderboard row. Shared by the individual and team boards:
-/// individuals pass the username, teams pass the team name plus a member-count
-/// [subtitle]. The activity-status dot from the team-internal board is omitted
-/// because the global ranking endpoints do not return it.
 class RankingRow extends StatelessWidget {
   const RankingRow({
     super.key,
@@ -24,8 +21,6 @@ class RankingRow extends StatelessWidget {
   final int completed;
   final int total;
 
-  /// Secondary line, e.g. "12 members" for a team row. When null only the
-  /// completed/total line is shown.
   final String? subtitle;
   final bool isMe;
 
@@ -105,7 +100,9 @@ class RankingRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ResponsiveText(
-                  isMe ? '$title · You' : title,
+                  isMe
+                      ? 'leaderboard.name_you'.tr(namedArgs: {'name': title})
+                      : title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.labelMedium.copyWith(
@@ -169,9 +166,9 @@ class _MetaLine extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          Text(
+          ResponsiveText(
             '·',
-            style: TextStyle(
+            style: AppTextStyles.labelSmall.copyWith(
               fontSize: 11,
               color: colors.oliveSoft.withValues(alpha: 0.6),
             ),
@@ -180,7 +177,9 @@ class _MetaLine extends StatelessWidget {
         ],
         Flexible(
           child: ResponsiveText(
-            '$completed / $total levels',
+            'leaderboard.levels_progress'.tr(
+              namedArgs: {'completed': '$completed', 'total': '$total'},
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.labelSmall.copyWith(
@@ -216,7 +215,7 @@ class _YouPill extends StatelessWidget {
       ],
     ),
     child: ResponsiveText(
-      'YOU',
+      'leaderboard.you_pill',
       style: AppTextStyles.labelSmall.copyWith(
         fontSize: 8.5,
         fontWeight: FontWeight.w800,

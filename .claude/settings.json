@@ -27,7 +27,12 @@
       "Bash(awk 'NR>=515 && NR<=525 {print NR\": \"$0}' /Users/yassmeen/Documents/zad/my_app/lib/features/leaderboard/presentation/screens/leaderboard_screen.dart)",
       "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/yassmeen/Documents/zad/my_app/assets/translations/en.json'\\)\\); print\\(json.dumps\\(d.get\\('auth',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
       "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/yassmeen/Documents/zad/my_app/assets/translations/ar.json'\\)\\); print\\(json.dumps\\(d.get\\('auth',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('assets/translations/en.json'\\)\\);print\\('\\\\n'.join\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(sed -n '364,372p' lib/features/support_tickets/presentation/screens/ticket_detail_screen.dart)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('assets/translations/en.json'\\)\\);print\\(json.dumps\\(d.get\\('support_tickets',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(grep -iA4 \"repl\\\\|plural\")",
+      "Bash(python3 -c 'import json;d=json.load\\(open\\('\\\\''assets/translations/__TRACKED_VAR__.json'\\\\''\\)\\);print\\('\\\\''__TRACKED_VAR__.json OK — leaderboard keys:'\\\\'', list\\(d['\\\\''leaderboard'\\\\''].keys\\(\\)\\)\\)')"
     ]
   }
 }

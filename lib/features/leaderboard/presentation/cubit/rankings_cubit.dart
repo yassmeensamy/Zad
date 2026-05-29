@@ -13,9 +13,6 @@ class RankingsCubit extends BaseCubit<RankingsState> {
 
   static const int _pageSize = 20;
 
-  /// Loads the first page of whichever scope is currently selected, but only
-  /// if it has not been loaded yet. Safe to call repeatedly (e.g. on screen
-  /// re-entry).
   Future<void> loadInitial() async {
     if (state.isIndividuals) {
       if (state.individuals.isEmpty &&
@@ -30,23 +27,18 @@ class RankingsCubit extends BaseCubit<RankingsState> {
     }
   }
 
-  /// Switches the visible leaderboard. Loads the target scope lazily the first
-  /// time it is shown.
   Future<void> setScope(RankingsScope scope) async {
     if (scope == state.scope) return;
     emit(state.copyWith(scope: scope, loadingMore: false));
     await loadInitial();
   }
 
-  /// Applies (or clears) the category filter on the individual leaderboard and
-  /// reloads from the first page. Pass `null` for "all categories".
   Future<void> setCategory(int? categoryId) async {
     if (categoryId == state.categoryId) return;
     emit(state.copyWith(categoryId: () => categoryId));
     await _loadIndividuals(reset: true);
   }
 
-  /// Pulls the next page for the visible scope and appends it.
   Future<void> loadMore() async {
     if (state.loadingMore || !state.canLoadMore) return;
     if (state.isIndividuals) {
@@ -56,7 +48,6 @@ class RankingsCubit extends BaseCubit<RankingsState> {
     }
   }
 
-  /// Reloads the visible scope from the first page.
   Future<void> refresh() async {
     if (state.isIndividuals) {
       await _loadIndividuals(reset: true);
@@ -151,8 +142,6 @@ class RankingsCubit extends BaseCubit<RankingsState> {
   void _emitIndividualError(bool reset, String? message) {
     emit(
       state.copyWith(
-        // Only flip the scope into an error state when there is nothing to
-        // show; a failed "load more" keeps the existing list visible.
         individualStatus: reset
             ? RankingsStatus.error
             : state.individualStatus,

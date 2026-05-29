@@ -606,5 +606,39 @@
       "warning_cta": "Continue to leave",
       "warning_stay": "Stay with the team"
     }
+  },
+  "leaderboard": {
+    "eyebrow": "Global League",
+    "title": "Leaderboard",
+    "empty": "No rankings yet.",
+    "error": "Couldn't load the leaderboard.",
+    "top_three": "Top three",
+    "category_all": "All",
+    "all_members": "All members · {count}",
+    "levels_progress": "{completed} / {total} levels",
+    "you": "You",
+    "you_pill": "YOU",
+    "name_you": "{name} · You",
+    "your_rank": "Your rank",
+    "your_team": "Your team",
+    "podium_empty": "No team progress yet.",
+    "no_team": {
+      "title": "Join the team race",
+      "lede": "You're not on a team yet. Create one or join with a code to climb the team leaderboard.",
+      "create": "Create a team",
+      "join": "Join with code"
+    },
+    "scope": {
+      "individuals": "Individuals",
+      "teams": "Teams"
+    },
+    "member_count": {
+      "zero": "No members",
+      "one": "1 member",
+      "two": "{} members",
+      "few": "{} members",
+      "many": "{} members",
+      "other": "{} members"
+    }
   }
 }

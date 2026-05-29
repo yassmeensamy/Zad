@@ -1,8 +1,3 @@
-/// Pagination envelope returned by the global ranking endpoints.
-///
-/// Distinct from the levels `Pagination` model: the rankings API uses
-/// `currentPage` / `totalPages` / `totalElements` rather than
-/// `page` / `size` / `total`.
 class RankingPagination {
   const RankingPagination({
     required this.currentPage,
@@ -18,7 +13,6 @@ class RankingPagination {
   final String? next;
   final String? previous;
 
-  /// True when another page can be fetched after [currentPage].
   bool get hasNext => currentPage < totalPages - 1;
   bool get hasPrevious => currentPage > 0;
 

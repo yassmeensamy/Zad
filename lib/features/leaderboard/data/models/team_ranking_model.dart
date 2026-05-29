@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-/// A single row in the global team leaderboard.
 class TeamRankingModel {
   const TeamRankingModel({
     required this.rank,
@@ -78,9 +77,6 @@ class TeamRankingModel {
       '$totalCompletedLevels/$totalLevels, $memberCount members)';
 }
 
-/// The authenticated user's team position in the team leaderboard.
-/// The API omits `teamId` here, so highlighting the row in the list requires
-/// the current team id from the session.
 class MyTeamRank {
   const MyTeamRank({
     required this.rank,

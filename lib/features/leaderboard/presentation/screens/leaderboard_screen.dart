@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +12,7 @@ import '../../../teams/presentation/widgets/team_scaffold.dart';
 import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import '../widgets/all_members_header.dart';
+import '../widgets/leaderboard_no_team.dart';
 import '../widgets/my_rank_card.dart';
 import '../widgets/podium.dart';
 import '../widgets/ranking_row.dart';
@@ -91,7 +93,7 @@ class _RankingsHeader extends StatelessWidget {
     return Column(
       children: [
         ResponsiveText(
-          'Global League'.toUpperCase(),
+          'leaderboard.eyebrow'.tr().toUpperCase(),
           style: AppTextStyles.labelSmall.copyWith(
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
@@ -101,7 +103,7 @@ class _RankingsHeader extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         ResponsiveText(
-          'Leaderboard',
+          'leaderboard.title',
           style: AppTextStyles.displaySmall.copyWith(
             fontSize: 20,
             color: colors.oliveDeep,
@@ -114,9 +116,6 @@ class _RankingsHeader extends StatelessWidget {
   }
 }
 
-/// Maps a global ranking row into the lightweight model the [Podium] consumes.
-/// The podium only reads name + completed/total, so the unused fields are
-/// filled with safe defaults.
 TeamMemberProgressModel _podiumSeed({
   required String id,
   required String name,
@@ -149,12 +148,18 @@ class _Body extends StatelessWidget {
         onRetry: () => context.read<RankingsCubit>().refresh(),
       );
     }
+    if (state.isTeams &&
+        state.teamStatus == RankingsStatus.success &&
+        state.myTeamRank == null) {
+      return LeaderboardNoTeam(
+        onChanged: () => context.read<RankingsCubit>().refresh(),
+      );
+    }
     if (state.activeIsEmpty) {
       return Center(
-        child: Text(
-          'No rankings yet.',
-          style: TextStyle(
-            fontSize: 12,
+        child: ResponsiveText(
+          'leaderboard.empty',
+          style: AppTextStyles.bodySmall.copyWith(
             color: colors.oliveSoft,
             fontStyle: FontStyle.italic,
           ),
@@ -162,53 +167,41 @@ class _Body extends StatelessWidget {
       );
     }
 
-    final rows = state.isIndividuals
-        ? _individualRows(state)
-        : _teamRows(state);
-    final podium = state.isIndividuals
-        ? [
-            for (final r in state.individuals.take(3))
-              _podiumSeed(
-                id: r.userId,
-                name: r.username,
-                completed: r.completedLevels,
-                total: r.totalLevels,
-              ),
-          ]
-        : [
-            for (final t in state.teams.take(3))
-              _podiumSeed(
-                id: t.teamId,
-                name: t.teamName,
-                completed: t.totalCompletedLevels,
-                total: t.totalLevels,
-              ),
-          ];
-
-    return ListView(
+    return CustomScrollView(
       controller: controller,
-      padding: const EdgeInsets.only(bottom: 8),
-      children: [
-        const TopThreeEyebrow(),
-        const SizedBox(height: 8),
-        Podium(members: podium),
-        const SizedBox(height: 14),
-        AllMembersHeader(count: state.activeCount),
-        const SizedBox(height: 8),
-        for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) const SizedBox(height: 5),
-          rows[i],
-        ],
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.only(bottom: 8),
+          sliver: SliverList.list(
+            children: [
+              const TopThreeEyebrow(),
+              const SizedBox(height: 8),
+              Podium(members: _podium(state)),
+              const SizedBox(height: 14),
+              AllMembersHeader(count: state.activeCount),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+        SliverList.separated(
+          itemCount: state.activeCount,
+          separatorBuilder: (_, _) => const SizedBox(height: 5),
+          itemBuilder: (context, i) => state.isIndividuals
+              ? _individualRow(state, i)
+              : _teamRow(state, i),
+        ),
         if (state.loadingMore)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Center(
-              child: SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                  color: colors.oliveDeep,
-                  strokeWidth: 2,
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    color: colors.oliveDeep,
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),
@@ -217,38 +210,56 @@ class _Body extends StatelessWidget {
     );
   }
 
-  List<Widget> _individualRows(RankingsState state) {
+  List<TeamMemberProgressModel> _podium(RankingsState state) =>
+      state.isIndividuals
+      ? [
+          for (final r in state.individuals.take(3))
+            _podiumSeed(
+              id: r.userId,
+              name: r.username,
+              completed: r.completedLevels,
+              total: r.totalLevels,
+            ),
+        ]
+      : [
+          for (final t in state.teams.take(3))
+            _podiumSeed(
+              id: t.teamId,
+              name: t.teamName,
+              completed: t.totalCompletedLevels,
+              total: t.totalLevels,
+            ),
+        ];
+
+  Widget _individualRow(RankingsState state, int i) {
+    final r = state.individuals[i];
     final myRank = state.myRank?.rank;
-    return [
-      for (final r in state.individuals)
-        RankingRow(
-          rank: r.rank,
-          title: r.username,
-          completed: r.completedLevels,
-          total: r.totalLevels,
-          isMe: myRank != null && r.rank == myRank,
-        ),
-    ];
+    return RankingRow(
+      rank: r.rank,
+      title: r.username,
+      completed: r.completedLevels,
+      total: r.totalLevels,
+      isMe: myRank != null && r.rank == myRank,
+    );
   }
 
-  List<Widget> _teamRows(RankingsState state) {
+  Widget _teamRow(RankingsState state, int i) {
+    final t = state.teams[i];
     final myRank = state.myTeamRank?.rank;
-    return [
-      for (final t in state.teams)
-        RankingRow(
-          rank: t.rank,
-          title: t.teamName,
-          completed: t.totalCompletedLevels,
-          total: t.totalLevels,
-          subtitle: '${t.memberCount} '
-              '${t.memberCount == 1 ? 'member' : 'members'}',
-          isMe: myRank != null && t.rank == myRank,
-        ),
-    ];
+    return RankingRow(
+      rank: t.rank,
+      title: t.teamName,
+      completed: t.totalCompletedLevels,
+      total: t.totalLevels,
+      subtitle: 'leaderboard.member_count'.plural(
+        t.memberCount,
+        args: ['${t.memberCount}'],
+      ),
+      isMe: myRank != null && t.rank == myRank,
+    );
   }
 }
 
-/// Pinned "your standing" card for whichever scope is active.
 class _Footer extends StatelessWidget {
   const _Footer({required this.state});
 
@@ -260,9 +271,9 @@ class _Footer extends StatelessWidget {
       final me = state.myRank;
       if (me == null) return const SizedBox.shrink();
       return MyRankCard(
-        label: 'Your rank',
+        label: 'leaderboard.your_rank',
         rank: me.rank,
-        title: 'You',
+        title: 'leaderboard.you',
         completed: me.completedLevels,
         total: me.totalLevels,
       );
@@ -270,7 +281,7 @@ class _Footer extends StatelessWidget {
     final me = state.myTeamRank;
     if (me == null) return const SizedBox.shrink();
     return MyRankCard(
-      label: 'Your team',
+      label: 'leaderboard.your_team',
       rank: me.rank,
       title: me.teamName,
       completed: me.totalCompletedLevels,
@@ -291,16 +302,18 @@ class _ErrorRetry extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            "Couldn't load the leaderboard.",
-            style: TextStyle(
-              fontSize: 12,
+          ResponsiveText(
+            'leaderboard.error',
+            style: AppTextStyles.bodySmall.copyWith(
               color: colors.oliveSoft,
               fontStyle: FontStyle.italic,
             ),
           ),
           const SizedBox(height: 8),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(
+            onPressed: onRetry,
+            child: const ResponsiveText('common.retry'),
+          ),
         ],
       ),
     );

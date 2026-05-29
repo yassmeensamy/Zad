@@ -1,11 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-/// Amber-tinted card pinned beneath the list that always surfaces the
-/// authenticated user's own standing — their individual rank or their team's
-/// rank — even when that row is not on the currently loaded page.
 class MyRankCard extends StatelessWidget {
   const MyRankCard({
     super.key,
@@ -16,7 +14,6 @@ class MyRankCard extends StatelessWidget {
     required this.total,
   });
 
-  /// Eyebrow above the card, e.g. "YOUR RANK" or "YOUR TEAM".
   final String label;
   final int rank;
   final String title;
@@ -57,7 +54,7 @@ class MyRankCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ResponsiveText(
-                label.toUpperCase(),
+                label.tr().toUpperCase(),
                 style: AppTextStyles.labelSmall.copyWith(
                   fontSize: 7.5,
                   fontWeight: FontWeight.w700,
@@ -99,7 +96,9 @@ class MyRankCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 ResponsiveText(
-                  '$completed / $total levels',
+                  'leaderboard.levels_progress'.tr(
+                    namedArgs: {'completed': '$completed', 'total': '$total'},
+                  ),
                   style: AppTextStyles.labelSmall.copyWith(
                     fontSize: 11,
                     color: AppColors.dateDeep,

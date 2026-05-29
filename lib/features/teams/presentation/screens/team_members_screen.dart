@@ -41,7 +41,8 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
         final team = state.team;
         final members = state.members?.members ?? const [];
 
-        return TeamScaffold(
+        return 
+        TeamScaffold(
           child: Column(
             children: [
               ZaadAppBar(

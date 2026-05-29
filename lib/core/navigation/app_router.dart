@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
@@ -70,6 +72,14 @@ class AppRouter {
         path: AppRoutes.signup,
         name: AppRoutes.signupName,
         builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        name: AppRoutes.forgotPasswordName,
+        builder: (context, state) => BlocProvider<ForgotPasswordCubit>(
+          create: (_) => sl<ForgotPasswordCubit>(),
+          child: const ForgotPasswordScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.roleSelect,

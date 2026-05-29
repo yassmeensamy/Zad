@@ -12,6 +12,7 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/data/services/auth_local_service.dart';
 import '../../features/auth/data/strategies/oauth_strategy_factory.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/child/data/remote/child_remote_data_source.dart';
 import '../../features/child/data/repositories/child_repository.dart';
 import '../../features/child/presentation/cubit/child_cubit.dart';
@@ -107,6 +108,9 @@ class ServiceLocator {
     );
     sl.registerFactory<AuthCubit>(
       () => AuthCubit(repository: sl(), authEventService: sl()),
+    );
+    sl.registerFactory<ForgotPasswordCubit>(
+      () => ForgotPasswordCubit(repository: sl()),
     );
 
     // User

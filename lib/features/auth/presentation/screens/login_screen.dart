@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onForgotPassword() {
-    // TODO: route to forgot-password flow once it exists.
+    context.push(AppRoutes.forgotPassword);
   }
 
   void _onAuthStateChanged(BuildContext context, AuthState state) {

@@ -14,6 +14,14 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResponse> googleAuth(String idToken);
 
+  Future<void> forgotPassword({required String email});
+
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  });
+
   Future<AuthResponse> switchAccount(String childId);
 
   Future<void> logout(String refreshToken);

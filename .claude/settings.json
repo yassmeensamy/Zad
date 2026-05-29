@@ -24,7 +24,10 @@
       "Bash(grep -n '^  \"[a-z_]*\"\\\\s*:\\\\s*{\\\\s*$' /Users/yassmeen/Documents/zad/my_app/assets/translations/en.json)",
       "Bash(awk 'NR>=96 && NR<=120' /Users/yassmeen/Documents/zad/my_app/assets/translations/en.json)",
       "Bash(awk 'NR>=183 && NR<=521 {print NR\": \"$0}' /Users/yassmeen/Documents/zad/my_app/lib/features/leaderboard/presentation/screens/leaderboard_screen.dart)",
-      "Bash(awk 'NR>=515 && NR<=525 {print NR\": \"$0}' /Users/yassmeen/Documents/zad/my_app/lib/features/leaderboard/presentation/screens/leaderboard_screen.dart)"
+      "Bash(awk 'NR>=515 && NR<=525 {print NR\": \"$0}' /Users/yassmeen/Documents/zad/my_app/lib/features/leaderboard/presentation/screens/leaderboard_screen.dart)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/yassmeen/Documents/zad/my_app/assets/translations/en.json'\\)\\); print\\(json.dumps\\(d.get\\('auth',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/yassmeen/Documents/zad/my_app/assets/translations/ar.json'\\)\\); print\\(json.dumps\\(d.get\\('auth',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

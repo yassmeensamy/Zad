@@ -238,6 +238,25 @@
       "title_accent": "Zaad",
       "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
       "cta": "CONTINUE"
+    },
+    "forgot_password_screen": {
+      "headline_prefix": "Forgot ",
+      "headline_accent": "password",
+      "subtitle": "Enter your email and we'll send you a 6-digit code to reset your password.",
+      "email_hint": "you@example.com",
+      "send_code": "SEND CODE",
+      "back_to_login_prompt": "Remember your password?  ",
+      "back_to_login": "Sign in",
+      "otp_sent": "We sent a 6-digit code to your email."
+    },
+    "reset_password_dialog": {
+      "title": "Reset password",
+      "subtitle": "Enter the 6-digit code we sent to the address below and choose a new password.",
+      "otp_hint": "6-digit code",
+      "new_password_hint": "New password",
+      "submit": "RESET PASSWORD",
+      "cancel": "Cancel",
+      "success": "Your password has been reset. Sign in with your new password."
     }
   },
   "errors": {

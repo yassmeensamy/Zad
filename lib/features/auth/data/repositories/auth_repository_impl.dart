@@ -62,6 +62,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> forgotPassword({required String email}) =>
+      _remoteDataSource.forgotPassword(email: email);
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) => _remoteDataSource.resetPassword(
+    email: email,
+    otp: otp,
+    newPassword: newPassword,
+  );
+
+  @override
   Future<AuthResponse> switchAccount(String childId) async {
     final response = await _remoteDataSource.switchAccount(childId);
     await _localService.onLoginSuccess(response);

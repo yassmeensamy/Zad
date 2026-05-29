@@ -67,6 +67,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<void> forgotPassword({required String email}) async {
+    final response = await _networkService.post(
+      _endpoints.forgotPassword,
+      data: {'email': email},
+      skipAuth: true,
+    );
+    _validateResponse(response);
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) async {
+    final response = await _networkService.post(
+      _endpoints.resetPassword,
+      data: {'email': email, 'otp': otp, 'newPassword': newPassword},
+      skipAuth: true,
+    );
+    _validateResponse(response);
+  }
+
+  @override
   Future<AuthResponse> switchAccount(String childId) async {
     final response = await _networkService.post(
       _endpoints.switchAccount,

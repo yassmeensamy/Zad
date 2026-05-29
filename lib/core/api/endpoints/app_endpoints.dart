@@ -10,6 +10,8 @@ class AppEndpoint {
   String get refresh => '${baseUrl}api/auth/refresh';
   String get google => '${baseUrl}api/auth/google';
   String get switchAccount => '${baseUrl}api/auth/switch';
+  String get forgotPassword => '${baseUrl}api/auth/forgot-password';
+  String get resetPassword => '${baseUrl}api/auth/reset-password';
 
   // Child Management
   String get children => '${baseUrl}api/children';

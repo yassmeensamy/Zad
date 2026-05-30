@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class CategoryModel {
   const CategoryModel({
     required this.id,
@@ -34,39 +32,6 @@ class CategoryModel {
     levelCount: (map['levelCount'] as num?)?.toInt() ?? 0,
     completedLevels: (map['completedLevels'] as num?)?.toInt() ?? 0,
     orderIndex: (map['orderIndex'] as num?)?.toInt() ?? 0,
-  );
-
-  factory CategoryModel.fromJson(String source) =>
-      CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'name': name,
-    'description': description,
-    'iconUrl': iconUrl,
-    'levelCount': levelCount,
-    'completedLevels': completedLevels,
-    'orderIndex': orderIndex,
-  };
-
-  String toJson() => json.encode(toMap());
-
-  CategoryModel copyWith({
-    int? id,
-    String? name,
-    String? description,
-    String? iconUrl,
-    int? levelCount,
-    int? completedLevels,
-    int? orderIndex,
-  }) => CategoryModel(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    description: description ?? this.description,
-    iconUrl: iconUrl ?? this.iconUrl,
-    levelCount: levelCount ?? this.levelCount,
-    completedLevels: completedLevels ?? this.completedLevels,
-    orderIndex: orderIndex ?? this.orderIndex,
   );
 
   @override

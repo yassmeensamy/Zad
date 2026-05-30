@@ -13,7 +13,8 @@
     "loading": "جارٍ التحميل...",
     "retry": "إعادة المحاولة",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "reset": "إعادة الضبط"
   },
   "role_select": {
     "eyebrow": "الخطوة 1 من 2",
@@ -116,6 +117,11 @@
     "levels_screen": {
       "eyebrow": "المستويات",
       "heading": "{} من {} مستويات مكتملة"
+    },
+    "reset": {
+      "confirm_title": "إعادة ضبط هذه الفئة؟",
+      "confirm_subtitle": "سيتم مسح تقدّمك في جميع مستويات هذه الفئة. لا يمكن التراجع عن ذلك.",
+      "confirm_cta": "إعادة ضبط الفئة"
     }
   },
   "levels": {
@@ -131,6 +137,12 @@
       "in_progress": "قيد التقدّم",
       "unlocked": "متاح",
       "locked": "مغلق"
+    },
+    "reset": {
+      "action": "إعادة ضبط المستوى",
+      "confirm_title": "إعادة ضبط هذا المستوى؟",
+      "confirm_subtitle": "سيتم مسح تقدّمك ونقاطك في هذا المستوى. لا يمكن التراجع عن ذلك.",
+      "confirm_cta": "إعادة ضبط المستوى"
     }
   },
   "quiz": {
@@ -159,12 +171,19 @@
       "finish": "إنهاء",
       "previous": "السؤال السابق"
     },
+    "exit": {
+      "confirm_title": "مغادرة الاختبار؟",
+      "confirm_subtitle": "سيتم فقدان تقدمك في هذه المحاولة. يمكنك البدء من جديد في أي وقت.",
+      "confirm_cta": "مغادرة الاختبار"
+    },
     "report": {
       "title": "ما المشكلة في هذا السؤال؟",
       "reason_wrong_answer": "الإجابة غير صحيحة",
       "reason_unclear": "السؤال غير واضح",
       "reason_typo": "خطأ إملائي",
-      "reason_other": "سبب آخر"
+      "reason_other": "سبب آخر",
+      "message_hint": "أضف أي تفاصيل (اختياري)",
+      "submit": "إرسال البلاغ"
     },
     "result": {
       "eyebrow": "رحلة طلب العلم",
@@ -352,7 +371,12 @@
     "sign_out": "تسجيل الخروج",
     "sign_out_confirm_title": "تسجيل الخروج؟",
     "sign_out_confirm_subtitle": "ستحتاج إلى تسجيل الدخول مجدّدًا للوصول إلى حسابك.",
-    "sign_out_confirm_cta": "نعم، سجّل خروجي"
+    "sign_out_confirm_cta": "نعم، سجّل خروجي",
+    "reset_progress": "إعادة ضبط كل التقدّم",
+    "reset_progress_confirm_title": "إعادة ضبط كل التقدّم؟",
+    "reset_progress_confirm_subtitle": "سيؤدي هذا إلى مسح تقدّمك في جميع الفئات والمستويات. لا يمكن التراجع عن ذلك.",
+    "reset_progress_confirm_cta": "نعم، أعد ضبط كل شيء",
+    "reset_progress_success": "تمت إعادة ضبط تقدّمك"
   },
   "edit_profile": {
     "name_label": "الاسم",

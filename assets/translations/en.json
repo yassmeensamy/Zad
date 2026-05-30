@@ -13,7 +13,8 @@
     "loading": "Loading...",
     "retry": "Retry",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "reset": "Reset"
   },
   "role_select": {
     "eyebrow": "Step 1 of 2",
@@ -116,6 +117,11 @@
     "levels_screen": {
       "eyebrow": "LEVELS",
       "heading": "{} of {} levels complete"
+    },
+    "reset": {
+      "confirm_title": "Reset this category?",
+      "confirm_subtitle": "Your progress across all levels in this category will be cleared. This cannot be undone.",
+      "confirm_cta": "Reset category"
     }
   },
   "levels": {
@@ -131,6 +137,12 @@
       "in_progress": "IN PROGRESS",
       "unlocked": "READY",
       "locked": "LOCKED"
+    },
+    "reset": {
+      "action": "Reset level",
+      "confirm_title": "Reset this level?",
+      "confirm_subtitle": "Your progress and score for this level will be cleared. This cannot be undone.",
+      "confirm_cta": "Reset level"
     }
   },
   "quiz": {
@@ -159,12 +171,19 @@
       "finish": "Finish",
       "previous": "Previous question"
     },
+    "exit": {
+      "confirm_title": "Leave the quiz?",
+      "confirm_subtitle": "Your progress in this attempt will be lost. You can start again anytime.",
+      "confirm_cta": "Leave quiz"
+    },
     "report": {
       "title": "What's wrong with this question?",
       "reason_wrong_answer": "Incorrect answer",
       "reason_unclear": "Question is unclear",
       "reason_typo": "Spelling mistake",
-      "reason_other": "Other"
+      "reason_other": "Other",
+      "message_hint": "Add any details (optional)",
+      "submit": "Send report"
     },
     "result": {
       "eyebrow": "JOURNEY OF KNOWLEDGE",
@@ -352,7 +371,12 @@
     "sign_out": "Sign out",
     "sign_out_confirm_title": "Sign out?",
     "sign_out_confirm_subtitle": "You'll need to sign in again to access your account.",
-    "sign_out_confirm_cta": "Yes, sign out"
+    "sign_out_confirm_cta": "Yes, sign out",
+    "reset_progress": "Reset all progress",
+    "reset_progress_confirm_title": "Reset all progress?",
+    "reset_progress_confirm_subtitle": "This clears your progress across every category and level. This cannot be undone.",
+    "reset_progress_confirm_cta": "Yes, reset everything",
+    "reset_progress_success": "Your progress has been reset"
   },
   "edit_profile": {
     "name_label": "NAME",

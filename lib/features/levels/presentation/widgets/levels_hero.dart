@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/islamic_ornaments.dart';
+import '../../../../core/constants/app_images.dart';
+import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/star_medallion.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../cubit/levels_state.dart';
@@ -59,7 +61,7 @@ class LevelsHero extends StatelessWidget {
             Positioned(
               top: 0,
               left: 0,
-              child: Image.asset('assets/images/Vector.png'),
+              child: Image.asset(AppImages.vector, cacheWidth: 400),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
@@ -68,27 +70,16 @@ class LevelsHero extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      SizedBox(
-                        width: 52,
-                        height: 52,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Positioned.fill(
-                              child: CustomPaint(
-                                painter: KhatimStarPainter(
-                                  fill: tint.withValues(alpha: 0.10),
-                                  stroke: tint.withValues(alpha: 0.55),
-                                  strokeWidth: 0.9,
-                                ),
-                              ),
-                            ),
-                            if (_iconUrl != null && _iconUrl!.isNotEmpty)
-                              ClipOval(
+                      StarMedallion(
+                        size: 52,
+                        tint: tint,
+                        child: _iconUrl != null && _iconUrl!.isNotEmpty
+                            ? ClipOval(
                                 child: Image.network(
                                   _iconUrl!,
                                   width: 24,
                                   height: 24,
+                                  cacheWidth: 48,
                                   fit: BoxFit.contain,
                                   errorBuilder: (_, _, _) => Icon(
                                     Icons.menu_book_outlined,
@@ -97,14 +88,11 @@ class LevelsHero extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            else
-                              Icon(
+                            : Icon(
                                 Icons.menu_book_outlined,
                                 size: 24,
                                 color: tint,
                               ),
-                          ],
-                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -135,30 +123,14 @@ class LevelsHero extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(999)),
-                    child: Stack(
-                      children: [
-                        Container(
-                          height: 8,
-                          color: tint.withValues(alpha: 0.12),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: progress,
-                          child: Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color.lerp(tint, colors.accent, 0.25)!,
-                                  tint,
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  GradientProgressBar(
+                    progress: progress,
+                    trackColor: tint.withValues(alpha: 0.12),
+                    gradientColors: [
+                      Color.lerp(tint, colors.accent, 0.25)!,
+                      tint,
+                    ],
+                    height: 8,
                   ),
                   const SizedBox(height: 8),
                   Row(

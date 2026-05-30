@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 enum LevelStatus {
   locked('locked'),
   unlocked('unlocked', aliases: {'available'}),
@@ -42,9 +40,6 @@ class LevelModel {
   final LevelStatus status;
 
   bool get isCompleted => status == LevelStatus.completed;
-  bool get isInProgress => status == LevelStatus.inProgress;
-  bool get isUnlocked =>
-      status == LevelStatus.unlocked || status == LevelStatus.inProgress;
   bool get isLocked => status == LevelStatus.locked;
 
   double get progress {
@@ -62,39 +57,6 @@ class LevelModel {
     completedQuestions: (map['completedQuestions'] as num?)?.toInt() ?? 0,
     passingGrade: (map['passingGrade'] as num?)?.toInt() ?? 0,
     status: LevelStatus.fromWire(map['status'] as String?),
-  );
-
-  factory LevelModel.fromJson(String source) =>
-      LevelModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'title': title,
-    'order': order,
-    'questionCount': questionCount,
-    'completedQuestions': completedQuestions,
-    'passingGrade': passingGrade,
-    'status': status.wire,
-  };
-
-  String toJson() => json.encode(toMap());
-
-  LevelModel copyWith({
-    int? id,
-    String? title,
-    int? order,
-    int? questionCount,
-    int? completedQuestions,
-    int? passingGrade,
-    LevelStatus? status,
-  }) => LevelModel(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    order: order ?? this.order,
-    questionCount: questionCount ?? this.questionCount,
-    completedQuestions: completedQuestions ?? this.completedQuestions,
-    passingGrade: passingGrade ?? this.passingGrade,
-    status: status ?? this.status,
   );
 
   @override

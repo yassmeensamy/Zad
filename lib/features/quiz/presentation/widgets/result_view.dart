@@ -274,9 +274,8 @@ class _ResultViewState extends State<ResultView>
 
   Widget _buildMeta(AppColorsTheme colors) {
     return ResponsiveText(
-          // Pre-translated because ResponsiveText doesn't expose `args`;
-          // the internal .tr() is a no-op on the resolved string.
-          'quiz.result.questions_completed'.tr(args: ['$_firstTryCorrect']),
+          'quiz.result.questions_completed',
+          args: ['$_firstTryCorrect'],
           textAlign: TextAlign.center,
           style: AppTextStyles.labelLarge.copyWith(
             fontSize: 13.5,

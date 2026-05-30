@@ -14,7 +14,6 @@ class Pagination {
   final String? previous;
 
   bool get hasNext => next != null && next!.isNotEmpty;
-  bool get hasPrevious => previous != null && previous!.isNotEmpty;
 
   factory Pagination.fromMap(Map<String, dynamic> map) => Pagination(
     page: (map['page'] as num?)?.toInt() ?? 1,
@@ -22,28 +21,6 @@ class Pagination {
     total: (map['total'] as num?)?.toInt() ?? 0,
     next: map['next'] as String?,
     previous: map['previous'] as String?,
-  );
-
-  Map<String, dynamic> toMap() => {
-    'page': page,
-    'size': size,
-    'total': total,
-    'next': next,
-    'previous': previous,
-  };
-
-  Pagination copyWith({
-    int? page,
-    int? size,
-    int? total,
-    String? Function()? next,
-    String? Function()? previous,
-  }) => Pagination(
-    page: page ?? this.page,
-    size: size ?? this.size,
-    total: total ?? this.total,
-    next: next != null ? next() : this.next,
-    previous: previous != null ? previous() : this.previous,
   );
 
   @override

@@ -12,14 +12,17 @@ abstract class QuizRemoteDataSource {
     int levelId,
     QuizSubmissionRequest request,
   );
+
+  /// Resets all of the current user's quiz progress.
+  Future<void> resetAll();
 }
 
 class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
   QuizRemoteDataSourceImpl({
     required NetworkService networkService,
     required AppEndpoint endpoints,
-  })  : _networkService = networkService,
-        _endpoints = endpoints;
+  }) : _networkService = networkService,
+       _endpoints = endpoints;
 
   final NetworkService _networkService;
   final AppEndpoint _endpoints;
@@ -40,9 +43,7 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
       _endpoints.questionsByLevelId(levelId),
     );
     _validateResponse(response);
-    return QuizQuestionsResponse.fromMap(
-      response.data as Map<String, dynamic>,
-    );
+    return QuizQuestionsResponse.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
@@ -58,5 +59,11 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
     return QuizSubmissionResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
+  }
+
+  @override
+  Future<void> resetAll() async {
+    final response = await _networkService.post(_endpoints.resetQuiz);
+    _validateResponse(response, const [200, 201, 204]);
   }
 }

@@ -3,12 +3,15 @@ import '../remote/categories_remote_data_source.dart';
 
 abstract class CategoriesRepository {
   Future<List<CategoryModel>> getCategories();
-  List<CategoryModel> getPlaceholders();
+
+  /// Resets the current user's progress for a single category.
+  Future<void> resetCategory(int categoryId);
 }
 
 class CategoriesRepositoryImpl implements CategoriesRepository {
-  CategoriesRepositoryImpl({required CategoriesRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+  CategoriesRepositoryImpl({
+    required CategoriesRemoteDataSource remoteDataSource,
+  }) : _remoteDataSource = remoteDataSource;
 
   final CategoriesRemoteDataSource _remoteDataSource;
 
@@ -17,6 +20,6 @@ class CategoriesRepositoryImpl implements CategoriesRepository {
       _remoteDataSource.getCategories();
 
   @override
-  List<CategoryModel> getPlaceholders() =>
-      _remoteDataSource.getPlaceholders();
+  Future<void> resetCategory(int categoryId) =>
+      _remoteDataSource.resetCategory(categoryId);
 }

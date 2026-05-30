@@ -11,23 +11,24 @@ class LevelsCubit extends BaseCubit<LevelsState> {
   LevelsCubit({
     required LevelsRepository levelsRepository,
     required QuizEventService quizEventService,
-  })  : _levelsRepository = levelsRepository,
-        super(const LevelsState()) {
-    _quizSub = quizEventService.onSubmitted.listen((_) => refreshCurrent());
+  }) : _levelsRepository = levelsRepository,
+       _quizEvents = quizEventService,
+       super(const LevelsState()) {
+    _submitSub = quizEventService.onSubmitted.listen((_) => refreshCurrent());
+    _resetSub = quizEventService.onReset.listen((_) => refreshCurrent());
   }
 
   final LevelsRepository _levelsRepository;
+  final QuizEventService _quizEvents;
   int? _lastCategoryId;
-  StreamSubscription<int>? _quizSub;
+  StreamSubscription<int>? _submitSub;
+  StreamSubscription<void>? _resetSub;
 
   Future<void> getLevels(int categoryId, {bool refresh = false}) async {
     _lastCategoryId = categoryId;
     if (!refresh) {
       emit(
-        state.copyWith(
-          status: LevelsStatus.loading,
-          errorMessage: () => null,
-        ),
+        state.copyWith(status: LevelsStatus.loading, errorMessage: () => null),
       );
     }
     try {
@@ -37,6 +38,8 @@ class LevelsCubit extends BaseCubit<LevelsState> {
           status: LevelsStatus.loaded,
           levels: response.levels,
           pagination: () => response.pagination,
+          summaryCompleted: () => response.completedLevels,
+          summaryTotal: () => response.totalLevels,
         ),
       );
     } on ServerException catch (e) {
@@ -71,21 +74,21 @@ class LevelsCubit extends BaseCubit<LevelsState> {
     emit(state.copyWith(isLoadingMore: true));
     try {
       final next = (state.pagination?.page ?? 0) + 1;
-      final response = await _levelsRepository.getLevels(categoryId, page: next);
+      final response = await _levelsRepository.getLevels(
+        categoryId,
+        page: next,
+      );
       emit(
         state.copyWith(
           levels: [...state.levels, ...response.levels],
           pagination: () => response.pagination,
+          summaryCompleted: () => response.completedLevels,
+          summaryTotal: () => response.totalLevels,
           isLoadingMore: false,
         ),
       );
     } on ServerException catch (e) {
-      emit(
-        state.copyWith(
-          isLoadingMore: false,
-          errorMessage: () => e.message,
-        ),
-      );
+      emit(state.copyWith(isLoadingMore: false, errorMessage: () => e.message));
     } catch (e) {
       logger.error('LevelsCubit.loadMore failed: $e');
       emit(
@@ -97,9 +100,40 @@ class LevelsCubit extends BaseCubit<LevelsState> {
     }
   }
 
+  /// Resets the user's progress for [levelId]. Broadcasts a reset event so
+  /// every listening list — this one included — refreshes exactly once via
+  /// its [QuizEventService.onReset] subscription. (Refreshing here as well
+  /// would fire a second identical GET and trip the network layer's
+  /// duplicate-request guard.)
+  Future<void> resetLevel(int levelId) async {
+    if (state.isResetting(levelId)) return;
+    emit(
+      state.copyWith(
+        resettingLevelIds: {...state.resettingLevelIds, levelId},
+        errorMessage: () => null,
+      ),
+    );
+    try {
+      await _levelsRepository.resetLevel(levelId);
+      _quizEvents.notifyReset();
+    } on ServerException catch (e) {
+      emit(state.copyWith(errorMessage: () => e.message));
+    } catch (e) {
+      logger.error('LevelsCubit.resetLevel failed: $e');
+      emit(state.copyWith(errorMessage: () => 'errors.generic'));
+    } finally {
+      emit(
+        state.copyWith(
+          resettingLevelIds: {...state.resettingLevelIds}..remove(levelId),
+        ),
+      );
+    }
+  }
+
   @override
   Future<void> close() async {
-    await _quizSub?.cancel();
+    await _submitSub?.cancel();
+    await _resetSub?.cancel();
     return super.close();
   }
 }

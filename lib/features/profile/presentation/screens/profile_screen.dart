@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -15,6 +18,8 @@ import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/profile_section.dart';
 import '../../data/profile_sections.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
+import '../cubit/progress_reset_cubit.dart';
+import '../cubit/progress_reset_state.dart';
 import '../widgets/profile_menu_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -57,6 +62,11 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: const _ResetProgressButton(),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: const _SignOutButton(),
             ),
           ],
@@ -74,7 +84,10 @@ List<ProfileSection> _visibleSections(
     if (s.items.any((i) => i.isVisibleFor(role)))
       ProfileSection(
         titleKey: s.titleKey,
-        items: [for (final i in s.items) if (i.isVisibleFor(role)) i],
+        items: [
+          for (final i in s.items)
+            if (i.isVisibleFor(role)) i,
+        ],
       ),
 ];
 
@@ -268,6 +281,111 @@ class _SectionCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// RESET PROGRESS — outlined danger pill, confirms then resets all
+// quiz progress (categories + levels) via [ProgressResetCubit].
+// ─────────────────────────────────────────────────────────────────
+
+class _ResetProgressButton extends StatelessWidget {
+  const _ResetProgressButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<ProgressResetCubit>(
+      create: (_) => sl<ProgressResetCubit>(),
+      child: const _ResetProgressPill(),
+    );
+  }
+}
+
+class _ResetProgressPill extends StatelessWidget {
+  const _ResetProgressPill();
+
+  Future<void> _confirmReset(BuildContext context) async {
+    final cubit = context.read<ProgressResetCubit>();
+    final confirmed = await ConfirmDialog.show(
+      context: context,
+      icon: Icons.restart_alt_rounded,
+      titleKey: 'profile.reset_progress_confirm_title',
+      messageKey: 'profile.reset_progress_confirm_subtitle',
+      confirmKey: 'profile.reset_progress_confirm_cta',
+    );
+    if (confirmed != true || !context.mounted) return;
+    await cubit.resetAll();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final errorColor = context.colorScheme.error;
+    return BlocConsumer<ProgressResetCubit, ProgressResetState>(
+      listenWhen: (prev, curr) => prev.status != curr.status,
+      listener: (context, state) {
+        if (state.isSuccess) {
+          SnackBarHelper.showSuccess(
+            context,
+            message: 'profile.reset_progress_success',
+          );
+        } else if (state.isError) {
+          SnackBarHelper.showError(
+            context,
+            message: state.errorMessage ?? 'errors.generic',
+          );
+        }
+      },
+      builder: (context, state) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: errorColor.withValues(alpha: 0.28),
+              width: 1.0,
+            ),
+            color: colors.canvas.withValues(alpha: 0.6),
+          ),
+          child: CustomButton.full(
+            onTap: state.isLoading ? null : () => _confirmReset(context),
+            theme: CustomButtonTheme(
+              height: 52,
+              backgroundColor: Colors.transparent,
+              textColor: errorColor,
+              borderRadius: 16,
+            ),
+            child: state.isLoading
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      color: errorColor,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.restart_alt_rounded,
+                        size: 18,
+                        color: errorColor,
+                      ),
+                      const SizedBox(width: 10),
+                      ResponsiveText(
+                        'profile.reset_progress',
+                        style: AppTextStyles.labelLarge.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.4,
+                          color: errorColor,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
 // SIGN OUT — outlined danger pill (kept understated by intent)
 // ─────────────────────────────────────────────────────────────────
 
@@ -343,11 +461,7 @@ class _SignOutConfirmDialog extends StatelessWidget {
             shape: BoxShape.circle,
             color: errorColor.withValues(alpha: 0.10),
           ),
-          child: Icon(
-            Icons.logout_rounded,
-            color: errorColor,
-            size: 26,
-          ),
+          child: Icon(Icons.logout_rounded, color: errorColor, size: 26),
         ),
         const SizedBox(height: 14),
         ResponsiveText(

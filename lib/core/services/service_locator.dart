@@ -41,6 +41,7 @@ import '../../features/quiz/core/quiz_event_service.dart';
 import '../../features/quiz/data/remote/quiz_remote_data_source.dart';
 import '../../features/quiz/data/repositories/quiz_repository.dart';
 import '../../features/quiz/presentation/cubit/quiz_cubit.dart';
+import '../../features/profile/presentation/cubit/progress_reset_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
@@ -153,17 +154,12 @@ class ServiceLocator {
 
     // Language
     sl.registerLazySingleton<LanguageRemoteDataSource>(
-      () => LanguageRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => LanguageRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<LanguageRepository>(
       () => LanguageRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<LanguageCubit>(
-      () => LanguageCubit(repository: sl()),
-    );
+    sl.registerFactory<LanguageCubit>(() => LanguageCubit(repository: sl()));
 
     // Notifications (mock-backed)
     sl.registerLazySingleton<NotificationRemoteDataSource>(
@@ -183,9 +179,7 @@ class ServiceLocator {
     sl.registerLazySingleton<HomeRepository>(
       () => HomeRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<HomeCubit>(
-      () => HomeCubit(homeRepository: sl()),
-    );
+    sl.registerFactory<HomeCubit>(() => HomeCubit(homeRepository: sl()));
 
     // Help center — adapter over SupportTicketsRepository
     sl.registerLazySingleton<HelpCenterRepository>(
@@ -197,45 +191,31 @@ class ServiceLocator {
 
     // Categories
     sl.registerLazySingleton<CategoriesRemoteDataSource>(
-      () => CategoriesRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () =>
+          CategoriesRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<CategoriesRepository>(
       () => CategoriesRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<CategoriesCubit>(
-      () => CategoriesCubit(
-        categoriesRepository: sl(),
-        quizEventService: sl(),
-      ),
+      () => CategoriesCubit(categoriesRepository: sl(), quizEventService: sl()),
     );
 
     // Levels
     sl.registerLazySingleton<LevelsRemoteDataSource>(
-      () => LevelsRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => LevelsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<LevelsRepository>(
       () => LevelsRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<LevelsCubit>(
-      () => LevelsCubit(
-        levelsRepository: sl(),
-        quizEventService: sl(),
-      ),
+      () => LevelsCubit(levelsRepository: sl(), quizEventService: sl()),
     );
 
     // Quiz
     sl.registerLazySingleton<QuizEventService>(() => QuizEventService());
     sl.registerLazySingleton<QuizRemoteDataSource>(
-      () => QuizRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => QuizRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<QuizRepository>(
       () => QuizRepositoryImpl(remoteDataSource: sl()),
@@ -244,22 +224,21 @@ class ServiceLocator {
       () => QuizCubit(
         quizRepository: sl(),
         quizEventService: sl(),
+        supportTicketsRepository: sl(),
       ),
+    );
+    sl.registerFactory<ProgressResetCubit>(
+      () => ProgressResetCubit(quizRepository: sl(), quizEventService: sl()),
     );
 
     // Drafts
     sl.registerLazySingleton<DraftsRemoteDataSource>(
-      () => DraftsRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => DraftsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<DraftsRepository>(
       () => DraftsRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<DraftsCubit>(
-      () => DraftsCubit(repository: sl()),
-    );
+    sl.registerFactory<DraftsCubit>(() => DraftsCubit(repository: sl()));
 
     // Support Tickets
     sl.registerLazySingleton<SupportTicketsRemoteDataSource>(
@@ -277,10 +256,7 @@ class ServiceLocator {
 
     // Avatars
     sl.registerLazySingleton<AvatarsRemoteDataSource>(
-      () => AvatarsRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => AvatarsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<AvatarsRepository>(
       () => AvatarsRepositoryImpl(remoteDataSource: sl()),
@@ -291,30 +267,20 @@ class ServiceLocator {
 
     // Teams
     sl.registerLazySingleton<TeamsRemoteDataSource>(
-      () => TeamsRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => TeamsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<TeamsRepository>(
       () => TeamsRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<TeamsCubit>(
-      () => TeamsCubit(repository: sl()),
-    );
+    sl.registerFactory<TeamsCubit>(() => TeamsCubit(repository: sl()));
 
     // Rankings (global leaderboards)
     sl.registerLazySingleton<RankingsRemoteDataSource>(
-      () => RankingsRemoteDataSourceImpl(
-        networkService: sl(),
-        endpoints: sl(),
-      ),
+      () => RankingsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<RankingsRepository>(
       () => RankingsRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<RankingsCubit>(
-      () => RankingsCubit(repository: sl()),
-    );
+    sl.registerFactory<RankingsCubit>(() => RankingsCubit(repository: sl()));
   }
 }

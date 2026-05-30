@@ -66,7 +66,6 @@ class QuizState {
     this.isReview = false,
     this.levelId,
     this.history = const [],
-    this.reportCount = 0,
   });
 
   final QuizStatus status;
@@ -120,11 +119,6 @@ class QuizState {
   /// read-only "back" navigation.
   final List<QuizHistoryEntry> history;
 
-  /// Monotonic counter bumped each time the user submits a report.
-  /// Drives the "report received" snackbar via a [BlocListener] — the
-  /// value itself is not meaningful, only its change is.
-  final int reportCount;
-
   QuizState copyWith({
     QuizStatus? status,
     QuizPhase? phase,
@@ -148,7 +142,6 @@ class QuizState {
     bool? isReview,
     int? levelId,
     List<QuizHistoryEntry>? history,
-    int? reportCount,
   }) =>
       QuizState(
         status: status ?? this.status,
@@ -181,7 +174,6 @@ class QuizState {
         isReview: isReview ?? this.isReview,
         levelId: levelId ?? this.levelId,
         history: history ?? this.history,
-        reportCount: reportCount ?? this.reportCount,
       );
 
   @override
@@ -209,8 +201,7 @@ class QuizState {
         other.submissionResult == submissionResult &&
         other.isReview == isReview &&
         other.levelId == levelId &&
-        listEquals(other.history, history) &&
-        other.reportCount == reportCount;
+        listEquals(other.history, history);
   }
 
   @override
@@ -234,7 +225,6 @@ class QuizState {
         isReview,
         levelId,
         Object.hashAll(history),
-        reportCount,
       );
 }
 

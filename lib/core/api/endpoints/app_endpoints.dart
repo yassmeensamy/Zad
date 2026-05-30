@@ -36,6 +36,13 @@ class AppEndpoint {
   String submitQuiz(int levelId) =>
       '${baseUrl}api/quiz/levels/$levelId/submit';
 
+  // Reset progress
+  String get resetQuiz => '${baseUrl}api/quiz/reset';
+  String resetCategory(int categoryId) =>
+      '${baseUrl}api/quiz/categories/$categoryId/reset';
+  String resetLevel(int levelId) =>
+      '${baseUrl}api/quiz/levels/$levelId/reset';
+
   // Draft Questions
   String get drafts => '${baseUrl}api/drafts';
   String get draftsBulk => '${baseUrl}api/drafts/bulk';

@@ -1,6 +1,9 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../support_tickets/data/models/create_ticket_request.dart';
+import '../../../support_tickets/data/models/support_topic_enum.dart';
+import '../../../support_tickets/data/repositories/support_tickets_repository.dart';
 import '../../core/quiz_event_service.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_submission_request.dart';
@@ -12,10 +15,12 @@ class QuizCubit extends BaseCubit<QuizState> {
   QuizCubit({
     required QuizRepository quizRepository,
     required QuizEventService quizEventService,
+    required SupportTicketsRepository supportTicketsRepository,
     DateTime Function() now = DateTime.now,
     MotivationalMessages? messages,
   })  : _quizRepository = quizRepository,
         _events = quizEventService,
+        _supportTickets = supportTicketsRepository,
         _now = now,
         _messages = messages ?? MotivationalMessages(),
         super(const QuizState());
@@ -26,6 +31,7 @@ class QuizCubit extends BaseCubit<QuizState> {
 
   final QuizRepository _quizRepository;
   final QuizEventService _events;
+  final SupportTicketsRepository _supportTickets;
   final DateTime Function() _now;
   final MotivationalMessages _messages;
 
@@ -88,11 +94,32 @@ class QuizCubit extends BaseCubit<QuizState> {
     emit(_buildLoadedState(state.allQuestions, review: false));
   }
 
-  /// Records a user-submitted question report. Currently a UI-only signal
-  /// (no backend call yet) — bumps [QuizState.reportCount] so the screen's
-  /// [BlocListener] can surface the confirmation snackbar.
-  void reportQuestion({required int questionId, required String reasonKey}) {
-    emit(state.copyWith(reportCount: state.reportCount + 1));
+  /// Reports a problem with [questionId] by opening a support ticket under the
+  /// TECHNICAL topic (there is no dedicated report endpoint). [title]/[body]
+  /// come from the report form. Returns `true` on success so the screen can
+  /// show the matching confirmation or error.
+  Future<bool> reportQuestion({
+    required int questionId,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      await _supportTickets.createTicket(
+        CreateTicketRequest(
+          topic: SupportTopicEnum.technical,
+          title: title,
+          body: body,
+          questionId: questionId,
+        ),
+      );
+      return true;
+    } on ServerException catch (e) {
+      logger.error('QuizCubit.reportQuestion failed: ${e.message}');
+      return false;
+    } catch (e) {
+      logger.error('QuizCubit.reportQuestion failed: $e');
+      return false;
+    }
   }
 
   /// Submits the quiz attempt to the server. Triggered automatically when

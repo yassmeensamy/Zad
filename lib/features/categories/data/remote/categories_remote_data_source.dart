@@ -6,7 +6,9 @@ import '../models/category_model.dart';
 
 abstract class CategoriesRemoteDataSource {
   Future<List<CategoryModel>> getCategories();
-  List<CategoryModel> getPlaceholders();
+
+  /// Resets the current user's progress for a single category.
+  Future<void> resetCategory(int categoryId);
 }
 
 class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
@@ -34,27 +36,19 @@ class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
     final response = await _networkService.get(_endpoints.quizCategories);
     _validateResponse(response);
     final list = response.data as List<dynamic>;
-    final categories = list
-        .map((e) => CategoryModel.fromMap(e as Map<String, dynamic>))
-        .toList()
-      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final categories =
+        list
+            .map((e) => CategoryModel.fromMap(e as Map<String, dynamic>))
+            .toList()
+          ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
     return categories;
   }
 
   @override
-  List<CategoryModel> getPlaceholders() => _placeholders;
-
-  static final List<CategoryModel> _placeholders = List<CategoryModel>.generate(
-    6,
-    (i) => CategoryModel(
-      id: i,
-      name: 'Category title',
-      description:
-          'A short two-line description that hints at what this theme is about.',
-      iconUrl: '',
-      levelCount: 6,
-      completedLevels: 2,
-      orderIndex: i,
-    ),
-  );
+  Future<void> resetCategory(int categoryId) async {
+    final response = await _networkService.post(
+      _endpoints.resetCategory(categoryId),
+    );
+    _validateResponse(response, const [200, 201, 204]);
+  }
 }

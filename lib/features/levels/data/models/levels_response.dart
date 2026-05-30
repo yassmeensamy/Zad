@@ -1,40 +1,39 @@
-import 'dart:convert';
-
 import 'level_model.dart';
 import 'pagination.dart';
 
 class LevelsResponse {
-  const LevelsResponse({required this.levels, required this.pagination});
+  const LevelsResponse({
+    required this.levels,
+    required this.pagination,
+    this.completedLevels,
+    this.totalLevels,
+  });
 
   final List<LevelModel> levels;
   final Pagination pagination;
 
-  factory LevelsResponse.fromMap(Map<String, dynamic> map) => LevelsResponse(
-    levels: (map['data'] as List<dynamic>? ?? const [])
-        .map((e) => LevelModel.fromMap(e as Map<String, dynamic>))
-        .toList(),
-    pagination: Pagination.fromMap(
-      (map['pagination'] as Map<String, dynamic>?) ?? const {},
-    ),
-  );
+  /// Category-wide completed count, independent of the current page. Present
+  /// only when the backend returns a `summary` block; `null` otherwise (the
+  /// presentation layer then falls back to counting the loaded page).
+  final int? completedLevels;
 
-  factory LevelsResponse.fromJson(String source) =>
-      LevelsResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  /// Category-wide total count, independent of the current page. Falls back to
+  /// [Pagination.total] when absent.
+  final int? totalLevels;
 
-  Map<String, dynamic> toMap() => {
-    'data': levels.map((l) => l.toMap()).toList(),
-    'pagination': pagination.toMap(),
-  };
-
-  String toJson() => json.encode(toMap());
-
-  LevelsResponse copyWith({
-    List<LevelModel>? levels,
-    Pagination? pagination,
-  }) => LevelsResponse(
-    levels: levels ?? this.levels,
-    pagination: pagination ?? this.pagination,
-  );
+  factory LevelsResponse.fromMap(Map<String, dynamic> map) {
+    final summary = map['summary'] as Map<String, dynamic>?;
+    return LevelsResponse(
+      levels: (map['data'] as List<dynamic>? ?? const [])
+          .map((e) => LevelModel.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      pagination: Pagination.fromMap(
+        (map['pagination'] as Map<String, dynamic>?) ?? const {},
+      ),
+      completedLevels: (summary?['completedLevels'] as num?)?.toInt(),
+      totalLevels: (summary?['totalLevels'] as num?)?.toInt(),
+    );
+  }
 
   @override
   String toString() =>

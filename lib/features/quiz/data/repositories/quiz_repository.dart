@@ -9,11 +9,14 @@ abstract class QuizRepository {
     int levelId,
     QuizSubmissionRequest request,
   );
+
+  /// Resets all of the current user's quiz progress.
+  Future<void> resetAll();
 }
 
 class QuizRepositoryImpl implements QuizRepository {
   QuizRepositoryImpl({required QuizRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   final QuizRemoteDataSource _remoteDataSource;
 
@@ -25,6 +28,8 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<QuizSubmissionResponse> submitQuiz(
     int levelId,
     QuizSubmissionRequest request,
-  ) =>
-      _remoteDataSource.submitQuiz(levelId, request);
+  ) => _remoteDataSource.submitQuiz(levelId, request);
+
+  @override
+  Future<void> resetAll() => _remoteDataSource.resetAll();
 }

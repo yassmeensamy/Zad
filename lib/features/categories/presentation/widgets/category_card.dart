@@ -1,10 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/widgets/islamic_ornaments.dart';
+import '../../../../core/constants/app_images.dart';
+import '../../../../core/widgets/confirm_dialog.dart';
+import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/star_medallion.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/category_model.dart';
+import '../cubit/categories_cubit.dart';
+import '../cubit/categories_state.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
@@ -16,7 +22,7 @@ class CategoryCard extends StatelessWidget {
 
   final CategoryModel category;
   final Color tint;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +49,7 @@ class CategoryCard extends StatelessWidget {
                 Color.lerp(colors.canvas, tint, 0.06)!,
               ],
             ),
-            border: Border.all(
-              color: tint.withValues(alpha: 0.20),
-              width: 0.8,
-            ),
+            border: Border.all(color: tint.withValues(alpha: 0.20), width: 0.8),
             boxShadow: [
               BoxShadow(
                 color: colors.oliveDeep.withValues(alpha: 0.06),
@@ -68,94 +71,176 @@ class CategoryCard extends StatelessWidget {
                   top: 0,
                   left: 0,
                   child: Image.asset(
-                    'assets/images/Vector.png',
+                    AppImages.vector,
                     width: 200,
+                    cacheWidth: 400,
                   ),
                 ),
                 Padding(
-                padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _IconMedallion(tint: tint, iconUrl: category.iconUrl),
-                    const Spacer(),
-                    ResponsiveText(
-                      category.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.titleMedium.copyWith(
-                        fontWeight: FontWeight.w700,
-                        height: 1.15,
-                        letterSpacing: -0.2,
-                        color: colors.textPrimary,
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _IconMedallion(tint: tint, iconUrl: category.iconUrl),
+                      const Spacer(),
+                      ResponsiveText(
+                        category.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.w700,
+                          height: 1.15,
+                          letterSpacing: -0.2,
+                          color: colors.textPrimary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    ResponsiveText(
-                      category.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontSize: 11.5,
-                        letterSpacing: 0,
-                        height: 1.35,
-                        color: colors.textSecondary,
+                      const SizedBox(height: 4),
+                      ResponsiveText(
+                        category.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontSize: 11.5,
+                          letterSpacing: 0,
+                          height: 1.35,
+                          color: colors.textSecondary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    _ProgressBar(progress: progress, tint: tint),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Text(
-                              isStarted
-                                  ? 'categories.progress.percent'
-                                      .tr(args: ['$percent'])
-                                  : 'categories.progress.not_started'.tr(),
-                              maxLines: 1,
-                              style: AppTextStyles.labelMedium.copyWith(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.2,
-                                color: tint,
+                      const SizedBox(height: 14),
+                      GradientProgressBar(
+                        progress: progress,
+                        trackColor: tint.withValues(alpha: 0.12),
+                        gradientColors: [
+                          Color.lerp(tint, colors.accent, 0.25)!,
+                          tint,
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                isStarted
+                                    ? 'categories.progress.percent'.tr(
+                                        args: ['$percent'],
+                                      )
+                                    : 'categories.progress.not_started'.tr(),
+                                maxLines: 1,
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.2,
+                                  color: tint,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: Text(
-                              'categories.progress.levels'.tr(args: [
-                                '${category.completedLevels}',
-                                '${category.levelCount}',
-                              ]),
-                              maxLines: 1,
-                              style: AppTextStyles.labelMedium.copyWith(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0,
-                                color: colors.textTertiary,
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Text(
+                                'categories.progress.levels'.tr(
+                                  args: [
+                                    '${category.completedLevels}',
+                                    '${category.levelCount}',
+                                  ],
+                                ),
+                                maxLines: 1,
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0,
+                                  color: colors.textTertiary,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                if (isStarted)
+                  PositionedDirectional(
+                    top: 6,
+                    end: 6,
+                    child: _CategoryResetButton(category: category),
+                  ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Small "reset progress" affordance on started category cards. Reads
+/// [CategoriesCubit] from the surrounding screen, confirms with the user,
+/// then triggers [CategoriesCubit.resetCategory]. Swaps to a spinner while
+/// that category's reset is in flight.
+class _CategoryResetButton extends StatelessWidget {
+  const _CategoryResetButton({required this.category});
+
+  final CategoryModel category;
+
+  Future<void> _confirmReset(BuildContext context) async {
+    final cubit = context.read<CategoriesCubit>();
+    final confirmed = await ConfirmDialog.show(
+      context: context,
+      icon: Icons.restart_alt_rounded,
+      titleKey: 'categories.reset.confirm_title',
+      messageKey: 'categories.reset.confirm_subtitle',
+      confirmKey: 'categories.reset.confirm_cta',
+    );
+    if (confirmed != true) return;
+    await cubit.resetCategory(category.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final errorColor = context.colorScheme.error;
+    final isResetting = context.select<CategoriesCubit, bool>(
+      (c) => c.state.isResetting(category.id),
+    );
+
+    return Material(
+      color: colors.canvas.withValues(alpha: 0.85),
+      borderRadius: const BorderRadius.all(Radius.circular(999)),
+      clipBehavior: Clip.antiAlias,
+      child: isResetting
+          ? const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          : InkWell(
+              onTap: () => _confirmReset(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                child: ResponsiveText(
+                  'common.reset',
+                  style: AppTextStyles.labelMedium.copyWith(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                    color: errorColor,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
@@ -168,73 +253,22 @@ class _IconMedallion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 48,
-      height: 48,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: KhatimStarPainter(
-                fill: tint.withValues(alpha: 0.10),
-                stroke: tint.withValues(alpha: 0.55),
-                strokeWidth: 0.9,
-              ),
-            ),
-          ),
-          if (iconUrl.isNotEmpty)
-            ClipOval(
+    return StarMedallion(
+      size: 48,
+      tint: tint,
+      child: iconUrl.isNotEmpty
+          ? ClipOval(
               child: Image.network(
                 iconUrl,
                 width: 22,
                 height: 22,
+                cacheWidth: 44,
                 fit: BoxFit.contain,
                 errorBuilder: (_, _, _) =>
                     Icon(Icons.menu_book_outlined, size: 22, color: tint),
               ),
             )
-          else
-            Icon(Icons.menu_book_outlined, size: 22, color: tint),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar({required this.progress, required this.tint});
-
-  final double progress;
-  final Color tint;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(999)),
-      child: Stack(
-        children: [
-          Container(
-            height: 6,
-            color: tint.withValues(alpha: 0.12),
-          ),
-          FractionallySizedBox(
-            widthFactor: progress.clamp(0, 1),
-            child: Container(
-              height: 6,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.lerp(tint, colors.accent, 0.25)!,
-                    tint,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+          : Icon(Icons.menu_book_outlined, size: 22, color: tint),
     );
   }
 }

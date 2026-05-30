@@ -5,6 +5,9 @@ class AppImages {
 
   static const String appIcon = '$_base/app_icon_source.png';
   static const String islamicPattern = '$_base/islamic-pattern.png';
+
+  /// Decorative corner vector painted faintly behind category/level cards.
+  static const String vector = '$_base/Vector.png';
   static const String googleLogo =
       '$_base/png-clipart-youtube-google-logo-google-s-google-account-youtube-text-trademark.png';
 

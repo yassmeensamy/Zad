@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
@@ -108,16 +109,20 @@ class _QuizView extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.canvas,
       body: BlocListener<QuizCubit, QuizState>(
-        listenWhen: (a, b) => a.reportCount != b.reportCount,
-        listener: (context, _) => SnackBarHelper.showSuccess(
+        listenWhen: (a, b) =>
+            a.submissionStatus != b.submissionStatus && b.isSubmissionError,
+        listener: (context, state) => SnackBarHelper.showError(
           context,
-          message: 'quiz.actions.report_sent',
+          message: state.errorMessage ?? 'errors.generic',
         ),
         child: BlocBuilder<QuizCubit, QuizState>(
           buildWhen: (a, b) =>
               a.status != b.status ||
               a.phase != b.phase ||
               a.isReview != b.isReview ||
+              a.currentIndex != b.currentIndex ||
+              a.selectedChoiceId != b.selectedChoiceId ||
+              a.submissionStatus != b.submissionStatus ||
               a.errorMessage != b.errorMessage,
           builder: (context, state) {
           if (state.isInitial || state.isLoading) {
@@ -146,6 +151,24 @@ class _QuizView extends StatelessWidget {
                 if (context.mounted) _exit(context);
               });
               return _LoadingView(level: level);
+            }
+            // The attempt couldn't be saved — surface it and let the user
+            // retry instead of silently showing a "passed" result.
+            if (state.isSubmissionError) {
+              return Column(
+                children: [
+                  ZaadAppBar(
+                    title: level?.title ?? 'quiz.eyebrow',
+                    onBack: context.canPop() ? () => context.pop() : null,
+                  ),
+                  Expanded(
+                    child: ErrorState(
+                      message: state.errorMessage ?? 'errors.generic',
+                      onRetry: () => context.read<QuizCubit>().submit(),
+                    ),
+                  ),
+                ],
+              );
             }
             return ResultView(
               points: state.points,
@@ -441,17 +464,39 @@ class _ActiveView extends StatelessWidget {
   }
 
   Future<void> _onReport(BuildContext context, int questionId) async {
-    final reasonKey = await ReportQuestionSheet.show(context);
-    if (reasonKey == null) return;
-    if (!context.mounted) return;
-    context.read<QuizCubit>().reportQuestion(
+    final report = await ReportQuestionSheet.show(context);
+    if (report == null || !context.mounted) return;
+    // Reports become TECHNICAL support tickets — there is no report endpoint.
+    final reasonLabel = report.reasonKey.tr();
+    final ok = await context.read<QuizCubit>().reportQuestion(
           questionId: questionId,
-          reasonKey: reasonKey,
+          title: reasonLabel,
+          body: report.message.isEmpty ? reasonLabel : report.message,
         );
+    if (!context.mounted) return;
+    if (ok) {
+      SnackBarHelper.showSuccess(context, message: 'quiz.actions.report_sent');
+    } else {
+      SnackBarHelper.showError(context, message: 'errors.generic');
+    }
   }
 
-  void _confirmExit(BuildContext context) {
-    if (context.canPop()) context.pop();
+  Future<void> _confirmExit(BuildContext context) async {
+    // Review mode has no in-progress attempt to lose — exit immediately.
+    if (state.isReview) {
+      if (context.canPop()) context.pop();
+      return;
+    }
+    final confirmed = await ConfirmDialog.show(
+      context: context,
+      icon: Icons.logout_rounded,
+      titleKey: 'quiz.exit.confirm_title',
+      messageKey: 'quiz.exit.confirm_subtitle',
+      confirmKey: 'quiz.exit.confirm_cta',
+    );
+    if (confirmed == true && context.mounted && context.canPop()) {
+      context.pop();
+    }
   }
 }
 

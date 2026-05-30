@@ -16,6 +16,8 @@ class ResponsiveText extends StatelessWidget {
     this.isSelectable = false,
     this.softWrap = true,
     this.textDecoration,
+    this.args,
+    this.namedArgs,
   });
   final String? text; // Allow text to be nullable
   final TextStyle? style;
@@ -26,6 +28,12 @@ class ResponsiveText extends StatelessWidget {
   final bool softWrap;
   final TextDecoration? textDecoration;
   final TextDirection? textDirection;
+
+  /// Positional interpolation values forwarded to `.tr(args: ...)`. Use these
+  /// instead of pre-translating with `key.tr(args: ...)` and passing the
+  /// resolved string in (which double-translates).
+  final List<String>? args;
+  final Map<String, String>? namedArgs;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class ResponsiveText extends StatelessWidget {
 
     if (isSelectable) {
       return SelectableText(
-        text!.tr(),
+        text!.tr(args: args, namedArgs: namedArgs),
         style: effectiveStyle,
         textAlign: textAlign,
         maxLines: maxLines,
@@ -48,7 +56,7 @@ class ResponsiveText extends StatelessWidget {
     }
 
     return Text(
-      text!.tr(),
+      text!.tr(args: args, namedArgs: namedArgs),
       textDirection: textDirection,
       style: effectiveStyle,
       textAlign: textAlign,

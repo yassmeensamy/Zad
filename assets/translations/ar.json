@@ -600,6 +600,7 @@
       "title": "الأعضاء · {count}",
       "role_leader": "القائد",
       "meta": "{done} / {total} مرحلة",
+      "code_label": "رمز الفريق",
       "empty_filter": "لا أعضاء يطابقون هذا الفلتر.",
       "filter": {
         "all": "الكل",

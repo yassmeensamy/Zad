@@ -32,7 +32,9 @@
       "Bash(sed -n '364,372p' lib/features/support_tickets/presentation/screens/ticket_detail_screen.dart)",
       "Bash(python3 -c \"import json;d=json.load\\(open\\('assets/translations/en.json'\\)\\);print\\(json.dumps\\(d.get\\('support_tickets',{}\\), indent=2, ensure_ascii=False\\)\\)\")",
       "Bash(grep -iA4 \"repl\\\\|plural\")",
-      "Bash(python3 -c 'import json;d=json.load\\(open\\('\\\\''assets/translations/__TRACKED_VAR__.json'\\\\''\\)\\);print\\('\\\\''__TRACKED_VAR__.json OK — leaderboard keys:'\\\\'', list\\(d['\\\\''leaderboard'\\\\''].keys\\(\\)\\)\\)')"
+      "Bash(python3 -c 'import json;d=json.load\\(open\\('\\\\''assets/translations/__TRACKED_VAR__.json'\\\\''\\)\\);print\\('\\\\''__TRACKED_VAR__.json OK — leaderboard keys:'\\\\'', list\\(d['\\\\''leaderboard'\\\\''].keys\\(\\)\\)\\)')",
+      "Bash(sed -n '1,45p' lib/features/teams/data/models/team_progress_model.dart)",
+      "Bash(sed -n '1,45p' lib/features/teams/data/models/team_progress_summary_model.dart)"
     ]
   }
 }

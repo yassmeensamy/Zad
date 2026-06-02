@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -45,11 +47,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    // The shell renders an opaque bottom nav (64px + safe-area) with
+    // `extendBody: true`, so this branch's content sits *behind* it. The shell
+    // Scaffold consumes the body's MediaQuery padding, so read the raw device
+    // inset from the FlutterView; pad the bottom by nav height + inset + a small
+    // gap so the pinned footer card clears the bar and stays tappable.
+    final view = View.of(context);
+    final bottomInset = view.viewPadding.bottom / view.devicePixelRatio;
+    final bottomNavSpace = 64 + bottomInset + 10;
+
     return TeamScaffold(
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+          padding: EdgeInsets.fromLTRB(14, 8, 14, 8 + bottomNavSpace),
           child: BlocBuilder<RankingsCubit, RankingsState>(
             builder: (context, state) {
               final cubit = context.read<RankingsCubit>();
@@ -286,6 +297,7 @@ class _Footer extends StatelessWidget {
       title: me.teamName,
       completed: me.totalCompletedLevels,
       total: me.totalLevels,
+      onTap: () => context.pushNamed(AppRoutes.teamMembersName),
     );
   }
 }

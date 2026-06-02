@@ -600,6 +600,7 @@
       "title": "Members · {count}",
       "role_leader": "Leader",
       "meta": "{done} / {total} levels",
+      "code_label": "Team code",
       "empty_filter": "No members match this filter.",
       "filter": {
         "all": "All",

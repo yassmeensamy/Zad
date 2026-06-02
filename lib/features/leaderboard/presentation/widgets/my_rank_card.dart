@@ -12,6 +12,7 @@ class MyRankCard extends StatelessWidget {
     required this.title,
     required this.completed,
     required this.total,
+    this.onTap,
   });
 
   final String label;
@@ -20,10 +21,13 @@ class MyRankCard extends StatelessWidget {
   final int completed;
   final int total;
 
+  /// When provided, the card becomes tappable (e.g. to open team details).
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Container(
+    final card = Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -107,7 +111,26 @@ class MyRankCard extends StatelessWidget {
               ],
             ),
           ),
+          if (onTap != null) ...[
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 22,
+              color: AppColors.amberDeep.withValues(alpha: 0.7),
+            ),
+          ],
         ],
+      ),
+    );
+
+    if (onTap == null) return card;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: card,
       ),
     );
   }

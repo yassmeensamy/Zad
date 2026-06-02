@@ -2,12 +2,20 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../core/widgets/zaad_circle_button.dart';
+import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
+import '../../data/models/team_member_model.dart';
+import '../../data/models/team_members_model.dart';
+import '../../data/models/team_model.dart';
+import '../../data/models/team_progress_model.dart';
+import '../../data/models/team_progress_summary_model.dart';
+import '../../data/models/team_role_enum.dart';
 import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
 import '../widgets/olive_hero_card.dart';
@@ -15,6 +23,36 @@ import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
 import '../widgets/team_leave_sheet.dart';
 import '../widgets/zaad_pill.dart';
+
+/// Presentation-only mock state shown under [Skeletonizer] while the real team
+/// home loads — realistic shapes only, never touches the data layer.
+const TeamsState _kSkeletonHomeState = TeamsState(
+  status: TeamsStatus.hasTeam,
+  team: TeamModel(
+    id: '0',
+    name: 'Team name',
+    joinCode: 'XXXX-XXXX',
+    memberCount: 8,
+    yourRole: TeamRoleEnum.member,
+  ),
+  members: TeamMembersModel(
+    teamId: '0',
+    members: [
+      TeamMemberModel(userId: '0', username: 'Companion', role: TeamRoleEnum.owner),
+      TeamMemberModel(userId: '1', username: 'Companion', role: TeamRoleEnum.member),
+      TeamMemberModel(userId: '2', username: 'Companion', role: TeamRoleEnum.member),
+      TeamMemberModel(userId: '3', username: 'Companion', role: TeamRoleEnum.member),
+      TeamMemberModel(userId: '4', username: 'Companion', role: TeamRoleEnum.member),
+    ],
+  ),
+  progress: TeamProgressModel(
+    teamId: '0',
+    teamName: 'Team name',
+    teamRank: 3,
+    totalTeams: 50,
+  ),
+  summary: TeamProgressSummaryModel(teamRank: 3, totalTeams: 50),
+);
 
 class TeamHomeScreen extends StatefulWidget {
   const TeamHomeScreen({super.key});
@@ -52,8 +90,36 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
       builder: (context, state) {
         final team = state.team;
         if (team == null) {
-          return const TeamScaffold(
-            child: Center(child: CircularProgressIndicator.adaptive()),
+          return TeamScaffold(
+            child: Skeletonizer(
+              enabled: true,
+              effect: appShimmerEffect(context.appColors),
+              child: CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                slivers: [
+                  const SliverToBoxAdapter(
+                    child: ZaadAppBar(
+                      title: 'Team name',
+                      subtitle: 'teams.home.eyebrow',
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
+                    sliver: SliverList.list(
+                      children: const [
+                        _HeroCard(state: _kSkeletonHomeState),
+                        SizedBox(height: 22),
+                        _MembersStrip(state: _kSkeletonHomeState),
+                        SizedBox(height: 18),
+                        _WeekStrip(),
+                        SizedBox(height: 22),
+                        _RecentActivity(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         }
         return TeamScaffold(

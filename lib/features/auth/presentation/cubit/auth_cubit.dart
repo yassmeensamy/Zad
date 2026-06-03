@@ -49,12 +49,76 @@ class AuthCubit extends BaseCubit<AuthState> {
         password: password,
         fullName: fullName,
       );
+      if (response.isPendingVerification) {
+        // Account created but the email needs to be verified with a code.
+        emit(
+          state.copyWith(
+            status: AuthStatus.notLoggedIn,
+            verificationStatus: VerificationStatus.pending,
+            pendingEmail: email,
+          ),
+        );
+        return;
+      }
       _emitLoggedIn(response, email: email);
     } on ServerException catch (e) {
       _emitError(_errorMessage(e));
     } catch (e) {
       logger.debug('Error in signup: $e');
       _emitError('general_error');
+    }
+  }
+
+  /// Confirms the signup with the verification code sent to [pendingEmail].
+  /// On success the user becomes logged in.
+  Future<void> verifyEmail(String otp) async {
+    final email = state.pendingEmail;
+    if (email == null) return;
+
+    emit(
+      state.copyWith(
+        status: AuthStatus.notLoggedIn,
+        verificationStatus: VerificationStatus.verifying,
+        pendingEmail: email,
+      ),
+    );
+    try {
+      final response = await _repository.verifyEmail(email: email, otp: otp);
+      _emitLoggedIn(response, email: email);
+    } on ServerException catch (e) {
+      _emitVerificationError(_errorMessage(e));
+    } catch (e) {
+      logger.debug('Error in verifyEmail: $e');
+      _emitVerificationError('general_error');
+    }
+  }
+
+  /// Requests a fresh verification code for [pendingEmail].
+  Future<void> resendVerification() async {
+    final email = state.pendingEmail;
+    if (email == null) return;
+
+    emit(
+      state.copyWith(
+        status: AuthStatus.notLoggedIn,
+        verificationStatus: VerificationStatus.resending,
+        pendingEmail: email,
+      ),
+    );
+    try {
+      await _repository.resendVerification(email: email);
+      emit(
+        state.copyWith(
+          status: AuthStatus.notLoggedIn,
+          verificationStatus: VerificationStatus.pending,
+          pendingEmail: email,
+        ),
+      );
+    } on ServerException catch (e) {
+      _emitVerificationError(_errorMessage(e));
+    } catch (e) {
+      logger.debug('Error in resendVerification: $e');
+      _emitVerificationError('general_error');
     }
   }
 
@@ -153,6 +217,17 @@ class AuthCubit extends BaseCubit<AuthState> {
 
   void _emitError(String message) {
     emit(state.copyWith(status: AuthStatus.error, errorMessage: message));
+  }
+
+  void _emitVerificationError(String message) {
+    emit(
+      state.copyWith(
+        status: AuthStatus.notLoggedIn,
+        verificationStatus: VerificationStatus.error,
+        pendingEmail: state.pendingEmail,
+        errorMessage: message,
+      ),
+    );
   }
 
   void _emitSocialError(String message) {

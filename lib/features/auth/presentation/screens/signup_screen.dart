@@ -9,7 +9,6 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
-import '../../../splash/widgets/zaad_logo_mark.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -17,6 +16,7 @@ import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_prompt_link.dart';
 import '../widgets/signup_success_dialog.dart';
+import '../widgets/verify_email_dialog.dart';
 import '../widgets/zaad_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -77,18 +77,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     context.go(AppRoutes.login);
   }
 
+  /// Fires once when signup transitions into `pending_verification`. Drives the
+  /// whole verification step off the [VerificationStatus] enum: the dialog
+  /// reports its own outcome, so no manual "is shown" bookkeeping is needed.
+  Future<void> _onVerificationStarted(
+    BuildContext context,
+    AuthState state,
+  ) async {
+    final verified = await VerifyEmailDialog.show(
+      context,
+      email: state.pendingEmail ?? _emailController.text.trim(),
+    );
+    if (!mounted || verified != true) return;
+    _awaitingSignupResult = false;
+    _showSuccess(this.context);
+  }
+
   void _onAuthStateChanged(BuildContext context, AuthState state) {
     if (state.isLoggedIn) {
       if (_awaitingSignupResult && !_successShown) {
         _awaitingSignupResult = false;
-        _successShown = true;
-        SignupSuccessDialog.show(
-          context,
-          onContinue: () {
-            Navigator.of(context, rootNavigator: true).pop();
-            context.go(AppRoutes.roleSelect);
-          },
-        );
+        _showSuccess(context);
         return;
       }
       context.go(AppRoutes.roleSelect);
@@ -102,6 +111,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  void _showSuccess(BuildContext context) {
+    if (_successShown) return;
+    _successShown = true;
+    SignupSuccessDialog.show(
+      context,
+      onContinue: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        context.go(AppRoutes.roleSelect);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
@@ -111,8 +132,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
       ),
-      child: BlocListener<AuthCubit, AuthState>(
-        listener: _onAuthStateChanged,
+      child: MultiBlocListener(
+        listeners: [
+          // Launches the PIN dialog exactly once, when signup enters the
+          // pending-verification state (a resend keeps it pending, so this
+          // won't re-fire).
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) =>
+                !previous.isAwaitingVerification &&
+                current.isPendingVerification,
+            listener: _onVerificationStarted,
+          ),
+          // Handles the non-verification paths (direct login / errors); the
+          // verification login is owned by the dialog flow above.
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status &&
+                !previous.isAwaitingVerification,
+            listener: _onAuthStateChanged,
+          ),
+        ],
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           body: DesertBackground(

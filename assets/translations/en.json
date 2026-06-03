@@ -1,5 +1,9 @@
 {
   "app_name": "Zaad",
+  "did_not_receive_code": "Didn't receive the code?",
+  "resend": "Resend",
+  "resend_in": "Resend in",
+  "seconds": "seconds",
   "common": {
     "ok": "OK",
     "cancel": "Cancel",
@@ -276,6 +280,13 @@
       "submit": "RESET PASSWORD",
       "cancel": "Cancel",
       "success": "Your password has been reset. Sign in with your new password."
+    },
+    "verify_email_dialog": {
+      "title": "Verify your email",
+      "subtitle": "Enter the 6-digit code we sent to the address below to activate your account.",
+      "verify": "VERIFY",
+      "no_code": "Didn't get a code? ",
+      "resend": "Resend"
     }
   },
   "errors": {

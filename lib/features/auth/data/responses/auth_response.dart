@@ -3,6 +3,11 @@ import 'dart:convert';
 import '../../../../core/models/user_model.dart';
 
 class AuthResponse {
+  /// Returned by the signup endpoint (HTTP 202) when the account exists but the
+  /// email has not been verified yet. In this state [accessToken] /
+  /// [refreshToken] are empty and the user must confirm via a verification code.
+  static const String pendingVerificationToken = 'pending_verification';
+
   final String accessToken;
   final String refreshToken;
   final String tokenType;
@@ -20,16 +25,20 @@ class AuthResponse {
   });
 
   factory AuthResponse.fromMap(Map<String, dynamic> map) => AuthResponse(
-    accessToken: map['accessToken'] as String,
-    refreshToken: map['refreshToken'] as String,
+    // Empty/absent during a `pending_verification` signup (HTTP 202).
+    accessToken: map['accessToken'] as String? ?? '',
+    refreshToken: map['refreshToken'] as String? ?? '',
     tokenType: map['tokenType'] as String? ?? 'Bearer',
-    userId: map['userId'] as String,
-    role: UserRole.fromWire(map['role'] as String),
-    fullName: map['fullName'] as String,
+    userId: map['userId'] as String? ?? '',
+    role: UserRole.fromWire(map['role'] as String? ?? UserRole.parent.wire),
+    fullName: map['fullName'] as String? ?? '',
   );
 
   factory AuthResponse.fromJson(String source) =>
       AuthResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  /// Whether this response represents an account awaiting email verification.
+  bool get isPendingVerification => tokenType == pendingVerificationToken;
 
   AuthResponse copyWith({
     String? accessToken,

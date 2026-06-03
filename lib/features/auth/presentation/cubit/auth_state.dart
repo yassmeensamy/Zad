@@ -14,6 +14,17 @@ extension SocialAuthStatusX on SocialAuthStatus {
   bool get isError => this == SocialAuthStatus.error;
 }
 
+/// Tracks the email-verification step that follows a `pending_verification`
+/// signup, independently of the main [AuthStatus].
+enum VerificationStatus { pending, verifying, resending, error }
+
+extension VerificationStatusX on VerificationStatus {
+  bool get isPending => this == VerificationStatus.pending;
+  bool get isVerifying => this == VerificationStatus.verifying;
+  bool get isResending => this == VerificationStatus.resending;
+  bool get isError => this == VerificationStatus.error;
+}
+
 class AuthState {
   const AuthState({
     this.status = AuthStatus.initial,
@@ -21,6 +32,8 @@ class AuthState {
     this.errorMessage,
     this.socialAuthStatus,
     this.userType,
+    this.verificationStatus,
+    this.pendingEmail,
   });
 
   final AuthStatus status;
@@ -29,18 +42,28 @@ class AuthState {
   final SocialAuthStatus? socialAuthStatus;
   final UserType? userType;
 
+  /// Non-null while an email-verification flow is in progress; null otherwise.
+  final VerificationStatus? verificationStatus;
+
+  /// Email awaiting verification, used by [verifyEmail] / [resendVerification].
+  final String? pendingEmail;
+
   AuthState copyWith({
     AuthStatus? status,
     String? email,
     String? errorMessage,
     SocialAuthStatus? socialAuthStatus,
     UserType? userType,
+    VerificationStatus? verificationStatus,
+    String? pendingEmail,
   }) => AuthState(
     status: status ?? this.status,
     email: email ?? this.email,
     errorMessage: errorMessage,
     socialAuthStatus: socialAuthStatus,
     userType: userType ?? this.userType,
+    verificationStatus: verificationStatus,
+    pendingEmail: pendingEmail ?? this.pendingEmail,
   );
 
   bool get isInitial => status.isInitial;
@@ -50,6 +73,11 @@ class AuthState {
   bool get isError => status.isError;
   bool get isGuest => status.isGuest;
   bool get isSocialLoading => socialAuthStatus?.isLoading ?? false;
+  bool get isPendingVerification => verificationStatus?.isPending ?? false;
+  bool get isVerifying => verificationStatus?.isVerifying ?? false;
+  bool get isResendingCode => verificationStatus?.isResending ?? false;
+  bool get isVerificationError => verificationStatus?.isError ?? false;
+  bool get isAwaitingVerification => verificationStatus != null;
 
   @override
   bool operator ==(Object other) {
@@ -60,10 +88,19 @@ class AuthState {
         other.email == email &&
         other.errorMessage == errorMessage &&
         other.socialAuthStatus == socialAuthStatus &&
-        other.userType == userType;
+        other.userType == userType &&
+        other.verificationStatus == verificationStatus &&
+        other.pendingEmail == pendingEmail;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(status, email, errorMessage, socialAuthStatus, userType);
+  int get hashCode => Object.hash(
+    status,
+    email,
+    errorMessage,
+    socialAuthStatus,
+    userType,
+    verificationStatus,
+    pendingEmail,
+  );
 }

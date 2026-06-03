@@ -22,6 +22,13 @@ abstract class AuthRemoteDataSource {
     required String newPassword,
   });
 
+  Future<AuthResponse> verifyEmail({
+    required String email,
+    required String otp,
+  });
+
+  Future<void> resendVerification({required String email});
+
   Future<AuthResponse> switchAccount(String childId);
 
   Future<void> logout(String refreshToken);

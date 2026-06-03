@@ -12,6 +12,8 @@ class AppEndpoint {
   String get switchAccount => '${baseUrl}api/auth/switch';
   String get forgotPassword => '${baseUrl}api/auth/forgot-password';
   String get resetPassword => '${baseUrl}api/auth/reset-password';
+  String get verifyEmail => '${baseUrl}api/auth/verify-email';
+  String get resendVerification => '${baseUrl}api/auth/resend-verification';
 
   // Child Management
   String get children => '${baseUrl}api/children';

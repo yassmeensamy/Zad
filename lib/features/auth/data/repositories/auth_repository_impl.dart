@@ -29,7 +29,11 @@ class AuthRepositoryImpl implements AuthRepository {
       password: password,
       fullName: fullName,
     );
-    await _localService.onLoginSuccess(response);
+    // When the account still needs email verification the tokens are empty,
+    // so don't persist them — the user logs in only after verifyEmail().
+    if (!response.isPendingVerification) {
+      await _localService.onLoginSuccess(response);
+    }
     return response;
   }
 
@@ -75,6 +79,23 @@ class AuthRepositoryImpl implements AuthRepository {
     otp: otp,
     newPassword: newPassword,
   );
+
+  @override
+  Future<AuthResponse> verifyEmail({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await _remoteDataSource.verifyEmail(
+      email: email,
+      otp: otp,
+    );
+    await _localService.onLoginSuccess(response);
+    return response;
+  }
+
+  @override
+  Future<void> resendVerification({required String email}) =>
+      _remoteDataSource.resendVerification(email: email);
 
   @override
   Future<AuthResponse> switchAccount(String childId) async {

@@ -25,6 +25,9 @@ class AppEndpoint {
   String get changePassword => '${baseUrl}api/users/me/password';
   String get userLanguage => '${baseUrl}api/users/me/language';
 
+  String get streak => '${baseUrl}api/users/me/streak';
+  String get weeklyStreak => '${baseUrl}api/users/me/streak/weekly';
+
   // Categories
   String get quizCategories => '${baseUrl}api/quiz/categories';
 

@@ -8,11 +8,12 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../theme/theme.dart';
+import '../../../streak/presentation/cubit/streak_cubit.dart';
+import '../../../streak/presentation/cubit/streak_state.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/models/hadith_model.dart';
 import '../../data/models/home_overview_model.dart';
-import '../../data/models/streak_model.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../widgets/hadith_card.dart';
@@ -25,8 +26,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>(
-      create: (_) => sl<HomeCubit>()..getOverview(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(
+          create: (_) => sl<HomeCubit>()..getOverview(),
+        ),
+        BlocProvider<StreakCubit>(
+          create: (_) => sl<StreakCubit>()..load(),
+        ),
+      ],
       child: const _HomeView(),
     );
   }
@@ -62,8 +70,12 @@ class _HomeView extends StatelessWidget {
                 final overview = state.overview ?? _placeholderOverview;
                 return RefreshIndicator(
                   color: colors.olive,
-                  onRefresh: () =>
+                  onRefresh: () async {
+                    await Future.wait([
                       context.read<HomeCubit>().getOverview(refresh: true),
+                      context.read<StreakCubit>().load(refresh: true),
+                    ]);
+                  },
                   child: Skeletonizer(
                     enabled: showSkeleton,
                     child: _LoadedContent(overview: overview),
@@ -104,13 +116,9 @@ class _LoadedContent extends StatelessWidget {
           },
         ),
         const SizedBox(height: 26),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: StreakHero(
-            streakDays: overview.streak.streakDays,
-            weekProgress: overview.streak.weekProgress,
-            todayIndex: overview.streak.todayIndex,
-          ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          child: _StreakSection(),
         ),
         const SizedBox(height: 14),
         Padding(
@@ -137,6 +145,28 @@ class _LoadedContent extends StatelessWidget {
     final trimmed = fullName?.trim() ?? '';
     if (trimmed.isEmpty) return fallback;
     return trimmed.split(RegExp(r'\s+')).first;
+  }
+}
+
+class _StreakSection extends StatelessWidget {
+  const _StreakSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<StreakCubit, StreakState>(
+      builder: (context, state) {
+        final showSkeleton =
+            state.isInitial || state.isLoading || !state.hasStreak;
+        return Skeletonizer(
+          enabled: showSkeleton,
+          child: StreakHero(
+            streakDays: state.streakDays,
+            weekProgress: state.weekProgress,
+            todayIndex: state.todayIndex,
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -171,13 +201,6 @@ class _BackdropPattern extends StatelessWidget {
 /// Lookalike payload used while the real overview loads, so [Skeletonizer]
 /// has shapes of the right size to mask.
 const _placeholderOverview = HomeOverviewModel(
-  streak: StreakModel(
-    streakDays: 12,
-    weekProgress: [true, true, true, true, true, false, false],
-    todayIndex: 5,
-    personalBest: 28,
-    nextMilestone: 14,
-  ),
   hadithOfDay: HadithModel(
     id: 0,
     source: '────────────────',

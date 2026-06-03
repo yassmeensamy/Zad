@@ -1,14 +1,10 @@
 import '../models/hadith_model.dart';
 import '../models/home_overview_model.dart';
-import '../models/streak_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<HomeOverviewModel> getOverview();
 }
 
-/// Mock implementation that fakes a network round-trip with [Future.delayed]
-/// and serves a static streak + hadith pair. Swap for an API-backed source
-/// when the backend is available — the repository contract stays the same.
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   HomeRemoteDataSourceImpl();
 
@@ -19,13 +15,6 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   static const HomeOverviewModel _seedOverview = HomeOverviewModel(
-    streak: StreakModel(
-      streakDays: 12,
-      weekProgress: [true, true, true, true, true, false, false],
-      todayIndex: 5,
-      personalBest: 28,
-      nextMilestone: 14,
-    ),
     hadithOfDay: HadithModel(
       id: 1,
       source: 'Saḥīḥ al-Bukhārī',

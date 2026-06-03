@@ -48,6 +48,9 @@ import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import '../../features/splash/presentation/cubit/splash_cubit.dart';
+import '../../features/streak/data/remote/streak_remote_data_source.dart';
+import '../../features/streak/data/repositories/streak_repository.dart';
+import '../../features/streak/presentation/cubit/streak_cubit.dart';
 import '../../features/support_tickets/data/remote/support_tickets_remote_data_source.dart';
 import '../../features/support_tickets/data/repositories/support_tickets_repository.dart';
 import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.dart';
@@ -282,5 +285,15 @@ class ServiceLocator {
       () => RankingsRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<RankingsCubit>(() => RankingsCubit(repository: sl()));
+
+    sl.registerLazySingleton<StreakRemoteDataSource>(
+      () => StreakRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
+    );
+    sl.registerLazySingleton<StreakRepository>(
+      () => StreakRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<StreakCubit>(
+      () => StreakCubit(streakRepository: sl(), quizEventService: sl()),
+    );
   }
 }

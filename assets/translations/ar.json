@@ -80,6 +80,12 @@
       "next_milestone": "الهدف القادم",
       "next_milestone_value": "{} · أسبوعان"
     },
+    "play": {
+      "eyebrow": "اختبر معلوماتك",
+      "title_prefix": "ابدأ ",
+      "title_accent": "اللعب",
+      "subtitle": "اختر فئة وتدرّج في المستويات"
+    },
     "team": {
       "eyebrow": "نافِس أصدقاءك",
       "title_prefix": "انضمّ إلى ",

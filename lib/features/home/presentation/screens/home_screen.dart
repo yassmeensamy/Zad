@@ -19,6 +19,7 @@ import '../cubit/home_state.dart';
 import '../widgets/hadith_card.dart';
 import '../widgets/home_header.dart';
 import '../widgets/join_team_card.dart';
+import '../widgets/play_card.dart';
 import '../widgets/streak_hero.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -119,6 +120,13 @@ class _LoadedContent extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 24),
           child: _StreakSection(),
+        ),
+        const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: PlayCard(
+            onTap: () => context.goNamed(AppRoutes.categoriesName),
+          ),
         ),
         const SizedBox(height: 14),
         Padding(

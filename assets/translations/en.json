@@ -80,6 +80,12 @@
       "next_milestone": "NEXT MILESTONE",
       "next_milestone_value": "{} · two weeks"
     },
+    "play": {
+      "eyebrow": "Test your knowledge",
+      "title_prefix": "Start ",
+      "title_accent": "playing",
+      "subtitle": "Pick a category and climb the levels"
+    },
     "team": {
       "eyebrow": "Compete with friends",
       "title_prefix": "Join a ",

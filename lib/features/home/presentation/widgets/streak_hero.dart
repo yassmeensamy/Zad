@@ -56,7 +56,7 @@ class _StreakHeroState extends State<StreakHero>
       borderRadius: BorderRadius.circular(24),
       child: Stack(
         children: [
-          _buildBackground(),
+          _buildBackground(context),
           const Positioned.fill(child: _PatternOverlay()),
 
           const Positioned(
@@ -106,28 +106,29 @@ class _StreakHeroState extends State<StreakHero>
     );
   }
 
-  Widget _buildBackground() {
+  Widget _buildBackground(BuildContext context) {
+    final colors = context.appColors;
     return Positioned.fill(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.0, 0.6, 1.0],
+            stops: const [0.0, 0.6, 1.0],
             colors: [
-              AppColors.olive,
-              AppColors.oliveDeep,
-              AppColors.oliveAbyss,
+              colors.heroSurfaceTop,
+              colors.heroSurfaceMid,
+              colors.heroSurfaceBottom,
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadowDeep.withValues(alpha: 0.45),
+              color: colors.heroShadow.withValues(alpha: 0.45),
               blurRadius: 50,
               offset: const Offset(0, 26),
             ),
             BoxShadow(
-              color: AppColors.shadowDeep.withValues(alpha: 0.30),
+              color: colors.heroShadow.withValues(alpha: 0.30),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),

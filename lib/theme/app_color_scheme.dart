@@ -58,6 +58,14 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   // Bottom-sheet gradient bottom (paired with [canvas] for the top stop).
   final Color sheetSurface;
 
+  // Streak hero banner (home screen) — a full-bleed gradient card. Olive in
+  // light; the roasted-brown Date & Ember ramp in dark so it matches the
+  // leaderboard surfaces instead of reading as a light-mode green.
+  final Color heroSurfaceTop;
+  final Color heroSurfaceMid;
+  final Color heroSurfaceBottom;
+  final Color heroShadow;
+
   // Peach-rose tint that backs warning icons & error-state input fills.
   final Color warningSurface;
 
@@ -128,6 +136,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.inputSurface,
     required this.sheetSurface,
     required this.warningSurface,
+    required this.heroSurfaceTop,
+    required this.heroSurfaceMid,
+    required this.heroSurfaceBottom,
+    required this.heroShadow,
     required this.goldLight,
     required this.goldMid,
     required this.goldDeep,
@@ -185,6 +197,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     inputSurface: AppColors.white,
     sheetSurface: AppColors.paperSand,
     warningSurface: AppColors.roseBlush,
+    heroSurfaceTop: AppColors.olive,
+    heroSurfaceMid: AppColors.oliveDeep,
+    heroSurfaceBottom: AppColors.oliveAbyss,
+    heroShadow: AppColors.shadowDeep,
     goldLight: AppColors.flameLight,
     goldMid: AppColors.goldMid,
     goldDeep: AppColors.goldDeep,
@@ -246,6 +262,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     inputSurface: AppColors.nightRaised,
     sheetSurface: AppColors.canvasNight2,
     warningSurface: AppColors.tobacco,
+    // Roasted-brown ramp (raised → surface → base) so the hero matches the
+    // Date & Ember leaderboard surfaces instead of the light-mode olive.
+    heroSurfaceTop: AppColors.nightRaised,
+    heroSurfaceMid: AppColors.nightSurface,
+    heroSurfaceBottom: AppColors.nightLow,
+    heroShadow: AppColors.black,
     goldLight: AppColors.flameLight,
     goldMid: AppColors.goldMid,
     goldDeep: AppColors.goldDeep,
@@ -304,6 +326,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? inputSurface,
     Color? sheetSurface,
     Color? warningSurface,
+    Color? heroSurfaceTop,
+    Color? heroSurfaceMid,
+    Color? heroSurfaceBottom,
+    Color? heroShadow,
     Color? goldLight,
     Color? goldMid,
     Color? goldDeep,
@@ -360,6 +386,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         inputSurface: inputSurface ?? this.inputSurface,
         sheetSurface: sheetSurface ?? this.sheetSurface,
         warningSurface: warningSurface ?? this.warningSurface,
+        heroSurfaceTop: heroSurfaceTop ?? this.heroSurfaceTop,
+        heroSurfaceMid: heroSurfaceMid ?? this.heroSurfaceMid,
+        heroSurfaceBottom: heroSurfaceBottom ?? this.heroSurfaceBottom,
+        heroShadow: heroShadow ?? this.heroShadow,
         goldLight: goldLight ?? this.goldLight,
         goldMid: goldMid ?? this.goldMid,
         goldDeep: goldDeep ?? this.goldDeep,
@@ -421,6 +451,11 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       inputSurface: Color.lerp(inputSurface, other.inputSurface, t)!,
       sheetSurface: Color.lerp(sheetSurface, other.sheetSurface, t)!,
       warningSurface: Color.lerp(warningSurface, other.warningSurface, t)!,
+      heroSurfaceTop: Color.lerp(heroSurfaceTop, other.heroSurfaceTop, t)!,
+      heroSurfaceMid: Color.lerp(heroSurfaceMid, other.heroSurfaceMid, t)!,
+      heroSurfaceBottom:
+          Color.lerp(heroSurfaceBottom, other.heroSurfaceBottom, t)!,
+      heroShadow: Color.lerp(heroShadow, other.heroShadow, t)!,
       goldLight: Color.lerp(goldLight, other.goldLight, t)!,
       goldMid: Color.lerp(goldMid, other.goldMid, t)!,
       goldDeep: Color.lerp(goldDeep, other.goldDeep, t)!,

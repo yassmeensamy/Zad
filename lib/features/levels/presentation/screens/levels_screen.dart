@@ -7,6 +7,7 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/random_tint.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../categories/data/models/category_model.dart';
@@ -54,7 +55,7 @@ class _LevelsScreenState extends State<LevelsScreen>
           context,
           message: state.errorMessage ?? 'errors.generic',
         ),
-        child: Scaffold(
+        child: AppScaffold(
           body: Column(
             children: [
               ZaadAppBar(

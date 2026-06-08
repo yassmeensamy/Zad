@@ -11,7 +11,6 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'core/navigation/app_router.dart';
 import 'core/services/core_service_locator.dart';
-import 'core/widgets/app_backdrop.dart';
 import 'core/services/service_locator.dart';
 import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/data/strategies/oauth_strategy_factory.dart';
@@ -82,19 +81,6 @@ class MyApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         routerConfig: AppRouter.router,
-        // Paint the shared Date & Ember backdrop once behind every route in
-        // dark mode; scaffolds are transparent in dark so it shows through.
-        builder: (context, child) {
-          if (Theme.of(context).brightness != Brightness.dark || child == null) {
-            return child ?? const SizedBox.shrink();
-          }
-          return Stack(
-            children: [
-              const Positioned.fill(child: AppBackdrop()),
-              child,
-            ],
-          );
-        },
       ),
     );
   }

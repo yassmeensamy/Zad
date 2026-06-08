@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/widgets/app_scaffold.dart';
 import '../widgets/zaad_bottom_nav.dart';
 
 class HomeShell extends StatelessWidget {
@@ -40,11 +41,7 @@ class HomeShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      // Transparent in dark so the global Date & Ember backdrop shows through.
-      backgroundColor:
-          isDark ? Colors.transparent : Theme.of(context).colorScheme.surface,
+    return AppScaffold(
       extendBody: true,
       body: navigationShell,
       bottomNavigationBar: ZaadBottomNav(

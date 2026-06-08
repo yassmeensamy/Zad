@@ -98,7 +98,11 @@
         "code_label": "رمز الفريق",
         "code_placeholder": "ABCD-1234",
         "submit": "انضمّ للفريق"
-      }
+      },
+      "joined_eyebrow": "فريقي",
+      "open": "→ افتح",
+      "rank_label": "الترتيب",
+      "companions_count": "{} رفيقًا"
     },
     "hadith": {
       "section_title": "حديث اليوم",

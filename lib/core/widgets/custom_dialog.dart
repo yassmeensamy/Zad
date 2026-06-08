@@ -20,12 +20,6 @@ class CustomDialog extends StatelessWidget {
   final EdgeInsets? insetPadding;
 
   static const double _borderStroke = 1.6;
-  static const LinearGradient _borderGradient = LinearGradient(
-    begin: Alignment.topRight,
-    end: Alignment.bottomLeft,
-    stops: [0.4, 0.9],
-    colors: [AppColors.creamBorderDark, AppColors.creamBorderLight],
-  );
 
   static Future<T?> show<T>({
     required BuildContext context,
@@ -75,7 +69,12 @@ class CustomDialog extends StatelessWidget {
           padding: const EdgeInsets.all(_borderStroke),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
-            gradient: _borderGradient,
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: const [0.4, 0.9],
+              colors: [colors.dialogBorderTop, colors.dialogBorderBottom],
+            ),
             boxShadow: [
               BoxShadow(
                 color: colors.textArabic.withValues(alpha: 0.18),
@@ -93,8 +92,10 @@ class CustomDialog extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius - _borderStroke),
             child: Stack(
               children: [
-                const Positioned.fill(
-                  child: DesertBackground(child: SizedBox.shrink()),
+                Positioned.fill(
+                  child: context.isDark
+                      ? const _NightDialogSurface()
+                      : const DesertBackground(child: SizedBox.shrink()),
                 ),
                 SingleChildScrollView(
                   padding: padding,
@@ -104,6 +105,58 @@ class CustomDialog extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Dark-mode counterpart to [DesertBackground] for the dialog body: a roasted
+/// "Date & Ember" panel — a soft surface gradient, a top amber wash and the
+/// tiled Islamic-pattern wallpaper — so the dialog reads as a lifted dark card
+/// instead of a light desert sheet. Built entirely from theme tokens.
+class _NightDialogSurface extends StatelessWidget {
+  const _NightDialogSurface();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
+        ),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Tiled Islamic-pattern wallpaper, screened faintly over the surface.
+          Opacity(
+            opacity: 0.05,
+            child: Image.asset(
+              'assets/images/islamic-pattern.png',
+              repeat: ImageRepeat.repeat,
+              alignment: Alignment.topLeft,
+              color: colors.heroInk,
+              colorBlendMode: BlendMode.screen,
+            ),
+          ),
+          // Warm amber wash glowing from the top edge.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0, -0.95),
+                radius: 0.9,
+                colors: [
+                  colors.accent.withValues(alpha: 0.16),
+                  colors.accent.withValues(alpha: 0),
+                ],
+                stops: const [0.0, 0.65],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

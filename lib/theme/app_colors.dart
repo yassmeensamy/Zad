@@ -105,14 +105,20 @@ class AppColors {
   static const Color ivory16 = Color(0x29F4ECD8); // default border
   static const Color ivory08 = Color(0x14F4ECD8); // subtle border / overlay
   static const Color ivory06 = Color(0x0FF4ECD8); // frosted card fill
+  static const Color ivory02 = Color(0x05F4ECD8); // faintest glass film
 
   // Pure neutrals
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF111111);
 
-  // Cream border tones — used for ornamental gradient borders.
+  // Cream border tones — used for ornamental gradient borders (light mode).
   static const Color creamBorderLight = Color(0xFFF0E1BD);
   static const Color creamBorderDark = Color(0xFFA88C68);
+
+  // Ornamental dialog border — the dark-mode counterpart to the cream pair.
+  // A gilded amber hairline fading to a faint ivory edge over the night canvas.
+  static const Color dialogBorderDarkTop = Color(0x66E0A560); // amber @ 40%
+  static const Color dialogBorderDarkBottom = Color(0x29F4ECD8); // ivory @ 16%
 
   // Cream paper surfaces — page backdrop & ornamental cream cards.
   static const Color creamLight = Color(0xFFFBF6E8);

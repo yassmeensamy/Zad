@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
@@ -53,7 +54,7 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppScaffold(
       appBar: ZaadAppBar(
         title: 'help_center.title',
         subtitle: 'help_center.subtitle',

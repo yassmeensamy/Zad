@@ -9,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -87,7 +88,7 @@ class ProfileSelectScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) => _onPopInvoked(context, didPop),
-      child: Scaffold(
+      child: AppScaffold(
         body: BlocListener<AuthCubit, AuthState>(
           // Only react to a switch we initiated from this screen: the auth
           // status flips loading → loggedIn (success) or loading → error.

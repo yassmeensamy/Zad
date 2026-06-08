@@ -33,8 +33,6 @@ class AppTheme {
       brightness: brightness,
       fontFamily: 'ElMessiri',
       colorScheme: colorScheme,
-      // Dark mode is transparent so the global Date & Ember [AppBackdrop]
-      // (injected in main.dart) shows through on every screen.
       scaffoldBackgroundColor: isDark ? Colors.transparent : colorScheme.surface,
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[

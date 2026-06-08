@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
@@ -67,7 +68,7 @@ class CreateChildrenScreen extends StatelessWidget {
 
   Widget _buildScaffold(BuildContext context) {
     final colors = context.appColors;
-    return Scaffold(
+    return AppScaffold(
       body: SafeArea(
         child: BlocListener<ChildCubit, ChildState>(
           listenWhen: (a, b) => a.actionStatus != b.actionStatus,

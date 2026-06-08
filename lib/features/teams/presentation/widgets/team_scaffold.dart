@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../theme/theme.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 
-/// Cream-paper screen background used throughout the Teams flow.
-/// Mirrors the warm parchment gradient from the design canvas.
 class TeamScaffold extends StatelessWidget {
   const TeamScaffold({
     super.key,
@@ -20,32 +18,13 @@ class TeamScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      // Transparent in dark so the global Date & Ember [AppBackdrop] shows
-      // through; light keeps its cream parchment gradient.
-      backgroundColor: isDark ? Colors.transparent : colors.canvas,
-      extendBody: extendBody,
-      // When an app bar is supplied, let the cream gradient flow up
-      // through the bar so the status-bar area, the bar, and the body
-      // form a single continuous parchment surface (no seam).
-      extendBodyBehindAppBar: appBar != null,
+    return AppScaffold(
       appBar: appBar,
       bottomNavigationBar: bottomNav,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? null
-              : LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [colors.backdropTop, colors.backdropBottom],
-                ),
-        ),
-        child: SafeArea(bottom: false, child: child),
-      ),
+      extendBody: extendBody,
+      extendBodyBehindAppBar: appBar != null,
+      safeArea: true,
+      body: child,
     );
   }
 }

@@ -55,6 +55,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color cardSurface;
   final Color inputSurface;
 
+  // CustomDialog ornamental border gradient — two stops. Cream in light, a
+  // gilded amber→ivory hairline in dark. (The dialog's inner surface reuses
+  // [creamSurfaceTop]/[creamSurfaceBottom].)
+  final Color dialogBorderTop;
+  final Color dialogBorderBottom;
+
   // Bottom-sheet gradient bottom (paired with [canvas] for the top stop).
   final Color sheetSurface;
 
@@ -65,6 +71,17 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color heroSurfaceMid;
   final Color heroSurfaceBottom;
   final Color heroShadow;
+
+  // Streak-hero foreground accents. The hero is a dark surface in both
+  // brightnesses (olive in light, roasted brown in dark), so these read the
+  // same in either theme — they exist here only to keep the card's palette
+  // defined centrally instead of hardcoded in the widget.
+  final Color heroInk;
+  final Color heroGlow;
+  final Color heroGold;
+  final Color heroGoldLight;
+  final Color heroAmber;
+  final Color heroAmberDeep;
 
   // Peach-rose tint that backs warning icons & error-state input fills.
   final Color warningSurface;
@@ -134,12 +151,20 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.creamSurfaceBottom,
     required this.cardSurface,
     required this.inputSurface,
+    required this.dialogBorderTop,
+    required this.dialogBorderBottom,
     required this.sheetSurface,
     required this.warningSurface,
     required this.heroSurfaceTop,
     required this.heroSurfaceMid,
     required this.heroSurfaceBottom,
     required this.heroShadow,
+    required this.heroInk,
+    required this.heroGlow,
+    required this.heroGold,
+    required this.heroGoldLight,
+    required this.heroAmber,
+    required this.heroAmberDeep,
     required this.goldLight,
     required this.goldMid,
     required this.goldDeep,
@@ -195,12 +220,20 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     creamSurfaceBottom: AppColors.creamDeep,
     cardSurface: Color(0x8CFFFFFF),
     inputSurface: AppColors.white,
+    dialogBorderTop: AppColors.creamBorderDark,
+    dialogBorderBottom: AppColors.creamBorderLight,
     sheetSurface: AppColors.paperSand,
     warningSurface: AppColors.roseBlush,
     heroSurfaceTop: AppColors.olive,
     heroSurfaceMid: AppColors.oliveDeep,
     heroSurfaceBottom: AppColors.oliveAbyss,
     heroShadow: AppColors.shadowDeep,
+    heroInk: AppColors.ivory,
+    heroGlow: AppColors.amberGlow,
+    heroGold: AppColors.amberGlow,
+    heroGoldLight: AppColors.amberLight,
+    heroAmber: AppColors.discGoldLo,
+    heroAmberDeep: AppColors.amberDeep,
     goldLight: AppColors.flameLight,
     goldMid: AppColors.goldMid,
     goldDeep: AppColors.goldDeep,
@@ -260,14 +293,24 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     creamSurfaceBottom: AppColors.nightRaised,
     cardSurface: AppColors.nightGlass,
     inputSurface: AppColors.nightRaised,
+    dialogBorderTop: AppColors.dialogBorderDarkTop,
+    dialogBorderBottom: AppColors.dialogBorderDarkBottom,
     sheetSurface: AppColors.canvasNight2,
     warningSurface: AppColors.tobacco,
     // Roasted-brown ramp (raised → surface → base) so the hero matches the
     // Date & Ember leaderboard surfaces instead of the light-mode olive.
-    heroSurfaceTop: AppColors.nightRaised,
-    heroSurfaceMid: AppColors.nightSurface,
-    heroSurfaceBottom: AppColors.nightLow,
+    // Frosted ivory-glass surface over the shared Date & Ember backdrop, to
+    // match the leaderboard summary card.
+    heroSurfaceTop: AppColors.ivory06,
+    heroSurfaceMid: AppColors.ivory06,
+    heroSurfaceBottom: AppColors.ivory02,
     heroShadow: AppColors.black,
+    heroInk: AppColors.ivory,
+    heroGlow: AppColors.amberGlow,
+    heroGold: AppColors.amberGlow,
+    heroGoldLight: AppColors.amberLight,
+    heroAmber: AppColors.discGoldLo,
+    heroAmberDeep: AppColors.amberDeep,
     goldLight: AppColors.flameLight,
     goldMid: AppColors.goldMid,
     goldDeep: AppColors.goldDeep,
@@ -324,12 +367,20 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? creamSurfaceBottom,
     Color? cardSurface,
     Color? inputSurface,
+    Color? dialogBorderTop,
+    Color? dialogBorderBottom,
     Color? sheetSurface,
     Color? warningSurface,
     Color? heroSurfaceTop,
     Color? heroSurfaceMid,
     Color? heroSurfaceBottom,
     Color? heroShadow,
+    Color? heroInk,
+    Color? heroGlow,
+    Color? heroGold,
+    Color? heroGoldLight,
+    Color? heroAmber,
+    Color? heroAmberDeep,
     Color? goldLight,
     Color? goldMid,
     Color? goldDeep,
@@ -384,12 +435,20 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         creamSurfaceBottom: creamSurfaceBottom ?? this.creamSurfaceBottom,
         cardSurface: cardSurface ?? this.cardSurface,
         inputSurface: inputSurface ?? this.inputSurface,
+        dialogBorderTop: dialogBorderTop ?? this.dialogBorderTop,
+        dialogBorderBottom: dialogBorderBottom ?? this.dialogBorderBottom,
         sheetSurface: sheetSurface ?? this.sheetSurface,
         warningSurface: warningSurface ?? this.warningSurface,
         heroSurfaceTop: heroSurfaceTop ?? this.heroSurfaceTop,
         heroSurfaceMid: heroSurfaceMid ?? this.heroSurfaceMid,
         heroSurfaceBottom: heroSurfaceBottom ?? this.heroSurfaceBottom,
         heroShadow: heroShadow ?? this.heroShadow,
+        heroInk: heroInk ?? this.heroInk,
+        heroGlow: heroGlow ?? this.heroGlow,
+        heroGold: heroGold ?? this.heroGold,
+        heroGoldLight: heroGoldLight ?? this.heroGoldLight,
+        heroAmber: heroAmber ?? this.heroAmber,
+        heroAmberDeep: heroAmberDeep ?? this.heroAmberDeep,
         goldLight: goldLight ?? this.goldLight,
         goldMid: goldMid ?? this.goldMid,
         goldDeep: goldDeep ?? this.goldDeep,
@@ -449,6 +508,9 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
           Color.lerp(creamSurfaceBottom, other.creamSurfaceBottom, t)!,
       cardSurface: Color.lerp(cardSurface, other.cardSurface, t)!,
       inputSurface: Color.lerp(inputSurface, other.inputSurface, t)!,
+      dialogBorderTop: Color.lerp(dialogBorderTop, other.dialogBorderTop, t)!,
+      dialogBorderBottom:
+          Color.lerp(dialogBorderBottom, other.dialogBorderBottom, t)!,
       sheetSurface: Color.lerp(sheetSurface, other.sheetSurface, t)!,
       warningSurface: Color.lerp(warningSurface, other.warningSurface, t)!,
       heroSurfaceTop: Color.lerp(heroSurfaceTop, other.heroSurfaceTop, t)!,
@@ -456,6 +518,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       heroSurfaceBottom:
           Color.lerp(heroSurfaceBottom, other.heroSurfaceBottom, t)!,
       heroShadow: Color.lerp(heroShadow, other.heroShadow, t)!,
+      heroInk: Color.lerp(heroInk, other.heroInk, t)!,
+      heroGlow: Color.lerp(heroGlow, other.heroGlow, t)!,
+      heroGold: Color.lerp(heroGold, other.heroGold, t)!,
+      heroGoldLight: Color.lerp(heroGoldLight, other.heroGoldLight, t)!,
+      heroAmber: Color.lerp(heroAmber, other.heroAmber, t)!,
+      heroAmberDeep: Color.lerp(heroAmberDeep, other.heroAmberDeep, t)!,
       goldLight: Color.lerp(goldLight, other.goldLight, t)!,
       goldMid: Color.lerp(goldMid, other.goldMid, t)!,
       goldDeep: Color.lerp(goldDeep, other.goldDeep, t)!,

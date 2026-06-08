@@ -1,113 +1,95 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({
-    super.key,
-    required this.firstName,
-    this.hasNotifications = true,
-    this.onBellTap,
-  });
+  const HomeHeader({super.key, this.firstName, this.onBellTap});
 
-  /// User's first name to weave into the greeting line.
-  final String firstName;
-
-  final bool hasNotifications;
+  final String? firstName;
   final VoidCallback? onBellTap;
 
-  String _greetingKey() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'home.greeting_morning';
-    if (hour < 17) return 'home.greeting_afternoon';
-    return 'home.greeting_evening';
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final name =
+        (firstName?.trim().isNotEmpty ?? false) ? firstName!.trim() : 'Zayd';
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 12, 32, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Text(
-              '${_greetingKey().tr()} $firstName',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.titleMedium.copyWith(
-                color: colors.oliveDeep,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          _BellButton(
-            hasDot: hasNotifications,
-            onTap: onBellTap,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BellButton extends StatelessWidget {
-  const _BellButton({required this.hasDot, this.onTap});
-
-  final bool hasDot;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 38,
-          height: 38,
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(13),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: colors.oliveDeep.withValues(alpha: 0.14),
+            gradient: RadialGradient(
+              center: const Alignment(-0.36, -0.44),
+              radius: 0.9,
+              colors: [colors.accentSoft, colors.accent, colors.accentDeep],
+              stops: const [0.0, 0.55, 1.0],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors.accent.withValues(alpha: 0.45),
+                spreadRadius: 1.5,
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: ResponsiveText(
+            name[0].toUpperCase(),
+            style: AppTextStyles.headlineMedium.copyWith(
+              height: 1,
+              color: colors.goldInk,
             ),
           ),
-          child: Stack(
-            alignment: Alignment.center,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.notifications_none_rounded,
-                size: 18,
-                color: colors.oliveDeep,
-              ),
-              if (hasDot)
-                Positioned(
-                  top: 7,
-                  right: 9,
-                  child: Container(
-                    width: 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: colors.accent,
-                      border: Border.all(
-                        color: colors.canvas,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
+              ResponsiveText(
+                'Assalāmu ʿalaykum · 21 Dhū\'l-Qaʿdah',
+                style: AppTextStyles.bodySmall.copyWith(
+                  height: 1.2,
+                  color: colors.textSecondary,
                 ),
+              ),
+              const SizedBox(height: 2),
+              ResponsiveText(
+                'Morning, $name.',
+                style: AppTextStyles.displaySmall.copyWith(
+                  fontSize: 20,
+                  height: 1.1,
+                  color: colors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
-      ),
+        const SizedBox(width: 12),
+        GestureDetector(
+          onTap: onBellTap,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsets.all(11),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colors.overlayLight,
+              border: Border.all(color: colors.borderSubtle),
+            ),
+            alignment: Alignment.center,
+            child: Badge(
+              smallSize: 7,
+              backgroundColor: colors.accent,
+              child: Icon(
+                Icons.notifications_none_rounded,
+                size: 19,
+                color: colors.textPrimary,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

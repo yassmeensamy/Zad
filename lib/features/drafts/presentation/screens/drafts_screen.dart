@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
@@ -33,7 +34,7 @@ class _DraftsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Scaffold(
+    return AppScaffold(
       appBar: ZaadAppBar(
         title: 'drafts.title',
         onBack: context.canPop() ? () => context.pop() : null,

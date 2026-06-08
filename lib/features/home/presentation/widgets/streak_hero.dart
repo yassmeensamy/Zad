@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import 'eight_point_star.dart';
 import 'streak_flame.dart';
@@ -11,19 +12,11 @@ class StreakHero extends StatefulWidget {
     required this.streakDays,
     required this.weekProgress,
     required this.todayIndex,
-    this.onShareTap,
   });
 
-  /// Total streak count (animates from 0 → [streakDays] on mount).
   final int streakDays;
-
-  /// 7 booleans, Mon → Sun, indicating completed days this week.
   final List<bool> weekProgress;
-
-  /// Index in [weekProgress] for today (highlights with a ring).
   final int todayIndex;
-
-  final VoidCallback? onShareTap;
 
   @override
   State<StreakHero> createState() => _StreakHeroState();
@@ -52,6 +45,7 @@ class _StreakHeroState extends State<StreakHero>
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: Stack(
@@ -59,12 +53,12 @@ class _StreakHeroState extends State<StreakHero>
           _buildBackground(context),
           const Positioned.fill(child: _PatternOverlay()),
 
-          const Positioned(
+          Positioned(
             top: -26,
             right: -26,
             child: EightPointStar(
               size: 140,
-              color: AppColors.amberGlow,
+              color: colors.heroGlow,
               opacity: 0.10,
             ),
           ),
@@ -75,20 +69,20 @@ class _StreakHeroState extends State<StreakHero>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _StreakHeader(onShareTap: widget.onShareTap),
+                const _StreakHeader(),
                 const SizedBox(height: 8),
                 _StreakNumberRow(
                   countUp: _countUp,
                   totalDays: widget.streakDays,
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'home.streak.motto_en'.tr(),
+                ResponsiveText(
+                  'home.streak.motto_en',
                   style: AppTextStyles.bodySmall.copyWith(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w300,
                     height: 1.35,
-                    color: AppColors.ivory.withValues(alpha: 0.82),
+                    color: colors.heroInk.withValues(alpha: 0.82),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -134,7 +128,7 @@ class _StreakHeroState extends State<StreakHero>
             ),
           ],
           border: Border.all(
-            color: AppColors.amberGlow.withValues(alpha: 0.18),
+            color: colors.heroGlow.withValues(alpha: 0.18),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(24),
@@ -150,14 +144,15 @@ class RadialGradientHighlight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.topCenter,
           radius: 0.9,
           colors: [
-            AppColors.amberGlow.withValues(alpha: 0.30),
-            AppColors.amberGlow.withValues(alpha: 0),
+            colors.heroGlow.withValues(alpha: 0.30),
+            colors.heroGlow.withValues(alpha: 0),
           ],
           stops: const [0.0, 0.6],
         ),
@@ -191,6 +186,7 @@ class _AmberGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return IgnorePointer(
       child: Container(
         width: 280,
@@ -199,8 +195,8 @@ class _AmberGlow extends StatelessWidget {
           shape: BoxShape.circle,
           gradient: RadialGradient(
             colors: [
-              AppColors.amberGlow.withValues(alpha: 0.32),
-              AppColors.amberGlow.withValues(alpha: 0),
+              colors.heroGlow.withValues(alpha: 0.32),
+              colors.heroGlow.withValues(alpha: 0),
             ],
             stops: const [0.0, 0.7],
           ),
@@ -211,12 +207,11 @@ class _AmberGlow extends StatelessWidget {
 }
 
 class _StreakHeader extends StatelessWidget {
-  const _StreakHeader({this.onShareTap});
-
-  final VoidCallback? onShareTap;
+  const _StreakHeader();
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -226,53 +221,23 @@ class _StreakHeader extends StatelessWidget {
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
               letterSpacing: 8.5 * 0.4,
-              color: AppColors.ivory.withValues(alpha: 0.55),
+              color: colors.heroInk.withValues(alpha: 0.55),
             ),
             children: [
               TextSpan(text: 'home.streak.eyebrow_prefix'.tr().toUpperCase()),
               TextSpan(
                 text: 'home.streak.eyebrow_accent'.tr().toUpperCase(),
-                style: const TextStyle(color: AppColors.flameGold),
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 8.5 * 0.4,
+                  color: colors.heroGold,
+                ),
               ),
             ],
           ),
         ),
-        _ShareButton(onTap: onShareTap),
       ],
-    );
-  }
-}
-
-class _ShareButton extends StatelessWidget {
-  const _ShareButton({this.onTap});
-
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.ivory.withValues(alpha: 0.06),
-            border: Border.all(
-              color: AppColors.ivory.withValues(alpha: 0.16),
-            ),
-          ),
-          child: const Icon(
-            Icons.ios_share_rounded,
-            size: 14,
-            color: AppColors.ivory,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -285,6 +250,7 @@ class _StreakNumberRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -301,23 +267,23 @@ class _StreakNumberRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'home.streak.days_word'.tr(),
+                    ResponsiveText(
+                      'home.streak.days_word',
                       style: AppTextStyles.displaySmall.copyWith(
                         fontSize: 18,
                         height: 1,
                         letterSpacing: -0.3,
-                        color: AppColors.flameGold,
+                        color: colors.heroGold,
                       ),
                     ),
                     const SizedBox(height: 3),
-                    Text(
-                      'home.streak.in_a_row'.tr(),
+                    ResponsiveText(
+                      'home.streak.in_a_row',
                       style: AppTextStyles.labelSmall.copyWith(
                         fontSize: 8,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 8 * 0.34,
-                        color: AppColors.ivory.withValues(alpha: 0.5),
+                        color: colors.heroInk.withValues(alpha: 0.5),
                       ),
                     ),
                   ],
@@ -342,28 +308,47 @@ class _AnimatedNumber extends StatefulWidget {
 }
 
 class _AnimatedNumberState extends State<_AnimatedNumber> {
-  static const _gradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    stops: [0.0, 0.5, 1.0],
-    colors: [
-      AppColors.flameLight,
-      AppColors.flameGold,
-      AppColors.amber,
-    ],
-  );
-
+  LinearGradient? _gradient;
   Rect? _cachedRect;
   Shader? _cachedShader;
 
   Shader _shaderFor(Rect rect) {
     if (_cachedRect == rect && _cachedShader != null) return _cachedShader!;
     _cachedRect = rect;
-    return _cachedShader = _gradient.createShader(rect);
+    return _cachedShader = _gradient!.createShader(rect);
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+
+    final gradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0.0, 0.5, 1.0],
+      colors: [colors.heroGoldLight, colors.heroGold, colors.heroAmber],
+    );
+    if (gradient != _gradient) {
+      _gradient = gradient;
+      _cachedRect = null;
+      _cachedShader = null;
+    }
+
+    final numberStyle = AppTextStyles.numericLarge.copyWith(
+      fontStyle: FontStyle.italic,
+      fontSize: 56,
+      height: 0.85,
+      letterSpacing: -1.8,
+      color: AppColors.white,
+      shadows: [
+        Shadow(
+          color: colors.heroAmber.withValues(alpha: 0.18),
+          blurRadius: 14,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
+
     return RepaintBoundary(
       child: ShaderMask(
         shaderCallback: _shaderFor,
@@ -372,23 +357,7 @@ class _AnimatedNumberState extends State<_AnimatedNumber> {
           builder: (context, _) {
             final eased = Curves.easeOutCubic.transform(widget.controller.value);
             final value = (widget.target * eased).round();
-            return Text(
-              '$value',
-              style: AppTextStyles.numericLarge.copyWith(
-                fontStyle: FontStyle.italic,
-                fontSize: 56,
-                height: 0.85,
-                letterSpacing: -1.8,
-                color: AppColors.white,
-                shadows: [
-                  Shadow(
-                    color: AppColors.amber.withValues(alpha: 0.18),
-                    blurRadius: 14,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-            );
+            return ResponsiveText('$value', style: numberStyle);
           },
         ),
       ),
@@ -403,7 +372,7 @@ class _DividerLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 1,
-      color: AppColors.ivory.withValues(alpha: 0.14),
+      color: context.appColors.heroInk.withValues(alpha: 0.14),
     );
   }
 }
@@ -445,37 +414,36 @@ class _DayDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final Decoration decoration;
-    Widget child = const SizedBox.shrink();
 
     if (done) {
       decoration = BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.amberGlow, AppColors.amberDeep],
+          colors: [colors.heroGlow, colors.heroAmberDeep],
         ),
         border: Border.all(
-          color: AppColors.amberGlow.withValues(alpha: 0.7),
+          color: colors.heroGlow.withValues(alpha: 0.7),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.amber.withValues(alpha: 0.40),
+            color: colors.heroAmber.withValues(alpha: 0.40),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       );
-      child = const Icon(Icons.check_rounded, size: 11, color: AppColors.ivory);
     } else if (isToday) {
       decoration = BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.ivory.withValues(alpha: 0.10),
-        border: Border.all(color: AppColors.flameGold, width: 1.5),
+        color: colors.heroInk.withValues(alpha: 0.10),
+        border: Border.all(color: colors.heroGold, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.amberGlow.withValues(alpha: 0.14),
+            color: colors.heroGlow.withValues(alpha: 0.14),
             blurRadius: 0,
             spreadRadius: 4,
           ),
@@ -484,9 +452,9 @@ class _DayDot extends StatelessWidget {
     } else {
       decoration = BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.ivory.withValues(alpha: 0.06),
+        color: colors.heroInk.withValues(alpha: 0.06),
         border: Border.all(
-          color: AppColors.ivory.withValues(alpha: 0.14),
+          color: colors.heroInk.withValues(alpha: 0.14),
         ),
       );
     }
@@ -495,22 +463,25 @@ class _DayDot extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 18,
-          height: 18,
+          padding: const EdgeInsets.all(3.5),
           decoration: decoration,
           alignment: Alignment.center,
-          child: child,
+          child: Icon(
+            Icons.check_rounded,
+            size: 11,
+            color: done ? colors.heroInk : Colors.transparent,
+          ),
         ),
         const SizedBox(height: 6),
-        Text(
+        ResponsiveText(
           label,
           style: AppTextStyles.labelSmall.copyWith(
             fontSize: 8,
             fontWeight: FontWeight.w700,
             letterSpacing: 8 * 0.22,
             color: isToday
-                ? AppColors.flameGold
-                : AppColors.ivory.withValues(alpha: 0.45),
+                ? colors.heroGold
+                : colors.heroInk.withValues(alpha: 0.45),
           ),
         ),
       ],

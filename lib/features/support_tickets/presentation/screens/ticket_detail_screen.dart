@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/relative_time.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
@@ -47,7 +48,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Scaffold(
+    return AppScaffold(
       appBar: ZaadAppBar(
         title: 'support_tickets.detail.title',
         onBack: context.canPop() ? () => context.pop() : null,

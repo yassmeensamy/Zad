@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../../theme/date_ember_palette.dart';
@@ -7,8 +5,7 @@ import '../../theme/date_ember_palette.dart';
 /// The app-wide **Date & Ember** background for dark mode.
 ///
 /// A roasted-brown radial vignette (raised → surface → base) with a tiled
-/// Islamic-pattern wallpaper, a warm amber wash glowing from the top edge and
-/// rising ember sparks.
+/// Islamic-pattern wallpaper and a warm amber wash glowing from the top edge.
 ///
 /// It is injected once behind the whole app via `MaterialApp.builder`, so every
 /// dark screen shares it. Scaffolds are transparent in dark mode (see
@@ -55,112 +52,9 @@ class AppBackdrop extends StatelessWidget {
                 ),
               ),
             ),
-            // Rising ember sparks.
-            _EmberField(),
           ],
         ),
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Rising ember particle field.
-// ─────────────────────────────────────────────────────────────────────────────
-class _EmberField extends StatefulWidget {
-  const _EmberField();
-
-  @override
-  State<_EmberField> createState() => _EmberFieldState();
-}
-
-class _EmberFieldState extends State<_EmberField>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 13),
-  )..repeat();
-
-  // Deterministic per-particle parameters (no Random at paint time).
-  final List<_Spark> _sparks = List.generate(14, (i) {
-    final rnd = math.Random(i * 7 + 3);
-    return _Spark(
-      x: rnd.nextDouble(),
-      durScale: 0.5 + rnd.nextDouble(),
-      sizeScale: 0.5 + rnd.nextDouble() * 0.9,
-      phase: rnd.nextDouble(),
-    );
-  });
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _c,
-      builder: (_, _) => CustomPaint(
-        painter: _EmberPainter(sparks: _sparks, t: _c.value),
-        size: Size.infinite,
-      ),
-    );
-  }
-}
-
-class _Spark {
-  const _Spark({
-    required this.x,
-    required this.durScale,
-    required this.sizeScale,
-    required this.phase,
-  });
-  final double x;
-  final double durScale;
-  final double sizeScale;
-  final double phase;
-}
-
-class _EmberPainter extends CustomPainter {
-  _EmberPainter({required this.sparks, required this.t});
-  final List<_Spark> sparks;
-  final double t;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final s in sparks) {
-      final p = (t / s.durScale + s.phase) % 1.0;
-      // Opacity envelope: fade in, hold, fade out (mirrors the CSS keyframes).
-      double opacity;
-      if (p < 0.12) {
-        opacity = (p / 0.12) * 0.7;
-      } else if (p < 0.85) {
-        opacity = 0.7 - (p - 0.12) / 0.73 * 0.3;
-      } else {
-        opacity = 0.4 * (1 - (p - 0.85) / 0.15);
-      }
-      if (opacity <= 0) continue;
-
-      final scale = 0.5 + p * 0.7;
-      final radius = 2 * s.sizeScale * scale;
-      final dx = s.x * size.width;
-      final dy = size.height - p * (size.height + 40);
-
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            DateEmber.amberLight.withValues(alpha: opacity),
-            DateEmber.emberLight.withValues(alpha: opacity * 0.6),
-            DateEmber.emberLight.withValues(alpha: 0),
-          ],
-          stops: const [0.0, 0.6, 1.0],
-        ).createShader(Rect.fromCircle(center: Offset(dx, dy), radius: radius));
-      canvas.drawCircle(Offset(dx, dy), radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _EmberPainter oldDelegate) => oldDelegate.t != t;
 }

@@ -98,7 +98,11 @@
         "code_label": "Team code",
         "code_placeholder": "ABCD-1234",
         "submit": "Join team"
-      }
+      },
+      "joined_eyebrow": "My team",
+      "open": "Open →",
+      "rank_label": "Rank",
+      "companions_count": "{} companions"
     },
     "hadith": {
       "section_title": "Hadith of the day",

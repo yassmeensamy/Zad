@@ -33,7 +33,9 @@ class TeamEmptyScreen extends StatelessWidget {
         title: 'teams.empty.title',
         subtitle: 'teams.empty.eyebrow',
         backgroundColor: Colors.transparent,
-        onBack: context.canPop() ? () => context.pop() : null,
+        onBack: () => context.canPop()
+            ? context.pop()
+            : context.goNamed(AppRoutes.homeName),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),

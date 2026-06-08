@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/hadith_model.dart';
 
@@ -14,8 +14,8 @@ class HadithSectionHeader extends StatelessWidget {
     final colors = context.appColors;
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 14),
-      child: Text(
-        'home.hadith.section_title'.tr(),
+      child: ResponsiveText(
+        'home.hadith.section_title',
         style: AppTextStyles.displaySmall.copyWith(
           fontSize: 22,
           color: colors.oliveDeep,
@@ -47,7 +47,7 @@ class HadithCard extends StatelessWidget {
         children: [
           _Eyebrow(text: hadith.source),
           const SizedBox(height: 14),
-          Text(
+          ResponsiveText(
             hadith.arabic,
             textDirection: TextDirection.rtl,
             style: AppTextStyles.bodyXLarge.copyWith(
@@ -59,7 +59,7 @@ class HadithCard extends StatelessWidget {
           const SizedBox(height: 14),
           Container(width: 32, height: 1, color: colors.accent),
           const SizedBox(height: 12),
-          Text(
+          ResponsiveText(
             hadith.english,
             style: AppTextStyles.bodyLarge.copyWith(
               fontSize: 15.5,
@@ -95,17 +95,18 @@ class _NarratorLine extends StatelessWidget {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text('home.hadith.narrator_prefix'.tr(), style: base),
-        Text(
+        ResponsiveText('home.hadith.narrator_prefix', style: base),
+        ResponsiveText(
           narrator,
           style: base.copyWith(
             color: colors.olive,
             fontWeight: FontWeight.w600,
           ),
         ),
-        Text(' · ', style: base),
-        Text(
-          'home.hadith.hadith_no'.tr(args: [hadithNumber.toString()]),
+        ResponsiveText(' · ', style: base),
+        ResponsiveText(
+          'home.hadith.hadith_no',
+          args: [hadithNumber.toString()],
           style: base,
         ),
       ],
@@ -133,7 +134,7 @@ class _Eyebrow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Text(
+        ResponsiveText(
           text,
           style: AppTextStyles.labelSmall.copyWith(
             fontWeight: FontWeight.w600,

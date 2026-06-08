@@ -1,6 +1,3 @@
-// TODO: `google_sign_in` is imported by the OAuth strategy but not in pubspec
-// yet — add it before this cubit can compile, or remove the typed
-// `on GoogleSignInException` catch below and fall back to generic `catch`.
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/cubits/base_cubit.dart';
@@ -50,7 +47,6 @@ class AuthCubit extends BaseCubit<AuthState> {
         fullName: fullName,
       );
       if (response.isPendingVerification) {
-        // Account created but the email needs to be verified with a code.
         emit(
           state.copyWith(
             status: AuthStatus.notLoggedIn,
@@ -69,8 +65,6 @@ class AuthCubit extends BaseCubit<AuthState> {
     }
   }
 
-  /// Confirms the signup with the verification code sent to [pendingEmail].
-  /// On success the user becomes logged in.
   Future<void> verifyEmail(String otp) async {
     final email = state.pendingEmail;
     if (email == null) return;
@@ -93,7 +87,6 @@ class AuthCubit extends BaseCubit<AuthState> {
     }
   }
 
-  /// Requests a fresh verification code for [pendingEmail].
   Future<void> resendVerification() async {
     final email = state.pendingEmail;
     if (email == null) return;
@@ -139,6 +132,57 @@ class AuthCubit extends BaseCubit<AuthState> {
       logger.debug('Error in login: $e');
       _emitError('general_error');
     }
+  }
+
+  Future<void> continueAsGuest() async {
+    emit(state.copyWith(guestAuthStatus: GuestAuthStatus.loading));
+    try {
+      await _repository.guestLogin();
+      _emitAndNotify(
+        state.copyWith(
+          status: AuthStatus.loggedIn,
+          userType: UserType.guestUser,
+          guestAuthStatus: GuestAuthStatus.success,
+        ),
+      );
+    } on ServerException catch (e) {
+      _emitGuestError(_errorMessage(e));
+    } catch (e) {
+      logger.debug('Error in continueAsGuest: $e');
+      _emitGuestError('general_error');
+    }
+  }
+
+  Future<void> upgradeGuestAccount({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    emit(state.copyWith(upgradeStatus: UpgradeStatus.loading));
+    try {
+      await _repository.upgradeGuest(
+        email: email,
+        password: password,
+        fullName: fullName,
+      );
+      _emitAndNotify(
+        state.copyWith(
+          status: AuthStatus.loggedIn,
+          email: email,
+          userType: UserType.user,
+          upgradeStatus: UpgradeStatus.success,
+        ),
+      );
+    } on ServerException catch (e) {
+      _emitUpgradeError(_errorMessage(e));
+    } catch (e) {
+      logger.debug('Error in upgradeGuestAccount: $e');
+      _emitUpgradeError('general_error');
+    }
+  }
+
+  void resetUpgradeStatus() {
+    emit(state.copyWith(upgradeStatus: null));
   }
 
   Future<void> loginWithGoogle() async {
@@ -217,6 +261,24 @@ class AuthCubit extends BaseCubit<AuthState> {
 
   void _emitError(String message) {
     emit(state.copyWith(status: AuthStatus.error, errorMessage: message));
+  }
+
+  void _emitGuestError(String message) {
+    emit(
+      state.copyWith(
+        guestAuthStatus: GuestAuthStatus.error,
+        errorMessage: message,
+      ),
+    );
+  }
+
+  void _emitUpgradeError(String message) {
+    emit(
+      state.copyWith(
+        upgradeStatus: UpgradeStatus.error,
+        errorMessage: message,
+      ),
+    );
   }
 
   void _emitVerificationError(String message) {

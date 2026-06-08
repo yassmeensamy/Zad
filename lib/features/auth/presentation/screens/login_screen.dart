@@ -10,6 +10,7 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -65,6 +66,16 @@ class _LoginScreenState extends State<LoginScreen> {
     context.read<AuthCubit>().loginWithGoogle();
   }
 
+  void _onContinueAsGuest() {
+    final isAlreadyGuest =
+        context.read<UserCubit>().state.user?.isAnonymous ?? false;
+    if (isAlreadyGuest) {
+      context.goNamed(AppRoutes.homeName);
+      return;
+    }
+    context.read<AuthCubit>().continueAsGuest();
+  }
+
   void _onGoToSignUp() {
     context.go(AppRoutes.signup);
   }
@@ -73,12 +84,22 @@ class _LoginScreenState extends State<LoginScreen> {
     context.push(AppRoutes.forgotPassword);
   }
 
+  bool _shouldHandle(AuthState prev, AuthState curr) =>
+      (!prev.isGuestSuccess && curr.isGuestSuccess) ||
+      (!prev.isLoggedIn && curr.isLoggedIn) ||
+      (!prev.isError && curr.isError) ||
+      (!prev.isGuestError && curr.isGuestError);
+
   void _onAuthStateChanged(BuildContext context, AuthState state) {
+    if (state.isGuestSuccess) {
+      context.goNamed(AppRoutes.homeName);
+      return;
+    }
     if (state.isLoggedIn) {
       context.go(AppRoutes.roleSelect);
       return;
     }
-    if (state.isError && state.errorMessage != null) {
+    if ((state.isError || state.isGuestError) && state.errorMessage != null) {
       SnackBarHelper.showError(context, message: state.errorMessage!);
     }
   }
@@ -93,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
         statusBarBrightness: Brightness.light,
       ),
       child: BlocListener<AuthCubit, AuthState>(
+        listenWhen: _shouldHandle,
         listener: _onAuthStateChanged,
         child: Scaffold(
           resizeToAvoidBottomInset: true,
@@ -179,6 +201,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: _onGoogle,
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isGuestLoading != current.isGuestLoading,
+                    builder: (context, state) => _GuestButton(
+                      loading: state.isGuestLoading,
+                      onTap: _onContinueAsGuest,
+                    ),
+                  ),
                   const SizedBox(height: 24),
                   AuthPromptLink(
                     prompt: 'auth.login_screen.new_prompt',
@@ -192,6 +223,52 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       ),
+    );
+  }
+}
+
+class _GuestButton extends StatelessWidget {
+  const _GuestButton({required this.loading, required this.onTap});
+
+  final bool loading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return OutlinedButton(
+      onPressed: loading ? null : onTap,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(46),
+        foregroundColor: colors.olive,
+        side: BorderSide(color: colors.oliveSoft.withValues(alpha: 0.5)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ZaadRadii.lg),
+        ),
+      ),
+      child: loading
+          ? SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation(colors.olive),
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.person_outline_rounded, size: 18, color: colors.olive),
+                const SizedBox(width: 10),
+                ResponsiveText(
+                  'auth.continue_guest',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colors.olive,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

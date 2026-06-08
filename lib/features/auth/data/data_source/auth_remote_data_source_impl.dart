@@ -37,7 +37,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email, 'password': password, 'fullName': fullName},
       skipAuth: true,
     );
-    // 202 Accepted: account created but awaiting email verification.
     _validateResponse(response, const [200, 201, 202]);
     return AuthResponse.fromMap(response.data);
   }
@@ -51,6 +50,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.login,
       data: {'identifier': identifier, 'password': password},
       skipAuth: true,
+    );
+    _validateResponse(response);
+    return AuthResponse.fromMap(response.data);
+  }
+
+  @override
+  Future<AuthResponse> guestLogin() async {
+    final response = await _networkService.post(
+      _endpoints.guestLogin,
+      skipAuth: true,
+    );
+    _validateResponse(response);
+    return AuthResponse.fromMap(response.data);
+  }
+
+  @override
+  Future<AuthResponse> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    final response = await _networkService.post(
+      _endpoints.upgradeGuest,
+      data: {'email': email, 'password': password, 'fullName': fullName},
     );
     _validateResponse(response);
     return AuthResponse.fromMap(response.data);

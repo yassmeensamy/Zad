@@ -12,6 +12,14 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<AuthResponse> guestLogin();
+
+  Future<AuthResponse> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+  });
+
   Future<AuthResponse> loginWithGoogle();
 
   Future<void> forgotPassword({required String email});

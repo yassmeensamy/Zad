@@ -14,8 +14,14 @@ extension SocialAuthStatusX on SocialAuthStatus {
   bool get isError => this == SocialAuthStatus.error;
 }
 
-/// Tracks the email-verification step that follows a `pending_verification`
-/// signup, independently of the main [AuthStatus].
+enum GuestAuthStatus { initial, loading, success, error }
+
+extension GuestAuthStatusX on GuestAuthStatus {
+  bool get isLoading => this == GuestAuthStatus.loading;
+  bool get isSuccess => this == GuestAuthStatus.success;
+  bool get isError => this == GuestAuthStatus.error;
+}
+
 enum VerificationStatus { pending, verifying, resending, error }
 
 extension VerificationStatusX on VerificationStatus {
@@ -23,6 +29,14 @@ extension VerificationStatusX on VerificationStatus {
   bool get isVerifying => this == VerificationStatus.verifying;
   bool get isResending => this == VerificationStatus.resending;
   bool get isError => this == VerificationStatus.error;
+}
+
+enum UpgradeStatus { initial, loading, success, error }
+
+extension UpgradeStatusX on UpgradeStatus {
+  bool get isLoading => this == UpgradeStatus.loading;
+  bool get isSuccess => this == UpgradeStatus.success;
+  bool get isError => this == UpgradeStatus.error;
 }
 
 class AuthState {
@@ -34,6 +48,8 @@ class AuthState {
     this.userType,
     this.verificationStatus,
     this.pendingEmail,
+    this.upgradeStatus,
+    this.guestAuthStatus,
   });
 
   final AuthStatus status;
@@ -42,11 +58,13 @@ class AuthState {
   final SocialAuthStatus? socialAuthStatus;
   final UserType? userType;
 
-  /// Non-null while an email-verification flow is in progress; null otherwise.
+  final GuestAuthStatus? guestAuthStatus;
+
   final VerificationStatus? verificationStatus;
 
-  /// Email awaiting verification, used by [verifyEmail] / [resendVerification].
   final String? pendingEmail;
+
+  final UpgradeStatus? upgradeStatus;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -56,6 +74,8 @@ class AuthState {
     UserType? userType,
     VerificationStatus? verificationStatus,
     String? pendingEmail,
+    UpgradeStatus? upgradeStatus,
+    GuestAuthStatus? guestAuthStatus,
   }) => AuthState(
     status: status ?? this.status,
     email: email ?? this.email,
@@ -64,6 +84,8 @@ class AuthState {
     userType: userType ?? this.userType,
     verificationStatus: verificationStatus,
     pendingEmail: pendingEmail ?? this.pendingEmail,
+    upgradeStatus: upgradeStatus,
+    guestAuthStatus: guestAuthStatus,
   );
 
   bool get isInitial => status.isInitial;
@@ -71,13 +93,19 @@ class AuthState {
   bool get isLoggedIn => status.isLoggedIn;
   bool get isNotLoggedIn => status.isNotLoggedIn;
   bool get isError => status.isError;
-  bool get isGuest => status.isGuest;
+  bool get isGuest => userType?.isGuest ?? status.isGuest;
   bool get isSocialLoading => socialAuthStatus?.isLoading ?? false;
   bool get isPendingVerification => verificationStatus?.isPending ?? false;
   bool get isVerifying => verificationStatus?.isVerifying ?? false;
   bool get isResendingCode => verificationStatus?.isResending ?? false;
   bool get isVerificationError => verificationStatus?.isError ?? false;
   bool get isAwaitingVerification => verificationStatus != null;
+  bool get isUpgrading => upgradeStatus?.isLoading ?? false;
+  bool get isUpgradeSuccess => upgradeStatus?.isSuccess ?? false;
+  bool get isUpgradeError => upgradeStatus?.isError ?? false;
+  bool get isGuestLoading => guestAuthStatus?.isLoading ?? false;
+  bool get isGuestSuccess => guestAuthStatus?.isSuccess ?? false;
+  bool get isGuestError => guestAuthStatus?.isError ?? false;
 
   @override
   bool operator ==(Object other) {
@@ -90,7 +118,9 @@ class AuthState {
         other.socialAuthStatus == socialAuthStatus &&
         other.userType == userType &&
         other.verificationStatus == verificationStatus &&
-        other.pendingEmail == pendingEmail;
+        other.pendingEmail == pendingEmail &&
+        other.upgradeStatus == upgradeStatus &&
+        other.guestAuthStatus == guestAuthStatus;
   }
 
   @override
@@ -102,5 +132,7 @@ class AuthState {
     userType,
     verificationStatus,
     pendingEmail,
+    upgradeStatus,
+    guestAuthStatus,
   );
 }

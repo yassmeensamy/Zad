@@ -3,9 +3,6 @@ import 'dart:convert';
 import '../../../../core/models/user_model.dart';
 
 class AuthResponse {
-  /// Returned by the signup endpoint (HTTP 202) when the account exists but the
-  /// email has not been verified yet. In this state [accessToken] /
-  /// [refreshToken] are empty and the user must confirm via a verification code.
   static const String pendingVerificationToken = 'pending_verification';
 
   final String accessToken;
@@ -15,6 +12,8 @@ class AuthResponse {
   final UserRole role;
   final String fullName;
 
+  final bool isAnonymous;
+
   const AuthResponse({
     required this.accessToken,
     required this.refreshToken,
@@ -22,22 +21,22 @@ class AuthResponse {
     required this.userId,
     required this.role,
     required this.fullName,
+    this.isAnonymous = false,
   });
 
   factory AuthResponse.fromMap(Map<String, dynamic> map) => AuthResponse(
-    // Empty/absent during a `pending_verification` signup (HTTP 202).
     accessToken: map['accessToken'] as String? ?? '',
     refreshToken: map['refreshToken'] as String? ?? '',
     tokenType: map['tokenType'] as String? ?? 'Bearer',
     userId: map['userId'] as String? ?? '',
     role: UserRole.fromWire(map['role'] as String? ?? UserRole.parent.wire),
     fullName: map['fullName'] as String? ?? '',
+    isAnonymous: map['isAnonymous'] as bool? ?? false,
   );
 
   factory AuthResponse.fromJson(String source) =>
       AuthResponse.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  /// Whether this response represents an account awaiting email verification.
   bool get isPendingVerification => tokenType == pendingVerificationToken;
 
   AuthResponse copyWith({
@@ -47,6 +46,7 @@ class AuthResponse {
     String? userId,
     UserRole? role,
     String? fullName,
+    bool? isAnonymous,
   }) => AuthResponse(
     accessToken: accessToken ?? this.accessToken,
     refreshToken: refreshToken ?? this.refreshToken,
@@ -54,6 +54,7 @@ class AuthResponse {
     userId: userId ?? this.userId,
     role: role ?? this.role,
     fullName: fullName ?? this.fullName,
+    isAnonymous: isAnonymous ?? this.isAnonymous,
   );
 
   Map<String, dynamic> toMap() => {
@@ -63,6 +64,7 @@ class AuthResponse {
     'userId': userId,
     'role': role.wire,
     'fullName': fullName,
+    'isAnonymous': isAnonymous,
   };
 
   String toJson() => json.encode(toMap());
@@ -70,7 +72,8 @@ class AuthResponse {
   @override
   String toString() =>
       'AuthResponse(accessToken: $accessToken, refreshToken: $refreshToken, '
-      'tokenType: $tokenType, userId: $userId, role: $role, fullName: $fullName)';
+      'tokenType: $tokenType, userId: $userId, role: $role, '
+      'fullName: $fullName, isAnonymous: $isAnonymous)';
 
   @override
   bool operator ==(Object other) {
@@ -81,10 +84,18 @@ class AuthResponse {
         other.tokenType == tokenType &&
         other.userId == userId &&
         other.role == role &&
-        other.fullName == fullName;
+        other.fullName == fullName &&
+        other.isAnonymous == isAnonymous;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(accessToken, refreshToken, tokenType, userId, role, fullName);
+  int get hashCode => Object.hash(
+    accessToken,
+    refreshToken,
+    tokenType,
+    userId,
+    role,
+    fullName,
+    isAnonymous,
+  );
 }

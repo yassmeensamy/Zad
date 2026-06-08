@@ -11,17 +11,13 @@ import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
 import '../../../categories/presentation/cubit/categories_state.dart';
+import '../../../home/presentation/widgets/home_why_login_section.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
+import '../../../user/presentation/cubit/user_state.dart';
 import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import '../widgets/leaderboard_no_team.dart';
 
-/// Leaderboard — fully theme-aware. Structural colours (canvas, text, borders,
-/// accents and the CTA gradient) are read from [AppColorsTheme] via
-/// `context.appColors`, so the screen flips between the light Desert-Sand and
-/// dark Date & Ember palettes. The metallic medal ramps (gold/silver/bronze)
-/// are brand-fixed via [AppColors] disc tokens — a gold medal reads gold in
-/// either brightness. Wired to the live [RankingsCubit] (scope tabs, category
-/// filter, podium, ranking rows, pagination, my-rank).
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
 
@@ -29,9 +25,6 @@ class LeaderboardScreen extends StatefulWidget {
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
 }
 
-// Type families. The design uses Fraunces (serif italic), Inter (sans) and
-// JetBrains Mono. We map these to the platform generic families so the screen
-// stays self-contained with no font bundling.
 const String _serif = 'serif';
 const String _mono = 'monospace';
 
@@ -42,6 +35,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      final isGuest = context.read<UserCubit>().state.user?.isAnonymous ?? false;
+      if (isGuest) return;
       final categories = context.read<CategoriesCubit>();
       if (!categories.state.hasCategories) categories.getCategories();
       context.read<RankingsCubit>().loadInitial();
@@ -54,10 +49,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    // The shell renders an opaque bottom nav (64px + safe-area) with
-    // `extendBody: true`, so this branch's content sits *behind* it. Pad the
-    // bottom by nav height + inset + a small gap so the pinned footer card
-    // clears the bar and stays tappable.
     final view = View.of(context);
     final bottomInset = view.viewPadding.bottom / view.devicePixelRatio;
     final bottomNavSpace = 64 + bottomInset + 10;
@@ -69,10 +60,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
           bottom: false,
           child: Padding(
             padding: EdgeInsets.fromLTRB(18, 8, 18, 8 + bottomNavSpace),
-            child: BlocBuilder<RankingsCubit, RankingsState>(
-              builder: (context, state) {
-                final cubit = context.read<RankingsCubit>();
-                return Column(
+            child: BlocSelector<UserCubit, UserState, bool>(
+              selector: (state) => state.user?.isAnonymous ?? false,
+              builder: (context, isGuest) {
+                if (isGuest) return const _GuestPrompt();
+                return BlocBuilder<RankingsCubit, RankingsState>(
+                  builder: (context, state) {
+                    final cubit = context.read<RankingsCubit>();
+                    return Column(
                   children: [
                     const _Header(),
                     const SizedBox(height: 14),
@@ -93,6 +88,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                     ),
                     _Footer(state: state),
                   ],
+                    );
+                  },
                 );
               },
             ),
@@ -103,9 +100,35 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Background — themed vignette, Islamic pattern, accent wash, ember field.
-// ─────────────────────────────────────────────────────────────────────────────
+class _GuestPrompt extends StatelessWidget {
+  const _GuestPrompt();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const _Header(),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 22),
+                    child: HomeWhyLoginSection(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _EmberBackdrop extends StatelessWidget {
   const _EmberBackdrop({required this.child});
 
@@ -116,8 +139,6 @@ class _EmberBackdrop extends StatelessWidget {
     final colors = context.appColors;
     final isDark = context.isDark;
     return DecoratedBox(
-      // Roasted-brown vignette in dark / cream wash in light, from the
-      // theme's backdrop stops.
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: const Alignment(0, -1.05),
@@ -128,8 +149,6 @@ class _EmberBackdrop extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Islamic pattern wallpaper. Screened (lightens) in dark, multiplied
-          // (darkens) in light, so it stays a faint texture either way.
           Positioned.fill(
             child: IgnorePointer(
               child: Opacity(
@@ -144,7 +163,6 @@ class _EmberBackdrop extends StatelessWidget {
               ),
             ),
           ),
-          // Warm accent wash at the top.
           Positioned(
             left: -120,
             right: -120,
@@ -165,7 +183,6 @@ class _EmberBackdrop extends StatelessWidget {
               ),
             ),
           ),
-          // Rising ember sparks.
           Positioned.fill(
             child: IgnorePointer(
               child: _EmberField(
@@ -174,7 +191,6 @@ class _EmberBackdrop extends StatelessWidget {
               ),
             ),
           ),
-          // Foreground content.
           child,
         ],
       ),
@@ -182,9 +198,6 @@ class _EmberBackdrop extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Header.
-// ─────────────────────────────────────────────────────────────────────────────
 class _Header extends StatelessWidget {
   const _Header();
 
@@ -221,9 +234,6 @@ class _Header extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Scope segmented control (Individuals / Teams).
-// ─────────────────────────────────────────────────────────────────────────────
 class _ScopeSegmented extends StatelessWidget {
   const _ScopeSegmented({required this.value, required this.onChanged});
 
@@ -284,9 +294,6 @@ class _ScopeSegmented extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Category filter (individuals only).
-// ─────────────────────────────────────────────────────────────────────────────
 class _CategoryFilter extends StatelessWidget {
   const _CategoryFilter({
     required this.categories,
@@ -343,7 +350,6 @@ class _CategoryChip extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: () {
           onTap();
-          // Bring the tapped chip fully into view (centre it).
           Scrollable.ensureVisible(
             context,
             alignment: 0.5,
@@ -390,9 +396,6 @@ class _CategoryChip extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Body — loading / error / no-team / empty / list states.
-// ─────────────────────────────────────────────────────────────────────────────
 class _Body extends StatelessWidget {
   const _Body({required this.state, required this.controller});
 
@@ -520,7 +523,6 @@ class _Body extends StatelessWidget {
   }
 }
 
-/// Shared view seed for podium pillars and ranking rows.
 class _RankSeed {
   const _RankSeed({
     required this.rank,
@@ -542,9 +544,6 @@ class _RankSeed {
       total <= 0 ? 0 : ((completed / total).clamp(0, 1) * 100).round();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Podium.
-// ─────────────────────────────────────────────────────────────────────────────
 class _Podium extends StatelessWidget {
   const _Podium({required this.seeds});
 
@@ -582,7 +581,6 @@ class _PodiumPillar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final isFirst = place == 1;
-    // Medal accent — brand-fixed metal tones, identical in both themes.
     final accent = switch (place) {
       1 => AppColors.discGoldMid,
       2 => AppColors.discSilverMid,
@@ -610,7 +608,6 @@ class _PodiumPillar extends StatelessWidget {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              // Soft glow halo.
               Container(
                 width: avatarSize + 14,
                 height: avatarSize + 14,
@@ -664,7 +661,6 @@ class _PodiumPillar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
-        // Pedestal.
         Container(
           height: pedHeight,
           width: double.infinity,
@@ -781,9 +777,6 @@ class _CrownPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Ranking rows.
-// ─────────────────────────────────────────────────────────────────────────────
 class _RankRow extends StatelessWidget {
   const _RankRow({required this.seed});
 
@@ -904,9 +897,6 @@ class _RankRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Footer — my-rank CTA card.
-// ─────────────────────────────────────────────────────────────────────────────
 class _Footer extends StatelessWidget {
   const _Footer({required this.state});
 
@@ -1052,9 +1042,6 @@ class _MyRankCta extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Empty / error states.
-// ─────────────────────────────────────────────────────────────────────────────
 class _EmptyHint extends StatelessWidget {
   const _EmptyHint({required this.textKey, this.vertical = 0});
 
@@ -1119,9 +1106,6 @@ class _ErrorRetry extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Eyebrow rules (── PODIUM ──, ── ALL MEMBERS · n ──).
-// ─────────────────────────────────────────────────────────────────────────────
 class _EyebrowRule extends StatelessWidget {
   const _EyebrowRule({required this.label});
   final String label;
@@ -1218,9 +1202,6 @@ class _RuleSegment extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Metallic disc avatars — brand-fixed medal ramps (theme-independent).
-// ─────────────────────────────────────────────────────────────────────────────
 enum _DiscStyle { gold, silver, bronze, olive }
 
 String _initial(String? name) {
@@ -1304,16 +1285,11 @@ class _Disc extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Rising ember particle field.
-// ─────────────────────────────────────────────────────────────────────────────
 class _EmberField extends StatefulWidget {
   const _EmberField({required this.core, required this.glow});
 
-  /// Bright spark core (theme accent-soft).
   final Color core;
 
-  /// Outer spark glow (theme accent).
   final Color glow;
 
   @override

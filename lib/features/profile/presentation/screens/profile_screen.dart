@@ -28,8 +28,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final role = context.read<UserCubit>().state.user?.role;
-    final sections = _visibleSections(profileSections(context), role);
+    final user = context.read<UserCubit>().state.user;
+    final isGuest = user?.isAnonymous ?? false;
+    final sections = _visibleSections(
+      profileSections(context, isGuest: isGuest),
+      user?.role,
+    );
 
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (a, b) => a.status != b.status && b.isNotLoggedIn,
@@ -60,11 +64,13 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 22),
             ],
             const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: const _ResetProgressButton(),
-            ),
-            const SizedBox(height: 12),
+            if (!isGuest) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: const _ResetProgressButton(),
+              ),
+              const SizedBox(height: 12),
+            ],
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: const _SignOutButton(),
@@ -91,9 +97,6 @@ List<ProfileSection> _visibleSections(
       ),
 ];
 
-// ─────────────────────────────────────────────────────────────────
-// HERO — Mihrab arch with avatar nested inside, name + role beneath
-// ─────────────────────────────────────────────────────────────────
 
 class _MihrabHero extends StatelessWidget {
   const _MihrabHero({required this.colors, required this.user});
@@ -190,9 +193,6 @@ class _AvatarMedallion extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-// SECTION HEADER — Roman ordinal + label + extending gold rule
-// ─────────────────────────────────────────────────────────────────
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.textKey, required this.colors});
@@ -227,9 +227,6 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-// SECTION CARD — paper container with gold hairlines between rows
-// ─────────────────────────────────────────────────────────────────
 
 class _SectionCard extends StatelessWidget {
   const _SectionCard({required this.items});
@@ -280,10 +277,6 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-// RESET PROGRESS — outlined danger pill, confirms then resets all
-// quiz progress (categories + levels) via [ProgressResetCubit].
-// ─────────────────────────────────────────────────────────────────
 
 class _ResetProgressButton extends StatelessWidget {
   const _ResetProgressButton();
@@ -385,9 +378,6 @@ class _ResetProgressPill extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-// SIGN OUT — outlined danger pill (kept understated by intent)
-// ─────────────────────────────────────────────────────────────────
 
 class _SignOutButton extends StatelessWidget {
   const _SignOutButton();

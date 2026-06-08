@@ -26,6 +26,8 @@ class UserModel {
   final DateTime createdAt;
   final AvatarModel? avatar;
 
+  final bool isAnonymous;
+
   const UserModel({
     required this.id,
     required this.fullName,
@@ -37,6 +39,7 @@ class UserModel {
     this.birthDate,
     this.parentId,
     this.avatar,
+    this.isAnonymous = false,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
@@ -54,6 +57,7 @@ class UserModel {
     avatar: map['avatar'] == null
         ? null
         : AvatarModel.fromMap(map['avatar'] as Map<String, dynamic>),
+    isAnonymous: map['isAnonymous'] as bool? ?? false,
   );
 
   factory UserModel.fromJson(String source) =>
@@ -70,6 +74,7 @@ class UserModel {
     String? parentId,
     DateTime? createdAt,
     AvatarModel? avatar,
+    bool? isAnonymous,
   }) => UserModel(
     id: id ?? this.id,
     email: email ?? this.email,
@@ -81,6 +86,7 @@ class UserModel {
     parentId: parentId ?? this.parentId,
     createdAt: createdAt ?? this.createdAt,
     avatar: avatar ?? this.avatar,
+    isAnonymous: isAnonymous ?? this.isAnonymous,
   );
 
   Map<String, dynamic> toMap() => {
@@ -94,6 +100,7 @@ class UserModel {
     'parentId': parentId,
     'createdAt': createdAt.toIso8601String(),
     'avatar': avatar?.toMap(),
+    'isAnonymous': isAnonymous,
   };
 
   String toJson() => json.encode(toMap());
@@ -131,7 +138,8 @@ class UserModel {
         other.birthDate == birthDate &&
         other.parentId == parentId &&
         other.createdAt == createdAt &&
-        other.avatar == avatar;
+        other.avatar == avatar &&
+        other.isAnonymous == isAnonymous;
   }
 
   @override
@@ -146,5 +154,6 @@ class UserModel {
     parentId,
     createdAt,
     avatar,
+    isAnonymous,
   );
 }

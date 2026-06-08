@@ -29,8 +29,6 @@ class AuthRepositoryImpl implements AuthRepository {
       password: password,
       fullName: fullName,
     );
-    // When the account still needs email verification the tokens are empty,
-    // so don't persist them — the user logs in only after verifyEmail().
     if (!response.isPendingVerification) {
       await _localService.onLoginSuccess(response);
     }
@@ -45,6 +43,28 @@ class AuthRepositoryImpl implements AuthRepository {
     final response = await _remoteDataSource.login(
       identifier: identifier,
       password: password,
+    );
+    await _localService.onLoginSuccess(response);
+    return response;
+  }
+
+  @override
+  Future<AuthResponse> guestLogin() async {
+    final response = await _remoteDataSource.guestLogin();
+    await _localService.onLoginSuccess(response);
+    return response;
+  }
+
+  @override
+  Future<AuthResponse> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    final response = await _remoteDataSource.upgradeGuest(
+      email: email,
+      password: password,
+      fullName: fullName,
     );
     await _localService.onLoginSuccess(response);
     return response;
@@ -130,6 +150,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> isLoggedIn() async =>
       (await _localService.getAccessToken()) != null;
 
- 
-  
+
+
 }

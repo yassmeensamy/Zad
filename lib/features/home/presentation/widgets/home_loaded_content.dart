@@ -13,13 +13,11 @@ import 'home_header.dart';
 import 'home_streak_section.dart';
 import 'home_team_section.dart';
 import 'home_verse_card.dart';
+import 'home_why_login_section.dart';
 import 'play_card.dart';
 
-/// Horizontal page gutter shared by every section of the home screen.
 const double _kGutter = 24;
 
-/// The scrollable body of the home screen once the overview has loaded:
-/// header → streak → play → team → hadith, each inset by [_kGutter].
 class HomeLoadedContent extends StatelessWidget {
   const HomeLoadedContent({required this.overview, super.key});
 
@@ -27,78 +25,93 @@ class HomeLoadedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
-      children: [
-        BlocSelector<UserCubit, UserState, String?>(
-          selector: (state) => state.user?.fullName,
-          builder: (context, fullName) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: _kGutter),
-              child: HomeHeader(
-                firstName: _firstName(
-                  fullName,
-                  fallback: 'home.fallback_name'.tr(),
-                ),
-                onBellTap: () => context.pushNamed(AppRoutes.notificationsName),
+    return BlocSelector<UserCubit, UserState, bool>(
+      selector: (state) => state.user?.isAnonymous ?? false,
+      builder: (context, isGuest) {
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          children: [
+            BlocSelector<UserCubit, UserState, String?>(
+              selector: (state) => state.user?.fullName,
+              builder: (context, fullName) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+                  child: HomeHeader(
+                    firstName: _firstName(
+                      fullName,
+                      fallback: 'home.fallback_name'.tr(),
+                    ),
+                    onBellTap: () =>
+                        context.pushNamed(AppRoutes.notificationsName),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 26),
+            if (!isGuest) ...[
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: _kGutter),
+                child: HomeStreakSection(),
               ),
-            );
-          },
-        ),
-        const SizedBox(height: 26),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: _kGutter),
-          child: HomeStreakSection(),
-        ),
-        const SizedBox(height: 14),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kGutter),
-          child: PlayCard(
-            onTap: () => context.goNamed(AppRoutes.categoriesName),
-          ),
-        ),
-        const SizedBox(height: 14),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kGutter),
-          child: OutlinedButton.icon(
-            onPressed: () =>
-                context.pushNamed(AppRoutes.dateEmberLeaderboardName),
-            icon: const Icon(Icons.local_fire_department_rounded),
-            label: Text('home.date_ember_cta'.tr()),
-          ),
-        ),
-        const SizedBox(height: 14),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kGutter),
-          child: OutlinedButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TempTeamHomeScreen(),
+              const SizedBox(height: 14),
+            ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+              child: PlayCard(
+                onTap: () => context.goNamed(AppRoutes.categoriesName),
               ),
             ),
-            icon: const Icon(Icons.groups_rounded),
-            label: const Text('Team Home · Community'),
-          ),
-        ),
-        const SizedBox(height: 14),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: _kGutter),
-          child: HomeTeamSection(),
-        ),
-        const SizedBox(height: 26),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: _kGutter),
-          child: HadithSectionHeader(),
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: _kGutter),
-          child: HomeVerseCard(),
-        ),
-        const SizedBox(height: 8),
-      ],
+            const SizedBox(height: 14),
+            if (isGuest)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: _kGutter),
+                child: HomeWhyLoginSection(),
+              )
+            else ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+                child: OutlinedButton.icon(
+                  onPressed: () =>
+                      context.pushNamed(AppRoutes.dateEmberLeaderboardName),
+                  icon: const Icon(Icons.local_fire_department_rounded),
+                  label: Text('home.date_ember_cta'.tr()),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const TempTeamHomeScreen(),
+                    ),
+                  ),
+                  icon: const Icon(Icons.groups_rounded),
+                  label: const Text('Team Home · Community'),
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: _kGutter),
+                child: HomeTeamSection(),
+              ),
+            ],
+            const SizedBox(height: 26),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: _kGutter),
+              child: HadithSectionHeader(),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: _kGutter),
+              child: HomeVerseCard(),
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
+      },
     );
   }
 

@@ -16,7 +16,60 @@ String _themeModeLabelKey(ThemeMode mode) => switch (mode) {
   ThemeMode.dark => 'profile.theme_dark',
 };
 
-List<ProfileSection> profileSections(BuildContext context) => [
+List<ProfileSection> profileSections(
+  BuildContext context, {
+  bool isGuest = false,
+}) => isGuest ? _guestSections(context) : _userSections(context);
+
+ProfileMenuItem _languageItem(BuildContext context) => ProfileMenuItem(
+  icon: Icons.translate_rounded,
+  titleKey: 'profile.language',
+  trailingText: context.locale.languageCode == 'ar' ? 'العربية' : 'English',
+  onTap: () => LanguageDialog.show(context),
+);
+
+ProfileMenuItem _themeItem(BuildContext context) => ProfileMenuItem(
+  icon: Icons.color_lens_outlined,
+  titleKey: 'profile.theme',
+  trailingText: _themeModeLabelKey(context.watch<ThemeCubit>().state).tr(),
+  onTap: () {
+    final cubit = context.read<ThemeCubit>();
+    final isDark =
+        cubit.state == ThemeMode.dark ||
+        (cubit.state == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    cubit.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
+  },
+);
+
+List<ProfileSection> _guestSections(BuildContext context) => [
+  ProfileSection(
+    titleKey: 'profile.account',
+    items: [
+      ProfileMenuItem(
+        icon: Icons.workspace_premium_outlined,
+        titleKey: 'profile.upgrade_account',
+        onTap: () => context.goNamed(AppRoutes.signupName),
+      ),
+      ProfileMenuItem(
+        icon: Icons.person_outline_rounded,
+        titleKey: 'profile.view_profile',
+        onTap: () => context.pushNamed(AppRoutes.editProfileName),
+      ),
+      ProfileMenuItem(
+        icon: Icons.help_outline_rounded,
+        titleKey: 'profile.help_support',
+        onTap: () => context.pushNamed(AppRoutes.helpCenterName),
+      ),
+    ],
+  ),
+  ProfileSection(
+    titleKey: 'profile.practice',
+    items: [_languageItem(context), _themeItem(context)],
+  ),
+];
+
+List<ProfileSection> _userSections(BuildContext context) => [
   ProfileSection(
     titleKey: 'profile.practice',
     items: [
@@ -25,27 +78,8 @@ List<ProfileSection> profileSections(BuildContext context) => [
         titleKey: 'profile.reminders',
         onTap: () => context.pushNamed(AppRoutes.notificationsName),
       ),
-      ProfileMenuItem(
-        icon: Icons.translate_rounded,
-        titleKey: 'profile.language',
-        trailingText: context.locale.languageCode == 'ar'
-            ? 'العربية'
-            : 'English',
-        onTap: () => LanguageDialog.show(context),
-      ),
-      ProfileMenuItem(
-        icon: Icons.color_lens_outlined,
-        titleKey: 'profile.theme',
-        trailingText: _themeModeLabelKey(context.watch<ThemeCubit>().state).tr(),
-        onTap: () {
-          final cubit = context.read<ThemeCubit>();
-          final isDark =
-              cubit.state == ThemeMode.dark ||
-              (cubit.state == ThemeMode.system &&
-                  MediaQuery.platformBrightnessOf(context) == Brightness.dark);
-          cubit.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
-        },
-      ),
+      _languageItem(context),
+      _themeItem(context),
     ],
   ),
   ProfileSection(

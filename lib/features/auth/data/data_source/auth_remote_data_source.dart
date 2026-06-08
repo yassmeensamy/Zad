@@ -12,6 +12,14 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
 
+  Future<AuthResponse> guestLogin();
+
+  Future<AuthResponse> upgradeGuest({
+    required String email,
+    required String password,
+    required String fullName,
+  });
+
   Future<AuthResponse> googleAuth(String idToken);
 
   Future<void> forgotPassword({required String email});

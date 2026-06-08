@@ -9,6 +9,7 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
@@ -62,10 +63,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onCreateAccount() {
     _awaitingSignupResult = true;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final fullName = _usernameController.text.trim();
+
+    // A guest already has a backend account; creating one here upgrades it
+    // in place (preserving their progress) instead of registering anew.
+    final isGuest = context.read<UserCubit>().state.user?.isAnonymous ?? false;
+    if (isGuest) {
+      context.read<AuthCubit>().upgradeGuestAccount(
+        email: email,
+        password: password,
+        fullName: fullName,
+      );
+      return;
+    }
+
     context.read<AuthCubit>().signup(
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-      fullName: _usernameController.text.trim(),
+      email: email,
+      password: password,
+      fullName: fullName,
     );
   }
 
@@ -151,6 +168,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 !previous.isAwaitingVerification,
             listener: _onAuthStateChanged,
           ),
+          // Guest upgrade tracks its outcome on `upgradeStatus`, not the auth
+          // `status` (which is already loggedIn for a guest), so the listeners
+          // above can't see it. Surface success and failure explicitly.
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) =>
+                !previous.isUpgradeSuccess && current.isUpgradeSuccess,
+            listener: (context, state) {
+              _awaitingSignupResult = false;
+              _showSuccess(context);
+            },
+          ),
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) =>
+                !previous.isUpgradeError && current.isUpgradeError,
+            listener: (context, state) {
+              _awaitingSignupResult = false;
+              if (state.errorMessage != null) {
+                SnackBarHelper.showError(context, message: state.errorMessage!);
+              }
+            },
+          ),
         ],
         child: Scaffold(
           resizeToAvoidBottomInset: true,
@@ -209,10 +247,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 16),
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (previous, current) =>
-                        previous.isLoading != current.isLoading,
+                        previous.isLoading != current.isLoading ||
+                        previous.isUpgrading != current.isUpgrading,
                     builder: (context, state) => AuthPrimaryButton(
                       label: 'auth.signup_screen.create_account',
-                      loading: state.isLoading,
+                      loading: state.isLoading || state.isUpgrading,
                       enabled: _allFilled,
                       onTap: _onCreateAccount,
                     ),

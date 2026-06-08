@@ -110,7 +110,24 @@
       "narrator_prefix": "Narrated by ",
       "hadith_no": "Hadith №{}"
     },
-    "date_ember_cta": "View the Date & Ember leaderboard"
+    "date_ember_cta": "View the Date & Ember leaderboard",
+    "why_login": {
+      "guest_tag": "Browsing as guest",
+      "title": "Create your free account",
+      "benefits": {
+        "streak_title": "Never lose your streak",
+        "streak_subtitle": "Your daily flame is saved forever",
+        "teams_title": "Join & create teams",
+        "teams_subtitle": "Study with companions, rise together",
+        "ranks_title": "Earn medals & ranks",
+        "ranks_subtitle": "Climb the global leaderboard",
+        "sync_title": "Sync across devices",
+        "sync_subtitle": "Pick up where you left off, anywhere"
+      },
+      "cta": "Create free account",
+      "have_account": "Already have one? ",
+      "sign_in": "Sign in"
+    }
   },
   "categories": {
     "eyebrow": "YOUR JOURNEY",
@@ -251,6 +268,13 @@
     "password_hint": "Your password",
     "or_continue": "OR CONTINUE WITH",
     "continue_google": "Continue with Google",
+    "continue_guest": "Continue as guest",
+    "upgrade_screen": {
+      "title": "Create your account",
+      "subtitle": "Add an email and password to save your progress and keep your account on every device.",
+      "cta": "CREATE ACCOUNT",
+      "success": "Your account is ready. Welcome aboard!"
+    },
     "login_screen": {
       "welcome_prefix": "Welcome ",
       "welcome_accent": "home",
@@ -389,6 +413,8 @@
     "theme_light": "Light",
     "theme_dark": "Dark",
     "edit_profile": "Edit profile",
+    "upgrade_account": "Upgrade account",
+    "view_profile": "View profile",
     "privacy": "Privacy",
     "help_support": "Help & support",
     "support_tickets": "My support tickets",

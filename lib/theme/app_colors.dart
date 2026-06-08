@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'date_ember_palette.dart';
+
 /// Raw Desert Sand palette. Internal to the theme layer.
 /// Outside `theme/`, use `context.colorScheme.X` or `context.appColors.Y`.
 class AppColors {
@@ -37,6 +39,73 @@ class AppColors {
   static const Color cocoa = Color(0xFF3F2C1C);
   static const Color tobacco = Color(0xFF5A4128);
 
+  // ── Date & Ember night canvas (dark mode) ─────────────────────────────
+  // The roasted-brown ramp lifted straight from the "Date & Ember" design:
+  // base (#0E0905) → surface (#1A120B) → raised (#271A10), with #140F0A as the
+  // page canvas. Lightness steps GROW as the ramp rises so cards and containers
+  // separate clearly from the page. `canvasNight` is the page surface;
+  // `nightLow` recesses below it and the ramp above lifts cards, sheets, menus
+  // & the brightest containers. The backdrop vignette runs raised→surface→base.
+  static const Color canvasNight = DateEmber.canvas; // canvas — page bg
+  static const Color canvasNight2 = DateEmber.raised; // raised — backdrop top
+  static const Color nightSurface = DateEmber.surface; // surface — backdrop mid
+  static const Color nightLow = DateEmber.base; // base — recessed / bottom
+  static const Color nightRaised = DateEmber.raised; // raised surface (cards)
+  static const Color nightHigh = DateEmber.raised; // highest surface
+  static const Color nightTop = DateEmber.raised; // brightest container
+  static const Color nightOutline = DateEmber.glassBorder; // amber hairline
+  static const Color nightOutlineVariant = DateEmber.hairline; // ivory hairline
+
+  // Container & frosted-surface tints, all sourced from the Date & Ember
+  // palette so the whole dark mode derives from one set of colours.
+  static const Color nightBeige = DateEmber.raised; // warm container
+  static const Color nightGlass = Color(0x1FF4ECD8); // ~12% ivory frosted film
+
+  // Brightened accents tuned for legibility on the dark canvas — sourced from
+  // the Date & Ember palette.
+  static const Color amberLight = DateEmber.amberLight; // highlight gold
+  static const Color oliveLight = DateEmber.olive; // success olive
+
+  // Ember — the warm CTA accent for dark mode (terracotta orange).
+  // Matches the Date & Ember CTA: ember-light (#E07A48) → ember (#C9512B).
+  static const Color ember = DateEmber.ember; // CTA base
+  static const Color emberBright = DateEmber.emberLight; // CTA gradient top
+  static const Color emberDeep = DateEmber.emberDeep; // CTA gradient bottom
+  static const Color emberInk = DateEmber.emberInk; // ink over ember fills
+
+  // ── Date & Ember metallic disc ramps (avatars / podium) ───────────────
+  // Sourced from the Date & Ember palette so the leaderboard discs, podium
+  // pedestals and any avatar gradients all read from AppColors. `disc`-prefixed
+  // to stay distinct from the manuscript golds above.
+  static const Color discGoldHi = DateEmber.goldHi;
+  static const Color discGoldMid = DateEmber.goldMid;
+  static const Color discGoldLo = DateEmber.goldLo;
+  static const Color discGoldInk = DateEmber.goldInk;
+  static const Color discSilverHi = DateEmber.silverHi;
+  static const Color discSilverMid = DateEmber.silverMid;
+  static const Color discSilverLo = DateEmber.silverLo;
+  static const Color discBronzeHi = DateEmber.bronzeHi;
+  static const Color discBronzeMid = DateEmber.bronzeMid;
+  static const Color discBronzeLo = DateEmber.bronzeLo;
+  static const Color discBronzeInk = DateEmber.bronzeInk;
+  static const Color discOliveHi = DateEmber.oliveHi;
+  static const Color discOliveMid = DateEmber.oliveMid;
+  static const Color discOliveLo = DateEmber.oliveLo;
+  static const Color discOliveInk = DateEmber.oliveInk;
+  static const Color discDateHi = DateEmber.dateHi;
+  static const Color discDateMid = DateEmber.dateMid;
+  static const Color discDateLo = DateEmber.dateLo;
+
+  // Ivory ink at fixed alphas — text & hairlines over the night canvas.
+  static const Color ivory78 = Color(0xC7F4ECD8); // secondary text
+  static const Color ivory62 = DateEmber.txtMute; // Date & Ember muted text
+  static const Color ivory60 = Color(0x99F4ECD8); // tertiary text
+  static const Color ivory40 = Color(0x66F4ECD8); // placeholder text
+  static const Color ivory32 = Color(0x52F4ECD8); // strong border
+  static const Color ivory16 = Color(0x29F4ECD8); // default border
+  static const Color ivory08 = Color(0x14F4ECD8); // subtle border / overlay
+  static const Color ivory06 = Color(0x0FF4ECD8); // frosted card fill
+
   // Pure neutrals
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF111111);
@@ -52,7 +121,7 @@ class AppColors {
   static const Color creamDeep = Color(0xFFF1E3C2);
 
   // Decorative flame palette — used by the streak flame painter.
-  static const Color amberGlow = Color(0xFFE0A560);
+  static const Color amberGlow = DateEmber.amber;
   static const Color flameHalo = Color(0xFFF0B862);
   static const Color flameLight = Color(0xFFFCE5BC);
   static const Color flameGold = Color(0xFFF1C57A);

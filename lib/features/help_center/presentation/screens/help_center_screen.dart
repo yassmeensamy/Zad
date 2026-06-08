@@ -53,9 +53,7 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'help_center.title',
         subtitle: 'help_center.subtitle',
@@ -320,7 +318,7 @@ class _SectionLabel extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [colors.oliveLeaf, colors.oliveDeep],
+                colors: [colors.oliveLeaf, colors.olive],
               ),
               borderRadius: BorderRadius.circular(2),
             ),

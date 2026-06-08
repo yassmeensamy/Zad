@@ -126,7 +126,7 @@ class CreateChildrenScreen extends StatelessWidget {
                           child: ResponsiveText(
                             'create_profiles.skip',
                             style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.dateSoft,
+                              color: colors.dateSoft,
                             ),
                           ),
                         ),
@@ -235,7 +235,7 @@ class _Heading extends StatelessWidget {
             style: AppTextStyles.bodySmall.copyWith(
               fontSize: 12.5,
               height: 1.5,
-              color: AppColors.dateSoft,
+              color: colors.dateSoft,
             ),
           ),
         ),

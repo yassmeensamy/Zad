@@ -26,12 +26,12 @@ class PlayCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [colors.oliveSoft, colors.olive, colors.oliveDeep],
+              colors: [colors.ctaTop, colors.ctaMid, colors.ctaBottom],
             ),
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: colors.oliveDeep.withValues(alpha: 0.28),
+                color: colors.ctaBottom.withValues(alpha: 0.30),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -46,7 +46,7 @@ class PlayCard extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: colors.canvas.withValues(alpha: 0.85),
+                color: colors.onCta.withValues(alpha: 0.85),
               ),
             ],
           ),
@@ -74,7 +74,7 @@ class _PlayIcon extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: colors.oliveDeep.withValues(alpha: 0.4),
+            color: colors.ctaBottom.withValues(alpha: 0.4),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -116,7 +116,7 @@ class _PlayMeta extends StatelessWidget {
             Text(
               'home.play.title_prefix'.tr(),
               style: AppTextStyles.bodyXLarge.copyWith(
-                color: colors.canvas,
+                color: colors.onCta,
                 letterSpacing: -0.3,
                 height: 1.1,
               ),
@@ -138,7 +138,7 @@ class _PlayMeta extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AppTextStyles.bodySmall.copyWith(
-            color: colors.canvas.withValues(alpha: 0.75),
+            color: colors.onCta.withValues(alpha: 0.75),
             height: 1.4,
           ),
         ),

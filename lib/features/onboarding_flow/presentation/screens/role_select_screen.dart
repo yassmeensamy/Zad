@@ -144,7 +144,7 @@ class _RoleSelectViewState extends State<_RoleSelectView> {
                           builder: (context, selected, _) {
                             final familyLoading =
                                 selected?.kind == _RoleKind.family &&
-                                    (_resolving || childState.isLoading);
+                                (_resolving || childState.isLoading);
                             return AuthPrimaryButton(
                               label: 'common.continue',
                               onTap: _proceed,
@@ -223,7 +223,7 @@ class _Heading extends StatelessWidget {
           style: AppTextStyles.bodyMedium.copyWith(
             fontSize: 13,
             height: 1.5,
-            color: AppColors.dateSoft,
+            color: colors.dateSoft,
           ),
         ),
       ],

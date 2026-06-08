@@ -18,7 +18,6 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../child/models/child_model.dart';
 import '../../../child/presentation/cubit/child_cubit.dart';
 import '../../../child/presentation/cubit/child_state.dart';
-import '../../../splash/widgets/desert_background.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../data/avatar_model.dart';
 import '../../data/profile_entity.dart';
@@ -90,11 +89,12 @@ class ProfileSelectScreen extends StatelessWidget {
       onPopInvokedWithResult: (didPop, _) => _onPopInvoked(context, didPop),
       child: Scaffold(
         body: BlocListener<AuthCubit, AuthState>(
-        // Only react to a switch we initiated from this screen: the auth
-        // status flips loading → loggedIn (success) or loading → error.
-        listenWhen: (a, b) => a.isLoading && a.status != b.status,
-        listener: _onAuthState,
-        child: DesertBackground(
+          // Only react to a switch we initiated from this screen: the auth
+          // status flips loading → loggedIn (success) or loading → error.
+          listenWhen: (a, b) => a.isLoading && a.status != b.status,
+          listener: _onAuthState,
+          // Transparent scaffold lets the global Date & Ember backdrop show
+          // through, matching the sibling onboarding screens.
           child: SafeArea(
             child: Column(
               children: [
@@ -125,10 +125,8 @@ class ProfileSelectScreen extends StatelessWidget {
                               final loading =
                                   state.isInitial || state.isLoading;
                               return BlocBuilder<AuthCubit, AuthState>(
-                                buildWhen: (a, b) =>
-                                    a.isLoading != b.isLoading,
-                                builder: (context, authState) =>
-                                    AbsorbPointer(
+                                buildWhen: (a, b) => a.isLoading != b.isLoading,
+                                builder: (context, authState) => AbsorbPointer(
                                   absorbing: authState.isLoading,
                                   child: _ProfilesGrid(
                                     children: state.children,
@@ -165,7 +163,6 @@ class ProfileSelectScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -228,8 +225,8 @@ class _ProfilesGrid extends StatelessWidget {
           final crossAxisCount = width >= 900
               ? 4
               : width >= 600
-                  ? 3
-                  : 2;
+              ? 3
+              : 2;
           final childAspectRatio = crossAxisCount >= 3 ? 0.78 : 0.72;
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -306,7 +303,7 @@ class _Heading extends StatelessWidget {
             style: AppTextStyles.bodyMedium.copyWith(
               fontSize: 13,
               height: 1.5,
-              color: AppColors.dateSoft,
+              color: colors.dateSoft,
             ),
           ),
         ),
@@ -333,7 +330,7 @@ class _AddTile extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.white.withValues(alpha: 0.6),
+                color: colors.cardSurface,
                 border: Border.all(
                   color: colors.oliveSoft.withValues(alpha: 0.25),
                   width: 1.5,

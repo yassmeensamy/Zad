@@ -43,7 +43,7 @@ class ZaadPill extends StatelessWidget {
       ),
       ZaadPillTone.oliveOnDark => (
         LinearGradient(
-          colors: [colors.oliveDeep, colors.oliveDeep],
+          colors: [colors.olive, colors.olive],
         ),
         colors.canvas,
         null,

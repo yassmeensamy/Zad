@@ -67,13 +67,13 @@ class _ScopeChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           gradient: selected
-              ? LinearGradient(colors: [colors.oliveDeep, colors.olive])
+              ? LinearGradient(colors: [colors.ctaTop, colors.ctaBottom])
               : null,
           borderRadius: ZaadRadii.pillAll,
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: colors.oliveDeep.withValues(alpha: 0.28),
+                    color: colors.ctaBottom.withValues(alpha: 0.28),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),

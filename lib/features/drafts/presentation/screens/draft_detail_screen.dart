@@ -21,7 +21,6 @@ class DraftDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return BlocListener<DraftsCubit, DraftsState>(
       listenWhen: (a, b) => a.crudStatus != b.crudStatus,
       listener: (context, state) {
@@ -45,7 +44,6 @@ class DraftDetailScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: colors.canvas,
         appBar: ZaadAppBar(
           title: 'drafts.title',
           onBack: context.canPop() ? () => context.pop() : null,

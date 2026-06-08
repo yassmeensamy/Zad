@@ -112,7 +112,7 @@ String _initialOf(String name) {
 /// Picks a stable gradient for [name] from the desert/olive palette.
 List<Color> _gradientFor(String name, AppColorsTheme colors) {
   final palette = <List<Color>>[
-    [colors.oliveSoft, colors.oliveDeep],
+    [colors.olive, colors.oliveLeaf],
     [AppColors.amber, AppColors.amberDeep],
     [AppColors.date, AppColors.dateDeep],
     [colors.oliveLeaf, colors.olive],

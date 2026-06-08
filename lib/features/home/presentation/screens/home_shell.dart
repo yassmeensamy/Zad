@@ -40,8 +40,11 @@ class HomeShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      // Transparent in dark so the global Date & Ember backdrop shows through.
+      backgroundColor:
+          isDark ? Colors.transparent : Theme.of(context).colorScheme.surface,
       extendBody: true,
       body: navigationShell,
       bottomNavigationBar: ZaadBottomNav(

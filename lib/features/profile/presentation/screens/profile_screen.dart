@@ -161,7 +161,7 @@ class _AvatarMedallion extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [colors.olive, colors.oliveDeep],
+          colors: [colors.olive, colors.oliveLeaf],
         ),
         border: Border.all(
           color: colors.accent.withValues(alpha: 0.45),

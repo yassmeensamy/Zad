@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_color_scheme.dart';
+import 'app_colors.dart';
 import 'app_text_styles.dart';
 import 'custom_button_theme.dart';
 import 'zaad_radii.dart';
@@ -26,19 +27,22 @@ class AppTheme {
     required Brightness brightness,
   }) {
     final textTheme = AppTextStyles.buildTextTheme(colorScheme.onSurface);
+    final isDark = brightness == Brightness.dark;
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
       fontFamily: 'ElMessiri',
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surface,
+      // Dark mode is transparent so the global Date & Ember [AppBackdrop]
+      // (injected in main.dart) shows through on every screen.
+      scaffoldBackgroundColor: isDark ? Colors.transparent : colorScheme.surface,
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[
         appColors,
         _buildCustomButtonTheme(appColors),
       ],
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: isDark ? Colors.transparent : colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
         centerTitle: true,
@@ -48,7 +52,9 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFFFFFFFF).withValues(alpha: 0.5),
+        fillColor: brightness == Brightness.dark
+            ? appColors.inputSurface
+            : const Color(0xFFFFFFFF).withValues(alpha: 0.5),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
@@ -120,15 +126,26 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: Colors.white.withValues(alpha: 0.6),
+        color: brightness == Brightness.dark
+            ? appColors.canvasRaised
+            : Colors.white.withValues(alpha: 0.6),
         surfaceTintColor: Colors.transparent,
-        shadowColor: appColors.oliveDeep.withValues(alpha: 0.05),
-        elevation: 1,
+        // Warm espresso shadow in dark (not pure black) so elevation reads
+        // cohesive against the beige surfaces; soft olive tint in light.
+        shadowColor: brightness == Brightness.dark
+            ? AppColors.shadowDeep.withValues(alpha: 0.6)
+            : appColors.oliveDeep.withValues(alpha: 0.05),
+        elevation: brightness == Brightness.dark ? 3 : 1,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ZaadRadii.card),
-          side: BorderSide(color: appColors.olive.withValues(alpha: 0.10)),
+          // Warm hairline: a soft ivory edge in dark, olive tint in light.
+          side: BorderSide(
+            color: brightness == Brightness.dark
+                ? appColors.borderDefault
+                : appColors.olive.withValues(alpha: 0.10),
+          ),
         ),
       ),
       dividerTheme: DividerThemeData(
@@ -145,14 +162,16 @@ class AppTheme {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       borderRadius: ZaadRadii.lg,
       useGradient: true,
+      // Diagonal sweep (top-left → bottom-right) reads more premium than a
+      // flat vertical fill — it gives the CTA a subtle directional sheen.
       gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        stops: const [0.0, 0.5, 1.0],
-        colors: [c.oliveSoft, c.olive, c.oliveDeep],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        stops: const [0.0, 0.55, 1.0],
+        colors: [c.ctaTop, c.ctaMid, c.ctaBottom],
       ),
-      backgroundColor: c.olive,
-      textColor: c.canvas,
+      backgroundColor: c.ctaMid,
+      textColor: c.onCta,
       textStyle: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,

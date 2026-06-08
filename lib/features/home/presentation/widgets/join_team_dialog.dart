@@ -281,11 +281,11 @@ class _SubmitButton extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               stops: const [0.0, 0.5, 1.0],
-              colors: [colors.oliveSoft, colors.olive, colors.oliveDeep],
+              colors: [colors.ctaTop, colors.ctaMid, colors.ctaBottom],
             ),
             boxShadow: [
               BoxShadow(
-                color: colors.oliveDeep.withValues(alpha: 0.28),
+                color: colors.ctaBottom.withValues(alpha: 0.28),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -298,7 +298,7 @@ class _SubmitButton extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 11 * 0.18,
-              color: colors.canvas,
+              color: colors.onCta,
             ),
           ),
         ),

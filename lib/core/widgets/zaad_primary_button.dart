@@ -56,17 +56,17 @@ class ZaadPrimaryButton extends StatelessWidget {
             Color.alphaBlend(errorColor.withValues(alpha: 0.85), colors.canvas),
             errorColor,
             Color.alphaBlend(
-              colors.oliveDeep.withValues(alpha: 0.35),
+              Colors.black.withValues(alpha: 0.28),
               errorColor,
             ),
           ]
-        : <Color>[colors.oliveSoft, colors.olive, colors.oliveDeep];
+        : <Color>[colors.ctaTop, colors.ctaMid, colors.ctaBottom];
     final shadowColor = isDanger
         ? errorColor.withValues(alpha: 0.32)
-        : colors.oliveDeep.withValues(alpha: 0.28);
+        : colors.ctaBottom.withValues(alpha: 0.36);
 
     final disabled = !enabled || loading;
-    final foreground = colors.canvas;
+    final foreground = colors.onCta;
 
     return Opacity(
       opacity: disabled ? 0.6 : 1,

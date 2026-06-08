@@ -84,13 +84,15 @@ class _NavSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final restColor = colors.textArabic.withValues(alpha: 0.50);
-    final onOlive = colors.canvas;
+    // Selected slot uses the Date & Ember gold gradient; dark ink reads
+    // crisply on the bright gold (ivory would wash out).
+    const onGold = DateEmber.goldInk;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        splashColor: colors.olive.withValues(alpha: 0.10),
+        splashColor: colors.accent.withValues(alpha: 0.10),
         highlightColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -99,17 +101,21 @@ class _NavSlot extends StatelessWidget {
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
               gradient: selected
-                  ? LinearGradient(
+                  ? const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [colors.oliveSoft, colors.olive, colors.oliveDeep],
+                      colors: [
+                        DateEmber.amberLight,
+                        DateEmber.amber,
+                        DateEmber.amberDeep,
+                      ],
                     )
                   : null,
               borderRadius: BorderRadius.circular(ZaadRadii.lg),
               boxShadow: selected
                   ? [
                       BoxShadow(
-                        color: colors.oliveDeep.withValues(alpha: 0.28),
+                        color: DateEmber.amber.withValues(alpha: 0.32),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -126,7 +132,7 @@ class _NavSlot extends StatelessWidget {
                       selected ? item.activeIcon : item.icon,
                       key: ValueKey<bool>(selected),
                       size: 22,
-                      color: selected ? onOlive : restColor,
+                      color: selected ? onGold : restColor,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -140,7 +146,7 @@ class _NavSlot extends StatelessWidget {
                       style: (selected
                               ? ZaadType.navLabelActive
                               : ZaadType.navLabel)
-                          .copyWith(color: selected ? onOlive : restColor),
+                          .copyWith(color: selected ? onGold : restColor),
                     ),
                   ),
                 ],

@@ -41,7 +41,6 @@ class _OnboardingViewState extends State<_OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
       body: BlocBuilder<OnboardingCubit, OnboardingState>(
         buildWhen: (a, b) => a.status != b.status,
         builder: (context, state) {

@@ -74,14 +74,14 @@ class LeaderboardNoTeam extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [colors.oliveSoft, colors.olive, colors.oliveDeep],
+                  colors: [colors.ctaTop, colors.ctaMid, colors.ctaBottom],
                 ),
                 borderRadius: ZaadRadii.lg,
-                textColor: colors.canvas,
+                textColor: colors.onCta,
                 textStyle: AppTextStyles.labelLarge.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: colors.canvas,
+                  color: colors.onCta,
                 ),
               ),
               child: Row(

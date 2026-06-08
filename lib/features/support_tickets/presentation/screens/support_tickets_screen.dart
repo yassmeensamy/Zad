@@ -38,7 +38,6 @@ class _SupportTicketsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'support_tickets.title',
         onBack: context.canPop() ? () => context.pop() : null,

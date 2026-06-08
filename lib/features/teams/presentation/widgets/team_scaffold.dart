@@ -21,9 +21,12 @@ class TeamScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: colors.canvas,
+      // Transparent in dark so the global Date & Ember [AppBackdrop] shows
+      // through; light keeps its cream parchment gradient.
+      backgroundColor: isDark ? Colors.transparent : colors.canvas,
       extendBody: extendBody,
       // When an app bar is supplied, let the cream gradient flow up
       // through the bar so the status-bar area, the bar, and the body
@@ -31,13 +34,15 @@ class TeamScaffold extends StatelessWidget {
       extendBodyBehindAppBar: appBar != null,
       appBar: appBar,
       bottomNavigationBar: bottomNav,
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [colors.backdropTop, colors.backdropBottom],
-          ),
+          gradient: isDark
+              ? null
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [colors.backdropTop, colors.backdropBottom],
+                ),
         ),
         child: SafeArea(bottom: false, child: child),
       ),

@@ -73,9 +73,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'profile.edit_profile',
         onBack: context.canPop() ? () => context.pop() : null,

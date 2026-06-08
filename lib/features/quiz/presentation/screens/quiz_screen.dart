@@ -105,9 +105,7 @@ class _QuizView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       body: BlocListener<QuizCubit, QuizState>(
         listenWhen: (a, b) =>
             a.submissionStatus != b.submissionStatus && b.isSubmissionError,

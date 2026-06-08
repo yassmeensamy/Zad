@@ -7,7 +7,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/error_state.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
+import '../../../leaderboard/presentation/screens/date_ember_leaderboard_screen.dart';
+import '../../../profile/presentation/screens/date_ember_profile_screen.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../streak/presentation/cubit/streak_state.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
@@ -47,13 +50,9 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return ColoredBox(
-      color: colors.canvas,
-      child: Stack(
-        children: [
-          const Positioned.fill(child: _BackdropPattern()),
-          SafeArea(
+    final content = SafeArea(
             bottom: false,
             child: BlocBuilder<HomeCubit, HomeState>(
               buildWhen: (a, b) =>
@@ -84,7 +83,17 @@ class _HomeView extends StatelessWidget {
                 );
               },
             ),
-          ),
+          );
+
+    // Dark mode relies on the global Date & Ember backdrop (injected in
+    // main.dart); light keeps its own cream backdrop + pattern.
+    if (isDark) return content;
+    return ColoredBox(
+      color: colors.canvas,
+      child: Stack(
+        children: [
+          const Positioned.fill(child: _BackdropPattern()),
+          content,
         ],
       ),
     );
@@ -133,6 +142,32 @@ class _LoadedContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: JoinTeamCard(
             onTap: () => context.pushNamed(AppRoutes.teamsName),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ZaadPrimaryButton(
+            label: 'Date & Ember Leaderboard',
+            leadingIcon: Icons.local_fire_department,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const DateEmberLeaderboardScreen(),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ZaadPrimaryButton(
+            label: 'Date & Ember Profile',
+            leadingIcon: Icons.person_outline,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const DateEmberProfileScreen(),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 26),
@@ -184,22 +219,58 @@ class _BackdropPattern extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return IgnorePointer(
       child: DecoratedBox(
+        // Dark: roasted-brown radial vignette (raised → surface → base),
+        // lifted from the Date & Ember design. Light keeps the cream linear
+        // wash.
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [colors.backdropTop, colors.backdropBottom],
-          ),
+          gradient: isDark
+              ? RadialGradient(
+                  center: const Alignment(0, -1.05),
+                  radius: 1.4,
+                  colors: [
+                    colors.backdropTop,
+                    colors.backdropMid,
+                    colors.backdropBottom,
+                  ],
+                  stops: const [0.0, 0.42, 1.0],
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [colors.backdropTop, colors.backdropBottom],
+                ),
         ),
-        child: Opacity(
-          opacity: 0.07,
-          child: Image.asset(
-            'assets/images/islamic-pattern.png',
-            repeat: ImageRepeat.repeat,
-            errorBuilder: (_, _, _) => const SizedBox.shrink(),
-          ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Warm amber wash glowing from just above the top edge — the
+            // signature Date & Ember light source.
+            if (isDark)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: const Alignment(0, -0.95),
+                    radius: 0.9,
+                    colors: [
+                      colors.accent.withValues(alpha: 0.16),
+                      colors.accent.withValues(alpha: 0),
+                    ],
+                    stops: const [0.0, 0.65],
+                  ),
+                ),
+              ),
+            Opacity(
+              opacity: isDark ? 0.05 : 0.07,
+              child: Image.asset(
+                'assets/images/islamic-pattern.png',
+                repeat: ImageRepeat.repeat,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+            ),
+          ],
         ),
       ),
     );

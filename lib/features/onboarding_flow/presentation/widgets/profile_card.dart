@@ -152,7 +152,7 @@ class _Avatar extends StatelessWidget {
                   ? LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [colors.oliveSoft, colors.oliveDeep],
+                      colors: [colors.olive, colors.oliveLeaf],
                     )
                   : null,
               border: Border.all(

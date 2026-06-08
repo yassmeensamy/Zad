@@ -80,9 +80,7 @@ class _ChildrenListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'profile.my_children',
         onBack: () => context.pop(),

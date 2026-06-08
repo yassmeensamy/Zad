@@ -34,7 +34,6 @@ class _NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'notifications.title',
         onBack: context.canPop() ? () => context.pop() : null,

@@ -9,7 +9,6 @@ import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../cubit/levels_cubit.dart';
 import '../cubit/levels_state.dart';
@@ -45,7 +44,6 @@ class _LevelsScreenState extends State<LevelsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
 
     return BlocProvider<LevelsCubit>.value(
       value: _cubit,
@@ -57,7 +55,6 @@ class _LevelsScreenState extends State<LevelsScreen>
           message: state.errorMessage ?? 'errors.generic',
         ),
         child: Scaffold(
-          backgroundColor: colors.canvas,
           body: Column(
             children: [
               ZaadAppBar(

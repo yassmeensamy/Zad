@@ -166,9 +166,9 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [colors.olive, colors.oliveDeep],
+                colors: [colors.ctaTop, colors.ctaBottom],
               ),
-              textColor: colors.textInverse,
+              textColor: colors.onCta,
               textStyle: AppTextStyles.labelLarge.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -306,7 +306,7 @@ class _AnimatedBadge extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [colors.oliveSoft, colors.oliveDeep],
+                      colors: [colors.olive, colors.oliveLeaf],
                     ),
                     boxShadow: [
                       BoxShadow(

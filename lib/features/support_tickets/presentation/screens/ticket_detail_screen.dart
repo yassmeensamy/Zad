@@ -48,7 +48,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      backgroundColor: colors.canvas,
       appBar: ZaadAppBar(
         title: 'support_tickets.detail.title',
         onBack: context.canPop() ? () => context.pop() : null,
@@ -351,7 +350,7 @@ class _ConversationThread extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [colors.oliveLeaf, colors.oliveDeep],
+                  colors: [colors.oliveLeaf, colors.olive],
                 ),
                 borderRadius: BorderRadius.circular(2),
               ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'team_category_progress_model.dart';
+import 'team_member_progress_model.dart';
 
 class TeamProgressModel {
   const TeamProgressModel({
@@ -10,22 +11,27 @@ class TeamProgressModel {
     required this.teamName,
     required this.teamRank,
     required this.totalTeams,
-    this.categories = const [],
+    this.members = const [],
+    this.category,
   });
 
   final String teamId;
   final String teamName;
   final int teamRank;
   final int totalTeams;
-  final List<TeamCategoryProgressModel> categories;
 
-  int get totalLevels =>
-      categories.fold(0, (sum, c) => sum + c.totalLevels * c.members.length);
+  /// Leaderboard-style summary: total progress per member across all
+  /// categories. Present in both modes.
+  final List<TeamMemberProgressModel> members;
 
-  int get totalCompleted => categories.fold(
-    0,
-    (sum, c) => sum + c.members.fold(0, (s, m) => s + m.completedLevels),
-  );
+  /// Per-category breakdown, only populated when the request was scoped to a
+  /// specific category id via [TeamsRemoteDataSource.getMyTeamProgress].
+  final TeamCategoryProgressModel? category;
+
+  int get totalLevels => members.fold(0, (sum, m) => sum + m.totalLevels);
+
+  int get totalCompleted =>
+      members.fold(0, (sum, m) => sum + m.completedLevels);
 
   double get overallProgress {
     if (totalLevels <= 0) return 0;
@@ -40,15 +46,20 @@ class TeamProgressModel {
         teamName: map['teamName'] as String? ?? '',
         teamRank: (map['teamRank'] as num?)?.toInt() ?? 0,
         totalTeams: (map['totalTeams'] as num?)?.toInt() ?? 0,
-        categories:
-            (map['categories'] as List<dynamic>?)
+        members:
+            (map['members'] as List<dynamic>?)
                 ?.map(
-                  (e) => TeamCategoryProgressModel.fromMap(
+                  (e) => TeamMemberProgressModel.fromMap(
                     e as Map<String, dynamic>,
                   ),
                 )
                 .toList() ??
             const [],
+        category: map['category'] == null
+            ? null
+            : TeamCategoryProgressModel.fromMap(
+                map['category'] as Map<String, dynamic>,
+              ),
       );
 
   factory TeamProgressModel.fromJson(String source) =>
@@ -59,7 +70,8 @@ class TeamProgressModel {
     'teamName': teamName,
     'teamRank': teamRank,
     'totalTeams': totalTeams,
-    'categories': categories.map((e) => e.toMap()).toList(),
+    'members': members.map((e) => e.toMap()).toList(),
+    if (category != null) 'category': category!.toMap(),
   };
 
   String toJson() => json.encode(toMap());
@@ -72,7 +84,8 @@ class TeamProgressModel {
         other.teamName == teamName &&
         other.teamRank == teamRank &&
         other.totalTeams == totalTeams &&
-        listEquals(other.categories, categories);
+        listEquals(other.members, members) &&
+        other.category == category;
   }
 
   @override
@@ -81,7 +94,8 @@ class TeamProgressModel {
     teamName,
     teamRank,
     totalTeams,
-    Object.hashAll(categories),
+    Object.hashAll(members),
+    category,
   );
 
   @override

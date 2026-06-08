@@ -1,0 +1,29 @@
+name: nm
+version: 0.5.0
+
+description:
+  Provides a client to connect to NetworkManager - the service that manages network connections on Linux.
+
+homepage: https://github.com/canonical/nm.dart
+
+# Vendored copy of nm 0.5.0 (the final upstream release, abandoned). The ONLY
+# change from upstream is the SDK upper bound below: nm 0.5.0 ships
+# `sdk: '>=2.12.0 <3.0.0'`, which makes it unresolvable under Dart 3 and breaks
+# the build (every dbus type reports "isn't a type"). The package source is
+# fully compatible with the dbus 0.7.x API, so widening the bound is sufficient.
+# Pulled in transitively (Linux-only) by connectivity_plus. Remove this vendored
+# package and the dependency_overrides entry once upstream nm publishes a
+# Dart 3 compatible release.
+environment:
+  sdk: '>=2.17.0 <4.0.0'
+
+platforms:
+  linux:
+
+dependencies:
+  dbus: ^0.7.0
+
+dev_dependencies:
+  lints: ^1.0.1
+  test: ^1.16.8
+  test_cov: ^1.0.1

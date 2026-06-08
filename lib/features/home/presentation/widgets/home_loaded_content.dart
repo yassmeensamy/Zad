@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../teams/presentation/screens/temp_team_home.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/models/home_overview_model.dart';
@@ -67,6 +68,19 @@ class HomeLoadedContent extends StatelessWidget {
                 context.pushNamed(AppRoutes.dateEmberLeaderboardName),
             icon: const Icon(Icons.local_fire_department_rounded),
             label: Text('home.date_ember_cta'.tr()),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const TempTeamHomeScreen(),
+              ),
+            ),
+            icon: const Icon(Icons.groups_rounded),
+            label: const Text('Team Home · Community'),
           ),
         ),
         const SizedBox(height: 14),

@@ -910,12 +910,11 @@ packages:
     source: hosted
     version: "1.0.0"
   nm:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: nm
-      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/nm"
+      relative: true
+    source: path
     version: "0.5.0"
   normalize:
     dependency: transitive

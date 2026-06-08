@@ -16,11 +16,15 @@ import '../../data/models/team_progress_summary_model.dart';
 import '../../data/models/team_role_enum.dart';
 import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
-import '../widgets/olive_hero_card.dart';
 import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
 import '../widgets/teams_app_bar.dart';
 import '../widgets/zaad_pill.dart';
+
+// Type families matching the Date & Ember screens: Fraunces (serif italic) and
+// JetBrains Mono, mapped to the platform generic families.
+const String _serif = 'serif';
+const String _mono = 'monospace';
 
 /// Presentation-only mock state shown under [Skeletonizer] while the real team
 /// home loads — realistic shapes only, never touches the data layer.
@@ -192,75 +196,209 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final team = state.team!;
-    final rank = state.summary?.teamRank;
-    final total = state.summary?.totalTeams;
-    final rankLabel = rank != null && total != null && total > 0
-        ? '#$rank / $total'
-        : '—';
+    final progress = state.progress;
+    final rank = state.summary?.teamRank ?? progress?.teamRank;
+    final total = state.summary?.totalTeams ?? progress?.totalTeams;
+    final hasRank = rank != null && total != null && total > 0;
+    final pct = progress?.overallProgressPercent ?? 0;
+    final ratio = (progress?.overallProgress ?? 0.0).clamp(0.0, 1.0).toDouble();
+    final solved = progress?.totalCompleted ?? 0;
+    final totalLevels = progress?.totalLevels ?? 0;
 
-    return OliveHeroCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              TeamDisc(seed: team.name, size: 54),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ResponsiveText(
-                      'teams.home.subtitle'.tr().toUpperCase(),
-                      style: ZaadType.fieldLabel.copyWith(
-                        color: colors.canvas.withValues(alpha: 0.6),
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    ResponsiveText(
-                      team.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.displaySmall.copyWith(
-                        fontSize: 20,
-                        color: colors.canvas,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ZaadPill(label: rankLabel, tone: ZaadPillTone.amber),
-            ],
+    // Faithful port of the Date & Ember leaderboard summary card — frosted
+    // ivory-glass surface, gold corner brackets, gold-foil headline, dashed
+    // rule and serif stat cells — populated with this team's data.
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: DateEmber.glassBorder),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x80000000),
+            blurRadius: 40,
+            offset: Offset(0, 20),
           ),
-          const SizedBox(height: 18),
-          _LevelProgress(progress: state.progress),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.only(top: 14),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: colors.canvas.withValues(alpha: 0.14)),
-              ),
-            ),
-            child: Row(
+        ],
+      ),
+      child: CustomPaint(
+        foregroundPainter: _HeroBracketPainter(color: DateEmber.amber),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Eyebrow + rank badge.
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _HeroStat(
-                  value: '${team.memberCount}',
-                  label: 'teams.home.companions',
+                Flexible(
+                  child: _Eyebrow('teams.home.eyebrow'.tr().toUpperCase()),
                 ),
-                _HeroStat(
-                  value: state.progress != null
-                      ? '${state.progress!.overallProgressPercent}%'
-                      : '—',
-                  label: 'teams.home.progress',
+                if (hasRank) _RankBadge('#$rank / $total'),
+              ],
+            ),
+            const SizedBox(height: 6),
+            // Big gold-foil progress total.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                ShaderMask(
+                  shaderCallback: (r) => const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      DateEmber.amberLight,
+                      DateEmber.amber,
+                      DateEmber.amberDeep,
+                    ],
+                    stops: [0.0, 0.55, 1.0],
+                  ).createShader(r),
+                  child: Text(
+                    '$pct',
+                    style: const TextStyle(
+                      fontFamily: _serif,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 44,
+                      height: 0.9,
+                      letterSpacing: -1.4,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                _HeroStat(
-                  value: '${state.progress?.categories.length ?? 0}',
-                  label: 'teams.home.categories',
+                const SizedBox(width: 11),
+                const Text(
+                  '%',
+                  style: TextStyle(
+                    fontFamily: _mono,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2.2,
+                    color: DateEmber.txtFaint,
+                  ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            // Real progress bar in place of the design's sparkline.
+            _GlassProgressBar(ratio: ratio),
+            const SizedBox(height: 9),
+            _DashedRule(color: DateEmber.washAmber.withValues(alpha: 0.22)),
+            const SizedBox(height: 9),
+            Row(
+              children: [
+                Expanded(
+                  child: _StatCell(
+                    value: '${team.memberCount}',
+                    label: 'teams.home.companions'.tr().toUpperCase(),
+                  ),
+                ),
+                _StatPipe(color: DateEmber.washAmber),
+                Expanded(
+                  child: _StatCell(
+                    value: '$solved',
+                    sub: totalLevels > 0 ? ' / $totalLevels' : null,
+                    label: 'teams.home.solved'.tr().toUpperCase(),
+                  ),
+                ),
+                _StatPipe(color: DateEmber.washAmber),
+                Expanded(
+                  child: _StatCell(
+                    value: hasRank ? '#$rank' : '—',
+                    sub: hasRank ? ' / $total' : null,
+                    label: 'teams.home.rank'.tr().toUpperCase(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Small amber mono caps label — the summary card's `_Eyebrow`.
+class _Eyebrow extends StatelessWidget {
+  const _Eyebrow(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontFamily: _mono,
+        fontSize: 9,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 3.2,
+        color: DateEmber.amber,
+      ),
+    );
+  }
+}
+
+/// Amber glass pill carrying the team rank, sitting where the summary card's
+/// delta badge does.
+class _RankBadge extends StatelessWidget {
+  const _RankBadge(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: DateEmber.glassBorder),
+        color: DateEmber.washAmber.withValues(alpha: 0.10),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontFamily: _mono,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: DateEmber.amber,
+        ),
+      ),
+    );
+  }
+}
+
+/// Thin amber-gradient progress bar — the real-data stand-in for the summary
+/// card's sparkline.
+class _GlassProgressBar extends StatelessWidget {
+  const _GlassProgressBar({required this.ratio});
+  final double ratio;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: Stack(
+        children: [
+          Container(height: 6, width: double.infinity, color: DateEmber.hairline),
+          FractionallySizedBox(
+            widthFactor: ratio.clamp(0.0, 1.0),
+            child: Container(
+              height: 6,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [DateEmber.amberDeep, DateEmber.amberLight],
+                ),
+                boxShadow: [
+                  BoxShadow(color: Color(0x66E0A560), blurRadius: 8),
+                ],
+              ),
             ),
           ),
         ],
@@ -269,61 +407,52 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-class _LevelProgress extends StatelessWidget {
-  const _LevelProgress({this.progress});
-  final dynamic progress;
+/// Serif-italic value over a mono caps label — the summary card's `_StatCell`.
+class _StatCell extends StatelessWidget {
+  const _StatCell({required this.value, this.sub, required this.label});
+
+  final String value;
+  final String? sub;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final ratio = (progress?.overallProgress as double?) ?? 0.0;
-    final pct = (ratio * 100).round();
-
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ResponsiveText(
-              'teams.home.next_rank'.tr().toUpperCase(),
-              style: ZaadType.fieldLabel.copyWith(
-                color: colors.canvas.withValues(alpha: 0.55),
-              ),
+        RichText(
+          text: TextSpan(
+            text: value,
+            style: const TextStyle(
+              fontFamily: _serif,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w300,
+              fontSize: 19,
+              height: 1,
+              color: DateEmber.ivory,
             ),
-            ResponsiveText(
-              '$pct%',
-              style: ZaadType.fieldLabel.copyWith(color: colors.accentSoft),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(3),
-          child: Stack(
             children: [
-              Container(
-                height: 6,
-                color: colors.canvas.withValues(alpha: 0.10),
-              ),
-              FractionallySizedBox(
-                widthFactor: ratio.clamp(0.0, 1.0),
-                child: Container(
-                  height: 6,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.amberGlow, AppColors.amberDeep],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colors.accent.withValues(alpha: 0.5),
-                        blurRadius: 8,
-                      ),
-                    ],
+              if (sub != null)
+                TextSpan(
+                  text: sub,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: DateEmber.txtFaint,
                   ),
                 ),
-              ),
             ],
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 8.5,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 2.0,
+            color: DateEmber.txtMute,
           ),
         ),
       ],
@@ -331,40 +460,125 @@ class _LevelProgress extends StatelessWidget {
   }
 }
 
-class _HeroStat extends StatelessWidget {
-  const _HeroStat({required this.value, required this.label});
-
-  final String value;
-  final String label;
+/// Vertical gradient pipe separating hero stats — fades in from transparent at
+/// the ends to a soft amber in the middle, mirroring the leaderboard summary
+/// card's `_StatPipe`.
+class _StatPipe extends StatelessWidget {
+  const _StatPipe({required this.color});
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ResponsiveText(
-            value,
-            style: AppTextStyles.displaySmall.copyWith(
-              fontSize: 22,
-              color: colors.accentSoft,
-            ),
-          ),
-          const SizedBox(height: 3),
-          ResponsiveText(
-            label.tr().toUpperCase(),
-            style: TextStyle(
-              fontSize: 8.5,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
-              color: colors.canvas.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
+    return Container(
+      width: 1,
+      height: 34,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            color.withValues(alpha: 0),
+            color.withValues(alpha: 0.25),
+            color.withValues(alpha: 0),
+          ],
+        ),
       ),
     );
   }
+}
+
+/// A 1px dashed amber rule, matching the leaderboard summary card's divider.
+class _DashedRule extends StatelessWidget {
+  const _DashedRule({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 1,
+      child: CustomPaint(painter: _DashedLinePainter(color)),
+    );
+  }
+}
+
+class _DashedLinePainter extends CustomPainter {
+  _DashedLinePainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+    const dash = 4.0;
+    const gap = 4.0;
+    double x = 0;
+    while (x < size.width) {
+      canvas.drawLine(Offset(x, 0), Offset(x + dash, 0), paint);
+      x += dash + gap;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedLinePainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+/// Gold right-angle brackets on the four corners of the hero card, echoing the
+/// leaderboard summary card's `_CornerBracketPainter`.
+class _HeroBracketPainter extends CustomPainter {
+  _HeroBracketPainter({required this.color});
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.3
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    const arm = 7.0;
+    const inset = 1.0;
+    final w = size.width;
+    final h = size.height;
+    // Top-left.
+    canvas.drawPath(
+      Path()
+        ..moveTo(inset, arm)
+        ..lineTo(inset, inset)
+        ..lineTo(arm, inset),
+      paint,
+    );
+    // Top-right.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w - inset, arm)
+        ..lineTo(w - inset, inset)
+        ..lineTo(w - arm, inset),
+      paint,
+    );
+    // Bottom-left.
+    canvas.drawPath(
+      Path()
+        ..moveTo(inset, h - arm)
+        ..lineTo(inset, h - inset)
+        ..lineTo(arm, h - inset),
+      paint,
+    );
+    // Bottom-right.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w - inset, h - arm)
+        ..lineTo(w - inset, h - inset)
+        ..lineTo(w - arm, h - inset),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HeroBracketPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _MembersStrip extends StatelessWidget {

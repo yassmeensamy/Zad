@@ -17,34 +17,43 @@ class OliveHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Container(
       padding: padding,
       decoration: BoxDecoration(
         borderRadius: ZaadRadii.xlAll,
-        gradient: const LinearGradient(
+        // Frosted ivory-glass over the Date & Ember backdrop in dark; the same
+        // tokens resolve to the olive ramp in light, so this stays olive there.
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: [0.0, 0.6, 1.0],
+          stops: const [0.0, 0.6, 1.0],
           colors: [
-            AppColors.olive,
-            AppColors.oliveDeep,
-            AppColors.oliveAbyss,
+            colors.heroSurfaceTop,
+            colors.heroSurfaceMid,
+            colors.heroSurfaceBottom,
           ],
         ),
         border: Border.all(
-          color: AppColors.amberGlow.withValues(alpha: 0.18),
+          color: colors.heroGlow.withValues(alpha: 0.18),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadowDeep.withValues(alpha: 0.35),
-            blurRadius: 32,
-            offset: const Offset(0, 18),
+            color: colors.heroShadow.withValues(alpha: 0.45),
+            blurRadius: 50,
+            offset: const Offset(0, 26),
+          ),
+          BoxShadow(
+            color: colors.heroShadow.withValues(alpha: 0.30),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
+          // Warm amber wash bleeding in from the top-right corner.
           Positioned(
             right: -40,
             top: -50,
@@ -55,8 +64,8 @@ class OliveHeroCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.amberGlow.withValues(alpha: 0.30),
-                    AppColors.amberGlow.withValues(alpha: 0),
+                    colors.heroGlow.withValues(alpha: 0.30),
+                    colors.heroGlow.withValues(alpha: 0),
                   ],
                 ),
               ),

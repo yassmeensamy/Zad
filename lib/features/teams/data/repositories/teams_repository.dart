@@ -11,7 +11,7 @@ import '../remote/teams_remote_data_source.dart';
 abstract class TeamsRepository {
   Future<TeamModel> getMyTeam();
   Future<TeamMembersModel> getMyTeamMembers();
-  Future<TeamProgressModel> getMyTeamProgress();
+  Future<TeamProgressModel> getMyTeamProgress({int? categoryId});
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary();
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
@@ -32,8 +32,8 @@ class TeamsRepositoryImpl implements TeamsRepository {
       _remoteDataSource.getMyTeamMembers();
 
   @override
-  Future<TeamProgressModel> getMyTeamProgress() =>
-      _remoteDataSource.getMyTeamProgress();
+  Future<TeamProgressModel> getMyTeamProgress({int? categoryId}) =>
+      _remoteDataSource.getMyTeamProgress(categoryId: categoryId);
 
   @override
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary() =>

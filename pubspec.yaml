@@ -80,6 +80,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
 
+# nm 0.5.0 (Linux-only, pulled transitively by connectivity_plus) is the final
+# upstream release and caps at `sdk: <3.0.0`, so it fails to compile under
+# Dart 3 — every dbus type reports "isn't a type". We override it with a
+# vendored copy (third_party/nm) that only widens the SDK bound; the source is
+# unchanged and compatible with dbus 0.7.x. Drop this once upstream nm ships a
+# Dart 3 compatible release.
+dependency_overrides:
+  nm:
+    path: third_party/nm
+
 flutter_launcher_icons:
   ios: true
   android: false

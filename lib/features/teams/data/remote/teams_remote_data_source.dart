@@ -14,7 +14,10 @@ import '../models/team_progress_summary_model.dart';
 abstract class TeamsRemoteDataSource {
   Future<TeamModel> getMyTeam();
   Future<TeamMembersModel> getMyTeamMembers();
-  Future<TeamProgressModel> getMyTeamProgress();
+  /// Fetches team progress. With [categoryId] omitted, returns total progress
+  /// per member across all categories. With a [categoryId], the response also
+  /// includes a per-member breakdown scoped to that category.
+  Future<TeamProgressModel> getMyTeamProgress({int? categoryId});
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary();
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
@@ -56,8 +59,11 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   }
 
   @override
-  Future<TeamProgressModel> getMyTeamProgress() async {
-    final response = await _networkService.get(_endpoints.myTeamProgress);
+  Future<TeamProgressModel> getMyTeamProgress({int? categoryId}) async {
+    final response = await _networkService.get(
+      _endpoints.myTeamProgress,
+      queryParameters: categoryId == null ? null : {'category': categoryId},
+    );
     _validateResponse(response);
     return TeamProgressModel.fromMap(response.data as Map<String, dynamic>);
   }

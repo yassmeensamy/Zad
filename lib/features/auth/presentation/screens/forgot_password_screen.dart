@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,7 +116,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: IconButton(
                         onPressed: _onBackToLogin,
                         icon: Icon(
-                          Icons.arrow_back_rounded,
+                          Directionality.of(context) == TextDirection.rtl
+                              ? Icons.arrow_forward_rounded
+                              : Icons.arrow_back_rounded,
                           color: colors.oliveDeep,
                         ),
                       ),

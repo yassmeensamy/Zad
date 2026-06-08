@@ -19,9 +19,9 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBack;
   final Widget? action;
 
-  /// Fill behind the app bar. Defaults to `colors.canvas`. Pass
-  /// `Colors.transparent` to let a parent backdrop (e.g. the cream
-  /// gradient inside `TeamScaffold`) flow through the bar.
+  /// Fill behind the app bar. Defaults to `Colors.transparent` so a parent
+  /// backdrop (e.g. the cream gradient inside `TeamScaffold`) flows through
+  /// the bar. Pass an explicit color to paint an opaque fill.
   final Color? backgroundColor;
 
   static const double _height = 64;
@@ -34,7 +34,7 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
     final colors = context.appColors;
 
     return ColoredBox(
-      color: backgroundColor ?? colors.canvas,
+      color: backgroundColor ?? Colors.transparent,
       child: SafeArea(
         bottom: false,
         child: SizedBox(

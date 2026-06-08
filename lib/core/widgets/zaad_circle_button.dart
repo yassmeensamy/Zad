@@ -48,12 +48,9 @@ class ZaadCircleIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Material(
-      color: AppColors.white.withValues(alpha: 0.6),
+      color: colors.overlayLight,
       shape: CircleBorder(
-        side: BorderSide(
-          color: colors.olive.withValues(alpha: 0.18),
-          width: 1,
-        ),
+        side: BorderSide(color: colors.borderSubtle),
       ),
       child: InkWell(
         onTap: enabled ? onTap : null,
@@ -64,7 +61,7 @@ class ZaadCircleIconButton extends StatelessWidget {
           child: Icon(
             resolveIcon(context),
             size: iconSize,
-            color: colors.oliveDeep,
+            color: colors.textPrimary,
           ),
         ),
       ),

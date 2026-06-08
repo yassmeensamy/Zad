@@ -105,7 +105,9 @@ class _TopBar extends StatelessWidget {
       child: Row(
         children: [
           _GlassIconButton(
-            icon: Icons.arrow_back,
+            icon: Directionality.of(context) == TextDirection.rtl
+                ? Icons.arrow_forward
+                : Icons.arrow_back,
             onTap: () => Navigator.of(context).maybePop(),
           ),
           Expanded(

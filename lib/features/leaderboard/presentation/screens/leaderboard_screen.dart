@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
-import '../../../../theme/date_ember_palette.dart';
+import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
 import '../../../categories/presentation/cubit/categories_state.dart';
@@ -15,10 +15,13 @@ import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import '../widgets/leaderboard_no_team.dart';
 
-/// Leaderboard — reskinned with the **Date & Ember** palette
-/// (lib/theme/date_ember_palette.dart). Roasted-brown depths, ember accents,
-/// gold-foil discs and rising sparks — wired to the live [RankingsCubit] data
-/// (scope tabs, category filter, podium, ranking rows, pagination, my-rank).
+/// Leaderboard — fully theme-aware. Structural colours (canvas, text, borders,
+/// accents and the CTA gradient) are read from [AppColorsTheme] via
+/// `context.appColors`, so the screen flips between the light Desert-Sand and
+/// dark Date & Ember palettes. The metallic medal ramps (gold/silver/bronze)
+/// are brand-fixed via [AppColors] disc tokens — a gold medal reads gold in
+/// either brightness. Wired to the live [RankingsCubit] (scope tabs, category
+/// filter, podium, ranking rows, pagination, my-rank).
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
 
@@ -50,6 +53,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     // The shell renders an opaque bottom nav (64px + safe-area) with
     // `extendBody: true`, so this branch's content sits *behind* it. Pad the
     // bottom by nav height + inset + a small gap so the pinned footer card
@@ -59,7 +63,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     final bottomNavSpace = 64 + bottomInset + 10;
 
     return Scaffold(
-      backgroundColor: DateEmber.canvas,
+      backgroundColor: colors.canvas,
       body: _EmberBackdrop(
         child: SafeArea(
           bottom: false,
@@ -100,7 +104,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Background — roasted-brown vignette, Islamic pattern, amber wash, ember field.
+// Background — themed vignette, Islamic pattern, accent wash, ember field.
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmberBackdrop extends StatelessWidget {
   const _EmberBackdrop({required this.child});
@@ -109,35 +113,39 @@ class _EmberBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final isDark = context.isDark;
     return DecoratedBox(
-      // radial-gradient(130% 75% at 50% -8%, #271A10, #1A120B 42%, #0E0905)
-      decoration: const BoxDecoration(
+      // Roasted-brown vignette in dark / cream wash in light, from the
+      // theme's backdrop stops.
+      decoration: BoxDecoration(
         gradient: RadialGradient(
-          center: Alignment(0, -1.05),
+          center: const Alignment(0, -1.05),
           radius: 1.35,
-          colors: [DateEmber.raised, DateEmber.surface, DateEmber.base],
-          stops: [0.0, 0.42, 1.0],
+          colors: [colors.backdropTop, colors.backdropMid, colors.backdropBottom],
+          stops: const [0.0, 0.42, 1.0],
         ),
       ),
       child: Stack(
         children: [
-          // Islamic pattern wallpaper.
-          const Positioned.fill(
+          // Islamic pattern wallpaper. Screened (lightens) in dark, multiplied
+          // (darkens) in light, so it stays a faint texture either way.
+          Positioned.fill(
             child: IgnorePointer(
               child: Opacity(
-                opacity: 0.05,
+                opacity: isDark ? 0.05 : 0.06,
                 child: Image(
-                  image: AssetImage('assets/images/islamic-pattern.png'),
+                  image: const AssetImage('assets/images/islamic-pattern.png'),
                   repeat: ImageRepeat.repeat,
                   alignment: Alignment.topLeft,
-                  color: DateEmber.ivory,
-                  colorBlendMode: BlendMode.screen,
+                  color: isDark ? colors.textPrimary : colors.textTertiary,
+                  colorBlendMode: isDark ? BlendMode.screen : BlendMode.multiply,
                 ),
               ),
             ),
           ),
-          // Warm amber wash at the top.
-          const Positioned(
+          // Warm accent wash at the top.
+          Positioned(
             left: -120,
             right: -120,
             top: -120,
@@ -147,15 +155,25 @@ class _EmberBackdrop extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     radius: 0.65,
-                    colors: [Color(0x38E1A560), Color(0x00E1A560)],
-                    stops: [0.0, 1.0],
+                    colors: [
+                      colors.accent.withValues(alpha: isDark ? 0.22 : 0.16),
+                      colors.accent.withValues(alpha: 0),
+                    ],
+                    stops: const [0.0, 1.0],
                   ),
                 ),
               ),
             ),
           ),
           // Rising ember sparks.
-          const Positioned.fill(child: IgnorePointer(child: _EmberField())),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: _EmberField(
+                core: colors.accentSoft,
+                glow: colors.accent,
+              ),
+            ),
+          ),
           // Foreground content.
           child,
         ],
@@ -172,29 +190,30 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Column(
       children: [
         Text(
           'leaderboard.eyebrow'.tr().toUpperCase(),
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: _mono,
             fontSize: 9.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
-            color: DateEmber.amber,
+            color: colors.accent,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           'leaderboard.title'.tr(),
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: _serif,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w300,
             fontSize: 24,
             height: 1,
             letterSpacing: -0.3,
-            color: DateEmber.ivory,
+            color: colors.textPrimary,
           ),
         ),
       ],
@@ -213,12 +232,13 @@ class _ScopeSegmented extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: const Color(0x0AF4ECD8),
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: DateEmber.hairline),
+        border: Border.all(color: colors.borderSubtle),
       ),
       child: Row(
         children: [
@@ -233,10 +253,13 @@ class _ScopeSegmented extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(9),
                     gradient: scope == value
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Color(0x33F1C57A), Color(0x1FA6622A)],
+                            colors: [
+                              colors.accent.withValues(alpha: 0.20),
+                              colors.accentDeep.withValues(alpha: 0.12),
+                            ],
                           )
                         : null,
                   ),
@@ -248,8 +271,8 @@ class _ScopeSegmented extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.8,
                       color: scope == value
-                          ? DateEmber.amberLight
-                          : DateEmber.txtMute,
+                          ? colors.accent
+                          : colors.textSecondary,
                     ),
                   ),
                 ),
@@ -313,6 +336,7 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: GestureDetector(
@@ -333,16 +357,21 @@ class _CategoryChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           decoration: BoxDecoration(
             gradient: selected
-                ? const LinearGradient(
+                ? LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0x33F1C57A), Color(0x1FA6622A)],
+                    colors: [
+                      colors.accent.withValues(alpha: 0.20),
+                      colors.accentDeep.withValues(alpha: 0.12),
+                    ],
                   )
                 : null,
-            color: selected ? null : const Color(0x0AF4ECD8),
+            color: selected ? null : colors.cardSurface,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: selected ? DateEmber.glassBorder : DateEmber.hairline,
+              color: selected
+                  ? colors.accent.withValues(alpha: 0.45)
+                  : colors.borderSubtle,
             ),
           ),
           child: Text(
@@ -352,7 +381,7 @@ class _CategoryChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: selected ? DateEmber.amberLight : DateEmber.txtMute,
+              color: selected ? colors.accent : colors.textSecondary,
             ),
           ),
         ),
@@ -372,13 +401,14 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     if (state.activeStatus == RankingsStatus.loading && state.activeIsEmpty) {
-      return const Center(
+      return Center(
         child: SizedBox(
           width: 22,
           height: 22,
           child: CircularProgressIndicator(
-            color: DateEmber.amber,
+            color: colors.accent,
             strokeWidth: 2,
           ),
         ),
@@ -423,15 +453,15 @@ class _Body extends StatelessWidget {
               _RankRow(seed: _rowAt(state, i)),
         ),
         if (state.loadingMore)
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               child: Center(
                 child: SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(
-                    color: DateEmber.amber,
+                    color: colors.accent,
                     strokeWidth: 2,
                   ),
                 ),
@@ -550,11 +580,13 @@ class _PodiumPillar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final isFirst = place == 1;
+    // Medal accent — brand-fixed metal tones, identical in both themes.
     final accent = switch (place) {
-      1 => DateEmber.amber,
-      2 => DateEmber.silverMid,
-      _ => DateEmber.emberLight,
+      1 => AppColors.discGoldMid,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.emberBright,
     };
     final pedHeight = switch (place) {
       1 => 46.0,
@@ -562,9 +594,9 @@ class _PodiumPillar extends StatelessWidget {
       _ => 25.0,
     };
     final pedTint = switch (place) {
-      1 => DateEmber.amber,
-      2 => DateEmber.silverMid,
-      _ => DateEmber.ember,
+      1 => AppColors.discGoldMid,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.ember,
     };
     final avatarSize = isFirst ? 62.0 : 52.0;
 
@@ -618,7 +650,7 @@ class _PodiumPillar extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-            color: isFirst ? DateEmber.amberLight : DateEmber.ivory,
+            color: isFirst ? colors.accent : colors.textPrimary,
           ),
         ),
         const SizedBox(height: 2),
@@ -676,13 +708,14 @@ class _RankBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Container(
       width: 24,
       height: 24,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: DateEmber.base,
+        color: colors.canvas,
         border: Border.all(color: color, width: 2),
       ),
       child: Text(
@@ -731,7 +764,7 @@ class _CrownPainter extends CustomPainter {
         ..shader = const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [DateEmber.amberLight, DateEmber.amberDeep],
+          colors: [AppColors.discGoldHi, AppColors.discGoldLo],
         ).createShader(Offset.zero & size),
     );
     canvas.drawPath(
@@ -740,7 +773,7 @@ class _CrownPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8
         ..strokeJoin = StrokeJoin.round
-        ..color = DateEmber.bronzeLo,
+        ..color = AppColors.discBronzeLo,
     );
   }
 
@@ -758,19 +791,25 @@ class _RankRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final isMe = seed.isMe;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         gradient: isMe
-            ? const LinearGradient(
-                colors: [Color(0x1FE1A560), Color(0x05E1A560)],
+            ? LinearGradient(
+                colors: [
+                  colors.accent.withValues(alpha: 0.12),
+                  colors.accent.withValues(alpha: 0.02),
+                ],
               )
             : null,
-        color: isMe ? null : const Color(0x06F4ECD8),
+        color: isMe ? null : colors.textPrimary.withValues(alpha: 0.024),
         border: Border.all(
-          color: isMe ? const Color(0x66E1A560) : const Color(0x0DF4ECD8),
+          color: isMe
+              ? colors.accent.withValues(alpha: 0.4)
+              : colors.textPrimary.withValues(alpha: 0.05),
         ),
       ),
       child: Row(
@@ -784,7 +823,7 @@ class _RankRow extends StatelessWidget {
                 fontFamily: _mono,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: isMe ? DateEmber.amber : DateEmber.txtFaint,
+                color: isMe ? colors.accent : colors.textTertiary,
               ),
             ),
           ),
@@ -810,7 +849,7 @@ class _RankRow extends StatelessWidget {
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                     height: 1.1,
-                    color: isMe ? DateEmber.amberLight : DateEmber.ivory,
+                    color: isMe ? colors.accentSoft : colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -818,9 +857,9 @@ class _RankRow extends StatelessWidget {
                   _metaLine(seed),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: DateEmber.txtMute,
+                    color: colors.textSecondary,
                   ),
                 ),
               ],
@@ -836,17 +875,17 @@ class _RankRow extends StatelessWidget {
                   fontFamily: _mono,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isMe ? DateEmber.amberLight : DateEmber.ivory,
+                  color: isMe ? colors.accentSoft : colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 '${seed.percent}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: _mono,
                   fontSize: 10.5,
                   fontWeight: FontWeight.w600,
-                  color: DateEmber.olive,
+                  color: colors.success,
                 ),
               ),
             ],
@@ -866,7 +905,7 @@ class _RankRow extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Footer — my-rank ember card.
+// Footer — my-rank CTA card.
 // ─────────────────────────────────────────────────────────────────────────────
 class _Footer extends StatelessWidget {
   const _Footer({required this.state});
@@ -910,22 +949,26 @@ class _MyRankCta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final card = Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x2EC9512B), Color(0x147A2E15)],
+          colors: [
+            colors.ctaMid.withValues(alpha: 0.18),
+            colors.ctaBottom.withValues(alpha: 0.08),
+          ],
         ),
-        border: Border.all(color: const Color(0x66E07A48)),
-        boxShadow: const [
+        border: Border.all(color: colors.ctaTop.withValues(alpha: 0.4)),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x73000000),
+            color: colors.heroShadow.withValues(alpha: 0.45),
             blurRadius: 30,
-            offset: Offset(0, 16),
+            offset: const Offset(0, 16),
           ),
         ],
       ),
@@ -937,25 +980,25 @@ class _MyRankCta extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [DateEmber.emberLight, DateEmber.ember],
+                colors: [colors.ctaTop, colors.ctaMid],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: DateEmber.ember.withValues(alpha: 0.55),
+                  color: colors.ctaMid.withValues(alpha: 0.55),
                   blurRadius: 18,
                 ),
               ],
             ),
             child: Text(
               '#$rank',
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: _mono,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: DateEmber.emberInk,
+                color: colors.onCta,
               ),
             ),
           ),
@@ -966,12 +1009,12 @@ class _MyRankCta extends StatelessWidget {
               children: [
                 Text(
                   label.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: _mono,
                     fontSize: 8.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.4,
-                    color: DateEmber.amber,
+                    color: colors.accent,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -979,11 +1022,11 @@ class _MyRankCta extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.1,
-                    color: DateEmber.amberLight,
+                    color: colors.textPrimary,
                   ),
                 ),
               ],
@@ -991,7 +1034,7 @@ class _MyRankCta extends StatelessWidget {
           ),
           if (onTap != null) ...[
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward, size: 16, color: DateEmber.amber),
+            Icon(Icons.arrow_forward, size: 16, color: colors.accent),
           ],
         ],
       ),
@@ -1020,16 +1063,17 @@ class _EmptyHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: vertical),
       child: Center(
         child: Text(
           textKey.tr(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
             fontStyle: FontStyle.italic,
-            color: DateEmber.txtMute,
+            color: colors.textSecondary,
           ),
         ),
       ),
@@ -1044,6 +1088,7 @@ class _ErrorRetry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1051,10 +1096,10 @@ class _ErrorRetry extends StatelessWidget {
           Text(
             'leaderboard.error'.tr(),
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontStyle: FontStyle.italic,
-              color: DateEmber.txtMute,
+              color: colors.textSecondary,
             ),
           ),
           const SizedBox(height: 8),
@@ -1062,8 +1107,8 @@ class _ErrorRetry extends StatelessWidget {
             onPressed: onRetry,
             child: Text(
               'common.retry'.tr(),
-              style: const TextStyle(
-                color: DateEmber.amber,
+              style: TextStyle(
+                color: colors.accent,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1083,6 +1128,7 @@ class _EyebrowRule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1090,12 +1136,12 @@ class _EyebrowRule extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: _mono,
             fontSize: 9,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
-            color: DateEmber.amber,
+            color: colors.accent,
           ),
         ),
         const SizedBox(width: 10),
@@ -1111,12 +1157,17 @@ class _AllMembersRule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final line = Expanded(
       child: Container(
         height: 1,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0x00E1A560), Color(0x4DE1A560), Color(0x00E1A560)],
+            colors: [
+              colors.accent.withValues(alpha: 0),
+              colors.accent.withValues(alpha: 0.30),
+              colors.accent.withValues(alpha: 0),
+            ],
           ),
         ),
       ),
@@ -1129,12 +1180,12 @@ class _AllMembersRule extends StatelessWidget {
           'leaderboard.all_members'
               .tr(namedArgs: {'count': '$count'})
               .toUpperCase(),
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: _mono,
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.0,
-            color: DateEmber.txtMute,
+            color: colors.textSecondary,
           ),
         ),
         const SizedBox(width: 8),
@@ -1150,6 +1201,7 @@ class _RuleSegment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return SizedBox(
       width: 26,
       height: 1,
@@ -1157,8 +1209,8 @@ class _RuleSegment extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: toRight
-                ? const [Color(0x00E0A560), DateEmber.amber]
-                : const [DateEmber.amber, Color(0x00E0A560)],
+                ? [colors.accent.withValues(alpha: 0), colors.accent]
+                : [colors.accent, colors.accent.withValues(alpha: 0)],
           ),
         ),
       ),
@@ -1167,7 +1219,7 @@ class _RuleSegment extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Metallic disc avatars.
+// Metallic disc avatars — brand-fixed medal ramps (theme-independent).
 // ─────────────────────────────────────────────────────────────────────────────
 enum _DiscStyle { gold, silver, bronze, olive }
 
@@ -1209,24 +1261,24 @@ class _Disc extends StatelessWidget {
   Widget build(BuildContext context) {
     final (colors, ink, ringColor) = switch (style) {
       _DiscStyle.gold => (
-        [DateEmber.goldHi, DateEmber.goldMid, DateEmber.goldLo],
-        DateEmber.goldInk,
-        const Color(0x8CE1A560),
+        [AppColors.discGoldHi, AppColors.discGoldMid, AppColors.discGoldLo],
+        AppColors.discGoldInk,
+        AppColors.discGoldMid.withValues(alpha: 0.55),
       ),
       _DiscStyle.silver => (
-        [DateEmber.silverHi, DateEmber.silverMid, DateEmber.silverLo],
-        DateEmber.goldInk,
-        const Color(0x80DCCDB4),
+        [AppColors.discSilverHi, AppColors.discSilverMid, AppColors.discSilverLo],
+        AppColors.discGoldInk,
+        AppColors.discSilverMid.withValues(alpha: 0.5),
       ),
       _DiscStyle.bronze => (
-        [DateEmber.bronzeHi, DateEmber.bronzeMid, DateEmber.bronzeLo],
-        DateEmber.bronzeInk,
-        const Color(0x80C9512B),
+        [AppColors.discBronzeHi, AppColors.discBronzeMid, AppColors.discBronzeLo],
+        AppColors.discBronzeInk,
+        AppColors.discBronzeMid.withValues(alpha: 0.5),
       ),
       _DiscStyle.olive => (
-        [DateEmber.oliveHi, DateEmber.oliveMid, DateEmber.oliveLo],
-        DateEmber.oliveInk,
-        const Color(0x33E1A560),
+        [AppColors.discOliveHi, AppColors.discOliveMid, AppColors.discOliveLo],
+        AppColors.discOliveInk,
+        AppColors.discGoldMid.withValues(alpha: 0.2),
       ),
     };
 
@@ -1256,7 +1308,13 @@ class _Disc extends StatelessWidget {
 // Rising ember particle field.
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmberField extends StatefulWidget {
-  const _EmberField();
+  const _EmberField({required this.core, required this.glow});
+
+  /// Bright spark core (theme accent-soft).
+  final Color core;
+
+  /// Outer spark glow (theme accent).
+  final Color glow;
 
   @override
   State<_EmberField> createState() => _EmberFieldState();
@@ -1290,7 +1348,12 @@ class _EmberFieldState extends State<_EmberField>
     return AnimatedBuilder(
       animation: _c,
       builder: (_, _) => CustomPaint(
-        painter: _EmberPainter(sparks: _sparks, t: _c.value),
+        painter: _EmberPainter(
+          sparks: _sparks,
+          t: _c.value,
+          core: widget.core,
+          glow: widget.glow,
+        ),
         size: Size.infinite,
       ),
     );
@@ -1311,9 +1374,16 @@ class _Spark {
 }
 
 class _EmberPainter extends CustomPainter {
-  _EmberPainter({required this.sparks, required this.t});
+  _EmberPainter({
+    required this.sparks,
+    required this.t,
+    required this.core,
+    required this.glow,
+  });
   final List<_Spark> sparks;
   final double t;
+  final Color core;
+  final Color glow;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1337,9 +1407,9 @@ class _EmberPainter extends CustomPainter {
       final paint = Paint()
         ..shader = RadialGradient(
           colors: [
-            DateEmber.amberLight.withValues(alpha: opacity),
-            DateEmber.emberLight.withValues(alpha: opacity * 0.6),
-            DateEmber.emberLight.withValues(alpha: 0),
+            core.withValues(alpha: opacity),
+            glow.withValues(alpha: opacity * 0.6),
+            glow.withValues(alpha: 0),
           ],
           stops: const [0.0, 0.6, 1.0],
         ).createShader(Rect.fromCircle(center: Offset(dx, dy), radius: radius));
@@ -1348,5 +1418,8 @@ class _EmberPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _EmberPainter oldDelegate) => oldDelegate.t != t;
+  bool shouldRepaint(covariant _EmberPainter oldDelegate) =>
+      oldDelegate.t != t ||
+      oldDelegate.core != core ||
+      oldDelegate.glow != glow;
 }

@@ -15,6 +15,7 @@ import '../../features/levels/data/models/level_model.dart';
 import '../../features/levels/presentation/screens/levels_screen.dart';
 import '../../features/quiz/presentation/screens/quiz_screen.dart';
 import '../../features/leaderboard/presentation/cubit/rankings_cubit.dart';
+import '../../features/leaderboard/presentation/screens/date_ember_leaderboard_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
@@ -37,7 +38,6 @@ import '../../features/support_tickets/presentation/screens/ticket_detail_screen
 import '../../features/teams/presentation/cubit/teams_cubit.dart';
 import '../../features/teams/presentation/screens/team_create_screen.dart';
 import '../../features/teams/presentation/screens/team_create_success_screen.dart';
-import '../../features/teams/presentation/screens/team_empty_screen.dart';
 import '../../features/teams/presentation/screens/team_home_screen.dart';
 import '../../features/teams/presentation/screens/team_join_screen.dart';
 import '../../features/teams/presentation/screens/team_join_success_screen.dart';
@@ -176,19 +176,16 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: AppRoutes.dateEmberLeaderboard,
+        name: AppRoutes.dateEmberLeaderboardName,
+        builder: (context, state) => const DateEmberLeaderboardScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.teams,
         name: AppRoutes.teamsName,
         builder: (context, state) => BlocProvider<TeamsCubit>(
           create: (_) => sl<TeamsCubit>(),
           child: const TeamLoaderScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamEmpty,
-        name: AppRoutes.teamEmptyName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamEmptyScreen(),
         ),
       ),
       GoRoute(

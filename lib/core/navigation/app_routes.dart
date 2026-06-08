@@ -15,6 +15,7 @@ class AppRoutes {
   static const String levels = '/categories/:id/levels';
   static const String quiz = '/levels/:levelId/quiz';
   static const String leaderboard = '/leaderboard';
+  static const String dateEmberLeaderboard = '/leaderboard/date-ember';
   static const String profile = '/profile';
   static const String myChildren = '/my-children';
   static const String notifications = '/notifications';
@@ -27,7 +28,6 @@ class AppRoutes {
 
   // Teams flow
   static const String teams = '/teams';
-  static const String teamEmpty = '/teams/empty';
   static const String teamCreate = '/teams/create';
   static const String teamCreateSuccess = '/teams/create/success';
   static const String teamJoin = '/teams/join';
@@ -49,6 +49,7 @@ class AppRoutes {
   static const String levelsName = 'levels';
   static const String quizName = 'quiz';
   static const String leaderboardName = 'leaderboard';
+  static const String dateEmberLeaderboardName = 'date-ember-leaderboard';
   static const String profileName = 'profile';
   static const String myChildrenName = 'my-children';
   static const String notificationsName = 'notifications';
@@ -60,7 +61,6 @@ class AppRoutes {
   static const String ticketDetailName = 'ticket-detail';
 
   static const String teamsName = 'teams';
-  static const String teamEmptyName = 'team-empty';
   static const String teamCreateName = 'team-create';
   static const String teamCreateSuccessName = 'team-create-success';
   static const String teamJoinName = 'team-join';

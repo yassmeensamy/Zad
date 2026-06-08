@@ -109,7 +109,8 @@
       "view_all": "VIEW ALL",
       "narrator_prefix": "Narrated by ",
       "hadith_no": "Hadith №{}"
-    }
+    },
+    "date_ember_cta": "View the Date & Ember leaderboard"
   },
   "categories": {
     "eyebrow": "YOUR JOURNEY",
@@ -385,6 +386,8 @@
     "language": "Language",
     "theme": "Appearance",
     "theme_system": "System",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
     "edit_profile": "Edit profile",
     "privacy": "Privacy",
     "help_support": "Help & support",

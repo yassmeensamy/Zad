@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:my_app/firebase_options.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -15,10 +17,18 @@ import 'core/services/service_locator.dart';
 import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/data/strategies/oauth_strategy_factory.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/theme/presentation/cubit/theme_cubit.dart';
 import 'features/user/presentation/cubit/user_cubit.dart';
 import 'theme/theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorageDirectory.web
+        : HydratedStorageDirectory(
+            (await getApplicationDocumentsDirectory()).path,
+          ),
+  );
   await dotenv.load(fileName: '.env');
   await EasyLocalization.ensureInitialized();
   await initializeDateFormatting('ar');
@@ -70,17 +80,23 @@ class MyApp extends StatelessWidget {
           create: (_) => sl<UserCubit>(),
           lazy: false,
         ),
+        BlocProvider<ThemeCubit>(
+          create: (_) => ThemeCubit(),
+          lazy: false,
+        ),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Zaad | زاد',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.dark,
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        routerConfig: AppRouter.router,
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) => MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'Zaad | زاد',
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeMode,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          routerConfig: AppRouter.router,
+        ),
       ),
     );
   }

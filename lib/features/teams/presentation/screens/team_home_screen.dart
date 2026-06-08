@@ -6,8 +6,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/team_member_model.dart';
@@ -21,7 +19,7 @@ import '../cubit/teams_state.dart';
 import '../widgets/olive_hero_card.dart';
 import '../widgets/team_disc.dart';
 import '../widgets/team_scaffold.dart';
-import '../widgets/team_leave_sheet.dart';
+import '../widgets/teams_app_bar.dart';
 import '../widgets/zaad_pill.dart';
 
 /// Presentation-only mock state shown under [Skeletonizer] while the real team
@@ -38,11 +36,31 @@ const TeamsState _kSkeletonHomeState = TeamsState(
   members: TeamMembersModel(
     teamId: '0',
     members: [
-      TeamMemberModel(userId: '0', username: 'Companion', role: TeamRoleEnum.owner),
-      TeamMemberModel(userId: '1', username: 'Companion', role: TeamRoleEnum.member),
-      TeamMemberModel(userId: '2', username: 'Companion', role: TeamRoleEnum.member),
-      TeamMemberModel(userId: '3', username: 'Companion', role: TeamRoleEnum.member),
-      TeamMemberModel(userId: '4', username: 'Companion', role: TeamRoleEnum.member),
+      TeamMemberModel(
+        userId: '0',
+        username: 'Companion',
+        role: TeamRoleEnum.owner,
+      ),
+      TeamMemberModel(
+        userId: '1',
+        username: 'Companion',
+        role: TeamRoleEnum.member,
+      ),
+      TeamMemberModel(
+        userId: '2',
+        username: 'Companion',
+        role: TeamRoleEnum.member,
+      ),
+      TeamMemberModel(
+        userId: '3',
+        username: 'Companion',
+        role: TeamRoleEnum.member,
+      ),
+      TeamMemberModel(
+        userId: '4',
+        username: 'Companion',
+        role: TeamRoleEnum.member,
+      ),
     ],
   ),
   progress: TeamProgressModel(
@@ -82,6 +100,29 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TeamsCubit, TeamsState>(
+      buildWhen: (a, b) => a.team != b.team || a.status != b.status,
+      builder: (context, state) => TeamScaffold(
+        child: Column(
+          children: [
+            TeamsAppBar(state: state),
+            const Expanded(child: TeamHomeView()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Pure render of the team home body from [TeamsState] — no scaffold, no app
+/// bar of its own. It sits below the fixed [TeamsAppBar], so the combined
+/// [TeamLoaderScreen] can swap it in place once a team resolves and the bar
+/// stays put.
+class TeamHomeView extends StatelessWidget {
+  const TeamHomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TeamsCubit, TeamsState>(
       buildWhen: (a, b) =>
           a.team != b.team ||
           a.members != b.members ||
@@ -90,80 +131,54 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
       builder: (context, state) {
         final team = state.team;
         if (team == null) {
-          return TeamScaffold(
-            child: Skeletonizer(
-              enabled: true,
-              effect: appShimmerEffect(context.appColors),
-              child: CustomScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                slivers: [
-                  const SliverToBoxAdapter(
-                    child: ZaadAppBar(
-                      title: 'Team name',
-                      subtitle: 'teams.home.eyebrow',
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
-                    sliver: SliverList.list(
-                      children: const [
-                        _HeroCard(state: _kSkeletonHomeState),
-                        SizedBox(height: 22),
-                        _MembersStrip(state: _kSkeletonHomeState),
-                        SizedBox(height: 18),
-                        _WeekStrip(),
-                        SizedBox(height: 22),
-                        _RecentActivity(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-        return TeamScaffold(
-          child: RefreshIndicator.adaptive(
-            onRefresh: () async {
-              final cubit = context.read<TeamsCubit>();
-              await cubit.refreshTeam();
-              await cubit.loadTeamMembers();
-              await cubit.loadTeamProgress();
-            },
+          return Skeletonizer(
+            enabled: true,
+            effect: appShimmerEffect(context.appColors),
             child: CustomScrollView(
+              physics: const NeverScrollableScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(
-                  child: ZaadAppBar(
-                    title: team.name,
-                    subtitle: 'teams.home.eyebrow',
-                    onBack: context.canPop() ? () => context.pop() : null,
-                    action: ZaadCircleIconButton(
-                      icon: Icons.more_horiz_rounded,
-                      onTap: () async {
-                        final left = await showTeamLeaveSheet(context);
-                        if (left && context.mounted) {
-                          context.goNamed(AppRoutes.homeName);
-                        }
-                      },
-                    ),
-                  ),
-                ),
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
                   sliver: SliverList.list(
-                    children: [
-                      _HeroCard(state: state),
-                      const SizedBox(height: 22),
-                      _MembersStrip(state: state),
-                      const SizedBox(height: 18),
-                      const _WeekStrip(),
-                      const SizedBox(height: 22),
-                      const _RecentActivity(),
+                    children: const [
+                      _HeroCard(state: _kSkeletonHomeState),
+                      SizedBox(height: 22),
+                      _MembersStrip(state: _kSkeletonHomeState),
+                      SizedBox(height: 18),
+                      _WeekStrip(),
+                      SizedBox(height: 22),
+                      _RecentActivity(),
                     ],
                   ),
                 ),
               ],
             ),
+          );
+        }
+        return RefreshIndicator.adaptive(
+          onRefresh: () async {
+            final cubit = context.read<TeamsCubit>();
+            await cubit.refreshTeam();
+            await cubit.loadTeamMembers();
+            await cubit.loadTeamProgress();
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
+                sliver: SliverList.list(
+                  children: [
+                    _HeroCard(state: state),
+                    const SizedBox(height: 22),
+                    _MembersStrip(state: state),
+                    const SizedBox(height: 18),
+                    const _WeekStrip(),
+                    const SizedBox(height: 22),
+                    const _RecentActivity(),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -226,9 +241,7 @@ class _HeroCard extends StatelessWidget {
             padding: const EdgeInsets.only(top: 14),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(
-                  color: colors.canvas.withValues(alpha: 0.14),
-                ),
+                top: BorderSide(color: colors.canvas.withValues(alpha: 0.14)),
               ),
             ),
             child: Row(
@@ -280,9 +293,7 @@ class _LevelProgress extends StatelessWidget {
             ),
             ResponsiveText(
               '$pct%',
-              style: ZaadType.fieldLabel.copyWith(
-                color: colors.accentSoft,
-              ),
+              style: ZaadType.fieldLabel.copyWith(color: colors.accentSoft),
             ),
           ],
         ),
@@ -376,8 +387,7 @@ class _MembersStrip extends StatelessWidget {
               style: ZaadType.fieldLabel.copyWith(color: colors.oliveSoft),
             ),
             TextButton(
-              onPressed: () =>
-                  context.goNamed(AppRoutes.teamMembersName),
+              onPressed: () => context.goNamed(AppRoutes.teamMembersName),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,
@@ -440,8 +450,7 @@ class _MembersStrip extends StatelessWidget {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () =>
-                        context.goNamed(AppRoutes.teamMembersName),
+                    onTap: () => context.goNamed(AppRoutes.teamMembersName),
                     customBorder: const CircleBorder(),
                     child: Container(
                       width: 36,
@@ -576,11 +585,7 @@ class _RecentActivity extends StatelessWidget {
           namedArgs: {'name': 'Aisha', 'chapter': '4'},
         ),
         meta: '+40 XP · 12 min ago',
-        trailing: Icon(
-          Icons.check_rounded,
-          size: 14,
-          color: colors.success,
-        ),
+        trailing: Icon(Icons.check_rounded, size: 14, color: colors.success),
       ),
       _ActivityRow(
         seed: 'F',
@@ -661,10 +666,7 @@ class _ActivityRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 ResponsiveText(
                   meta,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: colors.oliveSoft,
-                  ),
+                  style: TextStyle(fontSize: 10, color: colors.oliveSoft),
                 ),
               ],
             ),

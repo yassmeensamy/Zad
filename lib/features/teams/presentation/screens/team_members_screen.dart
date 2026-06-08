@@ -178,14 +178,14 @@ class _MemberRow extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              colors.accent.withValues(alpha: 0.14),
-              colors.accent.withValues(alpha: 0.04),
+              colors.accent.withValues(alpha: 0.12),
+              colors.accent.withValues(alpha: 0.02),
             ],
           )
         : LinearGradient(
             colors: [
-              colors.canvas.withValues(alpha: 0.42),
-              colors.canvas.withValues(alpha: 0.42),
+              colors.textPrimary.withValues(alpha: 0.024),
+              colors.textPrimary.withValues(alpha: 0.024),
             ],
           );
 
@@ -196,8 +196,8 @@ class _MemberRow extends StatelessWidget {
         borderRadius: ZaadRadii.lgAll,
         border: Border.all(
           color: isLeader
-              ? colors.accentDeep.withValues(alpha: 0.3)
-              : AppColors.sand,
+              ? colors.accent.withValues(alpha: 0.4)
+              : colors.textPrimary.withValues(alpha: 0.05),
         ),
       ),
       child: Row(

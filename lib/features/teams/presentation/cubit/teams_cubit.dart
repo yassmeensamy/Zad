@@ -3,7 +3,6 @@ import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../../data/models/create_team_request.dart';
 import '../../data/models/join_team_request.dart';
-import '../../data/models/leaderboard_timeframe_enum.dart';
 import '../../data/repositories/teams_repository.dart';
 import 'teams_state.dart';
 
@@ -81,28 +80,6 @@ class TeamsCubit extends BaseCubit<TeamsState> {
       );
     } catch (e) {
       logger.error('TeamsCubit.loadTeamProgress failed: $e');
-    }
-  }
-
-  Future<void> loadLeaderboard(LeaderboardTimeframe timeframe) async {
-    emit(
-      state.copyWith(
-        leaderboardStatus: LeaderboardStatus.loading,
-        leaderboardTimeframe: timeframe,
-      ),
-    );
-    try {
-      final members = await _repository.getMyTeamLeaderboard(timeframe);
-      if (state.leaderboardTimeframe != timeframe) return;
-      emit(
-        state.copyWith(
-          leaderboardStatus: LeaderboardStatus.success,
-          leaderboardMembers: () => members,
-        ),
-      );
-    } catch (e) {
-      logger.error('TeamsCubit.loadLeaderboard failed: $e');
-      emit(state.copyWith(leaderboardStatus: LeaderboardStatus.error));
     }
   }
 

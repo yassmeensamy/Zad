@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -10,10 +8,18 @@ import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
 import '../widgets/loader_ring.dart';
 import '../widgets/team_scaffold.dart';
+import '../widgets/teams_app_bar.dart';
+import 'team_empty_screen.dart';
+import 'team_home_screen.dart';
 
-/// Entry point for the Teams flow. Calls `getMyTeam()` (via cubit's
-/// [TeamsCubit.loadTeamStatus]), holds a min 400 ms parchment loader, then
-/// routes to `team_home` or `team_empty`.
+/// Entry point for the Teams flow and the single screen for all of its resting
+/// states. Calls `getMyTeam()` (via [TeamsCubit.loadTeamStatus]), then swaps
+/// only the body below a fixed [TeamsAppBar] — no route change, so the one
+/// cubit survives and the bar never moves:
+///   * loading  → parchment loader
+///   * hasTeam  → [TeamHomeView]
+///   * hasNoTeam→ [TeamEmptyView]
+///   * error    → [ErrorState]
 class TeamLoaderScreen extends StatefulWidget {
   const TeamLoaderScreen({super.key});
 
@@ -22,6 +28,8 @@ class TeamLoaderScreen extends StatefulWidget {
 }
 
 class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
+  bool _auxLoaded = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,43 +38,60 @@ class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
       final cubit = context.read<TeamsCubit>();
       final state = cubit.state;
 
-      // Already resolved (e.g. arriving here after a successful create from
-      // the bottom sheet) — let the listener route on the next frame.
-      if (state.hasTeam || state.hasNoTeam) {
-        _route(context, state);
+      // Already resolved with a team (e.g. arriving here after a successful
+      // create) — just pull the auxiliary endpoints the home view needs.
+      if (state.hasTeam) {
+        _loadAuxData(cubit, state);
         return;
       }
-      // Already in-flight from a prior mount — wait for it to land.
-      if (state.isLoading) return;
+      // Already settled on "no team", or a fetch is already in flight — wait.
+      if (state.hasNoTeam || state.isLoading) return;
 
       cubit.loadTeamStatus();
     });
   }
 
-  void _route(BuildContext context, TeamsState state) {
-    if (state.hasTeam) {
-      context.goNamed(AppRoutes.teamHomeName);
-    } else if (state.hasNoTeam) {
-      context.goNamed(AppRoutes.teamEmptyName);
-    }
+  /// Members + progress aren't part of `getMyTeam()`; pull them once a team is
+  /// known so the home view fills in beyond its skeleton.
+  void _loadAuxData(TeamsCubit cubit, TeamsState state) {
+    if (_auxLoaded) return;
+    _auxLoaded = true;
+    if (state.members == null) cubit.loadTeamMembers();
+    if (state.progress == null) cubit.loadTeamProgress();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TeamsCubit, TeamsState>(
-      listener: _route,
-      builder: (context, state) {
-        if (state.isError) {
-          return TeamScaffold(
-            child: ErrorState(
-              message: state.errorMessage ?? 'errors.generic',
-              onRetry: context.read<TeamsCubit>().loadTeamStatus,
-            ),
-          );
+      listenWhen: (a, b) => a.status != b.status,
+      listener: (context, state) {
+        if (state.hasTeam) {
+          _loadAuxData(context.read<TeamsCubit>(), state);
         }
-        return const _LoaderBody();
+      },
+      builder: (context, state) {
+        return TeamScaffold(
+          child: Column(
+            children: [
+              TeamsAppBar(state: state),
+              Expanded(child: _body(context, state)),
+            ],
+          ),
+        );
       },
     );
+  }
+
+  Widget _body(BuildContext context, TeamsState state) {
+    if (state.isError) {
+      return ErrorState(
+        message: state.errorMessage ?? 'errors.generic',
+        onRetry: context.read<TeamsCubit>().loadTeamStatus,
+      );
+    }
+    if (state.hasTeam) return const TeamHomeView();
+    if (state.hasNoTeam) return const TeamEmptyView();
+    return const _LoaderBody();
   }
 }
 
@@ -76,32 +101,30 @@ class _LoaderBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return TeamScaffold(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const LoaderRing(),
-            const SizedBox(height: 20),
-            ResponsiveText(
-              'teams.loader.title',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.displaySmall.copyWith(
-                fontSize: 18,
-                color: colors.oliveDeep,
-              ),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const LoaderRing(),
+          const SizedBox(height: 20),
+          ResponsiveText(
+            'teams.loader.title',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.displaySmall.copyWith(
+              fontSize: 18,
+              color: colors.oliveDeep,
             ),
-            const SizedBox(height: 6),
-            ResponsiveText(
-              'teams.loader.subtitle',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: colors.dateSoft,
-                fontSize: 13,
-              ),
+          ),
+          const SizedBox(height: 6),
+          ResponsiveText(
+            'teams.loader.subtitle',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: colors.dateSoft,
+              fontSize: 13,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

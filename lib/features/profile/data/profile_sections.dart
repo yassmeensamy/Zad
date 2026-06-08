@@ -1,12 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/user_model.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../../language/presentation/modals/language_dialog.dart';
+import '../../theme/presentation/cubit/theme_cubit.dart';
 import '../presentation/widgets/change_password_dialog.dart';
 import 'profile_section.dart';
+
+String _themeModeLabelKey(ThemeMode mode) => switch (mode) {
+  ThemeMode.system => 'profile.theme_system',
+  ThemeMode.light => 'profile.theme_light',
+  ThemeMode.dark => 'profile.theme_dark',
+};
 
 List<ProfileSection> profileSections(BuildContext context) => [
   ProfileSection(
@@ -28,7 +36,15 @@ List<ProfileSection> profileSections(BuildContext context) => [
       ProfileMenuItem(
         icon: Icons.color_lens_outlined,
         titleKey: 'profile.theme',
-        trailingText: 'profile.theme_system'.tr(),
+        trailingText: _themeModeLabelKey(context.watch<ThemeCubit>().state).tr(),
+        onTap: () {
+          final cubit = context.read<ThemeCubit>();
+          final isDark =
+              cubit.state == ThemeMode.dark ||
+              (cubit.state == ThemeMode.system &&
+                  MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+          cubit.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
+        },
       ),
     ],
   ),

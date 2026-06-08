@@ -60,6 +60,16 @@ class HomeLoadedContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+          child: OutlinedButton.icon(
+            onPressed: () =>
+                context.pushNamed(AppRoutes.dateEmberLeaderboardName),
+            icon: const Icon(Icons.local_fire_department_rounded),
+            label: Text('home.date_ember_cta'.tr()),
+          ),
+        ),
+        const SizedBox(height: 14),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: _kGutter),
           child: HomeTeamSection(),

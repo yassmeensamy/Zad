@@ -19,19 +19,11 @@ import '../widgets/gilded_cta.dart';
 import '../widgets/gold_rule.dart';
 import '../widgets/team_scaffold.dart';
 
-/// Number of pin slots rendered by [Pinput] for the invite code.
 const int _kInviteCodeLength = 8;
 
-/// Join team — D1 (premium idle) / D3 (premium error).
-///
-/// One [Pinput]-driven invite-code field with `_kInviteCodeLength` slots,
-/// auto-submitting on completion. Errors swap the companions emblem for
-/// a closed-keyhole variant and reveal recovery chips.
 class TeamJoinScreen extends StatefulWidget {
   const TeamJoinScreen({super.key, this.initialCode});
 
-  /// Invite code carried in by a deep link (`/teams/join?code=...`). When a
-  /// full code arrives the field is prefilled and the join auto-submits.
   final String? initialCode;
 
   @override
@@ -45,17 +37,8 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
   void initState() {
     super.initState();
     _codeController = TextEditingController(text: _normalizedInitialCode());
-    // Auto-submit when a complete code was delivered by a deep link, after the
-    // cubit is available in the tree.
-    if (_isComplete) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _handleSubmit();
-      });
-    }
   }
 
-  /// Sanitizes the deep-link code to the same A–Z/0–9 uppercase shape the
-  /// field enforces, capped at [_kInviteCodeLength].
   String _normalizedInitialCode() {
     final raw = widget.initialCode;
     if (raw == null) return '';
@@ -164,7 +147,6 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
   }
 }
 
-// ─── Soft amber wash behind the emblem ──────────────────────────────────────
 
 class _AmberWash extends StatelessWidget {
   const _AmberWash();
@@ -193,7 +175,6 @@ class _AmberWash extends StatelessWidget {
   }
 }
 
-// ─── Idle content (D1) ──────────────────────────────────────────────────────
 
 class _IdleContent extends StatelessWidget {
   const _IdleContent({
@@ -270,7 +251,6 @@ class _IdleContent extends StatelessWidget {
   }
 }
 
-// ─── Error content (D3) ─────────────────────────────────────────────────────
 
 class _ErrorContent extends StatelessWidget {
   const _ErrorContent({
@@ -328,7 +308,6 @@ class _ErrorContent extends StatelessWidget {
   }
 }
 
-// ─── Ornament eyebrow: gold-rule · text · gold-rule ─────────────────────────
 
 class _OrnamentEyebrow extends StatelessWidget {
   const _OrnamentEyebrow({required this.text});
@@ -359,10 +338,6 @@ class _OrnamentEyebrow extends StatelessWidget {
   }
 }
 
-// ─── Companions emblem — 8-point gold star with three figures ──────────────
-//
-// Used by D1 idle. The painted [_KeyholeEmblem] below is kept for the
-// closed/error variant (D3) where the diagonal slash matters semantically.
 
 class _CompanionsEmblem extends StatelessWidget {
   const _CompanionsEmblem({required this.size});
@@ -400,7 +375,6 @@ class _CompanionsEmblem extends StatelessWidget {
   }
 }
 
-// ─── Closed-keyhole emblem (error variant only) ─────────────────────────────
 
 class _ClosedKeyholeEmblem extends StatelessWidget {
   const _ClosedKeyholeEmblem({required this.size});
@@ -457,7 +431,6 @@ class _ClosedKeyholePainter extends CustomPainter {
     final c = Offset(size.width / 2, size.height / 2);
     final r = size.width / 2;
 
-    // Dashed outer orbit ring.
     _drawDashedCircle(
       canvas,
       c,
@@ -470,7 +443,6 @@ class _ClosedKeyholePainter extends CustomPainter {
         ..color = rim.withValues(alpha: 0.55),
     );
 
-    // Two overlapping 8-point stars (rotated 45°), outline only.
     final starScale = r / 60;
     final starPath = _starPath(c, 46 * starScale, 9 * starScale, 0);
     final starPathRot =
@@ -492,7 +464,6 @@ class _ClosedKeyholePainter extends CustomPainter {
         ..color = rim.withValues(alpha: 0.45),
     );
 
-    // Inner disc.
     final discRadius = r * 0.36;
     canvas.drawCircle(
       c,
@@ -510,7 +481,6 @@ class _ClosedKeyholePainter extends CustomPainter {
         ..color = rim,
     );
 
-    // Keyhole glyph — circle head + tapered shaft.
     final glyph = Paint()..color = rim.withValues(alpha: 0.6);
     canvas.drawCircle(Offset(c.dx, c.dy - r * 0.05), r * 0.07, glyph);
     canvas.drawPath(
@@ -523,7 +493,6 @@ class _ClosedKeyholePainter extends CustomPainter {
       glyph,
     );
 
-    // Diagonal slash.
     canvas.drawLine(
       Offset(c.dx - r * 0.3, c.dy + r * 0.3),
       Offset(c.dx + r * 0.3, c.dy - r * 0.3),
@@ -576,7 +545,6 @@ class _ClosedKeyholePainter extends CustomPainter {
   bool shouldRepaint(covariant _ClosedKeyholePainter oldDelegate) => false;
 }
 
-// ─── Invite-code field — Pinput, themed to the manuscript palette ──────────
 
 class _PremiumInviteField extends StatelessWidget {
   const _PremiumInviteField({
@@ -675,8 +643,6 @@ class _PremiumInviteField extends StatelessWidget {
           defaultPinTheme: defaultTheme,
           focusedPinTheme: focusedTheme,
           submittedPinTheme: submittedTheme,
-          // Uppercase A–Z + 0–9 only, applied at the formatter layer so
-          // pasted lowercase/punctuation is normalized too.
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
             _UpperCaseTextFormatter(),
@@ -725,7 +691,6 @@ class _UpperCaseTextFormatter extends TextInputFormatter {
   );
 }
 
-// ─── "or" hairline divider ──────────────────────────────────────────────────
 
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
@@ -769,7 +734,6 @@ class _OrDivider extends StatelessWidget {
   }
 }
 
-// ─── Error code chip (D3 top strip) ─────────────────────────────────────────
 
 class _ErrorCodeChip extends StatelessWidget {
   const _ErrorCodeChip({required this.code});

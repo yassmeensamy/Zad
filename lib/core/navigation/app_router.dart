@@ -46,14 +46,30 @@ import '../../features/teams/presentation/screens/team_members_screen.dart';
 import '../../features/teams/presentation/screens/team_progress_screen.dart';
 import '../services/core_service_locator.dart';
 import 'app_routes.dart';
+import 'auth_gate.dart';
+import 'auth_guard.dart';
 import 'deep_links.dart';
 
 class AppRouter {
   const AppRouter._();
 
-  static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.splash,
-    routes: [
+  static const GuardRoutes guardRoutes = GuardRoutes(
+    splash: AppRoutes.splash,
+    signIn: AppRoutes.login,
+    home: AppRoutes.profileSelect,
+    onboarding: AppRoutes.onboarding,
+    publicRoutes: {AppRoutes.signup, AppRoutes.forgotPassword},
+  );
+
+  static GoRouter build({
+    required String initialLocation,
+    required AuthGate gate,
+  }) {
+    return GoRouter(
+      initialLocation: initialLocation,
+      refreshListenable: gate.listenable,
+      redirect: authGuard(routes: guardRoutes, phase: () => gate.phase),
+      routes: [
       GoRoute(
         path: AppRoutes.splash,
         name: AppRoutes.splashName,
@@ -210,8 +226,6 @@ class AppRouter {
         name: AppRoutes.teamJoinName,
         builder: (context, state) => BlocProvider<TeamsCubit>(
           create: (_) => sl<TeamsCubit>(),
-          // Invite deep links land here as /teams/join?code=ABC12345; the code
-          // (if any) prefills the field and auto-submits.
           child: TeamJoinScreen(
             initialCode: state.uri.queryParameters[DeepLinks.codeParam],
           ),
@@ -301,6 +315,7 @@ class AppRouter {
           ),
         ],
       ),
-    ],
-  );
+      ],
+    );
+  }
 }

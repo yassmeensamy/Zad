@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/bootstrap/app_startup_cubit.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -92,8 +91,7 @@ class _PagesView extends StatelessWidget {
     final state = context.read<OnboardingCubit>().state;
     final isLast = state.currentPage >= pages.length - 1;
     if (isLast) {
-      context.read<OnboardingCubit>().setFirstOpen();
-      context.go(AppRoutes.login);
+      context.read<AppStartupCubit>().completeOnboarding();
     } else {
       controller.nextPage(
         duration: const Duration(milliseconds: 300),

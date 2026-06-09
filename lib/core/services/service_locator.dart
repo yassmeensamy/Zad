@@ -47,7 +47,7 @@ import '../../features/notification/data/repositories/notification_repository.da
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import '../../features/splash/presentation/cubit/splash_cubit.dart';
+import '../bootstrap/app_startup_cubit.dart';
 import '../../features/streak/data/remote/streak_remote_data_source.dart';
 import '../../features/streak/data/repositories/streak_repository.dart';
 import '../../features/streak/presentation/cubit/streak_cubit.dart';
@@ -75,7 +75,6 @@ class ServiceLocator {
     required OAuthConfig oauthConfig,
     String? appType,
   }) async {
-    // Core services
     sl.registerLazySingleton<CacheService>(() => CacheServiceImpl());
     sl.registerLazySingleton<DeviceInfoService>(() => DeviceInfoServiceImpl());
     sl.registerLazySingleton<AppInfoService>(() => AppInfoServiceImpl());
@@ -85,7 +84,6 @@ class ServiceLocator {
       () => NotificationService(permissionService: sl()),
     );
 
-    // API
     sl.registerLazySingleton<AppEndpoint>(() => AppEndpoint(baseUrl: baseUrl));
     sl.registerLazySingleton<NetworkService>(
       () => NetworkServiceImpl(
@@ -94,7 +92,6 @@ class ServiceLocator {
       ),
     );
 
-    // Auth
     sl.registerLazySingleton<AuthEventService>(() => AuthEventService());
     sl.registerLazySingleton<AuthLocalService>(() => AuthLocalService(sl()));
     sl.registerLazySingleton<OAuthStrategyFactory>(
@@ -117,7 +114,6 @@ class ServiceLocator {
       () => ForgotPasswordCubit(repository: sl()),
     );
 
-    // User
     sl.registerLazySingleton<UserRemoteDataSource>(
       () => UserRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -128,7 +124,6 @@ class ServiceLocator {
       () => UserCubit(userRepository: sl(), authEventService: sl()),
     );
 
-    // Child
     sl.registerLazySingleton<ChildRemoteDataSource>(
       () => ChildRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -138,7 +133,6 @@ class ServiceLocator {
     sl.registerFactory<ChildCubit>(() => ChildCubit(childRepository: sl()));
     sl.registerFactory<ChildDraftCubit>(() => ChildDraftCubit());
 
-    // Onboarding
     sl.registerLazySingleton<OnboardingRepository>(
       () => OnboardingRepositoryImpl(cacheService: sl()),
     );
@@ -146,16 +140,14 @@ class ServiceLocator {
       () => OnboardingCubit(onboardingRepository: sl()),
     );
 
-    // Splash
-    sl.registerFactory<SplashCubit>(
-      () => SplashCubit(
+    sl.registerFactory<AppStartupCubit>(
+      () => AppStartupCubit(
         onboardingRepository: sl(),
         notificationService: sl(),
         cacheService: sl(),
       ),
     );
 
-    // Language
     sl.registerLazySingleton<LanguageRemoteDataSource>(
       () => LanguageRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -164,7 +156,6 @@ class ServiceLocator {
     );
     sl.registerFactory<LanguageCubit>(() => LanguageCubit(repository: sl()));
 
-    // Notifications (mock-backed)
     sl.registerLazySingleton<NotificationRemoteDataSource>(
       () => NotificationRemoteDataSourceImpl(),
     );
@@ -175,7 +166,6 @@ class ServiceLocator {
       () => NotificationCubit(notificationRepository: sl()),
     );
 
-    // Home (mock-backed)
     sl.registerLazySingleton<HomeRemoteDataSource>(
       () => HomeRemoteDataSourceImpl(),
     );
@@ -184,7 +174,6 @@ class ServiceLocator {
     );
     sl.registerFactory<HomeCubit>(() => HomeCubit(homeRepository: sl()));
 
-    // Help center — adapter over SupportTicketsRepository
     sl.registerLazySingleton<HelpCenterRepository>(
       () => HelpCenterRepositoryImpl(ticketsRepository: sl()),
     );
@@ -192,7 +181,6 @@ class ServiceLocator {
       () => HelpCenterCubit(helpCenterRepository: sl()),
     );
 
-    // Categories
     sl.registerLazySingleton<CategoriesRemoteDataSource>(
       () =>
           CategoriesRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
@@ -204,7 +192,6 @@ class ServiceLocator {
       () => CategoriesCubit(categoriesRepository: sl(), quizEventService: sl()),
     );
 
-    // Levels
     sl.registerLazySingleton<LevelsRemoteDataSource>(
       () => LevelsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -215,7 +202,6 @@ class ServiceLocator {
       () => LevelsCubit(levelsRepository: sl(), quizEventService: sl()),
     );
 
-    // Quiz
     sl.registerLazySingleton<QuizEventService>(() => QuizEventService());
     sl.registerLazySingleton<QuizRemoteDataSource>(
       () => QuizRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
@@ -234,7 +220,6 @@ class ServiceLocator {
       () => ProgressResetCubit(quizRepository: sl(), quizEventService: sl()),
     );
 
-    // Drafts
     sl.registerLazySingleton<DraftsRemoteDataSource>(
       () => DraftsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -243,7 +228,6 @@ class ServiceLocator {
     );
     sl.registerFactory<DraftsCubit>(() => DraftsCubit(repository: sl()));
 
-    // Support Tickets
     sl.registerLazySingleton<SupportTicketsRemoteDataSource>(
       () => SupportTicketsRemoteDataSourceImpl(
         networkService: sl(),
@@ -257,7 +241,6 @@ class ServiceLocator {
       () => SupportTicketsCubit(repository: sl()),
     );
 
-    // Avatars
     sl.registerLazySingleton<AvatarsRemoteDataSource>(
       () => AvatarsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -268,7 +251,6 @@ class ServiceLocator {
       () => AvatarsCubit(avatarsRepository: sl()),
     );
 
-    // Teams
     sl.registerLazySingleton<TeamsRemoteDataSource>(
       () => TeamsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
@@ -277,7 +259,6 @@ class ServiceLocator {
     );
     sl.registerFactory<TeamsCubit>(() => TeamsCubit(repository: sl()));
 
-    // Rankings (global leaderboards)
     sl.registerLazySingleton<RankingsRemoteDataSource>(
       () => RankingsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );

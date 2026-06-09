@@ -6,11 +6,19 @@ import 'onboarding_state.dart';
 class OnboardingCubit extends BaseCubit<OnboardingState> {
   OnboardingCubit({required OnboardingRepository onboardingRepository})
     : _onboardingRepository = onboardingRepository,
-      super(const OnboardingState(status: OnboardingStatus.initial));
+      super(
+        onboardingRepository.cachedOnboarding != null
+            ? OnboardingState(
+                status: OnboardingStatus.success,
+                pages: onboardingRepository.cachedOnboarding!,
+              )
+            : const OnboardingState(status: OnboardingStatus.initial),
+      );
 
   final OnboardingRepository _onboardingRepository;
 
   Future<void> load() async {
+    if (state.isSuccess) return;
     emit(state.copyWith(status: OnboardingStatus.loading));
     try {
       final pages = await _onboardingRepository.getOnboardingData();
@@ -23,9 +31,5 @@ class OnboardingCubit extends BaseCubit<OnboardingState> {
 
   void changePage(int newPage) {
     emit(state.copyWith(currentPage: newPage));
-  }
-
-  Future<void> setFirstOpen() async {
-    await _onboardingRepository.setFirstOpen();
   }
 }

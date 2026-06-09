@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -11,16 +10,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'core/navigation/app_router.dart';
-import 'core/navigation/deep_link_handler.dart';
-import 'core/services/core_service_locator.dart';
+import 'app.dart';
+import 'core/navigation/deep_link_service.dart';
+import 'core/navigation/deep_links.dart';
 import 'core/services/service_locator.dart';
-import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/data/strategies/oauth_strategy_factory.dart';
-import 'features/auth/presentation/cubit/auth_cubit.dart';
-import 'features/theme/presentation/cubit/theme_cubit.dart';
-import 'features/user/presentation/cubit/user_cubit.dart';
-import 'theme/theme.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
@@ -30,11 +25,13 @@ Future<void> main() async {
             (await getApplicationDocumentsDirectory()).path,
           ),
   );
-  await dotenv.load(fileName: '.env');
-  await EasyLocalization.ensureInitialized();
-  await initializeDateFormatting('ar');
+  await Future.wait([
+    dotenv.load(fileName: '.env'),
+    EasyLocalization.ensureInitialized(),
+    initializeDateFormatting('ar'),
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+  ]);
   timeago.setLocaleMessages('ar', timeago.ArMessages());
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await ServiceLocator().init(
     baseUrl: dotenv.env['BASE_URL'] ?? '',
@@ -45,9 +42,8 @@ Future<void> main() async {
     ),
   );
 
-  // Subscribe to deep links (and read the launch link) BEFORE runApp so an
-  // early cold-start link isn't missed; the splash applies it once auth is up.
-  await DeepLinkHandler.init();
+  final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
+  final initialLink = await deepLinks.initialLocation();
 
   runApp(
     RequestsInspector(
@@ -57,55 +53,8 @@ Future<void> main() async {
         supportedLocales: const [Locale('en'), Locale('ar')],
         path: 'assets/translations',
         fallbackLocale: const Locale('en'),
-        child: const MyApp(),
+        child: MyApp(deepLinks: deepLinks, initialLocation: initialLink),
       ),
     ),
   );
-
-  // Hand the router to the deep-link handler now that the tree is attached.
-  DeepLinkHandler.bind(AppRouter.router);
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthCubit>(
-          create: (context) {
-            final cubit = AuthCubit(
-              repository: sl(),
-              authEventService: sl<AuthEventService>(),
-            )..init();
-
-            return cubit;
-          },
-          lazy: false,
-        ),
-        BlocProvider<UserCubit>(
-          create: (_) => sl<UserCubit>(),
-          lazy: false,
-        ),
-        BlocProvider<ThemeCubit>(
-          create: (_) => ThemeCubit(),
-          lazy: false,
-        ),
-      ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) => MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: 'Zaad | زاد',
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: themeMode,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          routerConfig: AppRouter.router,
-        ),
-      ),
-    );
-  }
 }

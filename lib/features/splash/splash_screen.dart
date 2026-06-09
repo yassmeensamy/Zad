@@ -1,45 +1,21 @@
 import 'dart:async';
 
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../core/navigation/app_routes.dart';
-import '../../core/navigation/deep_link_handler.dart';
-import '../../core/services/core_service_locator.dart';
 import '../../core/widgets/responsive_text.dart';
 import '../../theme/theme.dart';
-import '../auth/presentation/cubit/auth_cubit.dart';
-import '../auth/presentation/cubit/auth_state.dart';
-import '../user/presentation/cubit/user_cubit.dart';
-import '../user/presentation/cubit/user_state.dart';
-import 'presentation/cubit/splash_cubit.dart';
-import 'presentation/cubit/splash_state.dart';
 import 'widgets/desert_background.dart';
 import 'widgets/zaad_brand.dart';
 import 'widgets/zaad_logo_mark.dart';
 
-class ZaadSplashScreen extends StatelessWidget {
+class ZaadSplashScreen extends StatefulWidget {
   const ZaadSplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<SplashCubit>()..init(context.locale.languageCode),
-      child: const _SplashView(),
-    );
-  }
+  State<ZaadSplashScreen> createState() => _ZaadSplashScreenState();
 }
 
-class _SplashView extends StatefulWidget {
-  const _SplashView();
-
-  @override
-  State<_SplashView> createState() => _SplashViewState();
-}
-
-class _SplashViewState extends State<_SplashView>
+class _ZaadSplashScreenState extends State<ZaadSplashScreen>
     with TickerProviderStateMixin {
   late final AnimationController _intro = AnimationController(
     vsync: this,
@@ -50,8 +26,6 @@ class _SplashViewState extends State<_SplashView>
     vsync: this,
     duration: const Duration(milliseconds: 2400),
   );
-
-  bool _navigating = false;
 
   @override
   void initState() {
@@ -68,71 +42,11 @@ class _SplashViewState extends State<_SplashView>
     super.dispose();
   }
 
-  void _go(String route) {
-    if (_navigating || !mounted) return;
-    _navigating = true;
-    // From here on, deep links navigate immediately rather than being buffered.
-    DeepLinkHandler.isAppReady = true;
-    context.go(route);
-  }
-
-  void _navigateWhenReady() {
-    if (_navigating) return;
-    final splash = context.read<SplashCubit>().state;
-    final destination = splash.destination;
-    debugPrint('[deeplink] splash destination=$destination');
-    if (destination == null) return;
-
-    if (destination == SplashDestination.onboarding) {
-      _go(AppRoutes.onboarding);
-      return;
-    }
-
-    // authCheck path: wait for AuthCubit to resolve.
-    final auth = context.read<AuthCubit>().state;
-    debugPrint('[deeplink] splash auth=${auth.status}');
-    if (auth.isInitial || auth.isLoading) return;
-    if (auth.isError || auth.isNotLoggedIn) {
-      _go(AppRoutes.login);
-      return;
-    }
-    if (auth.isLoggedIn) {
-      // Profile is auto-fetched via AuthEventService → UserCubit. Wait for
-      // it to resolve before routing home so the home screen has data.
-      final user = context.read<UserCubit>().state;
-      if (user.isInitial || user.isLoading) return;
-      if (user.isError) {
-        _go(AppRoutes.login);
-        return;
-      }
-      // A cold-start deep link (e.g. a team invite) wins over the default
-      // home destination now that the user is authenticated.
-      if (user.isSuccess) {
-        _go(DeepLinkHandler.consumePending() ?? AppRoutes.profileSelect);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Scaffold(
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<SplashCubit, SplashStates>(
-            listenWhen: (a, b) => a.status != b.status,
-            listener: (_, _) => _navigateWhenReady(),
-          ),
-          BlocListener<AuthCubit, AuthState>(
-            listenWhen: (a, b) => a.status != b.status,
-            listener: (_, _) => _navigateWhenReady(),
-          ),
-          BlocListener<UserCubit, UserState>(
-            listenWhen: (a, b) => a.status != b.status,
-            listener: (_, _) => _navigateWhenReady(),
-          ),
-        ],
-        child: DesertBackground(
+      body: DesertBackground(
           child: SafeArea(
             child: Stack(
               children: [
@@ -204,13 +118,10 @@ class _SplashViewState extends State<_SplashView>
             ),
           ),
         ),
-      ),
     );
   }
 }
 
-/// Drives a child between opacity 0 (with a small upward translation) and
-/// [targetOpacity] across [start]..[end] of the supplied controller's value.
 class _StaggeredFade extends StatelessWidget {
   const _StaggeredFade({
     required this.controller,

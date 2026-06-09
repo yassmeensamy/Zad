@@ -4,13 +4,12 @@ import '../models/onboarding_model.dart';
 
 abstract class OnboardingRepository {
   List<OnboardingModel>? get cachedOnboarding;
+
   Future<List<OnboardingModel>> getOnboardingData();
   Future<bool> getFirstOpen();
   Future<void> setFirstOpen();
 }
 
-/// Mock-data implementation. Once the backend exists, swap this for a remote
-/// data source — the cubit/screen consume the abstract interface.
 class OnboardingRepositoryImpl implements OnboardingRepository {
   OnboardingRepositoryImpl({required CacheService cacheService})
     : _cacheService = cacheService;
@@ -37,5 +36,5 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
 
   @override
   Future<void> setFirstOpen() async =>
-      await _cacheService.set<bool>(StorageKeys.kFirstOpenKey, false);
+      _cacheService.set<bool>(StorageKeys.kFirstOpenKey, false);
 }

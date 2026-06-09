@@ -1,13 +1,33 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/hadith_model.dart';
 
-class HadithSectionHeader extends StatelessWidget {
-  const HadithSectionHeader({super.key, this.onViewAllTap});
+/// "Hadith of the day" section: a titled header above a single hadith card.
+/// Renders [hadith] from the home overview; while it is still loading the
+/// caller wraps this in a [Skeletonizer] with a dash-filled placeholder so the
+/// shapes below have the right size to mask.
+class HadithCard extends StatelessWidget {
+  const HadithCard({required this.hadith, super.key});
 
-  final VoidCallback? onViewAllTap;
+  final HadithModel hadith;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const _SectionHeader(),
+        _CardBody(hadith: hadith),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -25,121 +45,104 @@ class HadithSectionHeader extends StatelessWidget {
   }
 }
 
-class HadithCard extends StatelessWidget {
-  const HadithCard({super.key, required this.hadith});
+class _CardBody extends StatelessWidget {
+  const _CardBody({required this.hadith});
 
   final HadithModel hadith;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final lineStrong = colors.oliveDeep.withValues(alpha: 0.14);
-
     return Container(
+      padding: const EdgeInsets.fromLTRB(17, 15, 17, 15),
       decoration: BoxDecoration(
-        color: colors.cardSurface,
-        border: Border.all(color: lineStrong),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colors.olive.withValues(alpha: 0.10),
+            colors.olive.withValues(alpha: 0.03),
+          ],
+        ),
+        border: Border.all(color: colors.olive.withValues(alpha: 0.28)),
       ),
-      padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Eyebrow(text: hadith.source),
-          const SizedBox(height: 14),
+          // Collection name as the eyebrow, e.g. "SAḤĪḤ AL-BUKHĀRĪ".
+          ResponsiveText(
+            hadith.source.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.eyebrow(
+              fontSize: 8.5,
+              tracking: 0.26,
+              color: colors.olive,
+            ),
+          ),
+          const SizedBox(height: 7),
           ResponsiveText(
             hadith.arabic,
+            textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.bodyXLarge.copyWith(
-              fontSize: 21,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontSize: 17,
               height: 1.7,
-              color: colors.oliveDeep,
+              color: colors.textPrimary,
             ),
           ),
-          const SizedBox(height: 14),
-          Container(width: 32, height: 1, color: colors.accent),
-          const SizedBox(height: 12),
+          const SizedBox(height: 7),
           ResponsiveText(
             hadith.english,
-            style: AppTextStyles.bodyLarge.copyWith(
-              fontSize: 15.5,
+            style: AppTextStyles.bodySmall.copyWith(
               fontStyle: FontStyle.italic,
-              height: 1.55,
-              color: colors.oliveDeep,
+              fontWeight: FontWeight.w300,
+              height: 1.4,
+              color: colors.textSecondary,
             ),
           ),
-          const SizedBox(height: 12),
-          _NarratorLine(
-            narrator: hadith.narrator,
-            hadithNumber: hadith.hadithNumber,
-          ),
+          const SizedBox(height: 11),
+          _Attribution(hadith: hadith),
         ],
       ),
     );
   }
 }
 
-class _NarratorLine extends StatelessWidget {
-  const _NarratorLine({required this.narrator, required this.hadithNumber});
+/// Footer line: narrator on the leading edge, hadith number on the trailing.
+class _Attribution extends StatelessWidget {
+  const _Attribution({required this.hadith});
 
-  final String narrator;
-  final int hadithNumber;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final base = AppTextStyles.bodySmall.copyWith(
-      fontSize: 11,
-      color: colors.dateSoft,
-    );
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        ResponsiveText('home.hadith.narrator_prefix', style: base),
-        ResponsiveText(
-          narrator,
-          style: base.copyWith(
-            color: colors.olive,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        ResponsiveText(' · ', style: base),
-        ResponsiveText(
-          'home.hadith.hadith_no',
-          args: [hadithNumber.toString()],
-          style: base,
-        ),
-      ],
-    );
-  }
-}
-
-class _Eyebrow extends StatelessWidget {
-  const _Eyebrow({required this.text});
-
-  final String text;
+  final HadithModel hadith;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final narrator = '${'home.hadith.narrator_prefix'.tr()}${hadith.narrator}';
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 5,
-          height: 5,
-          decoration: BoxDecoration(
-            color: colors.accent,
-            shape: BoxShape.circle,
+        Expanded(
+          child: ResponsiveText(
+            narrator,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.eyebrow(
+              fontSize: 8.5,
+              tracking: 0.2,
+              color: colors.oliveSoft,
+            ),
           ),
         ),
         const SizedBox(width: 8),
         ResponsiveText(
-          text,
-          style: AppTextStyles.labelSmall.copyWith(
-            fontWeight: FontWeight.w600,
-            letterSpacing: 9.5 * 0.34,
-            color: colors.textArabic,
+          'home.hadith.hadith_no',
+          args: [hadith.hadithNumber.toString()],
+          maxLines: 1,
+          style: AppTextStyles.eyebrow(
+            fontSize: 8.5,
+            tracking: 0.2,
+            color: colors.oliveSoft,
           ),
         ),
       ],

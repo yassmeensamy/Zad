@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
 
 class HomeWhyLoginSection extends StatelessWidget {
@@ -123,7 +124,15 @@ class HomeWhyLoginSection extends StatelessWidget {
                     const SizedBox(height: 10),
                   ],
                   const SizedBox(height: 6),
-                  _CreateAccountButton(colors: colors),
+                  ZaadPrimaryButton(
+                    label: 'home.why_login.cta'.tr(),
+                    onTap: () => context.goNamed(AppRoutes.signupName),
+                    variant: ZaadButtonVariant.accent,
+                    trailingIcon: Icons.arrow_forward_rounded,
+                    iconSize: 16,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.0,
+                  ),
                   const SizedBox(height: 11),
                   _SignInRow(colors: colors),
                 ],
@@ -151,11 +160,8 @@ class _Header extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            gradient: RadialGradient(
-              center: const Alignment(-0.36, -0.44),
-              radius: 0.9,
-              colors: [colors.accentSoft, colors.accent, colors.accentDeep],
-              stops: const [0.0, 0.55, 1.0],
+            gradient: BrandGradients.crest(
+              [colors.accentSoft, colors.accent, colors.accentDeep],
             ),
             boxShadow: [
               BoxShadow(
@@ -269,62 +275,6 @@ class _BenefitRow extends StatelessWidget {
         const SizedBox(width: 8),
         Icon(Icons.check_rounded, size: 16, color: colors.success),
       ],
-    );
-  }
-}
-
-class _CreateAccountButton extends StatelessWidget {
-  const _CreateAccountButton({required this.colors});
-
-  final AppColorsTheme colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.goNamed(AppRoutes.signupName),
-        borderRadius: BorderRadius.circular(ZaadRadii.lg),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [colors.accentSoft, colors.accent, colors.accentDeep],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-            borderRadius: BorderRadius.circular(ZaadRadii.lg),
-            boxShadow: [
-              BoxShadow(
-                color: colors.accent.withValues(alpha: 0.30),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: SizedBox(
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: ResponsiveText(
-                    'home.why_login.cta',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.labelLarge.copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.0,
-                      color: colors.goldInk,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 7),
-                Icon(Icons.arrow_forward_rounded, size: 16, color: colors.goldInk),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

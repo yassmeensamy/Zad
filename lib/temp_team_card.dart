@@ -33,7 +33,6 @@ class TempTeamCard extends StatelessWidget {
   /// the rank chip and the overall-completion line; both hide while null.
   final TeamProgressSummaryModel? summary;
 
-  static const double _radius = 20;
   static const double _avatarSize = 28;
   static const double _avatarStep = 19;
   static const int _maxAvatars = 3;
@@ -66,58 +65,15 @@ class TempTeamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final border = BorderRadius.circular(_radius);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: border,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
-        ),
-        border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
-        boxShadow: [
-          BoxShadow(
-            color: colors.heroShadow.withValues(alpha: 0.20),
-            blurRadius: 34,
-            offset: const Offset(0, 18),
-          ),
-          BoxShadow(
-            color: colors.accent.withValues(alpha: 0.12),
-            blurRadius: 22,
-            offset: const Offset(0, 8),
-          ),
+    return TeamCardShell(
+      child: Column(
+        children: [
+          _header(colors),
+          const SizedBox(height: 14),
+          Container(height: 1, color: colors.borderSubtle),
+          const SizedBox(height: 13),
+          _footer(colors),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: border,
-        child: DecoratedBox(
-          // Warm amber glow bleeding from the top-left corner — adds depth in
-          // light and keeps the flat dark surface from reading as a slab.
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: const Alignment(-1, -1),
-              radius: 1.2,
-              colors: [
-                colors.accentSoft.withValues(alpha: 0.20),
-                colors.accentSoft.withValues(alpha: 0),
-              ],
-              stops: const [0.0, 0.6],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _header(colors),
-                const SizedBox(height: 14),
-                Container(height: 1, color: colors.borderSubtle),
-                const SizedBox(height: 13),
-                _footer(colors),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -132,11 +88,8 @@ class TempTeamCard extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            gradient: RadialGradient(
-              center: const Alignment(-0.36, -0.44),
-              radius: 0.9,
-              colors: [colors.goldLight, colors.accent, colors.accentDeep],
-              stops: const [0.0, 0.55, 1.0],
+            gradient: BrandGradients.crest(
+              [colors.goldLight, colors.accent, colors.accentDeep],
             ),
             boxShadow: [
               BoxShadow(
@@ -298,17 +251,87 @@ class TempTeamCard extends StatelessWidget {
         height: _avatarSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(
-            center: const Alignment(-0.36, -0.44),
-            radius: 0.9,
-            colors: gradient,
-          ),
+          gradient: BrandGradients.crest(gradient),
           border: Border.all(color: colors.creamSurfaceTop, width: 2),
         ),
         alignment: Alignment.center,
         child: ResponsiveText(
           _firstGlyph(username),
           style: AppTextStyles.labelMedium.copyWith(fontSize: 11, color: ink),
+        ),
+      ),
+    );
+  }
+}
+
+/// Shared surface for the home team cards (join + summary): a cream→brown
+/// gradient with an amber hairline border, a grounding drop shadow, a warm
+/// amber lift, and a clipped radial halo for depth. Every colour is a semantic
+/// token so it reads as warm cream in light and roasted brown in dark.
+class TeamCardShell extends StatelessWidget {
+  const TeamCardShell({
+    super.key,
+    required this.child,
+    this.radius = 20,
+    this.padding = const EdgeInsets.all(16),
+    this.haloCenter = const Alignment(-1, -1),
+    this.haloRadius = 1.2,
+  });
+
+  final Widget child;
+  final double radius;
+  final EdgeInsets padding;
+
+  /// Origin and reach of the warm halo. The join card centres it above the
+  /// crest; the summary card glows from the top-left corner.
+  final Alignment haloCenter;
+  final double haloRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final border = BorderRadius.circular(radius);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: border,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
+        ),
+        border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
+        boxShadow: [
+          // Grounding drop shadow.
+          BoxShadow(
+            color: colors.heroShadow.withValues(alpha: 0.20),
+            blurRadius: 34,
+            offset: const Offset(0, 18),
+          ),
+          // Warm amber lift so the card glows off the page in both themes.
+          BoxShadow(
+            color: colors.accent.withValues(alpha: 0.12),
+            blurRadius: 22,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: border,
+        child: DecoratedBox(
+          // A soft amber halo for depth — also keeps the dark surface (where the
+          // two cream tokens collapse to one flat brown) from reading as a slab.
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: haloCenter,
+              radius: haloRadius,
+              colors: [
+                colors.accentSoft.withValues(alpha: 0.20),
+                colors.accentSoft.withValues(alpha: 0),
+              ],
+              stops: const [0.0, 0.6],
+            ),
+          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );

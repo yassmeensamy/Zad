@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -13,6 +14,12 @@ class HomeHeader extends StatelessWidget {
     final colors = context.appColors;
     final name =
         (firstName?.trim().isNotEmpty ?? false) ? firstName!.trim() : 'Zayd';
+    final hour = DateTime.now().hour;
+    final greetingKey = hour < 12
+        ? 'home.greeting_morning'
+        : hour < 18
+        ? 'home.greeting_afternoon'
+        : 'home.greeting_evening';
 
     return Row(
       children: [
@@ -20,11 +27,8 @@ class HomeHeader extends StatelessWidget {
           padding: const EdgeInsets.all(13),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: RadialGradient(
-              center: const Alignment(-0.36, -0.44),
-              radius: 0.9,
-              colors: [colors.accentSoft, colors.accent, colors.accentDeep],
-              stops: const [0.0, 0.55, 1.0],
+            gradient: BrandGradients.crest(
+              [colors.accentSoft, colors.accent, colors.accentDeep],
             ),
             boxShadow: [
               BoxShadow(
@@ -48,7 +52,7 @@ class HomeHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ResponsiveText(
-                'Assalāmu ʿalaykum · 21 Dhū\'l-Qaʿdah',
+                'home.salam_arabic'.tr(),
                 style: AppTextStyles.bodySmall.copyWith(
                   height: 1.2,
                   color: colors.textSecondary,
@@ -56,7 +60,7 @@ class HomeHeader extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               ResponsiveText(
-                'Morning, $name.',
+                '${greetingKey.tr()} $name',
                 style: AppTextStyles.displaySmall.copyWith(
                   fontSize: 20,
                   height: 1.1,

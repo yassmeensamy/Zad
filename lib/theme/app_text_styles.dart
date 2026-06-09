@@ -88,6 +88,25 @@ class AppTextStyles {
     letterSpacing: 0.3,
   );
 
+  /// Small, tracked "eyebrow" label used above the home cards (streak, team,
+  /// verse, hadith, play). Built on [labelSmall].
+  ///
+  /// [tracking] is the letter-spacing expressed as a fraction of [fontSize]
+  /// — the recurring `fontSize * ratio` idiom across those cards — and is
+  /// resolved here to an absolute `letterSpacing` so call sites stay
+  /// declarative. Pass [color] to tint it; [weight] defaults to bold.
+  static TextStyle eyebrow({
+    double fontSize = 10,
+    required double tracking,
+    FontWeight weight = FontWeight.w700,
+    Color? color,
+  }) => labelSmall.copyWith(
+    fontSize: fontSize,
+    fontWeight: weight,
+    letterSpacing: fontSize * tracking,
+    color: color,
+  );
+
   static TextTheme buildTextTheme(Color onSurface) => TextTheme(
     displayLarge: displayLarge.copyWith(color: onSurface),
     displayMedium: displayMedium.copyWith(color: onSurface),

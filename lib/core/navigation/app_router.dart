@@ -7,7 +7,7 @@ import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/home/presentation/screens/home_shell.dart';
+import '../../features/shell/presentation/screens/home_shell.dart';
 import '../../features/categories/data/models/category_model.dart';
 import '../../features/categories/presentation/screens/categories_screen.dart';
 import '../../features/levels/data/models/level_model.dart';

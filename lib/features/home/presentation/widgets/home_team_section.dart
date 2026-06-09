@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../temp_team_card.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
@@ -63,110 +64,73 @@ class _JoinTeamCard extends StatelessWidget {
 
   final VoidCallback onTap;
 
-  static const double _radius = 22;
-
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final border = BorderRadius.circular(_radius);
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: border,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
-          ),
-          border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
-          boxShadow: [
-            // Grounding drop shadow.
-            BoxShadow(
-              color: colors.heroShadow.withValues(alpha: 0.20),
-              blurRadius: 34,
-              offset: const Offset(0, 18),
+      child: TeamCardShell(
+        radius: 22,
+        padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
+        // Centre the halo above the crest rather than the corner.
+        haloCenter: const Alignment(0, -1.15),
+        haloRadius: 1.15,
+        child: Column(
+          children: [
+            _JoinCrest(colors: colors),
+            const SizedBox(height: 13),
+            Text(
+              'Walk the path together.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.displaySmall.copyWith(
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w300,
+                fontSize: 21,
+                height: 1.05,
+                color: colors.textPrimary,
+              ),
             ),
-            // Warm amber lift so the card glows off the page in both themes.
-            BoxShadow(
-              color: colors.accent.withValues(alpha: 0.12),
-              blurRadius: 22,
-              offset: const Offset(0, 8),
+            const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22),
+              child: Text(
+                'Join a circle of companions to study, recite, and rise '
+                'together — or start your own.',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontSize: 11.5,
+                  height: 1.5,
+                  color: colors.textSecondary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ZaadPrimaryButton(
+                    label: 'Create'.toUpperCase(),
+                    onTap: onTap,
+                    trailingIcon: Icons.add_rounded,
+                    height: 44,
+                    borderRadius: 13,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 10.5 * 0.16,
+                    iconSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: _JoinGhostButton(
+                    label: 'Join with code',
+                    onTap: onTap,
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: border,
-          child: DecoratedBox(
-            // A soft amber halo bleeding from the top centre. This adds depth in
-            // light mode and, crucially, keeps the dark surface (where the two
-            // cream tokens collapse to one flat brown) from reading as a slab.
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: const Alignment(0, -1.15),
-                radius: 1.15,
-                colors: [
-                  colors.accentSoft.withValues(alpha: 0.20),
-                  colors.accentSoft.withValues(alpha: 0),
-                ],
-                stops: const [0.0, 0.62],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
-              child: Column(
-                children: [
-                  _JoinCrest(colors: colors),
-                  const SizedBox(height: 13),
-                  Text(
-                    'Walk the path together.',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.displaySmall.copyWith(
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 21,
-                      height: 1.05,
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
-                    child: Text(
-                      'Join a circle of companions to study, recite, and rise '
-                      'together — or start your own.',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        fontSize: 11.5,
-                        height: 1.5,
-                        color: colors.textSecondary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _JoinPrimaryButton(
-                          label: 'Create',
-                          trailingIcon: Icons.add_rounded,
-                          onTap: onTap,
-                        ),
-                      ),
-                      const SizedBox(width: 9),
-                      Expanded(
-                        child: _JoinGhostButton(
-                          label: 'Join with code',
-                          onTap: onTap,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -237,63 +201,6 @@ class _JoinCrest extends StatelessWidget {
   }
 }
 
-class _JoinPrimaryButton extends StatelessWidget {
-  const _JoinPrimaryButton({
-    required this.label,
-    required this.onTap,
-    this.trailingIcon,
-  });
-
-  final String label;
-  final VoidCallback onTap;
-  final IconData? trailingIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 13),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [colors.ctaTop, colors.ctaMid, colors.ctaBottom],
-            stops: const [0.0, 0.5, 1.0],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: colors.ctaMid.withValues(alpha: 0.40),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label.toUpperCase(),
-              style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 10.5,
-                letterSpacing: 10.5 * 0.16,
-                color: colors.onCta,
-              ),
-            ),
-            if (trailingIcon != null) ...[
-              const SizedBox(width: 6),
-              Icon(trailingIcon, size: 12, color: colors.onCta),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _JoinGhostButton extends StatelessWidget {
   const _JoinGhostButton({required this.label, required this.onTap});
 
@@ -335,8 +242,6 @@ class _TeamSectionHeader extends StatelessWidget {
 
   final VoidCallback onOpen;
 
-  static const double _eyebrowTracking = 3.06;
-  static const double _actionTracking = 1.52;
   static const double _dividerWidth = 16;
   static const double _dividerHeight = 1;
 
@@ -353,9 +258,9 @@ class _TeamSectionHeader extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           'home.team.joined_eyebrow'.tr(),
-          style: AppTextStyles.labelSmall.copyWith(
-            fontWeight: FontWeight.w700,
-            letterSpacing: _eyebrowTracking,
+          // tracking 0.306 == the prior 3.06 over the default size 10.
+          style: AppTextStyles.eyebrow(
+            tracking: 0.306,
             color: colors.accent,
           ),
         ),
@@ -365,9 +270,10 @@ class _TeamSectionHeader extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           child: Text(
             'home.team.open'.tr().toUpperCase(),
-            style: AppTextStyles.labelSmall.copyWith(
-              fontWeight: FontWeight.w600,
-              letterSpacing: _actionTracking,
+            // tracking 0.152 == the prior 1.52 over the default size 10.
+            style: AppTextStyles.eyebrow(
+              tracking: 0.152,
+              weight: FontWeight.w600,
               color: colors.accent,
             ),
           ),

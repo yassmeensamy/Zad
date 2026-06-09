@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 /// Olive-filled primary CTA that launches the quiz flow. Sits above the
@@ -99,13 +99,14 @@ class _PlayMeta extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'home.play.eyebrow'.tr(),
+        ResponsiveText(
+          'home.play.eyebrow',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.labelSmall.copyWith(
-            fontWeight: FontWeight.w600,
-            letterSpacing: 9 * 0.32,
+          // tracking 0.288 == the prior 9 * 0.32 over the default size 10.
+          style: AppTextStyles.eyebrow(
+            tracking: 0.288,
+            weight: FontWeight.w600,
             color: colors.accent,
           ),
         ),
@@ -113,16 +114,16 @@ class _PlayMeta extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'home.play.title_prefix'.tr(),
+            ResponsiveText(
+              'home.play.title_prefix',
               style: AppTextStyles.bodyXLarge.copyWith(
                 color: colors.onCta,
                 letterSpacing: -0.3,
                 height: 1.1,
               ),
             ),
-            Text(
-              'home.play.title_accent'.tr(),
+            ResponsiveText(
+              'home.play.title_accent',
               style: AppTextStyles.bodyXLarge.copyWith(
                 color: colors.accent,
                 fontStyle: FontStyle.italic,
@@ -133,8 +134,8 @@ class _PlayMeta extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 2),
-        Text(
-          'home.play.subtitle'.tr(),
+        ResponsiveText(
+          'home.play.subtitle',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AppTextStyles.bodySmall.copyWith(

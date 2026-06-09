@@ -8,6 +8,10 @@ enum ZaadButtonVariant {
   /// Olive gradient — the default brand CTA.
   primary,
 
+  /// Gold/amber gradient with gold ink — for secondary "create / sign up"
+  /// prompts that sit alongside the primary CTA (e.g. the guest why-login card).
+  accent,
+
   /// Red gradient — for destructive confirmation.
   danger,
 }
@@ -30,7 +34,9 @@ class ZaadPrimaryButton extends StatelessWidget {
     this.height = 48,
     this.borderRadius = ZaadRadii.lg,
     this.fontSize = 14,
+    this.fontWeight = FontWeight.w600,
     this.letterSpacing,
+    this.iconSize = 18,
   });
 
   final String label;
@@ -43,30 +49,38 @@ class ZaadPrimaryButton extends StatelessWidget {
   final double height;
   final double borderRadius;
   final double fontSize;
+  final FontWeight fontWeight;
   final double? letterSpacing;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final errorColor = context.colorScheme.error;
 
-    final isDanger = variant == ZaadButtonVariant.danger;
-    final gradientColors = isDanger
-        ? <Color>[
-            Color.alphaBlend(errorColor.withValues(alpha: 0.85), colors.canvas),
-            errorColor,
-            Color.alphaBlend(
-              Colors.black.withValues(alpha: 0.28),
-              errorColor,
-            ),
-          ]
-        : <Color>[colors.ctaTop, colors.ctaMid, colors.ctaBottom];
-    final shadowColor = isDanger
-        ? errorColor.withValues(alpha: 0.32)
-        : colors.ctaBottom.withValues(alpha: 0.36);
+    final List<Color> gradientColors;
+    final Color shadowColor;
+    final Color foreground;
+    switch (variant) {
+      case ZaadButtonVariant.danger:
+        gradientColors = [
+          Color.alphaBlend(errorColor.withValues(alpha: 0.85), colors.canvas),
+          errorColor,
+          Color.alphaBlend(Colors.black.withValues(alpha: 0.28), errorColor),
+        ];
+        shadowColor = errorColor.withValues(alpha: 0.32);
+        foreground = colors.onCta;
+      case ZaadButtonVariant.accent:
+        gradientColors = [colors.accentSoft, colors.accent, colors.accentDeep];
+        shadowColor = colors.accent.withValues(alpha: 0.32);
+        foreground = colors.goldInk;
+      case ZaadButtonVariant.primary:
+        gradientColors = [colors.ctaTop, colors.ctaMid, colors.ctaBottom];
+        shadowColor = colors.ctaBottom.withValues(alpha: 0.36);
+        foreground = colors.onCta;
+    }
 
     final disabled = !enabled || loading;
-    final foreground = colors.onCta;
 
     return Opacity(
       opacity: disabled ? 0.6 : 1,
@@ -109,21 +123,26 @@ class ZaadPrimaryButton extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (leadingIcon != null) ...[
-                            Icon(leadingIcon, size: 18, color: foreground),
+                            Icon(leadingIcon, size: iconSize, color: foreground),
                             const SizedBox(width: 10),
                           ],
-                          ResponsiveText(
-                            label,
-                            style: AppTextStyles.labelLarge.copyWith(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: letterSpacing,
-                              color: foreground,
+                          Flexible(
+                            child: ResponsiveText(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.labelLarge.copyWith(
+                                fontSize: fontSize,
+                                fontWeight: fontWeight,
+                                letterSpacing: letterSpacing,
+                                color: foreground,
+                              ),
                             ),
                           ),
                           if (trailingIcon != null) ...[
                             const SizedBox(width: 10),
-                            Icon(trailingIcon, size: 18, color: foreground),
+                            Icon(trailingIcon, size: iconSize, color: foreground),
                           ],
                         ],
                       ),

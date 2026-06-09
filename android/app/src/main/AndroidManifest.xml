@@ -20,9 +20,36 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- Deep links are handled by the app_links plugin (see
+                 DeepLinkHandler), not Flutter's built-in routing, so the
+                 custom scheme and https links share one code path. -->
+            <meta-data
+              android:name="flutter_deeplinking_enabled"
+              android:value="false"
+              />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!-- App Links: https://zaad-7a0a8.web.app/teams/join?code=... opens
+                 the app directly once the domain is verified via
+                 https://zaad-7a0a8.web.app/.well-known/assetlinks.json -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"
+                      android:host="zaad-7a0a8.web.app"
+                      android:pathPrefix="/teams/join"/>
+            </intent-filter>
+            <!-- Custom scheme: zad://teams/join?code=... — opened by the
+                 fallback web page to launch the app without domain
+                 verification. Not used as a shareable link. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="zad"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

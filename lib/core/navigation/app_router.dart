@@ -46,6 +46,7 @@ import '../../features/teams/presentation/screens/team_members_screen.dart';
 import '../../features/teams/presentation/screens/team_progress_screen.dart';
 import '../services/core_service_locator.dart';
 import 'app_routes.dart';
+import 'deep_links.dart';
 
 class AppRouter {
   const AppRouter._();
@@ -209,7 +210,11 @@ class AppRouter {
         name: AppRoutes.teamJoinName,
         builder: (context, state) => BlocProvider<TeamsCubit>(
           create: (_) => sl<TeamsCubit>(),
-          child: const TeamJoinScreen(),
+          // Invite deep links land here as /teams/join?code=ABC12345; the code
+          // (if any) prefills the field and auto-submits.
+          child: TeamJoinScreen(
+            initialCode: state.uri.queryParameters[DeepLinks.codeParam],
+          ),
         ),
       ),
       GoRoute(

@@ -599,7 +599,7 @@
       "success_skip": "مشاركة الدعوة لاحقًا",
       "copied": "تم نسخ رمز الدعوة",
       "share_subject": "انضمّ إلى فريقي على Zaad",
-      "share_message": "انضمّ إلى دائرتي على Zaad — استخدم رمز الدعوة {code}"
+      "share_message": "انضمّ إلى دائرتي على Zaad — استخدم رمز الدعوة {code}\n{link}"
     },
     "join": {
       "title": "الانضمام لفريق",

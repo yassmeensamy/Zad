@@ -10,6 +10,7 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/navigation/deep_links.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/team_model.dart';
 import '../cubit/teams_cubit.dart';
@@ -793,7 +794,9 @@ class _GildedInviteChip extends StatelessWidget {
   Future<void> _share(BuildContext context) async {
     await sl<ShareService>().shareFrom(
       context: context,
-      text: 'teams.create.share_message'.tr(namedArgs: {'code': code}),
+      text: 'teams.create.share_message'.tr(
+        namedArgs: {'code': code, 'link': DeepLinks.teamInvite(code)},
+      ),
       subject: 'teams.create.share_subject'.tr(),
     );
   }

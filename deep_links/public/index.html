@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Join your team on Zaad</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root { --gold:#B8893A; --ink:#3D3526; --bg:#F7F1E4; --card:#FFFFFFcc; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(120% 60% at 50% 0%, #F3E4C6 0%, var(--bg) 60%);
+      color: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; text-align: center;
+    }
+    .card {
+      width: 100%; max-width: 360px;
+      background: var(--card);
+      border: 1px solid #B8893A55;
+      border-radius: 20px;
+      padding: 32px 24px;
+      backdrop-filter: blur(8px);
+    }
+    h1 { font-size: 22px; margin: 16px 0 6px; }
+    p { font-size: 14px; line-height: 1.5; color: #6B5F49; margin: 0 0 20px; }
+    .code {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 22px; font-weight: 700; letter-spacing: 6px;
+      color: var(--ink); padding: 12px 16px; margin: 0 0 20px;
+      background: #B8893A14; border: 1px solid #B8893A40; border-radius: 12px;
+      display: inline-block;
+    }
+    .btn {
+      display: block; width: 100%;
+      padding: 14px 16px; margin: 8px 0;
+      border-radius: 12px; border: none;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--gold); color: #fff; }
+    .btn-store { background: #ffffff; color: var(--ink); border: 1px solid #B8893A55; }
+    .spinner {
+      width: 28px; height: 28px; margin: 0 auto 8px;
+      border: 3px solid #B8893A33; border-top-color: var(--gold);
+      border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .muted { font-size: 12px; color: #9a8d72; margin-top: 16px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="spinner" id="spinner"></div>
+    <h1>Opening Zaad…</h1>
+    <p id="status">Taking you to your team invite.</p>
+
+    <div class="code hidden" id="codeBox"></div>
+
+    <a class="btn btn-primary" id="openBtn" href="#">Open in the app</a>
+    <a class="btn btn-store hidden" id="storeBtn" href="#">Get the app</a>
+
+    <p class="muted">If the app didn’t open, enter the code above on the Join Team screen.</p>
+  </main>
+
+  <script>
+    // ── Config — edit these for your project ───────────────────────────────
+    var SCHEME          = 'zad';
+    var APP_PATH        = 'teams/join';                       // host+path in the app link
+    // Package of the *installed* app — must match what you build/install for the
+    // intent:// to open it. Currently com.zad.islamic (this repo).
+    var ANDROID_PACKAGE = 'com.zad.islamic';
+    // MOCK store URLs — replace with the real listings once the app is published
+    // (and update ANDROID_PACKAGE above if the final package differs).
+    var PLAYSTORE_URL   = 'https://play.google.com/store/apps/details?id=com.sekoon.sekoon';
+    var APPSTORE_URL    = 'https://apps.apple.com/us/app/sukoon-%D8%B3%D9%83%D9%88%D9%86/id6756372418';
+    // ───────────────────────────────────────────────────────────────────────
+
+    function getCode() {
+      var c = new URLSearchParams(window.location.search).get('code') || '';
+      return c.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+    }
+
+    var ua = navigator.userAgent || '';
+    var isAndroid = /android/i.test(ua);
+    var isIOS = /iphone|ipad|ipod/i.test(ua) ||
+                (/Mac/.test(ua) && navigator.maxTouchPoints > 1); // iPadOS
+    var code = getCode();
+
+    // Links the app understands.
+    var schemeUrl = SCHEME + '://' + APP_PATH + (code ? '?code=' + code : '');
+    var query = code ? '?code=' + code : '';
+    // Android intent:// auto-falls back to the Play Store when the app is absent.
+    var intentUrl =
+      'intent://' + APP_PATH + query +
+      '#Intent;scheme=' + SCHEME + ';package=' + ANDROID_PACKAGE +
+      ';S.browser_fallback_url=' + encodeURIComponent(PLAYSTORE_URL) + ';end';
+
+    var storeUrl = isIOS ? APPSTORE_URL : isAndroid ? PLAYSTORE_URL : null;
+
+    // Show the code so the user is never stuck.
+    if (code) {
+      var box = document.getElementById('codeBox');
+      box.textContent = code;
+      box.classList.remove('hidden');
+    }
+
+    var openBtn = document.getElementById('openBtn');
+    var storeBtn = document.getElementById('storeBtn');
+    var statusEl = document.getElementById('status');
+
+    function appUrl() { return isAndroid ? intentUrl : schemeUrl; }
+    openBtn.setAttribute('href', appUrl());
+
+    // Detect a successful app launch: the page is backgrounded/hidden.
+    var appOpened = false;
+    function markOpened() { appOpened = true; }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) markOpened();
+    });
+    window.addEventListener('pagehide', markOpened);
+    window.addEventListener('blur', markOpened);
+
+    function revealStore() {
+      document.getElementById('spinner').classList.add('hidden');
+      statusEl.textContent = 'Don’t have Zaad yet? Get it below, then enter the code.';
+      if (storeUrl) {
+        storeBtn.setAttribute('href', storeUrl);
+        storeBtn.textContent = isIOS ? 'Download on the App Store' : 'Get it on Google Play';
+        storeBtn.classList.remove('hidden');
+      } else {
+        // Desktop / unknown: no store, the code + manual entry is the path.
+        storeBtn.classList.add('hidden');
+        statusEl.textContent = 'Open this link on your phone, or enter the code in the app.';
+      }
+    }
+
+    function attemptOpen() {
+      if (isAndroid) {
+        // intent:// handles both open-app and store-fallback by itself.
+        window.location.href = intentUrl;
+        return;
+      }
+      // iOS / others: try the custom scheme, then fall back to the store.
+      window.location.href = schemeUrl;
+      window.setTimeout(function () {
+        if (!appOpened && storeUrl) {
+          window.location.href = storeUrl;
+        } else {
+          revealStore();
+        }
+      }, 1600);
+    }
+
+    // Manual button always works (covers in-app browsers that block auto-open).
+    openBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      attemptOpen();
+    });
+
+    // Auto-attempt on load. In-app browsers (WhatsApp/Instagram) may block this;
+    // the visible buttons remain as the reliable path.
+    window.addEventListener('load', function () {
+      attemptOpen();
+      // Safety net: if nothing happened, surface the store option.
+      window.setTimeout(function () { if (!appOpened) revealStore(); }, 2500);
+    });
+  </script>
+</body>
+</html>

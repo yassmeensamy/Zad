@@ -599,7 +599,7 @@
       "success_skip": "Share invite later",
       "copied": "Invite code copied",
       "share_subject": "Join my Zaad team",
-      "share_message": "Join my circle on Zaad — use invite code {code}"
+      "share_message": "Join my circle on Zaad — use invite code {code}\n{link}"
     },
     "join": {
       "title": "Join a team",

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.zad.islamic",
+      "sha256_cert_fingerprints": [
+        "24:BE:49:63:72:F2:5D:59:8B:66:AF:AB:E1:53:6B:AD:D5:0D:85:0A:5D:E8:D2:80:CD:AD:BD:63:E1:67:19:F5"
+      ]
+    }
+  }
+]

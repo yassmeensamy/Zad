@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/navigation/app_routes.dart';
+import '../../core/navigation/deep_link_handler.dart';
 import '../../core/services/core_service_locator.dart';
 import '../../core/widgets/responsive_text.dart';
 import '../../theme/theme.dart';
@@ -70,6 +71,8 @@ class _SplashViewState extends State<_SplashView>
   void _go(String route) {
     if (_navigating || !mounted) return;
     _navigating = true;
+    // From here on, deep links navigate immediately rather than being buffered.
+    DeepLinkHandler.isAppReady = true;
     context.go(route);
   }
 
@@ -77,6 +80,7 @@ class _SplashViewState extends State<_SplashView>
     if (_navigating) return;
     final splash = context.read<SplashCubit>().state;
     final destination = splash.destination;
+    debugPrint('[deeplink] splash destination=$destination');
     if (destination == null) return;
 
     if (destination == SplashDestination.onboarding) {
@@ -86,6 +90,7 @@ class _SplashViewState extends State<_SplashView>
 
     // authCheck path: wait for AuthCubit to resolve.
     final auth = context.read<AuthCubit>().state;
+    debugPrint('[deeplink] splash auth=${auth.status}');
     if (auth.isInitial || auth.isLoading) return;
     if (auth.isError || auth.isNotLoggedIn) {
       _go(AppRoutes.login);
@@ -100,7 +105,11 @@ class _SplashViewState extends State<_SplashView>
         _go(AppRoutes.login);
         return;
       }
-      if (user.isSuccess) _go(AppRoutes.profileSelect);
+      // A cold-start deep link (e.g. a team invite) wins over the default
+      // home destination now that the user is authenticated.
+      if (user.isSuccess) {
+        _go(DeepLinkHandler.consumePending() ?? AppRoutes.profileSelect);
+      }
     }
   }
 

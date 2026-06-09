@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/navigation/deep_links.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -350,7 +351,9 @@ class _TeamCodeCard extends StatelessWidget {
   Future<void> _share(BuildContext context) async {
     await sl<ShareService>().shareFrom(
       context: context,
-      text: 'teams.create.share_message'.tr(namedArgs: {'code': code}),
+      text: 'teams.create.share_message'.tr(
+        namedArgs: {'code': code, 'link': DeepLinks.teamInvite(code)},
+      ),
       subject: 'teams.create.share_subject'.tr(),
     );
   }

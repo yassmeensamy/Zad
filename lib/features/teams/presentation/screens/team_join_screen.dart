@@ -28,7 +28,11 @@ const int _kInviteCodeLength = 8;
 /// auto-submitting on completion. Errors swap the companions emblem for
 /// a closed-keyhole variant and reveal recovery chips.
 class TeamJoinScreen extends StatefulWidget {
-  const TeamJoinScreen({super.key});
+  const TeamJoinScreen({super.key, this.initialCode});
+
+  /// Invite code carried in by a deep link (`/teams/join?code=...`). When a
+  /// full code arrives the field is prefilled and the join auto-submits.
+  final String? initialCode;
 
   @override
   State<TeamJoinScreen> createState() => _TeamJoinScreenState();
@@ -40,7 +44,27 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
   @override
   void initState() {
     super.initState();
-    _codeController = TextEditingController();
+    _codeController = TextEditingController(text: _normalizedInitialCode());
+    // Auto-submit when a complete code was delivered by a deep link, after the
+    // cubit is available in the tree.
+    if (_isComplete) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _handleSubmit();
+      });
+    }
+  }
+
+  /// Sanitizes the deep-link code to the same A–Z/0–9 uppercase shape the
+  /// field enforces, capped at [_kInviteCodeLength].
+  String _normalizedInitialCode() {
+    final raw = widget.initialCode;
+    if (raw == null) return '';
+    final cleaned = raw
+        .toUpperCase()
+        .replaceAll(RegExp('[^A-Z0-9]'), '');
+    return cleaned.length > _kInviteCodeLength
+        ? cleaned.substring(0, _kInviteCodeLength)
+        : cleaned;
   }
 
   @override
@@ -298,22 +322,7 @@ class _ErrorContent extends StatelessWidget {
         const SizedBox(height: 18),
         const DotRule(),
         const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _RecoveryChip(
-              icon: Icons.refresh_rounded,
-              label: 'teams.join.error_try_again',
-              onTap: onTryAgain,
-            ),
-            const SizedBox(width: 8),
-            _RecoveryChip(
-              icon: Icons.help_outline_rounded,
-              label: 'teams.join.error_help',
-              onTap: onHelp,
-            ),
-          ],
-        ),
+        
       ],
     );
   }

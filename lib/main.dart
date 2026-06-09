@@ -12,6 +12,7 @@ import 'package:requests_inspector/requests_inspector.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'core/navigation/app_router.dart';
+import 'core/navigation/deep_link_handler.dart';
 import 'core/services/core_service_locator.dart';
 import 'core/services/service_locator.dart';
 import 'features/auth/core/auth_event_service.dart';
@@ -44,6 +45,10 @@ Future<void> main() async {
     ),
   );
 
+  // Subscribe to deep links (and read the launch link) BEFORE runApp so an
+  // early cold-start link isn't missed; the splash applies it once auth is up.
+  await DeepLinkHandler.init();
+
   runApp(
     RequestsInspector(
       enabled: kDebugMode,
@@ -56,6 +61,9 @@ Future<void> main() async {
       ),
     ),
   );
+
+  // Hand the router to the deep-link handler now that the tree is attached.
+  DeepLinkHandler.bind(AppRouter.router);
 }
 
 class MyApp extends StatelessWidget {

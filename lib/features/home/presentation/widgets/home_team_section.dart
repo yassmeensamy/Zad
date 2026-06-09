@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../temp.dart';
+import '../../../../temp_team_card.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../teams/presentation/cubit/teams_state.dart';
@@ -32,13 +32,8 @@ class HomeTeamSection extends StatelessWidget {
         void openTeam() => context.pushNamed(AppRoutes.teamsName);
         final team = state.team;
         if (!state.hasTeam || team == null) {
-          if (context.isDark) {
-            return GestureDetector(
-              onTap: openTeam,
-              behavior: HitTestBehavior.opaque,
-              child: const TempJoinTeamCard(),
-            );
-          }
+          // One shared card for both themes; colors come from the semantic
+          // tokens so light reads as warm cream and dark as roasted brown.
           return _JoinTeamCard(onTap: openTeam);
         }
 
@@ -50,7 +45,11 @@ class HomeTeamSection extends StatelessWidget {
             GestureDetector(
               onTap: openTeam,
               behavior: HitTestBehavior.opaque,
-              child: const TempTeamCard(),
+              child: TempTeamCard(
+                team: team,
+                members: state.members?.members,
+                summary: state.summary,
+              ),
             ),
           ],
         );
@@ -64,124 +63,175 @@ class _JoinTeamCard extends StatelessWidget {
 
   final VoidCallback onTap;
 
+  static const double _radius = 22;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final border = BorderRadius.circular(_radius);
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: border,
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [colors.canvasRaised, colors.cardSurface],
+            colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
           ),
-          border: Border.all(color: colors.borderSubtle),
+          border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
           boxShadow: [
+            // Grounding drop shadow.
             BoxShadow(
-              color: colors.heroShadow.withValues(alpha: 0.30),
-              blurRadius: 28,
-              offset: const Offset(0, 14),
+              color: colors.heroShadow.withValues(alpha: 0.20),
+              blurRadius: 34,
+              offset: const Offset(0, 18),
+            ),
+            // Warm amber lift so the card glows off the page in both themes.
+            BoxShadow(
+              color: colors.accent.withValues(alpha: 0.12),
+              blurRadius: 22,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
-          child: Column(
-            children: [
-              SizedBox(
-                width: 78,
-                height: 78,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            colors.accent.withValues(alpha: 0.32),
-                            colors.accent.withValues(alpha: 0),
-                          ],
-                          stops: const [0.0, 0.7],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 62,
-                      height: 62,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            colors.accent.withValues(alpha: 0.12),
-                            colors.accent.withValues(alpha: 0.03),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: colors.accent.withValues(alpha: 0.50),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.groups_outlined,
-                        size: 28,
-                        color: colors.accent,
-                      ),
-                    ),
-                  ],
-                ),
+        child: ClipRRect(
+          borderRadius: border,
+          child: DecoratedBox(
+            // A soft amber halo bleeding from the top centre. This adds depth in
+            // light mode and, crucially, keeps the dark surface (where the two
+            // cream tokens collapse to one flat brown) from reading as a slab.
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0, -1.15),
+                radius: 1.15,
+                colors: [
+                  colors.accentSoft.withValues(alpha: 0.20),
+                  colors.accentSoft.withValues(alpha: 0),
+                ],
+                stops: const [0.0, 0.62],
               ),
-              const SizedBox(height: 12),
-              Text(
-                'Walk the path together.',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.displaySmall.copyWith(
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 21,
-                  height: 1.05,
-                  color: colors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: Text(
-                  'Join a circle of companions to study, recite, and rise '
-                  'together — or start your own.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontSize: 11.5,
-                    height: 1.5,
-                    color: colors.textSecondary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Row(
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _JoinPrimaryButton(
-                      label: 'Create',
-                      trailingIcon: Icons.add_rounded,
-                      onTap: onTap,
+                  _JoinCrest(colors: colors),
+                  const SizedBox(height: 13),
+                  Text(
+                    'Walk the path together.',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.displaySmall.copyWith(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 21,
+                      height: 1.05,
+                      color: colors.textPrimary,
                     ),
                   ),
-                  const SizedBox(width: 9),
-                  Expanded(
-                    child: _JoinGhostButton(label: 'Join with code', onTap: onTap),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
+                    child: Text(
+                      'Join a circle of companions to study, recite, and rise '
+                      'together — or start your own.',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontSize: 11.5,
+                        height: 1.5,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _JoinPrimaryButton(
+                          label: 'Create',
+                          trailingIcon: Icons.add_rounded,
+                          onTap: onTap,
+                        ),
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: _JoinGhostButton(
+                          label: 'Join with code',
+                          onTap: onTap,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Halo + gilded glass disc holding the companions glyph. Tokens keep it warm
+/// gold on cream in light and a glowing amber medallion on brown in dark.
+class _JoinCrest extends StatelessWidget {
+  const _JoinCrest({required this.colors});
+
+  final AppColorsTheme colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      height: 80,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  colors.accentSoft.withValues(alpha: 0.55),
+                  colors.accentSoft.withValues(alpha: 0),
+                ],
+                stops: const [0.0, 0.72],
+              ),
+            ),
+          ),
+          Container(
+            width: 62,
+            height: 62,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  colors.goldLight.withValues(alpha: 0.50),
+                  colors.accent.withValues(alpha: 0.10),
+                ],
+              ),
+              border: Border.all(
+                color: colors.accent.withValues(alpha: 0.60),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.accent.withValues(alpha: 0.22),
+                  blurRadius: 16,
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.groups_outlined,
+              size: 28,
+              color: colors.accentDeep,
+            ),
+          ),
+        ],
       ),
     );
   }

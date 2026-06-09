@@ -1,213 +1,314 @@
-// State B of the Date & Ember home — the joined-team summary card ("Companions
-// of Sabr", level/rank chip, stacked member avatars and weekly XP). Split out
-// from temp.dart as a part file so it can share the screen's private palette
-// (`_C`), font roles (`_F`), the `_GlassCard` shell and the `_goldDisc`
-// gradient without exposing or duplicating them.
-part of 'temp.dart';
+// The joined-team summary card shown on the home screen once the user belongs
+// to a team: team crest + name, member count, leaderboard rank chip, stacked
+// member avatars and the team's overall completion. Purely presentational —
+// all data is passed in from [TeamsCubit] via [HomeTeamSection]; no mock data.
+//
+// Fully theme-driven: every colour comes from `context.appColors` so it reads
+// as warm cream/gold in light and roasted brown/amber in dark, and all type
+// uses [AppTextStyles] with the app's default font (ElMessiri).
+import 'package:flutter/material.dart';
+
+import 'core/widgets/responsive_text.dart';
+import 'features/teams/data/models/team_member_model.dart';
+import 'features/teams/data/models/team_model.dart';
+import 'features/teams/data/models/team_progress_summary_model.dart';
+import 'theme/theme.dart';
 
 class TempTeamCard extends StatelessWidget {
-  const TempTeamCard({super.key});
+  const TempTeamCard({
+    super.key,
+    required this.team,
+    this.members,
+    this.summary,
+  });
+
+  /// The user's team (name, member count) — always available in this state.
+  final TeamModel team;
+
+  /// Roster, loaded asynchronously. Drives the stacked avatars; null/empty
+  /// while it is still in flight (the overflow chip covers the gap).
+  final List<TeamMemberModel>? members;
+
+  /// Leaderboard standing + per-member progress, loaded asynchronously. Drives
+  /// the rank chip and the overall-completion line; both hide while null.
+  final TeamProgressSummaryModel? summary;
+
+  static const double _radius = 20;
+  static const double _avatarSize = 28;
+  static const double _avatarStep = 19;
+  static const int _maxAvatars = 3;
+
+  // Decorative avatar identities (gradient + letter ink), cycled per member.
+  // Mid-tone so they read on both the cream and brown card surfaces.
+  static const List<(List<Color>, Color)> _avatarPalettes = [
+    ([Color(0xFFF1C57A), Color(0xFFA6622A)], Color(0xFF2A1B0A)),
+    ([Color(0xFFA6B584), Color(0xFF42502E)], Color(0xFF1A2010)),
+    ([Color(0xFFE8A877), Color(0xFF7A2E15)], Color(0xFF2A1206)),
+  ];
+
+  /// First visible character of [s] (works for Latin and Arabic names).
+  String _firstGlyph(String s) {
+    final t = s.trim();
+    if (t.isEmpty) return '?';
+    return String.fromCharCode(t.runes.first).toUpperCase();
+  }
+
+  /// Overall team completion across all members, or null until [summary] loads.
+  int? _teamPercent() {
+    final s = summary;
+    if (s == null) return null;
+    final total = s.members.fold<int>(0, (a, m) => a + m.totalLevels);
+    if (total <= 0) return 0;
+    final done = s.members.fold<int>(0, (a, m) => a + m.completedLevels);
+    return (done / total * 100).round();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _GlassCard(
-      radius: 20,
-      padding: const EdgeInsets.all(16),
-      // Amber glow from the top-left corner.
-      extraGradient: const RadialGradient(
-        center: Alignment(-1, -1),
-        radius: 1.2,
-        colors: [Color(0x29E1A560), Color(0x00E1A560)],
-        stops: [0.0, 0.55],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              // Team crest disc with Arabic "ص".
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: _goldDisc,
-                  boxShadow: const [
-                    BoxShadow(color: Color(0x73E1A560), spreadRadius: 1.5),
-                  ],
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  'ص',
-                  style: TextStyle(
-                    fontFamily: _F.arabic,
-                    fontSize: 22,
-                    color: _C.ink,
-                    height: 1,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'LEVEL 6 · DAʿWAH',
-                      style: TextStyle(
-                        fontSize: 8.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 8.5 * 0.26,
-                        color: _C.amber,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Companions of Sabr',
-                      style: TextStyle(
-                        fontFamily: _F.serif,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 18,
-                        height: 1.05,
-                        color: _C.ivory,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              // Rank chip.
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color(0x24C9512B),
-                  border: Border.all(color: const Color(0x52E07A48)),
-                ),
-                child: const Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '#14',
-                      style: TextStyle(
-                        fontFamily: _F.serif,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 18,
-                        height: 1,
-                        color: _C.emberLight,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'RANK',
-                      style: TextStyle(
-                        fontSize: 7.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 7.5 * 0.18,
-                        color: _C.txtMute,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    final colors = context.appColors;
+    final border = BorderRadius.circular(_radius);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: border,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [colors.creamSurfaceTop, colors.creamSurfaceBottom],
+        ),
+        border: Border.all(color: colors.accent.withValues(alpha: 0.24)),
+        boxShadow: [
+          BoxShadow(
+            color: colors.heroShadow.withValues(alpha: 0.20),
+            blurRadius: 34,
+            offset: const Offset(0, 18),
           ),
-          const SizedBox(height: 14),
-          Container(height: 1, color: _C.hairline),
-          const SizedBox(height: 13),
-          Row(
-            children: [
-              // Stacked member avatars + overflow.
-              // 3 avatars at 19px offsets + the "+9" chip at 3*19, each 28 wide
-              // → total 3*19 + 28 = 85px. The Stack holds only Positioned
-              // children, so it needs an explicit width.
-              SizedBox(
-                width: 85,
-                height: 28,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _memberAvatar(0, 'Y',
-                        const [Color(0xFFF1C57A), Color(0xFFA6622A)], _C.ink),
-                    _memberAvatar(1, 'A',
-                        const [Color(0xFFA6B584), Color(0xFF42502E)],
-                        const Color(0xFF1A2010)),
-                    _memberAvatar(2, 'F',
-                        const [Color(0xFFE8A877), Color(0xFF7A2E15)],
-                        const Color(0xFF2A1206)),
-                    Positioned(
-                      left: 3 * 19.0,
-                      child: Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0x14F4ECD8),
-                          border: Border.all(color: _C.surface, width: 2),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          '+9',
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w600,
-                            color: _C.ivory,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              const Text.rich(
-                TextSpan(
-                  text: 'You\'re ',
-                  style: TextStyle(fontSize: 10.5, color: _C.txtMute),
-                  children: [
-                    TextSpan(
-                      text: '+340 XP',
-                      style: TextStyle(
-                        fontFamily: _F.mono,
-                        color: _C.olive,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    TextSpan(text: ' this week'),
-                  ],
-                ),
-              ),
-            ],
+          BoxShadow(
+            color: colors.accent.withValues(alpha: 0.12),
+            blurRadius: 22,
+            offset: const Offset(0, 8),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: border,
+        child: DecoratedBox(
+          // Warm amber glow bleeding from the top-left corner — adds depth in
+          // light and keeps the flat dark surface from reading as a slab.
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: const Alignment(-1, -1),
+              radius: 1.2,
+              colors: [
+                colors.accentSoft.withValues(alpha: 0.20),
+                colors.accentSoft.withValues(alpha: 0),
+              ],
+              stops: const [0.0, 0.6],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _header(colors),
+                const SizedBox(height: 14),
+                Container(height: 1, color: colors.borderSubtle),
+                const SizedBox(height: 13),
+                _footer(colors),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _memberAvatar(int index, String letter, List<Color> colors, Color ink) {
+  Widget _header(AppColorsTheme colors) {
+    final rank = summary?.teamRank;
+    return Row(
+      children: [
+        // Team crest disc with the first glyph of the team name.
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            gradient: RadialGradient(
+              center: const Alignment(-0.36, -0.44),
+              radius: 0.9,
+              colors: [colors.goldLight, colors.accent, colors.accentDeep],
+              stops: const [0.0, 0.55, 1.0],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors.accent.withValues(alpha: 0.45),
+                spreadRadius: 1.5,
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: ResponsiveText(
+            _firstGlyph(team.name),
+            style: AppTextStyles.headlineMedium.copyWith(
+              fontSize: 22,
+              height: 1,
+              color: colors.goldInk,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ResponsiveText(
+                'home.team.companions_count',
+                args: [team.memberCount.toString()],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: colors.accent,
+                ),
+              ),
+              const SizedBox(height: 2),
+              ResponsiveText(
+                team.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.displaySmall.copyWith(
+                  fontSize: 18,
+                  height: 1.05,
+                  color: colors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (rank != null) ...[
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: colors.accent.withValues(alpha: 0.14),
+              border: Border.all(color: colors.accent.withValues(alpha: 0.34)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ResponsiveText(
+                  '#$rank',
+                  style: AppTextStyles.displaySmall.copyWith(
+                    fontSize: 18,
+                    height: 1,
+                    color: colors.accentDeep,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                ResponsiveText(
+                  'home.team.rank_label',
+                  style: AppTextStyles.labelSmall.copyWith(
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: colors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _footer(AppColorsTheme colors) {
+    final shown =
+        (members ?? const <TeamMemberModel>[]).take(_maxAvatars).toList();
+    final remaining = team.memberCount - shown.length;
+    final hasOverflow = remaining > 0;
+    final slots = shown.length + (hasOverflow ? 1 : 0);
+    final stackWidth =
+        slots == 0 ? 0.0 : (slots - 1) * _avatarStep + _avatarSize;
+    final percent = _teamPercent();
+
+    return Row(
+      children: [
+        // Stacked member avatars + overflow chip for the rest of the roster.
+        SizedBox(
+          width: stackWidth,
+          height: _avatarSize,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              for (var i = 0; i < shown.length; i++)
+                _memberAvatar(colors, i, shown[i].username),
+              if (hasOverflow)
+                Positioned(
+                  left: shown.length * _avatarStep,
+                  child: Container(
+                    width: _avatarSize,
+                    height: _avatarSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors.accent.withValues(alpha: 0.12),
+                      border: Border.all(
+                        color: colors.creamSurfaceTop,
+                        width: 2,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: ResponsiveText(
+                      '+$remaining',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        if (percent != null)
+          ResponsiveText(
+            'categories.progress.percent',
+            args: [percent.toString()],
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w600,
+              color: colors.success,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _memberAvatar(AppColorsTheme colors, int index, String username) {
+    final (gradient, ink) = _avatarPalettes[index % _avatarPalettes.length];
     return Positioned(
-      left: index * 19.0,
+      left: index * _avatarStep,
       child: Container(
-        width: 28,
-        height: 28,
+        width: _avatarSize,
+        height: _avatarSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
             center: const Alignment(-0.36, -0.44),
             radius: 0.9,
-            colors: colors,
+            colors: gradient,
           ),
-          border: Border.all(color: _C.surface, width: 2),
+          border: Border.all(color: colors.creamSurfaceTop, width: 2),
         ),
         alignment: Alignment.center,
-        child: Text(
-          letter,
-          style: TextStyle(
-            fontFamily: _F.serif,
-            fontSize: 11,
-            color: ink,
-          ),
+        child: ResponsiveText(
+          _firstGlyph(username),
+          style: AppTextStyles.labelMedium.copyWith(fontSize: 11, color: ink),
         ),
       ),
     );

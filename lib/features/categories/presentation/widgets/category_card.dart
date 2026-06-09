@@ -70,10 +70,23 @@ class CategoryCard extends StatelessWidget {
                 Positioned(
                   top: 0,
                   left: 0,
-                  child: Image.asset(
-                    AppImages.vector,
-                    width: 200,
-                    cacheWidth: 400,
+                  // Confine the tracery to the top-left corner. The asset
+                  // fades toward the bottom-right, but on the dark card its
+                  // faint tail stays visible and reads across the whole card.
+                  // A radial fade from the top-left keeps only the corner.
+                  child: ShaderMask(
+                    blendMode: BlendMode.dstIn,
+                    shaderCallback: (rect) => const RadialGradient(
+                      center: Alignment.topLeft,
+                      radius: 0.9,
+                      colors: [Colors.white, Colors.transparent],
+                      stops: [0.0, 0.65],
+                    ).createShader(rect),
+                    child: Image.asset(
+                      AppImages.vector,
+                      width: 200,
+                      cacheWidth: 400,
+                    ),
                   ),
                 ),
                 Padding(

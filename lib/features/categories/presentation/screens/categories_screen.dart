@@ -110,7 +110,6 @@ class _CategoriesView extends StatelessWidget {
       bottom: false,
       child: Stack(
         children: [
-          const _BackdropOrnament(),
           BlocListener<CategoriesCubit, CategoriesState>(
             listenWhen: (prev, curr) =>
                 prev.errorMessage != curr.errorMessage &&
@@ -299,27 +298,6 @@ class _OverallProgress extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _BackdropOrnament extends StatelessWidget {
-  const _BackdropOrnament();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: RepaintBoundary(
-          child: CustomPaint(
-            painter: StarTessellationPainter(
-              color: context.appColors.accent,
-              tile: 56,
-              opacity: 0.035,
-            ),
-          ),
-        ),
       ),
     );
   }

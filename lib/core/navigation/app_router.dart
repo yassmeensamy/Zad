@@ -68,241 +68,246 @@ class AppRouter {
       refreshListenable: gate.listenable,
       redirect: authGuard(routes: guardRoutes, phase: () => gate.phase),
       routes: [
-      GoRoute(
-        path: AppRoutes.splash,
-        name: AppRoutes.splashName,
-        builder: (context, state) => const ZaadSplashScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.onboarding,
-        name: AppRoutes.onboardingName,
-        builder: (context, state) => const OnboardingScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.login,
-        name: AppRoutes.loginName,
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.signup,
-        name: AppRoutes.signupName,
-        builder: (context, state) => const SignUpScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.forgotPassword,
-        name: AppRoutes.forgotPasswordName,
-        builder: (context, state) => BlocProvider<ForgotPasswordCubit>(
-          create: (_) => sl<ForgotPasswordCubit>(),
-          child: const ForgotPasswordScreen(),
+        GoRoute(
+          path: AppRoutes.splash,
+          name: AppRoutes.splashName,
+          builder: (context, state) => const ZaadSplashScreen(),
         ),
-      ),
-      GoRoute(
-        path: AppRoutes.roleSelect,
-        name: AppRoutes.roleSelectName,
-        builder: (context, state) => const RoleSelectScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.createProfiles,
-        name: AppRoutes.createProfilesName,
-        builder: (context, state) => const CreateChildrenScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.profileSelect,
-        name: AppRoutes.profileSelectName,
-        builder: (context, state) => const ProfileSelectScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.myChildren,
-        name: AppRoutes.myChildrenName,
-        builder: (context, state) => const ChildrenListScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.notifications,
-        name: AppRoutes.notificationsName,
-        builder: (context, state) => const NotificationScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.editProfile,
-        name: AppRoutes.editProfileName,
-        builder: (context, state) => const EditProfileScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.helpCenter,
-        name: AppRoutes.helpCenterName,
-        builder: (context, state) => const HelpCenterScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.drafts,
-        name: AppRoutes.draftsName,
-        builder: (context, state) => const DraftsScreen(),
-        routes: [
-          GoRoute(
-            path: AppRoutes.draftDetail,
-            name: AppRoutes.draftDetailName,
-            builder: (context, state) {
-              final extra =
-                  state.extra as ({DraftsCubit cubit, DraftModel draft})?;
-              if (extra == null) return const SizedBox.shrink();
-              return BlocProvider<DraftsCubit>.value(
-                value: extra.cubit,
-                child: DraftDetailScreen(draft: extra.draft),
-              );
-            },
+        GoRoute(
+          path: AppRoutes.onboarding,
+          name: AppRoutes.onboardingName,
+          builder: (context, state) => const OnboardingScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.login,
+          name: AppRoutes.loginName,
+          builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.signup,
+          name: AppRoutes.signupName,
+          builder: (context, state) => const SignUpScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.forgotPassword,
+          name: AppRoutes.forgotPasswordName,
+          builder: (context, state) => BlocProvider<ForgotPasswordCubit>(
+            create: (_) => sl<ForgotPasswordCubit>(),
+            child: const ForgotPasswordScreen(),
           ),
-        ],
-      ),
-      GoRoute(
-        path: AppRoutes.supportTickets,
-        name: AppRoutes.supportTicketsName,
-        builder: (context, state) => const SupportTicketsScreen(),
-        routes: [
-          GoRoute(
-            path: AppRoutes.ticketDetail,
-            name: AppRoutes.ticketDetailName,
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
-              final extra = state.extra
-                  as ({SupportTicketsCubit cubit, TicketModel ticket});
-              return BlocProvider<SupportTicketsCubit>.value(
-                value: extra.cubit,
-                child: TicketDetailScreen(
-                  ticketId: id,
-                  seed: extra.ticket,
+        ),
+        GoRoute(
+          path: AppRoutes.roleSelect,
+          name: AppRoutes.roleSelectName,
+          builder: (context, state) => const RoleSelectScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.createProfiles,
+          name: AppRoutes.createProfilesName,
+          builder: (context, state) => const CreateChildrenScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.profileSelect,
+          name: AppRoutes.profileSelectName,
+          builder: (context, state) => const ProfileSelectScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.myChildren,
+          name: AppRoutes.myChildrenName,
+          builder: (context, state) => const ChildrenListScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.notifications,
+          name: AppRoutes.notificationsName,
+          builder: (context, state) => const NotificationScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.editProfile,
+          name: AppRoutes.editProfileName,
+          builder: (context, state) => const EditProfileScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.helpCenter,
+          name: AppRoutes.helpCenterName,
+          builder: (context, state) {
+            final ticketsCubit = state.extra as SupportTicketsCubit?;
+            if (ticketsCubit == null) return const HelpCenterScreen();
+            return BlocProvider<SupportTicketsCubit>.value(
+              value: ticketsCubit,
+              child: const HelpCenterScreen(),
+            );
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.drafts,
+          name: AppRoutes.draftsName,
+          builder: (context, state) => const DraftsScreen(),
+          routes: [
+            GoRoute(
+              path: AppRoutes.draftDetail,
+              name: AppRoutes.draftDetailName,
+              builder: (context, state) {
+                final extra =
+                    state.extra as ({DraftsCubit cubit, DraftModel draft})?;
+                if (extra == null) return const SizedBox.shrink();
+                return BlocProvider<DraftsCubit>.value(
+                  value: extra.cubit,
+                  child: DraftDetailScreen(draft: extra.draft),
+                );
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: AppRoutes.supportTickets,
+          name: AppRoutes.supportTicketsName,
+          builder: (context, state) => const SupportTicketsScreen(),
+          routes: [
+            GoRoute(
+              path: AppRoutes.ticketDetail,
+              name: AppRoutes.ticketDetailName,
+              builder: (context, state) {
+                final id = state.pathParameters['id'] ?? '';
+                final extra =
+                    state.extra
+                        as ({SupportTicketsCubit cubit, TicketModel ticket});
+                return BlocProvider<SupportTicketsCubit>.value(
+                  value: extra.cubit,
+                  child: TicketDetailScreen(ticketId: id, seed: extra.ticket),
+                );
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: AppRoutes.levels,
+          name: AppRoutes.levelsName,
+          builder: (context, state) => LevelsScreen(
+            categoryId: state.pathParameters['id']!,
+            category: state.extra as CategoryModel?,
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.quiz,
+          name: AppRoutes.quizName,
+          builder: (context, state) => QuizScreen(
+            levelId: int.tryParse(state.pathParameters['levelId'] ?? '') ?? -1,
+            level: state.extra as LevelModel?,
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.dateEmberLeaderboard,
+          name: AppRoutes.dateEmberLeaderboardName,
+          builder: (context, state) => const DateEmberLeaderboardScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.teams,
+          name: AppRoutes.teamsName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamLoaderScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamCreate,
+          name: AppRoutes.teamCreateName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamCreateScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamCreateSuccess,
+          name: AppRoutes.teamCreateSuccessName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamCreateSuccessScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamJoin,
+          name: AppRoutes.teamJoinName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: TeamJoinScreen(
+              initialCode: state.uri.queryParameters[DeepLinks.codeParam],
+            ),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamJoinSuccess,
+          name: AppRoutes.teamJoinSuccessName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamJoinSuccessScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamHome,
+          name: AppRoutes.teamHomeName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamHomeScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamMembers,
+          name: AppRoutes.teamMembersName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamMembersScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppRoutes.teamProgress,
+          name: AppRoutes.teamProgressName,
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>(),
+            child: const TeamProgressScreen(),
+          ),
+        ),
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) =>
+              HomeShell(navigationShell: navigationShell),
+          branches: [
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.home,
+                  name: AppRoutes.homeName,
+                  builder: (context, state) => const HomeScreen(),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        path: AppRoutes.levels,
-        name: AppRoutes.levelsName,
-        builder: (context, state) => LevelsScreen(
-          categoryId: state.pathParameters['id']!,
-          category: state.extra as CategoryModel?,
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.categories,
+                  name: AppRoutes.categoriesName,
+                  builder: (context, state) => const CategoriesScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.leaderboard,
+                  name: AppRoutes.leaderboardName,
+                  builder: (context, state) => const LeaderboardScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.profile,
+                  name: AppRoutes.profileName,
+                  builder: (context, state) => const ProfileScreen(),
+                ),
+              ],
+            ),
+          ],
         ),
-      ),
-      GoRoute(
-        path: AppRoutes.quiz,
-        name: AppRoutes.quizName,
-        builder: (context, state) => QuizScreen(
-          levelId: int.tryParse(state.pathParameters['levelId'] ?? '') ?? -1,
-          level: state.extra as LevelModel?,
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.dateEmberLeaderboard,
-        name: AppRoutes.dateEmberLeaderboardName,
-        builder: (context, state) => const DateEmberLeaderboardScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.teams,
-        name: AppRoutes.teamsName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamLoaderScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamCreate,
-        name: AppRoutes.teamCreateName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamCreateScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamCreateSuccess,
-        name: AppRoutes.teamCreateSuccessName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamCreateSuccessScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamJoin,
-        name: AppRoutes.teamJoinName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: TeamJoinScreen(
-            initialCode: state.uri.queryParameters[DeepLinks.codeParam],
-          ),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamJoinSuccess,
-        name: AppRoutes.teamJoinSuccessName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamJoinSuccessScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamHome,
-        name: AppRoutes.teamHomeName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamHomeScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamMembers,
-        name: AppRoutes.teamMembersName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamMembersScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.teamProgress,
-        name: AppRoutes.teamProgressName,
-        builder: (context, state) => BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>(),
-          child: const TeamProgressScreen(),
-        ),
-      ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) =>
-            HomeShell(navigationShell: navigationShell),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.home,
-                name: AppRoutes.homeName,
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.categories,
-                name: AppRoutes.categoriesName,
-                builder: (context, state) => const CategoriesScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.leaderboard,
-                name: AppRoutes.leaderboardName,
-                builder: (context, state) => const LeaderboardScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.profile,
-                name: AppRoutes.profileName,
-                builder: (context, state) => const ProfileScreen(),
-              ),
-            ],
-          ),
-        ],
-      ),
       ],
     );
   }

@@ -46,7 +46,10 @@ class _SupportTicketsView extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: colors.olive,
         foregroundColor: colors.canvas,
-        onPressed: () => context.pushNamed(AppRoutes.helpCenterName),
+        onPressed: () => context.pushNamed(
+          AppRoutes.helpCenterName,
+          extra: context.read<SupportTicketsCubit>(),
+        ),
         icon: const Icon(Icons.add_rounded),
         label: const ResponsiveText('support_tickets.new_ticket'),
       ),
@@ -56,10 +59,7 @@ class _SupportTicketsView extends StatelessWidget {
             listenWhen: (a, b) =>
                 a.errorMessage != b.errorMessage && b.errorMessage != null,
             listener: (context, state) {
-              SnackBarHelper.showError(
-                context,
-                message: state.errorMessage!,
-              );
+              SnackBarHelper.showError(context, message: state.errorMessage!);
             },
           ),
           BlocListener<SupportTicketsCubit, SupportTicketsState>(
@@ -86,8 +86,10 @@ class _SupportTicketsView extends StatelessWidget {
             final isLoading = state.isInitial || state.isLoading;
             if (!isLoading && !state.hasTickets) {
               return _Empty(
-                onCompose: () =>
-                    context.pushNamed(AppRoutes.helpCenterName),
+                onCompose: () => context.pushNamed(
+                  AppRoutes.helpCenterName,
+                  extra: context.read<SupportTicketsCubit>(),
+                ),
               );
             }
             final tickets = isLoading ? _placeholderTickets : state.tickets;
@@ -124,10 +126,7 @@ class _SupportTicketsView extends StatelessWidget {
     context.pushNamed(
       AppRoutes.ticketDetailName,
       pathParameters: {'id': ticket.id},
-      extra: (
-        cubit: context.read<SupportTicketsCubit>(),
-        ticket: ticket,
-      ),
+      extra: (cubit: context.read<SupportTicketsCubit>(), ticket: ticket),
     );
   }
 }
@@ -149,8 +148,7 @@ class _Empty extends StatelessWidget {
         style: FilledButton.styleFrom(
           backgroundColor: colors.olive,
           foregroundColor: colors.canvas,
-          padding:
-              const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         ),
         icon: const Icon(Icons.add_rounded, size: 18),
         label: const ResponsiveText('support_tickets.new_ticket'),

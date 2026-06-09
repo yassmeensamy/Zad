@@ -11,6 +11,7 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
+import '../../../support_tickets/presentation/cubit/support_tickets_cubit.dart';
 import '../../data/models/support_request_model.dart';
 import '../cubit/help_center_cubit.dart';
 import '../cubit/help_center_state.dart';
@@ -64,6 +65,7 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
         listenWhen: (a, b) => a.status != b.status,
         listener: (context, state) {
           if (state.isSent) {
+            context.read<SupportTicketsCubit?>()?.load(isRefresh: true);
             FocusScope.of(context).unfocus();
             _resetControllers();
           } else if (state.isError) {
@@ -383,11 +385,7 @@ class _PromptHint extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.touch_app_outlined,
-            size: 18,
-            color: colors.oliveLeaf,
-          ),
+          Icon(Icons.touch_app_outlined, size: 18, color: colors.oliveLeaf),
           const SizedBox(width: 10),
           Expanded(
             child: ResponsiveText(
@@ -541,11 +539,9 @@ class _SendButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return BlocBuilder<HelpCenterCubit, HelpCenterState>(
-      buildWhen: (a, b) =>
-          a.canSubmit != b.canSubmit || a.status != b.status,
+      buildWhen: (a, b) => a.canSubmit != b.canSubmit || a.status != b.status,
       builder: (context, state) {
-        final accent =
-            state.topic?.accent(colors) ?? colors.olive;
+        final accent = state.topic?.accent(colors) ?? colors.olive;
         final enabled = state.canSubmit;
         return CustomButton.full(
           enabled: enabled,

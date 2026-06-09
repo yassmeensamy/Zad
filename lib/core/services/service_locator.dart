@@ -1,3 +1,5 @@
+import 'package:event_bus/event_bus.dart';
+
 import '../api/endpoints/app_endpoints.dart';
 import '../api/network_service.dart';
 import '../../features/auth/core/auth_event_service.dart';
@@ -154,7 +156,13 @@ class ServiceLocator {
     sl.registerLazySingleton<LanguageRepository>(
       () => LanguageRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<LanguageCubit>(() => LanguageCubit(repository: sl()));
+    sl.registerFactory<LanguageCubit>(
+      () => LanguageCubit(
+        repository: sl(),
+        cacheService: sl(),
+        eventBus: sl(),
+      ),
+    );
 
     sl.registerLazySingleton<NotificationRemoteDataSource>(
       () => NotificationRemoteDataSourceImpl(),
@@ -172,7 +180,9 @@ class ServiceLocator {
     sl.registerLazySingleton<HomeRepository>(
       () => HomeRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<HomeCubit>(() => HomeCubit(homeRepository: sl()));
+    sl.registerFactory<HomeCubit>(
+      () => HomeCubit(homeRepository: sl(), eventBus: sl()),
+    );
 
     sl.registerLazySingleton<HelpCenterRepository>(
       () => HelpCenterRepositoryImpl(ticketsRepository: sl()),
@@ -188,8 +198,12 @@ class ServiceLocator {
     sl.registerLazySingleton<CategoriesRepository>(
       () => CategoriesRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<CategoriesCubit>(
-      () => CategoriesCubit(categoriesRepository: sl(), quizEventService: sl()),
+    sl.registerLazySingleton<CategoriesCubit>(
+      () => CategoriesCubit(
+        categoriesRepository: sl(),
+        quizEventService: sl(),
+        eventBus: sl(),
+      ),
     );
 
     sl.registerLazySingleton<LevelsRemoteDataSource>(
@@ -202,6 +216,7 @@ class ServiceLocator {
       () => LevelsCubit(levelsRepository: sl(), quizEventService: sl()),
     );
 
+    sl.registerLazySingleton<EventBus>(() => EventBus());
     sl.registerLazySingleton<QuizEventService>(() => QuizEventService());
     sl.registerLazySingleton<QuizRemoteDataSource>(
       () => QuizRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
@@ -276,5 +291,6 @@ class ServiceLocator {
     sl.registerFactory<StreakCubit>(
       () => StreakCubit(streakRepository: sl(), quizEventService: sl()),
     );
+
   }
 }

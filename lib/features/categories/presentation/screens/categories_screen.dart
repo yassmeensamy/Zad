@@ -19,9 +19,6 @@ import '../cubit/categories_cubit.dart';
 import '../cubit/categories_state.dart';
 import '../widgets/category_card.dart';
 
-/// Skeleton stand-ins shown while the real categories load. Presentation-only
-/// data — the shimmer just needs realistic shapes, so this never touches the
-/// data layer.
 const List<CategoryModel> _kPlaceholders = [
   CategoryModel(
     id: 0,
@@ -90,8 +87,8 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CategoriesCubit>(
-      create: (_) => sl<CategoriesCubit>()..getCategories(),
+    return BlocProvider<CategoriesCubit>.value(
+      value: sl<CategoriesCubit>()..ensureLoaded(),
       child: const _CategoriesView(),
     );
   }
@@ -103,9 +100,6 @@ class _CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    // Background comes from the HomeShell's AppScaffold backdrop (gradient in
-    // light, Date & Ember backdrop in dark). Stay transparent so it shows
-    // through and matches the other tabs — an opaque fill here covered it.
     return SafeArea(
       bottom: false,
       child: Stack(

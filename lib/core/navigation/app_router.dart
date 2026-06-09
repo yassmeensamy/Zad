@@ -9,12 +9,10 @@ import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/home/presentation/screens/home_shell.dart';
 import '../../features/categories/data/models/category_model.dart';
-import '../../features/categories/presentation/cubit/categories_cubit.dart';
 import '../../features/categories/presentation/screens/categories_screen.dart';
 import '../../features/levels/data/models/level_model.dart';
 import '../../features/levels/presentation/screens/levels_screen.dart';
 import '../../features/quiz/presentation/screens/quiz_screen.dart';
-import '../../features/leaderboard/presentation/cubit/rankings_cubit.dart';
 import '../../features/leaderboard/presentation/screens/date_ember_leaderboard_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -290,17 +288,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.leaderboard,
                 name: AppRoutes.leaderboardName,
-                builder: (context, state) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider<RankingsCubit>(
-                      create: (_) => sl<RankingsCubit>(),
-                    ),
-                    BlocProvider<CategoriesCubit>(
-                      create: (_) => sl<CategoriesCubit>(),
-                    ),
-                  ],
-                  child: const LeaderboardScreen(),
-                ),
+                builder: (context, state) => const LeaderboardScreen(),
               ),
             ],
           ),

@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
@@ -18,29 +20,49 @@ import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import '../widgets/leaderboard_no_team.dart';
 
-class LeaderboardScreen extends StatefulWidget {
+class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
 
   @override
-  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RankingsCubit>(create: (_) => sl<RankingsCubit>()),
+        BlocProvider<CategoriesCubit>.value(value: sl<CategoriesCubit>()),
+      ],
+      child: const _LeaderboardView(),
+    );
+  }
 }
 
-const String _serif = 'serif';
-const String _mono = 'monospace';
+class _LeaderboardView extends StatefulWidget {
+  const _LeaderboardView();
 
-class _LeaderboardScreenState extends State<LeaderboardScreen>
-    with ScrollPaginationMixin {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final isGuest = context.read<UserCubit>().state.user?.isAnonymous ?? false;
-      if (isGuest) return;
-      final categories = context.read<CategoriesCubit>();
-      if (!categories.state.hasCategories) categories.getCategories();
-      context.read<RankingsCubit>().loadInitial();
-    });
+  State<_LeaderboardView> createState() => _LeaderboardViewState();
+}
+
+class _LeaderboardViewState extends State<_LeaderboardView>
+    with ScrollPaginationMixin {
+  bool _branchVisible = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final visible = TickerMode.valuesOf(context).enabled;
+    if (visible && !_branchVisible) {
+      _branchVisible = true;
+      _loadOnEnter();
+    } else if (!visible) {
+      _branchVisible = false;
+    }
+  }
+
+  void _loadOnEnter() {
+    final isGuest = context.read<UserCubit>().state.user?.isAnonymous ?? false;
+    if (isGuest) return;
+    context.read<CategoriesCubit>().ensureLoaded();
+    context.read<RankingsCubit>().refresh();
   }
 
   @override
@@ -206,10 +228,9 @@ class _Header extends StatelessWidget {
     final colors = context.appColors;
     return Column(
       children: [
-        Text(
+        ResponsiveText(
           'leaderboard.eyebrow'.tr().toUpperCase(),
-          style: TextStyle(
-            fontFamily: _mono,
+          style: AppTextStyles.labelSmall.copyWith(
             fontSize: 9.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
@@ -217,11 +238,9 @@ class _Header extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
+        ResponsiveText(
           'leaderboard.title'.tr(),
-          style: TextStyle(
-            fontFamily: _serif,
-            fontStyle: FontStyle.italic,
+          style: AppTextStyles.displaySmall.copyWith(
             fontWeight: FontWeight.w300,
             fontSize: 24,
             height: 1,
@@ -274,9 +293,9 @@ class _ScopeSegmented extends StatelessWidget {
                         : null,
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: ResponsiveText(
                     scope.labelKey.tr().toUpperCase(),
-                    style: TextStyle(
+                    style: AppTextStyles.labelSmall.copyWith(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.8,
@@ -380,11 +399,11 @@ class _CategoryChip extends StatelessWidget {
                   : colors.borderSubtle,
             ),
           ),
-          child: Text(
+          child: ResponsiveText(
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: AppTextStyles.labelSmall.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color: selected ? colors.accent : colors.textSecondary,
@@ -639,22 +658,21 @@ class _PodiumPillar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
-        Text(
+        ResponsiveText(
           seed?.name ?? '—',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: AppTextStyles.labelMedium.copyWith(
             fontSize: 12,
             fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
             color: isFirst ? colors.accent : colors.textPrimary,
           ),
         ),
         const SizedBox(height: 2),
-        Text(
+        ResponsiveText(
           seed == null ? '—' : '${seed!.completed}/${seed!.total}',
-          style: TextStyle(
-            fontFamily: _mono,
+          style: AppTextStyles.labelMedium.copyWith(
             fontSize: isFirst ? 12 : 11,
             fontWeight: FontWeight.w500,
             color: accent,
@@ -681,11 +699,10 @@ class _PodiumPillar extends StatelessWidget {
               ],
             ),
           ),
-          child: Text(
+          child: ResponsiveText(
             place < 10 ? '0$place' : '$place',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: _mono,
+            style: AppTextStyles.labelMedium.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w700,
               color: accent,
@@ -714,10 +731,9 @@ class _RankBadge extends StatelessWidget {
         color: colors.canvas,
         border: Border.all(color: color, width: 2),
       ),
-      child: Text(
+      child: ResponsiveText(
         '$place',
-        style: TextStyle(
-          fontFamily: _mono,
+        style: AppTextStyles.labelSmall.copyWith(
           fontSize: 11,
           fontWeight: FontWeight.w700,
           color: color,
@@ -809,11 +825,10 @@ class _RankRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 22,
-            child: Text(
+            child: ResponsiveText(
               seed.rank.toString().padLeft(2, '0'),
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: _mono,
+              style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: isMe ? colors.accent : colors.textTertiary,
@@ -832,13 +847,13 @@ class _RankRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   isMe
                       ? 'leaderboard.name_you'.tr(namedArgs: {'name': seed.name})
                       : seed.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                     height: 1.1,
@@ -846,12 +861,13 @@ class _RankRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   _metaLine(seed),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: AppTextStyles.labelSmall.copyWith(
                     fontSize: 10,
+                    fontWeight: FontWeight.w400,
                     color: colors.textSecondary,
                   ),
                 ),
@@ -862,20 +878,18 @@ class _RankRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              ResponsiveText(
                 '${seed.completed}/${seed.total}',
-                style: TextStyle(
-                  fontFamily: _mono,
+                style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: isMe ? colors.accentSoft : colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
+              ResponsiveText(
                 '${seed.percent}%',
-                style: TextStyle(
-                  fontFamily: _mono,
+                style: AppTextStyles.labelSmall.copyWith(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w600,
                   color: colors.success,
@@ -982,10 +996,9 @@ class _MyRankCta extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
+            child: ResponsiveText(
               '#$rank',
-              style: TextStyle(
-                fontFamily: _mono,
+              style: AppTextStyles.labelLarge.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: colors.onCta,
@@ -997,10 +1010,9 @@ class _MyRankCta extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   label.toUpperCase(),
-                  style: TextStyle(
-                    fontFamily: _mono,
+                  style: AppTextStyles.labelSmall.copyWith(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.4,
@@ -1008,11 +1020,11 @@ class _MyRankCta extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.1,
@@ -1054,10 +1066,10 @@ class _EmptyHint extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: vertical),
       child: Center(
-        child: Text(
+        child: ResponsiveText(
           textKey.tr(),
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: AppTextStyles.bodySmall.copyWith(
             fontSize: 13,
             fontStyle: FontStyle.italic,
             color: colors.textSecondary,
@@ -1080,10 +1092,10 @@ class _ErrorRetry extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          ResponsiveText(
             'leaderboard.error'.tr(),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTextStyles.bodySmall.copyWith(
               fontSize: 13,
               fontStyle: FontStyle.italic,
               color: colors.textSecondary,
@@ -1092,9 +1104,9 @@ class _ErrorRetry extends StatelessWidget {
           const SizedBox(height: 8),
           TextButton(
             onPressed: onRetry,
-            child: Text(
+            child: ResponsiveText(
               'common.retry'.tr(),
-              style: TextStyle(
+              style: AppTextStyles.labelLarge.copyWith(
                 color: colors.accent,
                 fontWeight: FontWeight.w600,
               ),
@@ -1118,10 +1130,9 @@ class _EyebrowRule extends StatelessWidget {
       children: [
         const _RuleSegment(toRight: true),
         const SizedBox(width: 10),
-        Text(
+        ResponsiveText(
           label,
-          style: TextStyle(
-            fontFamily: _mono,
+          style: AppTextStyles.labelSmall.copyWith(
             fontSize: 9,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
@@ -1160,12 +1171,11 @@ class _AllMembersRule extends StatelessWidget {
       children: [
         line,
         const SizedBox(width: 8),
-        Text(
+        ResponsiveText(
           'leaderboard.all_members'
               .tr(namedArgs: {'count': '$count'})
               .toUpperCase(),
-          style: TextStyle(
-            fontFamily: _mono,
+          style: AppTextStyles.labelSmall.copyWith(
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.0,
@@ -1277,9 +1287,14 @@ class _Disc extends StatelessWidget {
         ),
         border: Border.all(color: ringColor, width: 2),
       ),
-      child: Text(
+      child: ResponsiveText(
         initial,
-        style: TextStyle(fontFamily: _serif, fontSize: fontSize, color: ink),
+        style: AppTextStyles.headlineMedium.copyWith(
+          fontSize: fontSize,
+          fontWeight: FontWeight.w400,
+          height: 1,
+          color: ink,
+        ),
       ),
     );
   }

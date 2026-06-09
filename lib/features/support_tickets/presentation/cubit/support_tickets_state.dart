@@ -95,22 +95,14 @@ class SupportTicketsState {
 extension SupportTicketsStateX on SupportTicketsState {
   bool get isInitial => status == SupportTicketsStatus.initial;
   bool get isLoading => status == SupportTicketsStatus.loading;
-  bool get isLoaded => status == SupportTicketsStatus.loaded;
   bool get isError => status == SupportTicketsStatus.error;
 
   bool get hasTickets => tickets.isNotEmpty;
   bool isMutating(String id) => mutatingIds.contains(id);
 
-  bool get isDetailInitial => detailStatus == TicketDetailStatus.initial;
-  bool get isDetailLoading => detailStatus == TicketDetailStatus.loading;
-  bool get isDetailLoaded => detailStatus == TicketDetailStatus.loaded;
   bool get isDetailError => detailStatus == TicketDetailStatus.error;
 
-  bool get isCrudIdle => crudStatus == SupportTicketsCrudStatus.idle;
-  bool get isCrudLoading => crudStatus == SupportTicketsCrudStatus.loading;
   bool get isCrudCreated => crudStatus == SupportTicketsCrudStatus.created;
-  bool get isCrudClosed => crudStatus == SupportTicketsCrudStatus.closed;
-  bool get isCrudError => crudStatus == SupportTicketsCrudStatus.error;
 
   TicketModel? findById(String id) {
     for (final t in tickets) {

@@ -364,8 +364,9 @@ class _ConversationThread extends StatelessWidget {
             const Spacer(),
             if (replies.isNotEmpty)
               ResponsiveText(
-                'support_tickets.reply_count'
-                    .plural(replies.length, args: ['${replies.length}']),
+                'support_tickets.reply_count',
+                pluralValue: replies.length,
+                args: ['${replies.length}'],
                 style: AppTextStyles.labelMedium.copyWith(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
@@ -472,12 +473,11 @@ class _CloseFooter extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
           decoration: BoxDecoration(
-            color: colors.canvasRaised.withValues(alpha: 0.55),
+            // Soft raised paper in light, clean glass film in dark — both
+            // resolved centrally as semantic tokens (no brightness branching).
+            color: colors.ticketCloseSurface,
             borderRadius: BorderRadius.circular(ZaadRadii.xl),
-            border: Border.all(
-              color: colors.olive.withValues(alpha: 0.16),
-              width: 1,
-            ),
+            border: Border.all(color: colors.ticketCloseBorder, width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -526,8 +526,8 @@ class _CloseFooter extends StatelessWidget {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  backgroundColor: colors.oliveDeep,
-                  textColor: AppColors.white,
+                  backgroundColor: colors.ctaBottom,
+                  textColor: colors.onCta,
                   borderRadius: ZaadRadii.md,
                   textStyle: AppTextStyles.labelLarge.copyWith(
                     fontWeight: FontWeight.w700,
@@ -602,8 +602,8 @@ class _CloseConfirmDialog extends StatelessWidget {
           text: 'support_tickets.detail.close_ticket',
           theme: CustomButtonTheme(
             height: 48,
-            backgroundColor: colors.oliveDeep,
-            textColor: AppColors.white,
+            backgroundColor: colors.ctaBottom,
+            textColor: colors.onCta,
             borderRadius: ZaadRadii.lg,
             textStyle: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.w700,

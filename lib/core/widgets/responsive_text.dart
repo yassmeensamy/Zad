@@ -18,6 +18,7 @@ class ResponsiveText extends StatelessWidget {
     this.textDecoration,
     this.args,
     this.namedArgs,
+    this.pluralValue,
   });
   final String? text; // Allow text to be nullable
   final TextStyle? style;
@@ -35,11 +36,20 @@ class ResponsiveText extends StatelessWidget {
   final List<String>? args;
   final Map<String, String>? namedArgs;
 
+  /// When non-null, [text] is treated as a pluralization key and resolved with
+  /// `.plural(pluralValue, ...)` instead of `.tr(...)`. Pass the key here (not a
+  /// pre-resolved `key.plural(...)` string) to avoid double-translation.
+  final num? pluralValue;
+
   @override
   Widget build(BuildContext context) {
     if (text == null || text!.isEmpty) {
       return const SizedBox.shrink(); // Return an empty widget
     }
+
+    final resolved = pluralValue != null
+        ? text!.plural(pluralValue!, args: args, namedArgs: namedArgs)
+        : text!.tr(args: args, namedArgs: namedArgs);
 
     final effectiveStyle =
         style?.copyWith(decoration: textDecoration) ??
@@ -47,7 +57,7 @@ class ResponsiveText extends StatelessWidget {
 
     if (isSelectable) {
       return SelectableText(
-        text!.tr(args: args, namedArgs: namedArgs),
+        resolved,
         style: effectiveStyle,
         textAlign: textAlign,
         maxLines: maxLines,
@@ -56,7 +66,7 @@ class ResponsiveText extends StatelessWidget {
     }
 
     return Text(
-      text!.tr(args: args, namedArgs: namedArgs),
+      resolved,
       textDirection: textDirection,
       style: effectiveStyle,
       textAlign: textAlign,

@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/relative_time.dart';
@@ -96,8 +95,9 @@ class _Footer extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         ResponsiveText(
-          'support_tickets.reply_count'
-              .plural(replyCount, args: ['$replyCount']),
+          'support_tickets.reply_count',
+          pluralValue: replyCount,
+          args: ['$replyCount'],
           style: style.copyWith(
             fontWeight: FontWeight.w700,
             color: colors.olive,

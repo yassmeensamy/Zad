@@ -86,6 +86,11 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   // Peach-rose tint that backs warning icons & error-state input fills.
   final Color warningSurface;
 
+  // Support-ticket "close ticket" footer card — surface fill + hairline border.
+  // Resolved per brightness here so the widget never branches on Theme.of().
+  final Color ticketCloseSurface;
+  final Color ticketCloseBorder;
+
   // Illuminated-manuscript palette — gilded surfaces & inks for the
   // Decree and Join-Team screens.
   final Color goldLight;
@@ -155,6 +160,8 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.dialogBorderBottom,
     required this.sheetSurface,
     required this.warningSurface,
+    required this.ticketCloseSurface,
+    required this.ticketCloseBorder,
     required this.heroSurfaceTop,
     required this.heroSurfaceMid,
     required this.heroSurfaceBottom,
@@ -224,6 +231,8 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     dialogBorderBottom: AppColors.creamBorderLight,
     sheetSurface: AppColors.paperSand,
     warningSurface: AppColors.roseBlush,
+    ticketCloseSurface: AppColors.ticketCloseSurfaceLight,
+    ticketCloseBorder: AppColors.ticketCloseBorderLight,
     heroSurfaceTop: AppColors.olive,
     heroSurfaceMid: AppColors.oliveDeep,
     heroSurfaceBottom: AppColors.oliveAbyss,
@@ -297,6 +306,9 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     dialogBorderBottom: AppColors.dialogBorderDarkBottom,
     sheetSurface: AppColors.canvasNight2,
     warningSurface: AppColors.tobacco,
+    // Surface reuses the ivory-glass film; border is olive-ivory at 24%.
+    ticketCloseSurface: AppColors.nightGlass,
+    ticketCloseBorder: AppColors.ticketCloseBorderDark,
     // Roasted-brown ramp (raised → surface → base) so the hero matches the
     // Date & Ember leaderboard surfaces instead of the light-mode olive.
     // Frosted ivory-glass surface over the shared Date & Ember backdrop, to
@@ -371,6 +383,8 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? dialogBorderBottom,
     Color? sheetSurface,
     Color? warningSurface,
+    Color? ticketCloseSurface,
+    Color? ticketCloseBorder,
     Color? heroSurfaceTop,
     Color? heroSurfaceMid,
     Color? heroSurfaceBottom,
@@ -439,6 +453,8 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
         dialogBorderBottom: dialogBorderBottom ?? this.dialogBorderBottom,
         sheetSurface: sheetSurface ?? this.sheetSurface,
         warningSurface: warningSurface ?? this.warningSurface,
+        ticketCloseSurface: ticketCloseSurface ?? this.ticketCloseSurface,
+        ticketCloseBorder: ticketCloseBorder ?? this.ticketCloseBorder,
         heroSurfaceTop: heroSurfaceTop ?? this.heroSurfaceTop,
         heroSurfaceMid: heroSurfaceMid ?? this.heroSurfaceMid,
         heroSurfaceBottom: heroSurfaceBottom ?? this.heroSurfaceBottom,
@@ -513,6 +529,10 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
           Color.lerp(dialogBorderBottom, other.dialogBorderBottom, t)!,
       sheetSurface: Color.lerp(sheetSurface, other.sheetSurface, t)!,
       warningSurface: Color.lerp(warningSurface, other.warningSurface, t)!,
+      ticketCloseSurface:
+          Color.lerp(ticketCloseSurface, other.ticketCloseSurface, t)!,
+      ticketCloseBorder:
+          Color.lerp(ticketCloseBorder, other.ticketCloseBorder, t)!,
       heroSurfaceTop: Color.lerp(heroSurfaceTop, other.heroSurfaceTop, t)!,
       heroSurfaceMid: Color.lerp(heroSurfaceMid, other.heroSurfaceMid, t)!,
       heroSurfaceBottom:

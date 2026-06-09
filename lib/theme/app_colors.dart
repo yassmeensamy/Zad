@@ -143,6 +143,14 @@ class AppColors {
   // Peach-rose tint used to back warning icons & error-state input fills.
   static const Color roseBlush = Color(0xFFF5E0DC);
 
+  // Support-ticket "close ticket" footer card. Surface: a soft translucent
+  // sand paper in light (dark reuses [nightGlass]). Border: the olive brand at
+  // a low alpha — olive reads green in light, ivory-olive in dark, so the two
+  // border tones are pre-baked per theme to keep the widget brightness-agnostic.
+  static const Color ticketCloseSurfaceLight = Color(0x8CE9D9B8); // sand @ 55%
+  static const Color ticketCloseBorderLight = Color(0x293E4A2A); // olive @ 16%
+  static const Color ticketCloseBorderDark = Color(0x3D7A8A5A); // oliveLight @ 24%
+
   // Status — tinted slightly toward the warm palette
   static const Color success = Color(0xFF6B8E3D);
   static const Color warning = Color(0xFFD4933A);

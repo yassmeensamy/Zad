@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../levels/presentation/screens/celebration.dart';
 import '../../../teams/presentation/screens/temp_team_home.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
@@ -62,6 +63,42 @@ class HomeLoadedContent extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: _kGutter),
               child: PlayCard(
                 onTap: () => context.goNamed(AppRoutes.categoriesName),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _kGutter),
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => LevelCompleteCelebration(
+                      eyebrow: 'LEVEL 6 · COMPLETE',
+                      title: 'Level Complete',
+                      arabic: 'أَحْسَنْتَ!',
+                      subtitle: const Text(
+                        'You answered 10 / 10 — a flawless round, mā shāʾ Allāh.',
+                        textAlign: TextAlign.center,
+                      ),
+                      stats: const [
+                        CelebrationStat(
+                          value: '10',
+                          suffix: '/10',
+                          label: 'Correct',
+                        ),
+                        CelebrationStat(value: '2:14', label: 'Time'),
+                        CelebrationStat(
+                          value: '100',
+                          suffix: '%',
+                          label: 'Accuracy',
+                          fire: true,
+                        ),
+                      ],
+                      xp: 250,
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.emoji_events_rounded),
+                label: const Text('Level Complete Celebration'),
               ),
             ),
             const SizedBox(height: 14),

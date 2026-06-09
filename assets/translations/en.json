@@ -219,6 +219,10 @@
     },
     "result": {
       "eyebrow": "JOURNEY OF KNOWLEDGE",
+      "title": "Level Complete",
+      "level_complete": "LEVEL {} · COMPLETE",
+      "answered_prefix": "You answered",
+      "continue": "Continue",
       "score": "SCORE",
       "points_label": "POINTS",
       "questions_completed": "{} questions completed",
@@ -228,6 +232,7 @@
       "done": "Done",
       "stat_correct": "Correct",
       "stat_time": "Time",
+      "stat_accuracy": "Accuracy",
       "stat_xp_earned": "XP earned",
       "stat_xp": "XP",
       "stat_revisits": "Revisits"

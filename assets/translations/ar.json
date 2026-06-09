@@ -219,6 +219,10 @@
     },
     "result": {
       "eyebrow": "رحلة طلب العلم",
+      "title": "أتممت المستوى",
+      "level_complete": "المستوى {} · مكتمل",
+      "answered_prefix": "أجبت على",
+      "continue": "متابعة",
       "score": "النتيجة",
       "points_label": "نقطة",
       "questions_completed": "{} سؤال مكتمل",
@@ -228,6 +232,7 @@
       "done": "تم",
       "stat_correct": "صحيحة",
       "stat_time": "الوقت",
+      "stat_accuracy": "الدقة",
       "stat_xp_earned": "النقاط المكتسبة",
       "stat_xp": "النقاط",
       "stat_revisits": "مراجعات"

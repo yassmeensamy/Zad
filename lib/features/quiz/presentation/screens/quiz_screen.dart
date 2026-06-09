@@ -176,6 +176,7 @@ class _QuizView extends StatelessWidget {
               firstTryCorrect: state.firstTryCorrect,
               elapsed: state.elapsed,
               motivationalKey: state.motivationalMessageKey,
+              level: level,
               onDone: () => _exit(context),
             );
           }

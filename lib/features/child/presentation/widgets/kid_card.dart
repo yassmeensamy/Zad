@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -220,28 +221,28 @@ class _MiniField extends StatelessWidget {
               color: colors.oliveSoft,
             ),
           ),
-          TextFormField(
+          MainTextFormField(
             initialValue: initial,
             onChanged: onChanged,
             keyboardType: keyboardType,
+            hintText: hint,
+            contentPadding: EdgeInsets.zero,
             style: AppTextStyles.labelLarge.copyWith(
               fontSize: 13.5,
               letterSpacing: 0,
               color: colors.oliveDeep,
             ),
-            decoration: InputDecoration(
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
+              fontSize: 13.5,
+              color: colors.oliveSoft.withValues(alpha: 0.45),
+            ),
+            inputDecorationTheme: const InputDecorationThemeData(
               isDense: true,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
               filled: false,
-              contentPadding: EdgeInsets.zero,
-              hintText: hint,
-              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                fontSize: 13.5,
-                color: colors.oliveSoft.withValues(alpha: 0.45),
-              ),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
             ),
           ),
         ],

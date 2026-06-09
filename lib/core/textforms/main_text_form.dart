@@ -138,6 +138,16 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
   }
 
   @override
+  void didUpdateWidget(MainTextFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When the field has no built-in toggle, let an externally-controlled
+    // [obscureText] drive the obscure state (e.g. a parent-owned eye button).
+    if (!widget.passwordToggle && widget.obscureText != oldWidget.obscureText) {
+      _obscureText = widget.obscureText;
+    }
+  }
+
+  @override
   void dispose() {
     _controller.removeListener(_controllerListener);
     if (widget.controller == null) _controller.dispose();

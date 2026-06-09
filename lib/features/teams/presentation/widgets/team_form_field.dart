@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/textforms/custom_text_form_field.dart';
+import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
@@ -84,7 +84,7 @@ class TeamFormField extends StatelessWidget {
                 : CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: CustomTextFormField(
+                child: MainTextFormField(
                   controller: controller,
                   focusNode: focusNode,
                   isEnabled: enabled,
@@ -94,7 +94,7 @@ class TeamFormField extends StatelessWidget {
                   inputFormatters: inputFormatters,
                   textCapitalization: textCapitalization,
                   onChanged: onChanged,
-                  hintText: hint,
+                  hintText: hint?.tr(),
                   counterText: '',
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   style: AppTextStyles.bodyMedium.copyWith(

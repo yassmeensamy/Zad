@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
@@ -160,29 +161,30 @@ class _PasswordField extends StatelessWidget {
                     color: colors.oliveSoft,
                   ),
                 ),
-                TextField(
+                MainTextFormField(
                   controller: controller,
                   obscureText: obscure,
                   autofocus: true,
                   onChanged: onChanged,
-                  onSubmitted: onSubmitted,
+                  onFieldSubmitted: onSubmitted,
                   textInputAction: TextInputAction.done,
+                  hintText: 'create_profiles.password_hint'.tr(),
+                  contentPadding: EdgeInsets.zero,
                   style: AppTextStyles.labelLarge.copyWith(
                     color: colors.oliveDeep,
                     letterSpacing: obscure ? 3 : 0,
                   ),
-                  decoration: InputDecoration(
+                  hintStyle: AppTextStyles.bodyMedium.copyWith(
+                    fontSize: 13.5,
+                    color: colors.oliveSoft.withValues(alpha: 0.45),
+                  ),
+                  inputDecorationTheme: const InputDecorationThemeData(
                     isDense: true,
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
                     filled: false,
-                    contentPadding: EdgeInsets.zero,
-                    hintText: 'create_profiles.password_hint'.tr(),
-                    hintStyle: AppTextStyles.bodyMedium.copyWith(
-                      fontSize: 13.5,
-                      color: colors.oliveSoft.withValues(alpha: 0.45),
-                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
                   ),
                 ),
               ],

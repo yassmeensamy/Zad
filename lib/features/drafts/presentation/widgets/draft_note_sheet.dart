@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/textforms/main_text_form.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_modal.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -79,22 +81,22 @@ class _DraftNoteSheetState extends State<DraftNoteSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
+          MainTextFormField(
             controller: _controller,
             maxLines: 5,
             minLines: 3,
             autofocus: true,
+            hintText: 'drafts.note_hint'.tr(),
             style: AppTextStyles.bodyMedium.copyWith(
               fontSize: 14,
               height: 1.5,
               color: colors.oliveDeep,
             ),
-            decoration: InputDecoration(
-              hintText: 'drafts.note_hint',
-              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                fontSize: 14,
-                color: colors.textTertiary,
-              ),
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
+              fontSize: 14,
+              color: colors.textTertiary,
+            ),
+            inputDecorationTheme: InputDecorationThemeData(
               filled: true,
               fillColor: colors.canvasRaised.withValues(alpha: 0.6),
               contentPadding: const EdgeInsets.all(14),

@@ -103,105 +103,105 @@ class _CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return ColoredBox(
-      color: colors.canvas,
-      child: SafeArea(
-        bottom: false,
-        child: Stack(
-          children: [
-            const _BackdropOrnament(),
-            BlocListener<CategoriesCubit, CategoriesState>(
-              listenWhen: (prev, curr) =>
-                  prev.errorMessage != curr.errorMessage &&
-                  curr.errorMessage != null &&
-                  curr.hasCategories,
-              listener: (context, state) => SnackBarHelper.showError(
-                context,
-                message: state.errorMessage ?? 'errors.generic',
-              ),
-              child: BlocBuilder<CategoriesCubit, CategoriesState>(
-                buildWhen: (prev, curr) =>
-                    prev.status != curr.status ||
-                    !listEquals(prev.categories, curr.categories),
-                builder: (context, state) {
-                  if (state.isError && !state.hasCategories) {
-                    return ErrorState(
-                      message: state.errorMessage ?? 'errors.generic',
-                      onRetry: () =>
-                          context.read<CategoriesCubit>().getCategories(),
-                    );
-                  }
-
-                  final isLoading = state.isLoading || state.isInitial;
-                  final categories = isLoading
-                      ? _kPlaceholders
-                      : state.categories;
-
-                  return Skeletonizer(
-                    enabled: isLoading,
-                    effect: ShimmerEffect(
-                      baseColor: colors.olive.withValues(alpha: 0.10),
-                      highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-                    ),
-                    child: CustomScrollView(
-                      physics: isLoading
-                          ? const NeverScrollableScrollPhysics()
-                          : const BouncingScrollPhysics(),
-                      slivers: [
-                        SliverPadding(
-                          padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
-                          sliver: SliverToBoxAdapter(
-                            child: _Header(
-                              overallProgress: isLoading
-                                  ? 0
-                                  : state.overallProgress,
-                            ),
-                          ),
-                        ),
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          sliver: SliverToBoxAdapter(
-                            child: StarRule(color: colors.accent, starSize: 10),
-                          ),
-                        ),
-                        const SliverToBoxAdapter(child: SizedBox(height: 22)),
-                        SliverPadding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-                          sliver: SliverGrid.builder(
-                            itemCount: categories.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 16,
-                                  crossAxisSpacing: 16,
-                                  childAspectRatio: 0.82,
-                                ),
-                            itemBuilder: (context, index) {
-                              final category = categories[index];
-                              return CategoryCard(
-                                category: category,
-                                tint: tintFor(category.id),
-                                onTap: isLoading
-                                    ? () {}
-                                    : () => context.pushNamed(
-                                        AppRoutes.levelsName,
-                                        pathParameters: {
-                                          'id': category.id.toString(),
-                                        },
-                                        extra: category,
-                                      ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+    // Background comes from the HomeShell's AppScaffold backdrop (gradient in
+    // light, Date & Ember backdrop in dark). Stay transparent so it shows
+    // through and matches the other tabs — an opaque fill here covered it.
+    return SafeArea(
+      bottom: false,
+      child: Stack(
+        children: [
+          const _BackdropOrnament(),
+          BlocListener<CategoriesCubit, CategoriesState>(
+            listenWhen: (prev, curr) =>
+                prev.errorMessage != curr.errorMessage &&
+                curr.errorMessage != null &&
+                curr.hasCategories,
+            listener: (context, state) => SnackBarHelper.showError(
+              context,
+              message: state.errorMessage ?? 'errors.generic',
             ),
-          ],
-        ),
+            child: BlocBuilder<CategoriesCubit, CategoriesState>(
+              buildWhen: (prev, curr) =>
+                  prev.status != curr.status ||
+                  !listEquals(prev.categories, curr.categories),
+              builder: (context, state) {
+                if (state.isError && !state.hasCategories) {
+                  return ErrorState(
+                    message: state.errorMessage ?? 'errors.generic',
+                    onRetry: () =>
+                        context.read<CategoriesCubit>().getCategories(),
+                  );
+                }
+
+                final isLoading = state.isLoading || state.isInitial;
+                final categories = isLoading
+                    ? _kPlaceholders
+                    : state.categories;
+
+                return Skeletonizer(
+                  enabled: isLoading,
+                  effect: ShimmerEffect(
+                    baseColor: colors.olive.withValues(alpha: 0.10),
+                    highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
+                  ),
+                  child: CustomScrollView(
+                    physics: isLoading
+                        ? const NeverScrollableScrollPhysics()
+                        : const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
+                        sliver: SliverToBoxAdapter(
+                          child: _Header(
+                            overallProgress: isLoading
+                                ? 0
+                                : state.overallProgress,
+                          ),
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        sliver: SliverToBoxAdapter(
+                          child: StarRule(color: colors.accent, starSize: 10),
+                        ),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 22)),
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+                        sliver: SliverGrid.builder(
+                          itemCount: categories.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.82,
+                              ),
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            return CategoryCard(
+                              category: category,
+                              tint: tintFor(category.id),
+                              onTap: isLoading
+                                  ? () {}
+                                  : () => context.pushNamed(
+                                      AppRoutes.levelsName,
+                                      pathParameters: {
+                                        'id': category.id.toString(),
+                                      },
+                                      extra: category,
+                                    ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

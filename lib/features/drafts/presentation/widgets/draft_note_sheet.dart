@@ -70,7 +70,7 @@ class _DraftNoteSheetState extends State<DraftNoteSheet> {
         ),
       ),
       subtitle: ResponsiveText(
-        'drafts.note_hint',
+        'drafts.note_subtitle',
         textAlign: TextAlign.center,
         style: AppTextStyles.bodySmall.copyWith(
           fontSize: 11,
@@ -98,7 +98,7 @@ class _DraftNoteSheetState extends State<DraftNoteSheet> {
             ),
             inputDecorationTheme: InputDecorationThemeData(
               filled: true,
-              fillColor: colors.canvasRaised.withValues(alpha: 0.6),
+              fillColor: colors.canvasRaised,
               contentPadding: const EdgeInsets.all(14),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -126,8 +126,8 @@ class _DraftNoteSheetState extends State<DraftNoteSheet> {
             onTap: _save,
             theme: CustomButtonTheme(
               height: 48,
-              backgroundColor: colors.oliveDeep,
-              textColor: colors.canvas,
+              backgroundColor: colors.ctaBottom,
+              textColor: colors.onCta,
               borderRadius: 14,
             ),
             child: ResponsiveText(
@@ -135,7 +135,7 @@ class _DraftNoteSheetState extends State<DraftNoteSheet> {
               style: AppTextStyles.labelLarge.copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0,
-                color: colors.canvas,
+                color: colors.onCta,
               ),
             ),
           ),

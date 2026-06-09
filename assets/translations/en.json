@@ -396,6 +396,7 @@
     "delete_confirm_cta": "Remove",
     "note_label": "Note",
     "note_hint": "Add a personal note…",
+    "note_subtitle": "Write a private note to remember this question.",
     "note_save": "Save note",
     "note_saved": "Note saved",
     "no_note": "No note added",

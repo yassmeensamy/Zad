@@ -112,10 +112,7 @@ List<ProfileSection> _userSections(BuildContext context) => [
         titleKey: 'edit_profile.change_password',
         onTap: () => ChangePasswordDialog.show(context),
       ),
-      const ProfileMenuItem(
-        icon: Icons.privacy_tip_outlined,
-        titleKey: 'profile.privacy',
-      ),
+   
       ProfileMenuItem(
         icon: Icons.help_outline_rounded,
         titleKey: 'profile.help_support',

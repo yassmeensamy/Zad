@@ -432,7 +432,8 @@
     "reset_progress_confirm_title": "إعادة ضبط كل التقدّم؟",
     "reset_progress_confirm_subtitle": "سيؤدي هذا إلى مسح تقدّمك في جميع الفئات والمستويات. لا يمكن التراجع عن ذلك.",
     "reset_progress_confirm_cta": "نعم، أعد ضبط كل شيء",
-    "reset_progress_success": "تمت إعادة ضبط تقدّمك"
+    "reset_progress_success": "تمت إعادة ضبط تقدّمك",
+    "downloads": "التنزيلات"
   },
   "edit_profile": {
     "name_label": "الاسم",
@@ -723,5 +724,21 @@
       "many": "{} عضوًا",
       "other": "{} عضو"
     }
+  },
+  "offline": {
+    "banner_message": "أنت غير متصل — يتم عرض المحتوى الذي تم تنزيله"
+  },
+  "downloads": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات بعد",
+    "empty_subtitle": "قم بتنزيل فئة لدراستها بدون اتصال.",
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل…",
+    "downloaded": "تم التنزيل",
+    "remove": "إزالة التنزيل",
+    "remove_confirm": "إزالة هذه الفئة التي تم تنزيلها؟ ستحتاج إلى الإنترنت لتنزيلها مرة أخرى.",
+    "error": "فشل التنزيل. تحقق من اتصالك وحاول مرة أخرى.",
+    "levels_count": "{} مستوى",
+    "unsynced_on_logout": "لديك إجابات غير متزامنة. المزامنة قبل تسجيل الخروج؟"
   }
 }

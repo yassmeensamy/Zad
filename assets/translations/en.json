@@ -432,7 +432,8 @@
     "reset_progress_confirm_title": "Reset all progress?",
     "reset_progress_confirm_subtitle": "This clears your progress across every category and level. This cannot be undone.",
     "reset_progress_confirm_cta": "Yes, reset everything",
-    "reset_progress_success": "Your progress has been reset"
+    "reset_progress_success": "Your progress has been reset",
+    "downloads": "Downloads"
   },
   "edit_profile": {
     "name_label": "NAME",
@@ -723,5 +724,21 @@
       "many": "{} members",
       "other": "{} members"
     }
+  },
+  "offline": {
+    "banner_message": "You're offline — showing downloaded content"
+  },
+  "downloads": {
+    "title": "Downloads",
+    "empty": "No downloads yet",
+    "empty_subtitle": "Download a category to study it offline.",
+    "download": "Download",
+    "downloading": "Downloading…",
+    "downloaded": "Downloaded",
+    "remove": "Remove download",
+    "remove_confirm": "Remove this downloaded category? You will need internet to download it again.",
+    "error": "Download failed. Check your connection and try again.",
+    "levels_count": "{} levels",
+    "unsynced_on_logout": "You have unsynced answers. Sync before logging out?"
   }
 }

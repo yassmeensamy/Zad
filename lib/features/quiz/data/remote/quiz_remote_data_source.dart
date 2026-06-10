@@ -5,6 +5,8 @@ import '../../../../core/utils/logger.dart';
 import '../models/quiz_questions_response.dart';
 import '../models/quiz_submission_request.dart';
 import '../models/quiz_submission_response.dart';
+import '../models/quiz_sync_request.dart';
+import '../models/quiz_sync_response.dart';
 
 abstract class QuizRemoteDataSource {
   Future<QuizQuestionsResponse> getQuestions(int levelId);
@@ -12,6 +14,9 @@ abstract class QuizRemoteDataSource {
     int levelId,
     QuizSubmissionRequest request,
   );
+
+  /// Flushes the whole offline answer queue in one batch call.
+  Future<QuizSyncResponse> syncQuiz(QuizSyncRequest request);
 
   /// Resets all of the current user's quiz progress.
   Future<void> resetAll();
@@ -59,6 +64,16 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
     return QuizSubmissionResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
+  }
+
+  @override
+  Future<QuizSyncResponse> syncQuiz(QuizSyncRequest request) async {
+    final response = await _networkService.post(
+      _endpoints.syncQuiz,
+      data: request.toMap(),
+    );
+    _validateResponse(response);
+    return QuizSyncResponse.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 enum LevelStatus {
   locked('locked'),
   unlocked('unlocked', aliases: {'available'}),
@@ -58,6 +60,21 @@ class LevelModel {
     passingGrade: (map['passingGrade'] as num?)?.toInt() ?? 0,
     status: LevelStatus.fromWire(map['status'] as String?),
   );
+
+  factory LevelModel.fromJson(String source) =>
+      LevelModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'title': title,
+    'order': order,
+    'questionCount': questionCount,
+    'completedQuestions': completedQuestions,
+    'passingGrade': passingGrade,
+    'status': status.wire,
+  };
+
+  String toJson() => json.encode(toMap());
 
   @override
   bool operator ==(Object other) {

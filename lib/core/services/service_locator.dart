@@ -1,8 +1,19 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:event_bus/event_bus.dart';
 
+import '../../features/offline/data/remote/downloads_remote_data_source.dart';
 import '../api/endpoints/app_endpoints.dart';
 import '../api/network_service.dart';
+import '../database/app_database.dart';
 import '../../features/auth/core/auth_event_service.dart';
+import '../../features/offline/core/offline_sync_service.dart';
+import '../../features/offline/data/local/offline_content_dao.dart';
+import '../../features/offline/data/local/pending_answers_dao.dart';
+import '../../features/offline/data/repositories/downloads_repository.dart';
+import '../../features/offline/presentation/cubit/connectivity_cubit.dart';
+import '../../features/offline/presentation/cubit/downloads_cubit.dart';
 import '../../features/onboarding_flow/data/avatars_remote_data_source.dart';
 import '../../features/onboarding_flow/data/avatars_repository.dart';
 import '../../features/onboarding_flow/presentation/cubit/avatars_cubit.dart';
@@ -65,7 +76,9 @@ import '../../features/user/presentation/cubit/user_cubit.dart';
 
 import 'app_info_service.dart';
 import 'cache_service.dart';
+import 'connectivity_service.dart';
 import 'core_service_locator.dart';
+import 'current_user_provider.dart';
 import 'device_info_service.dart';
 import 'notification_service.dart';
 import 'permession_service.dart';
@@ -191,12 +204,47 @@ class ServiceLocator {
       () => HelpCenterCubit(helpCenterRepository: sl()),
     );
 
+    sl.registerLazySingleton<AppDatabase>(() => AppDatabase());
+    sl.registerLazySingleton<CurrentUserProvider>(
+      () => CurrentUserProvider(sl()),
+    );
+    sl.registerLazySingleton<OfflineContentDao>(
+      () => OfflineContentDaoImpl(database: sl(), userProvider: sl()),
+    );
+    sl.registerLazySingleton<PendingAnswersDao>(
+      () => PendingAnswersDaoImpl(database: sl(), userProvider: sl()),
+    );
+    sl.registerLazySingleton<ConnectivityService>(
+      () => ConnectivityService(Connectivity()),
+    );
+    sl.registerLazySingleton<DownloadsRemoteDataSource>(
+      () => DownloadsRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+        cacheService: sl(),
+      ),
+    );
+    sl.registerLazySingleton<DownloadsRepository>(
+      () => DownloadsRepositoryImpl(remote: sl(), contentDao: sl()),
+    );
+    sl.registerLazySingleton<OfflineSyncService>(
+      () => OfflineSyncService(
+        pendingDao: sl(),
+        quizRemote: sl(),
+        quizEventService: sl(),
+        connectivityService: sl(),
+        authEventService: sl(),
+      ),
+    );
+    sl.registerFactory<DownloadsCubit>(() => DownloadsCubit(repository: sl()));
+    sl.registerFactory<ConnectivityCubit>(() => ConnectivityCubit(sl()));
+
     sl.registerLazySingleton<CategoriesRemoteDataSource>(
       () =>
           CategoriesRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<CategoriesRepository>(
-      () => CategoriesRepositoryImpl(remoteDataSource: sl()),
+      () => CategoriesRepositoryImpl(remoteDataSource: sl(), contentDao: sl()),
     );
     sl.registerLazySingleton<CategoriesCubit>(
       () => CategoriesCubit(
@@ -210,7 +258,7 @@ class ServiceLocator {
       () => LevelsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<LevelsRepository>(
-      () => LevelsRepositoryImpl(remoteDataSource: sl()),
+      () => LevelsRepositoryImpl(remoteDataSource: sl(), contentDao: sl()),
     );
     sl.registerFactory<LevelsCubit>(
       () => LevelsCubit(levelsRepository: sl(), quizEventService: sl()),
@@ -222,7 +270,12 @@ class ServiceLocator {
       () => QuizRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<QuizRepository>(
-      () => QuizRepositoryImpl(remoteDataSource: sl()),
+      () => QuizRepositoryImpl(
+        remoteDataSource: sl(),
+        contentDao: sl(),
+        pendingDao: sl(),
+        userProvider: sl(),
+      ),
     );
     sl.registerFactory<QuizCubit>(
       () => QuizCubit(
@@ -292,5 +345,11 @@ class ServiceLocator {
       () => StreakCubit(streakRepository: sl(), quizEventService: sl()),
     );
 
+  }
+
+  Future<void> startOffline() async {
+    await sl<AppDatabase>().database;
+    await sl<ConnectivityService>().init();
+    unawaited(sl<OfflineSyncService>().start());
   }
 }

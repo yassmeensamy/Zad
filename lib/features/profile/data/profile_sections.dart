@@ -92,6 +92,12 @@ List<ProfileSection> _userSections(BuildContext context) => [
         visibleFor: const [UserRole.child, UserRole.parent],
       ),
       ProfileMenuItem(
+        icon: Icons.download_done_rounded,
+        titleKey: 'profile.downloads',
+        onTap: () => context.pushNamed(AppRoutes.downloadsName),
+        visibleFor: const [UserRole.child, UserRole.parent],
+      ),
+      ProfileMenuItem(
         icon: Icons.family_restroom_rounded,
         titleKey: 'profile.my_children',
         onTap: () => context.pushNamed(AppRoutes.myChildrenName),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -33,7 +35,8 @@ Future<void> main() async {
   ]);
   timeago.setLocaleMessages('ar', timeago.ArMessages());
 
-  await ServiceLocator().init(
+  final serviceLocator = ServiceLocator();
+  await serviceLocator.init(
     baseUrl: dotenv.env['BASE_URL'] ?? '',
     oauthConfig: OAuthConfig(
       googleAndroidClientId: dotenv.env['GOOGLE_ANDROID_CLIENT_ID'] ?? '',
@@ -41,6 +44,7 @@ Future<void> main() async {
       googleServerClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID'] ?? '',
     ),
   );
+  await serviceLocator.startOffline();
 
   final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
   final initialLink = await deepLinks.initialLocation();

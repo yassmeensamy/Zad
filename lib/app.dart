@@ -8,9 +8,11 @@ import 'core/navigation/app_router.dart';
 import 'core/navigation/app_routes.dart';
 import 'core/navigation/auth_gate.dart';
 import 'core/navigation/deep_link_service.dart';
+import 'core/services/connectivity_service.dart';
 import 'core/services/core_service_locator.dart';
 import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/offline/presentation/cubit/connectivity_cubit.dart';
 import 'features/theme/presentation/cubit/theme_cubit.dart';
 import 'features/user/presentation/cubit/user_cubit.dart';
 import 'theme/theme.dart';
@@ -34,6 +36,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserCubit>(create: (_) => sl<UserCubit>(), lazy: false),
         BlocProvider<ThemeCubit>(create: (_) => ThemeCubit(), lazy: false),
+        BlocProvider<ConnectivityCubit>(
+          create: (_) => sl<ConnectivityCubit>(),
+          lazy: false,
+        ),
         BlocProvider<AppStartupCubit>(
           create: (_) => sl<AppStartupCubit>(),
           lazy: false,
@@ -64,6 +70,7 @@ class _AppViewState extends State<_AppView> {
   late final GoRouter _router = AppRouter.build(
     initialLocation: widget.initialLocation ?? AppRoutes.splash,
     gate: _gate,
+    isOnline: () => sl<ConnectivityService>().isOnline,
   );
 
   bool _started = false;

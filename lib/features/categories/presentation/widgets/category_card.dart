@@ -8,6 +8,7 @@ import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/star_medallion.dart';
 import '../../../../theme/theme.dart';
+import '../../../offline/presentation/widgets/download_button.dart';
 import '../../data/models/category_model.dart';
 import '../cubit/categories_cubit.dart';
 import '../cubit/categories_state.dart';
@@ -184,6 +185,11 @@ class CategoryCard extends StatelessWidget {
                     end: 6,
                     child: _CategoryResetButton(category: category),
                   ),
+                PositionedDirectional(
+                  top: 6,
+                  start: 6,
+                  child: DownloadButton(category: category),
+                ),
               ],
             ),
           ),

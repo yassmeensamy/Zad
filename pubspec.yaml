@@ -63,12 +63,16 @@ dependencies:
   flutter_slidable: ^4.0.3
   timeago: ^3.7.1
   lottie: ^3.3.3
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  connectivity_plus: ^6.1.5
   flutter_animate: ^4.5.0
   cached_network_image: ^3.4.1
   share_plus: ^12.0.2
   pinput: ^5.0.1
   hydrated_bloc: ^11.0.0
   event_bus: ^2.0.1
+  sentry_dio: ^9.21.0
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +95,12 @@ dev_dependencies:
 dependency_overrides:
   nm:
     path: third_party/nm
+  # path_provider_foundation 2.5+ migrated to the FFI-based `objective_c`
+  # package, which requires Flutter's native-assets build step. On iOS this
+  # currently fails with "Target native_assets required define SdkRoot" and
+  # crashes at runtime ("Couldn't resolve native function DOBJC_initializeApi").
+  # Pin to the last pre-objective_c release until native assets is stable.
+  path_provider_foundation: 2.4.1
 
 flutter_launcher_icons:
   ios: true

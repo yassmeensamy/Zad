@@ -32,10 +32,14 @@ class AppEndpoint {
   String levelsByCategoryId(int categoryId) =>
       '${baseUrl}api/quiz/categories/$categoryId/levels';
 
+  String categoryDownload(int categoryId) =>
+      '${baseUrl}api/quiz/categories/$categoryId/download';
+
   String questionsByLevelId(int levelId) =>
       '${baseUrl}api/quiz/levels/$levelId/questions';
   String submitQuiz(int levelId) =>
       '${baseUrl}api/quiz/levels/$levelId/submit';
+  String get syncQuiz => '${baseUrl}api/quiz/sync';
 
   String get resetQuiz => '${baseUrl}api/quiz/reset';
   String resetCategory(int categoryId) =>

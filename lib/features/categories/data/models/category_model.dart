@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class CategoryModel {
   const CategoryModel({
     required this.id,
@@ -33,6 +35,21 @@ class CategoryModel {
     completedLevels: (map['completedLevels'] as num?)?.toInt() ?? 0,
     orderIndex: (map['orderIndex'] as num?)?.toInt() ?? 0,
   );
+
+  factory CategoryModel.fromJson(String source) =>
+      CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'iconUrl': iconUrl,
+    'levelCount': levelCount,
+    'completedLevels': completedLevels,
+    'orderIndex': orderIndex,
+  };
+
+  String toJson() => json.encode(toMap());
 
   @override
   bool operator ==(Object other) {

@@ -24,6 +24,7 @@ import '../../features/drafts/presentation/screens/draft_detail_screen.dart';
 import '../../features/drafts/presentation/screens/drafts_screen.dart';
 import '../../features/help_center/presentation/screens/help_center_screen.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
+import '../../features/offline/presentation/screens/downloads_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
@@ -48,6 +49,8 @@ import 'auth_gate.dart';
 import 'auth_guard.dart';
 import 'deep_links.dart';
 
+bool _alwaysOnline() => true;
+
 class AppRouter {
   const AppRouter._();
 
@@ -55,6 +58,7 @@ class AppRouter {
     splash: AppRoutes.splash,
     signIn: AppRoutes.login,
     home: AppRoutes.profileSelect,
+    offlineHome: AppRoutes.home,
     onboarding: AppRoutes.onboarding,
     publicRoutes: {AppRoutes.signup, AppRoutes.forgotPassword},
   );
@@ -62,11 +66,16 @@ class AppRouter {
   static GoRouter build({
     required String initialLocation,
     required AuthGate gate,
+    bool Function() isOnline = _alwaysOnline,
   }) {
     return GoRouter(
       initialLocation: initialLocation,
       refreshListenable: gate.listenable,
-      redirect: authGuard(routes: guardRoutes, phase: () => gate.phase),
+      redirect: authGuard(
+        routes: guardRoutes,
+        phase: () => gate.phase,
+        isOnline: isOnline,
+      ),
       routes: [
         GoRoute(
           path: AppRoutes.splash,
@@ -125,6 +134,11 @@ class AppRouter {
           path: AppRoutes.editProfile,
           name: AppRoutes.editProfileName,
           builder: (context, state) => const EditProfileScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.downloads,
+          name: AppRoutes.downloadsName,
+          builder: (context, state) => const DownloadsScreen(),
         ),
         GoRoute(
           path: AppRoutes.helpCenter,

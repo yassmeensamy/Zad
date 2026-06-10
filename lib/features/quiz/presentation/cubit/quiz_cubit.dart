@@ -4,6 +4,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../support_tickets/data/models/create_ticket_request.dart';
 import '../../../support_tickets/data/models/support_topic_enum.dart';
 import '../../../support_tickets/data/repositories/support_tickets_repository.dart';
+import '../../../offline/data/models/pending_answer_input.dart';
 import '../../core/quiz_event_service.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_submission_request.dart';
@@ -140,12 +141,34 @@ class QuizCubit extends BaseCubit<QuizState> {
       ],
     );
 
+    // The chosen choice per question (first-round answer), used only when the
+    // submission has to be persisted offline so the stored record keeps the
+    // actual selected answer alongside its correctness.
+    final firstRoundChoice = <int, int>{};
+    for (final entry in state.history) {
+      if (entry.round == 1) {
+        firstRoundChoice.putIfAbsent(entry.question.id, () => entry.choiceId);
+      }
+    }
+    final selectedAnswers = [
+      for (final q in state.allQuestions)
+        PendingAnswerInput(
+          questionId: q.id,
+          selectedAnswer: firstRoundChoice[q.id] ?? -1,
+          isCorrect: state.firstTryCorrectIds.contains(q.id),
+        ),
+    ];
+
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.submitting,
     ));
 
     try {
-      final result = await _quizRepository.submitQuiz(levelId, request);
+      final result = await _quizRepository.submitQuiz(
+        levelId,
+        request,
+        selectedAnswers: selectedAnswers,
+      );
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.success,
         submissionResult: () => result,

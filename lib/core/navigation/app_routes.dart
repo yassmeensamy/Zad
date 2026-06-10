@@ -23,6 +23,7 @@ class AppRoutes {
   static const String helpCenter = '/help-center';
   static const String drafts = '/drafts';
   static const String draftDetail = ':id';
+  static const String downloads = '/downloads';
   static const String supportTickets = '/support-tickets';
   static const String ticketDetail = ':id';
 
@@ -57,6 +58,7 @@ class AppRoutes {
   static const String helpCenterName = 'help-center';
   static const String draftsName = 'drafts';
   static const String draftDetailName = 'draft-detail';
+  static const String downloadsName = 'downloads';
   static const String supportTicketsName = 'support-tickets';
   static const String ticketDetailName = 'ticket-detail';
 

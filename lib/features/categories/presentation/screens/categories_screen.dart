@@ -14,6 +14,7 @@ import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/star_medallion.dart';
 import '../../../../theme/theme.dart';
+import '../../../offline/presentation/cubit/downloads_cubit.dart';
 import '../../data/models/category_model.dart';
 import '../cubit/categories_cubit.dart';
 import '../cubit/categories_state.dart';
@@ -87,8 +88,15 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CategoriesCubit>.value(
-      value: sl<CategoriesCubit>()..ensureLoaded(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CategoriesCubit>.value(
+          value: sl<CategoriesCubit>()..ensureLoaded(),
+        ),
+        BlocProvider<DownloadsCubit>(
+          create: (_) => sl<DownloadsCubit>()..load(),
+        ),
+      ],
       child: const _CategoriesView(),
     );
   }
@@ -137,58 +145,66 @@ class _CategoriesView extends StatelessWidget {
                     baseColor: colors.olive.withValues(alpha: 0.10),
                     highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
                   ),
-                  child: CustomScrollView(
-                    physics: isLoading
-                        ? const NeverScrollableScrollPhysics()
-                        : const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
-                        sliver: SliverToBoxAdapter(
-                          child: _Header(
-                            overallProgress: isLoading
-                                ? 0
-                                : state.overallProgress,
+                  child: RefreshIndicator(
+                    onRefresh: () =>
+                        context.read<CategoriesCubit>().refreshCurrent(),
+                    color: colors.accentDeep,
+                    backgroundColor: colors.canvasRaised,
+                    child: CustomScrollView(
+                      physics: isLoading
+                          ? const NeverScrollableScrollPhysics()
+                          : const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(24, 12, 24, 14),
+                          sliver: SliverToBoxAdapter(
+                            child: _Header(
+                              overallProgress: isLoading
+                                  ? 0
+                                  : state.overallProgress,
+                            ),
                           ),
                         ),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        sliver: SliverToBoxAdapter(
-                          child: StarRule(color: colors.accent, starSize: 10),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          sliver: SliverToBoxAdapter(
+                            child: StarRule(color: colors.accent, starSize: 10),
+                          ),
                         ),
-                      ),
-                      const SliverToBoxAdapter(child: SizedBox(height: 22)),
-                      SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-                        sliver: SliverGrid.builder(
-                          itemCount: categories.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 16,
-                                crossAxisSpacing: 16,
-                                childAspectRatio: 0.82,
-                              ),
-                          itemBuilder: (context, index) {
-                            final category = categories[index];
-                            return CategoryCard(
-                              category: category,
-                              tint: tintFor(category.id),
-                              onTap: isLoading
-                                  ? () {}
-                                  : () => context.pushNamed(
-                                      AppRoutes.levelsName,
-                                      pathParameters: {
-                                        'id': category.id.toString(),
-                                      },
-                                      extra: category,
-                                    ),
-                            );
-                          },
+                        const SliverToBoxAdapter(child: SizedBox(height: 22)),
+                        SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+                          sliver: SliverGrid.builder(
+                            itemCount: categories.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 16,
+                                  crossAxisSpacing: 16,
+                                  childAspectRatio: 0.82,
+                                ),
+                            itemBuilder: (context, index) {
+                              final category = categories[index];
+                              return CategoryCard(
+                                category: category,
+                                tint: tintFor(category.id),
+                                onTap: isLoading
+                                    ? () {}
+                                    : () => context.pushNamed(
+                                        AppRoutes.levelsName,
+                                        pathParameters: {
+                                          'id': category.id.toString(),
+                                        },
+                                        extra: category,
+                                      ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

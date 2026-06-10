@@ -1,5 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/offline/presentation/cubit/connectivity_cubit.dart';
 import '../../theme/theme.dart';
 import 'app_backdrop.dart';
 
@@ -30,7 +33,15 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final content = safeArea ? SafeArea(bottom: false, child: body) : body;
+    final wrappedBody = Column(
+      children: [
+        const _OfflineBanner(),
+        Expanded(child: body),
+      ],
+    );
+    final content = safeArea
+        ? SafeArea(bottom: false, child: wrappedBody)
+        : wrappedBody;
 
     return Stack(
       children: [
@@ -51,6 +62,55 @@ class AppScaffold extends StatelessWidget {
           body: content,
         ),
       ],
+    );
+  }
+}
+
+/// Thin, global "you're offline" indicator shown above any [AppScaffold] body
+/// while the device is offline. Reads [ConnectivityCubit] provided at app root.
+class _OfflineBanner extends StatelessWidget {
+  const _OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ConnectivityCubit, bool>(
+      builder: (context, isOnline) {
+        if (isOnline) return const SizedBox.shrink();
+        final colors = context.appColors;
+        return Material(
+          color: colors.oliveDeep.withValues(alpha: 0.92),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.cloud_off_rounded,
+                    size: 15,
+                    color: colors.canvas,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'offline.banner_message'.tr(),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: colors.canvas,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -8,12 +8,14 @@ class GuardRoutes {
     required this.signIn,
     required this.home,
     required this.onboarding,
+    String? offlineHome,
     this.publicRoutes = const {},
-  });
+  }) : offlineHome = offlineHome ?? home;
 
   final String splash;
   final String signIn;
   final String home;
+  final String offlineHome;
   final String onboarding;
 
   final Set<String> publicRoutes;
@@ -27,6 +29,7 @@ class GuardRoutes {
 GoRouterRedirect authGuard({
   required GuardRoutes routes,
   required AuthPhase Function() phase,
+  bool Function() isOnline = _alwaysOnline,
   String fromParam = 'from',
 }) {
   return (context, state) {
@@ -53,9 +56,12 @@ GoRouterRedirect authGuard({
         return '${routes.signIn}$suffix';
       case AuthPhase.signedIn:
         if (loc == routes.splash || loc == routes.signIn) {
-          return intended ?? routes.home;
+          final home = isOnline() ? routes.home : routes.offlineHome;
+          return intended ?? home;
         }
         return null;
     }
   };
 }
+
+bool _alwaysOnline() => true;

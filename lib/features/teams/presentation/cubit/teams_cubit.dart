@@ -3,6 +3,7 @@ import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../../data/models/create_team_request.dart';
 import '../../data/models/join_team_request.dart';
+import '../../data/models/team_progress_summary_model.dart';
 import '../../data/repositories/teams_repository.dart';
 import 'teams_state.dart';
 
@@ -71,7 +72,9 @@ class TeamsCubit extends BaseCubit<TeamsState> {
   Future<void> loadTeamProgress() async {
     try {
       final progress = await _repository.getMyTeamProgress();
-      final summary = await _repository.getMyTeamProgressSummary();
+      // The backend no longer exposes `/progress/summary`; the summary is
+      // projected from the single `/progress` payload.
+      final summary = TeamProgressSummaryModel.fromProgress(progress);
       emit(
         state.copyWith(
           progress: () => progress,

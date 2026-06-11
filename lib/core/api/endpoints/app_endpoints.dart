@@ -67,8 +67,6 @@ class AppEndpoint {
   String get myTeam => '${baseUrl}api/teams/my-team';
   String get myTeamMembers => '${baseUrl}api/teams/my-team/members';
   String get myTeamProgress => '${baseUrl}api/teams/my-team/progress';
-  String get myTeamProgressSummary =>
-      '${baseUrl}api/teams/my-team/progress/summary';
 
   String get rankingTeams => '${baseUrl}api/rankings/teams';
   String get rankingIndividuals => '${baseUrl}api/rankings/individuals';

@@ -17,7 +17,7 @@ import 'team_home_screen.dart';
 /// only the body below a fixed [TeamsAppBar] — no route change, so the one
 /// cubit survives and the bar never moves:
 ///   * loading  → parchment loader
-///   * hasTeam  → [TeamHomeView]
+///   * hasTeam  → [TeamHomeScreen] (full-screen, bypasses the shared bar)
 ///   * hasNoTeam→ [TeamEmptyView]
 ///   * error    → [ErrorState]
 class TeamLoaderScreen extends StatefulWidget {
@@ -70,6 +70,9 @@ class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
         }
       },
       builder: (context, state) {
+        // A resolved team renders the full-screen team home (its own scaffold
+        // and app bar), bypassing the shared loader chrome.
+        if (state.hasTeam) return const TeamHomeScreen();
         return TeamScaffold(
           child: Column(
             children: [
@@ -89,7 +92,6 @@ class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
         onRetry: context.read<TeamsCubit>().loadTeamStatus,
       );
     }
-    if (state.hasTeam) return const TeamHomeView();
     if (state.hasNoTeam) return const TeamEmptyView();
     return const _LoaderBody();
   }

@@ -5,14 +5,12 @@ import '../models/joined_team_model.dart';
 import '../models/team_members_model.dart';
 import '../models/team_model.dart';
 import '../models/team_progress_model.dart';
-import '../models/team_progress_summary_model.dart';
 import '../remote/teams_remote_data_source.dart';
 
 abstract class TeamsRepository {
   Future<TeamModel> getMyTeam();
   Future<TeamMembersModel> getMyTeamMembers();
   Future<TeamProgressModel> getMyTeamProgress({int? categoryId});
-  Future<TeamProgressSummaryModel> getMyTeamProgressSummary();
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
   Future<void> leaveTeam();
@@ -34,10 +32,6 @@ class TeamsRepositoryImpl implements TeamsRepository {
   @override
   Future<TeamProgressModel> getMyTeamProgress({int? categoryId}) =>
       _remoteDataSource.getMyTeamProgress(categoryId: categoryId);
-
-  @override
-  Future<TeamProgressSummaryModel> getMyTeamProgressSummary() =>
-      _remoteDataSource.getMyTeamProgressSummary();
 
   @override
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request) =>

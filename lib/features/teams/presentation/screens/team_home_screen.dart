@@ -1,80 +1,25 @@
+import 'dart:math' as math;
+
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/navigation/deep_links.dart';
+import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/share_service.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
-import '../../data/models/team_member_model.dart';
-import '../../data/models/team_members_model.dart';
-import '../../data/models/team_model.dart';
-import '../../data/models/team_progress_model.dart';
-import '../../data/models/team_progress_summary_model.dart';
-import '../../data/models/team_role_enum.dart';
+import '../../../leaderboard/presentation/widgets/my_rank_card.dart';
+import '../../../leaderboard/presentation/widgets/rank_seed.dart';
+import '../../../leaderboard/presentation/widgets/ranking_row.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
+import '../../data/models/team_member_progress_model.dart';
 import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
-import '../widgets/team_disc.dart';
-import '../widgets/team_scaffold.dart';
-import '../widgets/teams_app_bar.dart';
-import '../widgets/zaad_pill.dart';
+import '../widgets/date_ember_roles.dart';
 
-// Type families matching the Date & Ember screens: Fraunces (serif italic) and
-// JetBrains Mono, mapped to the platform generic families.
-const String _serif = 'serif';
-const String _mono = 'monospace';
-
-/// Presentation-only mock state shown under [Skeletonizer] while the real team
-/// home loads — realistic shapes only, never touches the data layer.
-const TeamsState _kSkeletonHomeState = TeamsState(
-  status: TeamsStatus.hasTeam,
-  team: TeamModel(
-    id: '0',
-    name: 'Team name',
-    joinCode: 'XXXX-XXXX',
-    memberCount: 8,
-    yourRole: TeamRoleEnum.member,
-  ),
-  members: TeamMembersModel(
-    teamId: '0',
-    members: [
-      TeamMemberModel(
-        userId: '0',
-        username: 'Companion',
-        role: TeamRoleEnum.owner,
-      ),
-      TeamMemberModel(
-        userId: '1',
-        username: 'Companion',
-        role: TeamRoleEnum.member,
-      ),
-      TeamMemberModel(
-        userId: '2',
-        username: 'Companion',
-        role: TeamRoleEnum.member,
-      ),
-      TeamMemberModel(
-        userId: '3',
-        username: 'Companion',
-        role: TeamRoleEnum.member,
-      ),
-      TeamMemberModel(
-        userId: '4',
-        username: 'Companion',
-        role: TeamRoleEnum.member,
-      ),
-    ],
-  ),
-  progress: TeamProgressModel(
-    teamId: '0',
-    teamName: 'Team name',
-    teamRank: 3,
-    totalTeams: 50,
-  ),
-  summary: TeamProgressSummaryModel(teamRank: 3, totalTeams: 50),
-);
+typedef _Pal = DateEmberRoles;
 
 class TeamHomeScreen extends StatefulWidget {
   const TeamHomeScreen({super.key});
@@ -88,28 +33,41 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final cubit = context.read<TeamsCubit>();
-      // If we got here without a team in state (deep link / cold start),
-      // boot it; otherwise the loader just fetched it — skip the refetch
-      // and only pull the auxiliary endpoints we don't yet have.
-      if (cubit.state.team == null) {
-        cubit.loadTeamStatus();
-      } else {
-        if (cubit.state.members == null) cubit.loadTeamMembers();
-        if (cubit.state.progress == null) cubit.loadTeamProgress();
-      }
+      final s = cubit.state;
+      if (!s.hasTeam && !s.isLoading) cubit.loadTeamStatus();
+      if (s.members == null) cubit.loadTeamMembers();
+      if (s.progress == null) cubit.loadTeamProgress();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TeamsCubit, TeamsState>(
-      buildWhen: (a, b) => a.team != b.team || a.status != b.status,
-      builder: (context, state) => TeamScaffold(
-        child: Column(
-          children: [
-            TeamsAppBar(state: state),
-            const Expanded(child: TeamHomeView()),
+    final p = _Pal(context);
+    return Scaffold(
+      backgroundColor: p.bgBottom,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: const Alignment(0, -1.16),
+            radius: 1.3,
+            colors: [p.bgTop, p.bgMid, p.bgBottom],
+            stops: const [0.0, 0.42, 1.0],
+          ),
+        ),
+        child: Stack(
+          children: const [
+            SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  _AppBar(),
+                  Expanded(child: _Stage()),
+                ],
+              ),
+            ),
+            Positioned(left: 14, right: 14, bottom: 18, child: _TabBar()),
           ],
         ),
       ),
@@ -117,670 +75,576 @@ class _TeamHomeScreenState extends State<TeamHomeScreen> {
   }
 }
 
-/// Pure render of the team home body from [TeamsState] — no scaffold, no app
-/// bar of its own. It sits below the fixed [TeamsAppBar], so the combined
-/// [TeamLoaderScreen] can swap it in place once a team resolves and the bar
-/// stays put.
-class TeamHomeView extends StatelessWidget {
-  const TeamHomeView({super.key});
+class _AppBar extends StatelessWidget {
+  const _AppBar();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TeamsCubit, TeamsState>(
-      buildWhen: (a, b) =>
-          a.team != b.team ||
-          a.members != b.members ||
-          a.summary != b.summary ||
-          a.status != b.status,
-      builder: (context, state) {
-        final team = state.team;
-        if (team == null) {
-          return Skeletonizer(
-            enabled: true,
-            effect: appShimmerEffect(context.appColors),
-            child: CustomScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
-                  sliver: SliverList.list(
-                    children: const [
-                      _HeroCard(state: _kSkeletonHomeState),
-                      SizedBox(height: 22),
-                      _MembersStrip(state: _kSkeletonHomeState),
-                      SizedBox(height: 18),
-                      _WeekStrip(),
-                      SizedBox(height: 22),
-                      _RecentActivity(),
-                    ],
+    final p = _Pal(context);
+    final name = context.select<TeamsCubit, String>(
+      (c) => c.state.team?.name ?? c.state.progress?.teamName ?? '',
+    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.maybePop(context),
+            child: const _IconButton(icon: Icons.arrow_back, size: 17),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ResponsiveText(
+                  'MY TEAM',
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 3.0,
+                    color: p.amber,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                ResponsiveText(
+                  name.isEmpty ? 'Companions of Sabr' : name,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 19,
+                    height: 1,
+                    letterSpacing: -0.3,
+                    color: p.ink,
                   ),
                 ),
               ],
             ),
-          );
-        }
-        return RefreshIndicator.adaptive(
-          onRefresh: () async {
-            final cubit = context.read<TeamsCubit>();
-            await cubit.refreshTeam();
-            await cubit.loadTeamMembers();
-            await cubit.loadTeamProgress();
-          },
-          child: CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
-                sliver: SliverList.list(
+          ),
+          const _IconButton(icon: Icons.more_horiz, size: 18),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconButton extends StatelessWidget {
+  const _IconButton({required this.icon, required this.size});
+
+  final IconData icon;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: p.cardFill,
+        border: Border.all(color: p.glassBorder),
+      ),
+      child: Icon(icon, size: size, color: p.ink),
+    );
+  }
+}
+
+class _Stage extends StatelessWidget {
+  const _Stage();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 100),
+      physics: const BouncingScrollPhysics(),
+      children: const [
+        _IdentityCard(),
+        SizedBox(height: 11),
+        _TeamCodeCard(),
+        _SectionLabel('Live activity', more: 'See all →'),
+        _ActivityFeed(),
+        _SectionLabel(
+          'Team leaderboard',
+          more: 'Top 10 →',
+          emphasis: _LabelEmphasis.primary,
+        ),
+        _Leaderboard(),
+        _MyTeamRankCard(),
+      ],
+    );
+  }
+}
+
+enum _LabelEmphasis { secondary, primary }
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(
+    this.label, {
+    this.more,
+    this.emphasis = _LabelEmphasis.secondary,
+  });
+
+  final String label;
+  final String? more;
+  final _LabelEmphasis emphasis;
+
+  bool get _isPrimary => emphasis == _LabelEmphasis.primary;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final ruleWidth = _isPrimary ? 22.0 : 16.0;
+    final ruleHeight = _isPrimary ? 2.0 : 1.0;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(2, _isPrimary ? 30 : 20, 2, 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Row(
+              children: [
+                Container(
+                  width: ruleWidth,
+                  height: ruleHeight,
+                  decoration: BoxDecoration(
+                    color: p.amber,
+                    borderRadius: BorderRadius.circular(ruleHeight),
+                    boxShadow: _isPrimary
+                        ? [
+                            BoxShadow(
+                              color: p.washAmber.withValues(alpha: 0.6),
+                              blurRadius: 8,
+                            ),
+                          ]
+                        : null,
+                  ),
+                ),
+                SizedBox(width: _isPrimary ? 10 : 8),
+                Flexible(
+                  child: ResponsiveText(
+                    label.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: _isPrimary ? 12.5 : 9,
+                      fontWeight: _isPrimary
+                          ? FontWeight.w700
+                          : FontWeight.w600,
+                      letterSpacing: _isPrimary ? 2.2 : 3.0,
+                      color: _isPrimary ? p.ink : p.amber,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (more != null)
+            ResponsiveText(
+              more!.toUpperCase(),
+              style: TextStyle(
+                fontSize: 9.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.4,
+                color: p.amber,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IdentityCard extends StatelessWidget {
+  const _IdentityCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final state = context.watch<TeamsCubit>().state;
+
+    final name =
+        state.team?.name ?? state.progress?.teamName ?? 'Companions of Sabr';
+    final memberCount =
+        state.team?.memberCount ?? state.members?.members.length ?? 12;
+    final rank = state.summary?.teamRank ?? state.progress?.teamRank ?? 0;
+    final totalTeams =
+        state.summary?.totalTeams ?? state.progress?.totalTeams ?? 0;
+    final rankLabel = rank > 0 ? '$rank' : '14';
+    final totalLabel = totalTeams > 0 ? 'of $totalTeams' : 'of 312';
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: p.glassBorder),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [p.cardFillStrong, p.cardFillFaint],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: p.dark ? 0.42 : 0.06),
+            blurRadius: 36,
+            offset: const Offset(0, 18),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 62,
+                height: 62,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(19),
+                  gradient: const RadialGradient(
+                    center: Alignment(-0.36, -0.44),
+                    colors: [
+                      AppColors.discGoldHi,
+                      AppColors.discGoldMid,
+                      AppColors.discGoldLo,
+                    ],
+                    stops: [0.0, 0.55, 1.0],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: p.ember.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: const ResponsiveText(
+                  'ص',
+                  style: TextStyle(fontSize: 29, color: AppColors.discGoldInk),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _HeroCard(state: state),
-                    const SizedBox(height: 22),
-                    _MembersStrip(state: state),
-                    const SizedBox(height: 18),
-                    const _WeekStrip(),
-                    const SizedBox(height: 22),
-                    const _RecentActivity(),
+                    ResponsiveText(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 23,
+                        height: 1.05,
+                        letterSpacing: -0.4,
+                        color: p.ink,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        ResponsiveText(
+                          '$memberCount members',
+                          style: TextStyle(fontSize: 11, color: p.inkMute),
+                        ),
+                        const SizedBox(width: 8),
+                        ResponsiveText(
+                          '·',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: p.inkMute.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const _ActiveBadge(),
+                      ],
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-}
-
-class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.state});
-  final TeamsState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final team = state.team!;
-    final progress = state.progress;
-    final rank = state.summary?.teamRank ?? progress?.teamRank;
-    final total = state.summary?.totalTeams ?? progress?.totalTeams;
-    final hasRank = rank != null && total != null && total > 0;
-    final pct = progress?.overallProgressPercent ?? 0;
-    final ratio = (progress?.overallProgress ?? 0.0).clamp(0.0, 1.0).toDouble();
-    final solved = progress?.totalCompleted ?? 0;
-    final totalLevels = progress?.totalLevels ?? 0;
-
-    // Faithful port of the Date & Ember leaderboard summary card — frosted
-    // ivory-glass surface, gold corner brackets, gold-foil headline, dashed
-    // rule and serif stat cells — populated with this team's data.
-    return Container(
-      padding: const EdgeInsets.all(13),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.nightOutline),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.ivory06, AppColors.ivory02],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.50),
-            blurRadius: 40,
-            offset: const Offset(0, 20),
+          const SizedBox(height: 15),
+          Container(
+            padding: const EdgeInsets.only(top: 14),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: p.hairline)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    ResponsiveText(
+                      '#',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: p.amber,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    ResponsiveText(
+                      rankLabel,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 30,
+                        height: 0.9,
+                        color: p.emberLight,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 10),
+                ResponsiveText(
+                  'GLOBAL\nRANK',
+                  style: TextStyle(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.6,
+                    height: 1.4,
+                    color: p.inkMute,
+                  ),
+                ),
+                const Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    ResponsiveText(
+                      totalLabel,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: p.gold,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    ResponsiveText(
+                      'TEAMS',
+                      style: TextStyle(
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.6,
+                        color: p.inkMute,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      child: CustomPaint(
-        foregroundPainter: _HeroBracketPainter(color: AppColors.amberGlow),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Eyebrow + rank badge.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: _Eyebrow('teams.home.eyebrow'.tr().toUpperCase()),
-                ),
-                if (hasRank) _RankBadge('#$rank / $total'),
-              ],
-            ),
-            const SizedBox(height: 6),
-            // Big gold-foil progress total.
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                ShaderMask(
-                  shaderCallback: (r) => const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.amberLight,
-                      AppColors.amberGlow,
-                      AppColors.discGoldLo,
-                    ],
-                    stops: [0.0, 0.55, 1.0],
-                  ).createShader(r),
-                  child: ResponsiveText(
-                    '$pct',
-                    style: const TextStyle(
-                      fontFamily: _serif,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 44,
-                      height: 0.9,
-                      letterSpacing: -1.4,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 11),
-                const ResponsiveText(
-                  '%',
-                  style: TextStyle(
-                    fontFamily: _mono,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 2.2,
-                    color: AppColors.ivory40,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // Real progress bar in place of the design's sparkline.
-            _GlassProgressBar(ratio: ratio),
-            const SizedBox(height: 9),
-            _DashedRule(color: AppColors.washAmber.withValues(alpha: 0.22)),
-            const SizedBox(height: 9),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCell(
-                    value: '${team.memberCount}',
-                    label: 'teams.home.companions'.tr().toUpperCase(),
-                  ),
-                ),
-                _StatPipe(color: AppColors.washAmber),
-                Expanded(
-                  child: _StatCell(
-                    value: '$solved',
-                    sub: totalLevels > 0 ? ' / $totalLevels' : null,
-                    label: 'teams.home.solved'.tr().toUpperCase(),
-                  ),
-                ),
-                _StatPipe(color: AppColors.washAmber),
-                Expanded(
-                  child: _StatCell(
-                    value: hasRank ? '#$rank' : '—',
-                    sub: hasRank ? ' / $total' : null,
-                    label: 'teams.home.rank'.tr().toUpperCase(),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
 
-/// Small amber mono caps label — the summary card's `_Eyebrow`.
-class _Eyebrow extends StatelessWidget {
-  const _Eyebrow(this.text);
-  final String text;
+class _ActiveBadge extends StatefulWidget {
+  const _ActiveBadge();
 
   @override
-  Widget build(BuildContext context) {
-    return ResponsiveText(
-      text,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontFamily: _mono,
-        fontSize: 9,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 3.2,
-        color: AppColors.amberGlow,
-      ),
-    );
-  }
+  State<_ActiveBadge> createState() => _ActiveBadgeState();
 }
 
-/// Amber glass pill carrying the team rank, sitting where the summary card's
-/// delta badge does.
-class _RankBadge extends StatelessWidget {
-  const _RankBadge(this.text);
-  final String text;
+class _ActiveBadgeState extends State<_ActiveBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.nightOutline),
-        color: AppColors.washAmber.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(99),
+        color: p.greenSurface.withValues(alpha: 0.18),
+        border: Border.all(color: p.greenSurface.withValues(alpha: 0.4)),
       ),
-      child: ResponsiveText(
-        text,
-        style: const TextStyle(
-          fontFamily: _mono,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: AppColors.amberGlow,
-        ),
-      ),
-    );
-  }
-}
-
-/// Thin amber-gradient progress bar — the real-data stand-in for the summary
-/// card's sparkline.
-class _GlassProgressBar extends StatelessWidget {
-  const _GlassProgressBar({required this.ratio});
-  final double ratio;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(3),
-      child: Stack(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(height: 6, width: double.infinity, color: AppColors.ivory08),
-          FractionallySizedBox(
-            widthFactor: ratio.clamp(0.0, 1.0),
+          FadeTransition(
+            opacity: Tween(begin: 1.0, end: 0.4).animate(_c),
             child: Container(
+              width: 6,
               height: 6,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.discGoldLo, AppColors.amberLight],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.amberGlow.withValues(alpha: 0.40),
-                    blurRadius: 8,
-                  ),
-                ],
+                shape: BoxShape.circle,
+                color: p.green,
+                boxShadow: [BoxShadow(color: p.green, blurRadius: 7)],
               ),
             ),
           ),
+          const SizedBox(width: 5),
+          ResponsiveText(
+            'Active',
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.7,
+              color: p.green,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-/// Serif-italic value over a mono caps label — the summary card's `_StatCell`.
-class _StatCell extends StatelessWidget {
-  const _StatCell({required this.value, this.sub, required this.label});
-
-  final String value;
-  final String? sub;
-  final String label;
+class _TeamCodeCard extends StatefulWidget {
+  const _TeamCodeCard();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          text: TextSpan(
-            text: value,
-            style: const TextStyle(
-              fontFamily: _serif,
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w300,
-              fontSize: 19,
-              height: 1,
-              color: AppColors.ivory,
-            ),
-            children: [
-              if (sub != null)
-                TextSpan(
-                  text: sub,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.ivory40,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 3),
-        ResponsiveText(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 8.5,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 2.0,
-            color: AppColors.ivory62,
-          ),
-        ),
-      ],
-    );
-  }
+  State<_TeamCodeCard> createState() => _TeamCodeCardState();
 }
 
-/// Vertical gradient pipe separating hero stats — fades in from transparent at
-/// the ends to a soft amber in the middle, mirroring the leaderboard summary
-/// card's `_StatPipe`.
-class _StatPipe extends StatelessWidget {
-  const _StatPipe({required this.color});
-  final Color color;
+class _TeamCodeCardState extends State<_TeamCodeCard> {
+  bool _copied = false;
+
+  Future<void> _copy(String code) async {
+    await Clipboard.setData(ClipboardData(text: code));
+    if (!mounted) return;
+    setState(() => _copied = true);
+    await Future.delayed(const Duration(milliseconds: 1700));
+    if (!mounted) return;
+    setState(() => _copied = false);
+  }
+
+  Future<void> _share(String code) async {
+    await sl<ShareService>().shareFrom(
+      context: context,
+      text: 'teams.create.share_message'.tr(
+        namedArgs: {'code': code, 'link': DeepLinks.teamInvite(code)},
+      ),
+      subject: 'teams.create.share_subject'.tr(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final code = context.select<TeamsCubit, String>(
+      (c) => c.state.team?.joinCode ?? '',
+    );
+    final display = code.isEmpty ? 'XXXX-XXXX' : code;
+    final ready = code.isNotEmpty;
+
     return Container(
-      width: 1,
-      height: 34,
-      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: p.hairline),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            color.withValues(alpha: 0),
-            color.withValues(alpha: 0.25),
-            color.withValues(alpha: 0),
-          ],
+          colors: [p.cardFill, p.cardFillFaint],
         ),
       ),
-    );
-  }
-}
-
-/// A 1px dashed amber rule, matching the leaderboard summary card's divider.
-class _DashedRule extends StatelessWidget {
-  const _DashedRule({required this.color});
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 1,
-      child: CustomPaint(painter: _DashedLinePainter(color)),
-    );
-  }
-}
-
-class _DashedLinePainter extends CustomPainter {
-  _DashedLinePainter(this.color);
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1;
-    const dash = 4.0;
-    const gap = 4.0;
-    double x = 0;
-    while (x < size.width) {
-      canvas.drawLine(Offset(x, 0), Offset(x + dash, 0), paint);
-      x += dash + gap;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _DashedLinePainter oldDelegate) =>
-      oldDelegate.color != color;
-}
-
-/// Gold right-angle brackets on the four corners of the hero card, echoing the
-/// leaderboard summary card's `_CornerBracketPainter`.
-class _HeroBracketPainter extends CustomPainter {
-  _HeroBracketPainter({required this.color});
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    const arm = 7.0;
-    const inset = 1.0;
-    final w = size.width;
-    final h = size.height;
-    // Top-left.
-    canvas.drawPath(
-      Path()
-        ..moveTo(inset, arm)
-        ..lineTo(inset, inset)
-        ..lineTo(arm, inset),
-      paint,
-    );
-    // Top-right.
-    canvas.drawPath(
-      Path()
-        ..moveTo(w - inset, arm)
-        ..lineTo(w - inset, inset)
-        ..lineTo(w - arm, inset),
-      paint,
-    );
-    // Bottom-left.
-    canvas.drawPath(
-      Path()
-        ..moveTo(inset, h - arm)
-        ..lineTo(inset, h - inset)
-        ..lineTo(arm, h - inset),
-      paint,
-    );
-    // Bottom-right.
-    canvas.drawPath(
-      Path()
-        ..moveTo(w - inset, h - arm)
-        ..lineTo(w - inset, h - inset)
-        ..lineTo(w - arm, h - inset),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _HeroBracketPainter oldDelegate) =>
-      oldDelegate.color != color;
-}
-
-class _MembersStrip extends StatelessWidget {
-  const _MembersStrip({required this.state});
-  final TeamsState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final members = state.members?.members ?? const [];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ResponsiveText(
-              'teams.home.companions'.tr().toUpperCase(),
-              style: ZaadType.fieldLabel.copyWith(color: colors.oliveSoft),
-            ),
-            TextButton(
-              onPressed: () => context.goNamed(AppRoutes.teamMembersName),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              child: ResponsiveText(
-                'teams.home.view_all'.tr().toUpperCase(),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.6,
-                  color: colors.oliveSoft,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 40,
-          child: Stack(
-            children: [
-              for (var i = 0; i < members.take(5).length; i++)
-                Positioned(
-                  left: i * 28.0,
-                  child: TeamDisc(
-                    seed: members[i].username,
-                    size: 40,
-                    borderColor: colors.canvas,
-                    borderWidth: 2,
-                    useSerif: false,
-                  ),
-                ),
-              if (members.length > 5)
-                Positioned(
-                  left: 5 * 28.0,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: colors.canvas.withValues(alpha: 0.55),
-                      border: Border.all(color: colors.canvas, width: 2),
-                    ),
-                    child: Center(
-                      child: ResponsiveText(
-                        '+${members.length - 5}',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: colors.oliveDeep,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              Positioned(
-                right: 0,
-                top: 2,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => context.goNamed(AppRoutes.teamMembersName),
-                    customBorder: const CircleBorder(),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: colors.canvas.withValues(alpha: 0.6),
-                        border: Border.all(
-                          color: colors.accentDeep,
-                          width: 1.5,
-                          style: BorderStyle.solid,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        size: 16,
-                        color: colors.accentDeep,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _WeekStrip extends StatelessWidget {
-  const _WeekStrip();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    const heights = [0.46, 0.68, 0.54, 0.80, 0.34, 0.60, 0.30];
-    const labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: colors.canvas.withValues(alpha: 0.55),
-        borderRadius: ZaadRadii.lgAll,
-        border: Border.all(color: colors.olive.withValues(alpha: 0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ResponsiveText(
-                'teams.home.week_title'.tr(),
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontSize: 14,
-                  color: colors.oliveDeep,
+                'INVITE CODE',
+                style: TextStyle(
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2.0,
+                  color: p.inkMute,
                 ),
               ),
-              ZaadPill(
-                label: 'teams.home.week_chip'.tr(),
-                tone: ZaadPillTone.olive,
+              const SizedBox(height: 6),
+              _DashedPill(
+                child: ResponsiveText(
+                  display,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 3.2,
+                    color: p.gold,
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 100,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (var i = 0; i < heights.length; i++) ...[
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: 82 * heights[i],
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: i < 5
-                                  ? const [
-                                      AppColors.amberGlow,
-                                      AppColors.amberDeep,
-                                    ]
-                                  : [
-                                      colors.oliveDeep.withValues(alpha: 0.14),
-                                      colors.oliveDeep.withValues(alpha: 0.14),
-                                    ],
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              topRight: Radius.circular(4),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        ResponsiveText(
-                          labels[i],
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w600,
-                            color: colors.oliveSoft,
-                          ),
-                        ),
-                      ],
+          const Spacer(),
+          Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              if (_copied) const Positioned(top: -34, child: _CopiedToast()),
+              GestureDetector(
+                onTap: ready ? () => _copy(code) : null,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13),
+                    color: _copied
+                        ? p.greenSurface.withValues(alpha: 0.2)
+                        : p.cardFill,
+                    border: Border.all(
+                      color: _copied
+                          ? p.greenSurface.withValues(alpha: 0.5)
+                          : p.glassBorder,
                     ),
                   ),
-                  if (i < heights.length - 1) const SizedBox(width: 6),
+                  child: Icon(
+                    _copied ? Icons.check : Icons.copy_outlined,
+                    size: 17,
+                    color: _copied ? p.up : p.ink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: ready ? () => _share(code) : null,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [p.gold, p.amber, p.amberDeep],
+                  stops: const [0.0, 0.55, 1.0],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: p.washAmber.withValues(alpha: 0.26),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
                 ],
-              ],
+              ),
+              child: const Icon(
+                Icons.ios_share,
+                size: 17,
+                color: AppColors.discGoldInk,
+              ),
             ),
           ),
         ],
@@ -789,108 +653,569 @@ class _WeekStrip extends StatelessWidget {
   }
 }
 
-class _RecentActivity extends StatelessWidget {
-  const _RecentActivity();
+class _DashedPill extends StatelessWidget {
+  const _DashedPill({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final rows = <_ActivityRow>[
-      _ActivityRow(
-        seed: 'A',
-        title: 'teams.home.activity.completed'.tr(
-          namedArgs: {'name': 'Aisha', 'chapter': '4'},
+    final p = _Pal(context);
+    return CustomPaint(
+      painter: _DashedBorderPainter(color: p.amber, radius: 11),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(11),
+          color: p.washAmber.withValues(alpha: 0.10),
         ),
-        meta: '+40 XP · 12 min ago',
-        trailing: Icon(Icons.check_rounded, size: 14, color: colors.success),
+        child: child,
       ),
-      _ActivityRow(
-        seed: 'F',
-        title: 'teams.home.activity.streak'.tr(
-          namedArgs: {'name': 'Faisal', 'days': '18'},
-        ),
-        meta: 'Streak · 2 hr ago',
-        trailing: Icon(
-          Icons.local_fire_department_rounded,
-          size: 14,
-          color: colors.accentDeep,
+    );
+  }
+}
+
+class _CopiedToast extends StatelessWidget {
+  const _CopiedToast();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: p.greenSurface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.40),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ResponsiveText(
+        'Copied ✓',
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: p.dark ? AppColors.nightOliveCard : Colors.white,
         ),
       ),
-      _ActivityRow(
-        seed: 'Y',
-        title: 'teams.home.activity.goal'.tr(namedArgs: {'name': 'Yūsuf'}),
-        meta: 'Leader · yesterday',
-        trailing: null,
+    );
+  }
+}
+
+class _ActivityFeed extends StatelessWidget {
+  const _ActivityFeed();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final entries = <_ActivityEntry>[
+      _ActivityEntry(
+        node: _ActivityIcon(
+          kind: _IconKind.streak,
+          child: _Flame(size: 18, color: p.emberInk),
+        ),
+        name: 'Faisal',
+        rest: ' reached a 50-day streak 🔥',
+        meta: 'Milestone · 18m ago',
+        trailing: _Sparkle(size: 14, color: p.gold),
+        gold: true,
+      ),
+      _ActivityEntry(
+        node: const _AvatarIcon(
+          letter: 'A',
+          hi: DateEmberRoles.oliveLight,
+          lo: AppColors.discOliveLo,
+          ink: AppColors.discOliveInk,
+        ),
+        name: 'Aisha',
+        rest: ' completed Level 7',
+        meta: 'Level · 1h ago',
+        trailing: const _MiniCheck(),
+      ),
+      _ActivityEntry(
+        node: _ActivityIcon(
+          kind: _IconKind.quiz,
+          child: Icon(Icons.help_outline, size: 17, color: p.gold),
+        ),
+        name: 'Maryam',
+        rest: ' answered 20 questions today',
+        meta: 'Quiz · 2h ago',
+      ),
+      _ActivityEntry(
+        node: _ActivityIcon(
+          kind: _IconKind.join,
+          child: Icon(Icons.person_add_alt, size: 16, color: p.ink),
+        ),
+        name: 'Hamza',
+        rest: ' joined the team',
+        meta: 'New member · 5h ago',
       ),
     ];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ResponsiveText(
-          'teams.home.recent'.tr().toUpperCase(),
-          style: ZaadType.fieldLabel.copyWith(color: colors.oliveSoft),
+        for (var i = 0; i < entries.length; i++)
+          _TimelineRow(entry: entries[i], isLast: i == entries.length - 1),
+      ],
+    );
+  }
+}
+
+class _ActivityEntry {
+  const _ActivityEntry({
+    required this.node,
+    required this.name,
+    required this.rest,
+    required this.meta,
+    this.trailing,
+    this.gold = false,
+  });
+
+  final Widget node;
+  final String name;
+  final String rest;
+  final String meta;
+  final Widget? trailing;
+  final bool gold;
+}
+
+class _TimelineRow extends StatelessWidget {
+  const _TimelineRow({required this.entry, required this.isLast});
+
+  final _ActivityEntry entry;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(fontSize: 12, height: 1.3, color: p.ink),
+                  children: [
+                    TextSpan(
+                      text: entry.name,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    TextSpan(text: entry.rest),
+                  ],
+                ),
+              ),
+            ),
+            if (entry.trailing != null) ...[
+              const SizedBox(width: 8),
+              entry.trailing!,
+            ],
+          ],
         ),
-        const SizedBox(height: 8),
-        for (var i = 0; i < rows.length; i++) ...[
-          rows[i],
-          if (i < rows.length - 1) const SizedBox(height: 6),
+        const SizedBox(height: 3),
+        ResponsiveText(
+          entry.meta,
+          style: TextStyle(fontSize: 9, letterSpacing: 0.4, color: p.inkFaint),
+        ),
+      ],
+    );
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 36,
+            child: Column(
+              children: [
+                entry.node,
+                if (!isLast)
+                  Expanded(
+                    child: Container(
+                      width: 2,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      color: p.washAmber.withValues(alpha: 0.16),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 2, bottom: isLast ? 0 : 18),
+              child: entry.gold
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: p.glassBorder),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            p.washAmber.withValues(alpha: 0.12),
+                            p.washAmber.withValues(alpha: 0.03),
+                          ],
+                        ),
+                      ),
+                      child: body,
+                    )
+                  : body,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+enum _IconKind { streak, quiz, join }
+
+class _ActivityIcon extends StatelessWidget {
+  const _ActivityIcon({required this.kind, required this.child});
+
+  final _IconKind kind;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    BoxDecoration deco;
+    switch (kind) {
+      case _IconKind.streak:
+        deco = BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [p.emberLight, p.ember],
+          ),
+        );
+      case _IconKind.quiz:
+        deco = BoxDecoration(
+          color: p.washAmber.withValues(alpha: 0.16),
+          border: Border.all(color: p.washAmber.withValues(alpha: 0.4)),
+        );
+      case _IconKind.join:
+        deco = BoxDecoration(
+          color: p.cardFill,
+          border: Border.all(color: p.glassBorder),
+        );
+    }
+    return Container(
+      width: 36,
+      height: 36,
+      alignment: Alignment.center,
+      decoration: deco.copyWith(borderRadius: BorderRadius.circular(11)),
+      child: child,
+    );
+  }
+}
+
+class _AvatarIcon extends StatelessWidget {
+  const _AvatarIcon({
+    required this.letter,
+    required this.hi,
+    required this.lo,
+    required this.ink,
+  });
+
+  final String letter;
+  final Color hi;
+  final Color lo;
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(11),
+        gradient: RadialGradient(
+          center: const Alignment(-0.36, -0.44),
+          colors: [hi, lo],
+        ),
+      ),
+      child: ResponsiveText(letter, style: TextStyle(fontSize: 14, color: ink)),
+    );
+  }
+}
+
+class _MiniCheck extends StatelessWidget {
+  const _MiniCheck();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    return Container(
+      width: 28,
+      height: 28,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(9),
+        color: p.greenSurface.withValues(alpha: 0.16),
+        border: Border.all(color: p.greenSurface.withValues(alpha: 0.34)),
+      ),
+      child: Icon(Icons.check, size: 14, color: p.green),
+    );
+  }
+}
+
+class _Leaderboard extends StatelessWidget {
+  const _Leaderboard();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<TeamsCubit>().state;
+    final source = (state.progress?.members.isNotEmpty ?? false)
+        ? state.progress!.members
+        : (state.summary?.members ?? const <TeamMemberProgressModel>[]);
+
+    if (source.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 28),
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    final ranked = [...source]
+      ..sort((a, b) => b.completedLevels.compareTo(a.completedLevels));
+    final top = ranked.take(10).toList();
+    final meId = context.watch<UserCubit>().state.user?.id;
+
+    return Column(
+      children: [
+        for (var i = 0; i < top.length; i++) ...[
+          if (i > 0) const SizedBox(height: 6),
+          RankingRow(
+            seed: RankSeed(
+              rank: i + 1,
+              name: top[i].username,
+              completed: top[i].completedLevels,
+              total: top[i].totalLevels,
+              isMe: meId != null && top[i].userId == meId,
+            ),
+          ),
         ],
       ],
     );
   }
 }
 
-class _ActivityRow extends StatelessWidget {
-  const _ActivityRow({
-    required this.seed,
-    required this.title,
-    required this.meta,
-    required this.trailing,
-  });
-
-  final String seed;
-  final String title;
-  final String meta;
-  final Widget? trailing;
+class _MyTeamRankCard extends StatelessWidget {
+  const _MyTeamRankCard();
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
+    final state = context.watch<TeamsCubit>().state;
+    final source = (state.progress?.members.isNotEmpty ?? false)
+        ? state.progress!.members
+        : (state.summary?.members ?? const <TeamMemberProgressModel>[]);
+    final meId = context.watch<UserCubit>().state.user?.id;
+    if (source.isEmpty || meId == null) return const SizedBox.shrink();
+
+    final ranked = [...source]
+      ..sort((a, b) => b.completedLevels.compareTo(a.completedLevels));
+    final i = ranked.indexWhere((m) => m.userId == meId);
+    if (i < 0) return const SizedBox.shrink();
+    final me = ranked[i];
+
+    return MyRankCard(
+      label: 'leaderboard.your_rank'.tr(),
+      rank: i + 1,
+      title: 'leaderboard.you'.tr(),
+      completed: me.completedLevels,
+      total: me.totalLevels,
+    );
+  }
+}
+
+class _TabBar extends StatelessWidget {
+  const _TabBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      height: 60,
       decoration: BoxDecoration(
-        color: colors.canvas.withValues(alpha: 0.42),
-        borderRadius: ZaadRadii.mdAll,
-        border: Border.all(color: AppColors.sand),
-      ),
-      child: Row(
-        children: [
-          TeamDisc(seed: seed, size: 30, fontSize: 12),
-          const SizedBox(width: 11),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ResponsiveText(
-                  title,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: colors.oliveDeep,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                ResponsiveText(
-                  meta,
-                  style: TextStyle(fontSize: 10, color: colors.oliveSoft),
-                ),
-              ],
-            ),
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: p.dark
+              ? [
+                  AppColors.nightRaised.withValues(alpha: 0.94),
+                  AppColors.nightSurface.withValues(alpha: 0.94),
+                ]
+              : [p.bgTop, p.bgMid],
+        ),
+        border: Border.all(color: p.glassBorder),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: p.dark ? 0.55 : 0.10),
+            blurRadius: 30,
+            offset: const Offset(0, 14),
           ),
-          ?trailing,
+        ],
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _Tab(icon: Icons.home_outlined, label: 'HOME', active: true),
+          _Tab(icon: Icons.group_outlined, label: 'MEMBERS'),
+          _Tab(icon: Icons.bar_chart, label: 'PROGRESS'),
         ],
       ),
     );
   }
+}
+
+class _Tab extends StatelessWidget {
+  const _Tab({required this.icon, required this.label, this.active = false});
+
+  final IconData icon;
+  final String label;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final color = active ? p.gold : p.inkFaint;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (active)
+          Container(
+            width: 26,
+            height: 3,
+            margin: const EdgeInsets.only(bottom: 7),
+            decoration: BoxDecoration(
+              color: p.amber,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(3),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: p.washAmber.withValues(alpha: 0.7),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+          )
+        else
+          const SizedBox(height: 10),
+        Icon(icon, size: 20, color: color),
+        const SizedBox(height: 3),
+        ResponsiveText(
+          label,
+          style: TextStyle(
+            fontSize: 8.5,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.3,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Sparkle extends StatelessWidget {
+  const _Sparkle({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _SparklePainter(color),
+    );
+  }
+}
+
+class _SparklePainter extends CustomPainter {
+  _SparklePainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.width / 24.0;
+    final paint = Paint()..color = color;
+    final path = Path()
+      ..moveTo(12 * s, 2 * s)
+      ..lineTo(14 * s, 9 * s)
+      ..lineTo(21 * s, 12 * s)
+      ..lineTo(14 * s, 15 * s)
+      ..lineTo(12 * s, 22 * s)
+      ..lineTo(10 * s, 15 * s)
+      ..lineTo(3 * s, 12 * s)
+      ..lineTo(10 * s, 9 * s)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_SparklePainter old) => old.color != color;
+}
+
+class _Flame extends StatelessWidget {
+  const _Flame({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(Icons.local_fire_department, size: size, color: color);
+  }
+}
+
+class _DashedBorderPainter extends CustomPainter {
+  _DashedBorderPainter({required this.color, required this.radius});
+
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = color;
+    final rrect = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(radius),
+    );
+    final path = Path()..addRRect(rrect);
+    const dash = 4.0;
+    const gap = 3.0;
+    for (final metric in path.computeMetrics()) {
+      double d = 0;
+      while (d < metric.length) {
+        canvas.drawPath(
+          metric.extractPath(d, math.min(d + dash, metric.length)),
+          paint,
+        );
+        d += dash + gap;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedBorderPainter old) =>
+      old.color != color || old.radius != radius;
 }

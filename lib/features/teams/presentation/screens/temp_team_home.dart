@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../widgets/date_ember_roles.dart';
-import '../widgets/team_week_stats.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Zad — Team Home · Community
@@ -27,7 +26,7 @@ import '../widgets/team_week_stats.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// This screen's role-based palette lives in [DateEmberRoles] — shared with
-/// [TeamWeekStats] and the app home screen. Aliased locally so the widgets below
+/// the app home screen. Aliased locally so the widgets below
 /// keep reading `_Pal(context)`. Dark mode reproduces the Date & Ember design
 /// 1:1; light mode maps each role onto the app's semantic [AppColorsTheme].
 typedef _Pal = DateEmberRoles;
@@ -158,12 +157,6 @@ class _Stage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
       physics: const BouncingScrollPhysics(),
       children: const [
-        // This week's team stats lead the screen — the four-square snapshot of
-        // how the team is doing comes first. Extracted into [TeamWeekStats] so
-        // the app home screen can reuse it.
-        _SectionLabel('This week · team stats'),
-        TeamWeekStats(),
-        SizedBox(height: 4),
         _IdentityCard(),
         SizedBox(height: 11),
         _TeamCodeCard(),

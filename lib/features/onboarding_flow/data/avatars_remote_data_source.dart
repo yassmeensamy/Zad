@@ -4,8 +4,6 @@ import 'package:dio/dio.dart';
 
 import '../../../core/api/endpoints/app_endpoints.dart';
 import '../../../core/api/network_service.dart';
-import '../../../core/expections/server_exception.dart';
-import '../../../core/utils/logger.dart';
 import 'avatar_model.dart';
 
 abstract class AvatarsRemoteDataSource {
@@ -23,20 +21,10 @@ class AvatarsRemoteDataSourceImpl implements AvatarsRemoteDataSource {
   final NetworkService _networkService;
   final AppEndpoint _endpoints;
 
-  void _validateResponse(
-    dynamic response, [
-    List<int> validCodes = const [200, 201],
-  ]) {
-    if (!validCodes.contains(response.statusCode)) {
-      logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromResponse(response);
-    }
-  }
-
   @override
   Future<List<AvatarModel>> getAvatars() async {
     final response = await _networkService.get(_endpoints.avatars);
-    _validateResponse(response);
+    response.validated();
     final list = response.data as List<dynamic>;
     return list
         .map((e) => AvatarModel.fromMap(e as Map<String, dynamic>))
@@ -49,7 +37,7 @@ class AvatarsRemoteDataSourceImpl implements AvatarsRemoteDataSource {
       _endpoints.avatarImage(id),
       responseType: ResponseType.bytes,
     );
-    _validateResponse(response);
+    response.validated();
     return Uint8List.fromList(response.data as List<int>);
   }
 }

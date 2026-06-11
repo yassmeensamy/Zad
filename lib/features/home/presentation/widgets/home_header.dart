@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../teams/presentation/widgets/team_number_one_dialog.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key, this.firstName, this.onBellTap});
@@ -71,6 +72,25 @@ class HomeHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
+        GestureDetector(
+          onTap: () => TeamNumberOneCelebrationDialog.show(context: context),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsets.all(11),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colors.overlayLight,
+              border: Border.all(color: colors.borderSubtle),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.emoji_events_outlined,
+              size: 19,
+              color: colors.textPrimary,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
         GestureDetector(
           onTap: onBellTap,
           behavior: HitTestBehavior.opaque,

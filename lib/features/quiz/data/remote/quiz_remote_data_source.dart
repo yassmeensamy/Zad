@@ -1,7 +1,5 @@
 import '../../../../core/api/endpoints/app_endpoints.dart';
 import '../../../../core/api/network_service.dart';
-import '../../../../core/expections/server_exception.dart';
-import '../../../../core/utils/logger.dart';
 import '../models/quiz_questions_response.dart';
 import '../models/quiz_submission_request.dart';
 import '../models/quiz_submission_response.dart';
@@ -32,22 +30,12 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
   final NetworkService _networkService;
   final AppEndpoint _endpoints;
 
-  void _validateResponse(
-    dynamic response, [
-    List<int> validCodes = const [200, 201],
-  ]) {
-    if (!validCodes.contains(response.statusCode)) {
-      logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromResponse(response);
-    }
-  }
-
   @override
   Future<QuizQuestionsResponse> getQuestions(int levelId) async {
     final response = await _networkService.get(
       _endpoints.questionsByLevelId(levelId),
     );
-    _validateResponse(response);
+    response.validated();
     return QuizQuestionsResponse.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -60,7 +48,7 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
       _endpoints.submitQuiz(levelId),
       data: request.toMap(),
     );
-    _validateResponse(response);
+    response.validated();
     return QuizSubmissionResponse.fromMap(
       response.data as Map<String, dynamic>,
     );
@@ -72,13 +60,13 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
       _endpoints.syncQuiz,
       data: request.toMap(),
     );
-    _validateResponse(response);
+    response.validated();
     return QuizSyncResponse.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> resetAll() async {
     final response = await _networkService.post(_endpoints.resetQuiz);
-    _validateResponse(response, const [200, 201, 204]);
+    response.validated(const [200, 201, 204]);
   }
 }

@@ -9,6 +9,7 @@ import 'auth_interceptor.dart';
 import 'language_interceptor.dart';
 import '../services/core_service_locator.dart';
 
+import '../expections/server_exception.dart';
 import '../utils/logger.dart';
 import 'app_info_interceptor.dart';
 import 'app_type_interceptor.dart';
@@ -138,25 +139,26 @@ class NetworkServiceImpl implements NetworkService {
     return digest.toString();
   }
 
-  Dio _createDioClient() => Dio(
-      BaseOptions(
-        validateStatus: (_) => true,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 30),
-      ),
-    )
-    ..interceptors.addAll([
-      AppInfoInterceptor(appInfoService: sl(), deviceInfoService: sl()),
-      AuthInterceptor(
-        pendingRequests: _pendingRequests,
-        cacheService: sl(),
-        endpoints: sl(),
-        onLogout: onLogout,
-      ),
-      LanguageInterceptor(cacheService: sl()),
-      AppTypeInterceptor(appType: appType),
-      RequestsInspectorInterceptor(),
-    ]);
+  Dio _createDioClient() =>
+      Dio(
+          BaseOptions(
+            validateStatus: (_) => true,
+            connectTimeout: const Duration(seconds: 10),
+            receiveTimeout: const Duration(seconds: 30),
+          ),
+        )
+        ..interceptors.addAll([
+          AppInfoInterceptor(appInfoService: sl(), deviceInfoService: sl()),
+          AuthInterceptor(
+            pendingRequests: _pendingRequests,
+            cacheService: sl(),
+            endpoints: sl(),
+            onLogout: onLogout,
+          ),
+          LanguageInterceptor(cacheService: sl()),
+          AppTypeInterceptor(appType: appType),
+          RequestsInspectorInterceptor(),
+        ]);
 
   @override
   Future<Response> execute(NetworkRequest request) async {
@@ -413,4 +415,17 @@ class NetworkServiceImpl implements NetworkService {
   Map<String, dynamic> getDefaultHeaders() => {
     'Content-Type': 'application/json',
   };
+}
+
+/// Shared response validation for remote data sources. Throws a
+/// [ServerException] when the status code is outside [validCodes]; returns the
+/// response otherwise so calls can be chained.
+extension ResponseValidation on Response {
+  Response validated([List<int> validCodes = const [200]]) {
+    if (!validCodes.contains(statusCode)) {
+      logger.debug('validateResponse: $data');
+      throw ServerException.fromResponse(this);
+    }
+    return this;
+  }
 }

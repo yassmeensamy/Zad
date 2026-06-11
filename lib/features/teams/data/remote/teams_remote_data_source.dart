@@ -1,7 +1,5 @@
 import '../../../../core/api/endpoints/app_endpoints.dart';
 import '../../../../core/api/network_service.dart';
-import '../../../../core/expections/server_exception.dart';
-import '../../../../core/utils/logger.dart';
 import '../models/create_team_request.dart';
 import '../models/created_team_model.dart';
 import '../models/join_team_request.dart';
@@ -14,6 +12,7 @@ import '../models/team_progress_summary_model.dart';
 abstract class TeamsRemoteDataSource {
   Future<TeamModel> getMyTeam();
   Future<TeamMembersModel> getMyTeamMembers();
+
   /// Fetches team progress. With [categoryId] omitted, returns total progress
   /// per member across all categories. With a [categoryId], the response also
   /// includes a per-member breakdown scoped to that category.
@@ -34,27 +33,17 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   final NetworkService _networkService;
   final AppEndpoint _endpoints;
 
-  void _validateResponse(
-    dynamic response, [
-    List<int> validCodes = const [200, 201, 204],
-  ]) {
-    if (!validCodes.contains(response.statusCode)) {
-      logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromResponse(response);
-    }
-  }
-
   @override
   Future<TeamModel> getMyTeam() async {
     final response = await _networkService.get(_endpoints.myTeam);
-    _validateResponse(response);
+    response.validated();
     return TeamModel.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<TeamMembersModel> getMyTeamMembers() async {
     final response = await _networkService.get(_endpoints.myTeamMembers);
-    _validateResponse(response);
+    response.validated();
     return TeamMembersModel.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -64,15 +53,16 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       _endpoints.myTeamProgress,
       queryParameters: categoryId == null ? null : {'category': categoryId},
     );
-    _validateResponse(response);
+    response.validated();
     return TeamProgressModel.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<TeamProgressSummaryModel> getMyTeamProgressSummary() async {
-    final response =
-        await _networkService.get(_endpoints.myTeamProgressSummary);
-    _validateResponse(response);
+    final response = await _networkService.get(
+      _endpoints.myTeamProgressSummary,
+    );
+    response.validated();
     return TeamProgressSummaryModel.fromMap(
       response.data as Map<String, dynamic>,
     );
@@ -84,7 +74,7 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       _endpoints.teams,
       data: request.toMap(),
     );
-    _validateResponse(response);
+    response.validated();
     return CreatedTeamModel.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -94,13 +84,13 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       _endpoints.joinTeam,
       data: request.toMap(),
     );
-    _validateResponse(response);
+    response.validated();
     return JoinedTeamModel.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> leaveTeam() async {
     final response = await _networkService.delete(_endpoints.leaveTeam);
-    _validateResponse(response);
+    response.validated();
   }
 }

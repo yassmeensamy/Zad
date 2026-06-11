@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
-import '../../../../temp_team_card.dart';
+import '../../../teams/presentation/widgets/team_card.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../teams/presentation/cubit/teams_state.dart';
@@ -46,7 +46,7 @@ class HomeTeamSection extends StatelessWidget {
             GestureDetector(
               onTap: openTeam,
               behavior: HitTestBehavior.opaque,
-              child: TempTeamCard(
+              child: TeamCard(
                 team: team,
                 members: state.members?.members,
                 summary: state.summary,
@@ -259,10 +259,7 @@ class _TeamSectionHeader extends StatelessWidget {
         Text(
           'home.team.joined_eyebrow'.tr(),
           // tracking 0.306 == the prior 3.06 over the default size 10.
-          style: AppTextStyles.eyebrow(
-            tracking: 0.306,
-            color: colors.accent,
-          ),
+          style: AppTextStyles.eyebrow(tracking: 0.306, color: colors.accent),
         ),
         const Spacer(),
         GestureDetector(

@@ -12,7 +12,7 @@ import '../../../../theme/date_ember_palette.dart';
 /// captured in [DateEmber] (lib/theme/date_ember_palette.dart) — the shared palette this screen and the app dark theme both use.
 ///
 /// This screen is intentionally independent of the app theme — it is a faithful
-/// port of the mock, not yet wired to live leaderboard data.
+/// port of the mock, not yet  wired to live leaderboard data.
 class DateEmberLeaderboardScreen extends StatelessWidget {
   const DateEmberLeaderboardScreen({super.key});
 

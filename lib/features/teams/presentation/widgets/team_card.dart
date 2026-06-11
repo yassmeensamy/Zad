@@ -8,19 +8,14 @@
 // uses [AppTextStyles] with the app's default font (ElMessiri).
 import 'package:flutter/material.dart';
 
-import 'core/widgets/responsive_text.dart';
-import 'features/teams/data/models/team_member_model.dart';
-import 'features/teams/data/models/team_model.dart';
-import 'features/teams/data/models/team_progress_summary_model.dart';
-import 'theme/theme.dart';
+import '../../../../core/widgets/responsive_text.dart';
+import '../../data/models/team_member_model.dart';
+import '../../data/models/team_model.dart';
+import '../../data/models/team_progress_summary_model.dart';
+import '../../../../theme/theme.dart';
 
-class TempTeamCard extends StatelessWidget {
-  const TempTeamCard({
-    super.key,
-    required this.team,
-    this.members,
-    this.summary,
-  });
+class TeamCard extends StatelessWidget {
+  const TeamCard({super.key, required this.team, this.members, this.summary});
 
   /// The user's team (name, member count) — always available in this state.
   final TeamModel team;
@@ -88,9 +83,11 @@ class TempTeamCard extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            gradient: BrandGradients.crest(
-              [colors.goldLight, colors.accent, colors.accentDeep],
-            ),
+            gradient: BrandGradients.crest([
+              colors.goldLight,
+              colors.accent,
+              colors.accentDeep,
+            ]),
             boxShadow: [
               BoxShadow(
                 color: colors.accent.withValues(alpha: 0.45),
@@ -179,13 +176,15 @@ class TempTeamCard extends StatelessWidget {
   }
 
   Widget _footer(AppColorsTheme colors) {
-    final shown =
-        (members ?? const <TeamMemberModel>[]).take(_maxAvatars).toList();
+    final shown = (members ?? const <TeamMemberModel>[])
+        .take(_maxAvatars)
+        .toList();
     final remaining = team.memberCount - shown.length;
     final hasOverflow = remaining > 0;
     final slots = shown.length + (hasOverflow ? 1 : 0);
-    final stackWidth =
-        slots == 0 ? 0.0 : (slots - 1) * _avatarStep + _avatarSize;
+    final stackWidth = slots == 0
+        ? 0.0
+        : (slots - 1) * _avatarStep + _avatarSize;
     final percent = _teamPercent();
 
     return Row(

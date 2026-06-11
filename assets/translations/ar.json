@@ -1,744 +1,754 @@
 {
-  "app_name": "زاد",
-  "did_not_receive_code": "لم يصلك الرمز؟",
-  "resend": "إعادة الإرسال",
-  "resend_in": "إعادة الإرسال خلال",
-  "seconds": "ثانية",
-  "common": {
-    "ok": "حسناً",
-    "cancel": "إلغاء",
-    "save": "حفظ",
-    "delete": "حذف",
-    "edit": "تعديل",
-    "back": "رجوع",
-    "next": "التالي",
-    "done": "تم",
-    "continue": "متابعة",
-    "loading": "جارٍ التحميل...",
-    "retry": "إعادة المحاولة",
-    "yes": "نعم",
-    "no": "لا",
-    "reset": "إعادة الضبط"
+ "app_name": "زاد",
+ "did_not_receive_code": "لم يصلك الرمز؟",
+ "resend": "إعادة الإرسال",
+ "resend_in": "إعادة الإرسال خلال",
+ "seconds": "ثانية",
+ "common": {
+  "ok": "حسناً",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "delete": "حذف",
+  "edit": "تعديل",
+  "back": "رجوع",
+  "next": "التالي",
+  "done": "تم",
+  "continue": "متابعة",
+  "loading": "جارٍ التحميل...",
+  "retry": "إعادة المحاولة",
+  "yes": "نعم",
+  "no": "لا",
+  "reset": "إعادة الضبط"
+ },
+ "role_select": {
+  "eyebrow": "الخطوة 1 من 2",
+  "title_prefix": "لمن ",
+  "title_accent": "هذا التطبيق",
+  "subtitle": "أخبرنا كيف ستستخدم زاد لنُهيّئ التجربة لك.",
+  "individual_label": "لي شخصياً",
+  "individual_desc": "رفيق شخصي للتأمل اليومي والذكر والقراءة.",
+  "family_label": "لعائلتي",
+  "family_desc": "أنشئ ملفات للأبناء بأهداف لطيفة ومحتوى موجَّه ومتابعة تقدّم خاصة بكلٍ منهم.",
+  "footer_prefix": "يمكنك تغيير ذلك لاحقاً من ",
+  "footer_settings": "الإعدادات"
+ },
+ "create_profiles": {
+  "step": "الخطوة 2 من 2",
+  "eyebrow": "إعداد العائلة",
+  "title_prefix": "أضف ",
+  "title_accent": "أبناءك",
+  "subtitle": "لكل طفل صورة شخصية وتقدّمه الخاص.",
+  "name_label": "الاسم",
+  "name_hint": "مثال: يوسف",
+  "age_label": "العمر",
+  "add_child": "إضافة طفل آخر",
+  "skip": "سأفعل ذلك لاحقاً",
+  "sheet_title": "اختر صورة شخصية",
+  "sheet_sub": "اختر شخصية تشبهك",
+  "password_set": "تم تعيين كلمة المرور",
+  "password_set_cta": "تعيين كلمة المرور",
+  "password_label": "كلمة المرور",
+  "password_hint": "٤ أحرف على الأقل",
+  "password_sheet_title": "تعيين كلمة مرور",
+  "password_sheet_sub": "تُستخدم لتسجيل دخول {}",
+  "password_sheet_fallback_name": "هذا الطفل",
+  "password_too_short": "يجب أن تتكوّن كلمة المرور من {} أحرف على الأقل.",
+  "password_required_for_all": "يرجى تعيين كلمة مرور لكل طفل قبل المتابعة."
+ },
+ "home_nav": {
+  "home": "الرئيسية",
+  "categories": "الفئات",
+  "leaderboard": "المتصدّرون",
+  "profile": "حسابي"
+ },
+ "home": {
+  "greeting_morning": "صباح الخير،",
+  "greeting_afternoon": "مساء الخير،",
+  "greeting_evening": "مساء الخير،",
+  "salam_arabic": "السلام عليكم",
+  "fallback_name": "صديقي",
+  "load_failed": "تعذّر تحميل الصفحة — حاول مرة أخرى",
+  "streak": {
+   "eyebrow_prefix": "تتابعك ",
+   "eyebrow_accent": "اليومي",
+   "days_word": "أيام",
+   "in_a_row": "متتالية",
+   "motto_en": "أحبّ الأعمال إلى الله أدومها وإن قلّ.",
+   "motto_ar": "أحب الأعمال إلى الله أدومها",
+   "personal_best": "أفضل رقم لك",
+   "personal_best_value": "{} يومًا",
+   "next_milestone": "الهدف القادم",
+   "next_milestone_value": "{} · أسبوعان"
   },
-  "role_select": {
-    "eyebrow": "الخطوة 1 من 2",
-    "title_prefix": "لمن ",
-    "title_accent": "هذا التطبيق",
-    "subtitle": "أخبرنا كيف ستستخدم زاد لنُهيّئ التجربة لك.",
-    "individual_label": "لي شخصياً",
-    "individual_desc": "رفيق شخصي للتأمل اليومي والذكر والقراءة.",
-    "family_label": "لعائلتي",
-    "family_desc": "أنشئ ملفات للأبناء بأهداف لطيفة ومحتوى موجَّه ومتابعة تقدّم خاصة بكلٍ منهم.",
-    "footer_prefix": "يمكنك تغيير ذلك لاحقاً من ",
-    "footer_settings": "الإعدادات"
+  "play": {
+   "eyebrow": "اختبر معلوماتك",
+   "title_prefix": "ابدأ ",
+   "title_accent": "اللعب",
+   "subtitle": "اختر فئة وتدرّج في المستويات"
   },
-  "create_profiles": {
-    "step": "الخطوة 2 من 2",
-    "eyebrow": "إعداد العائلة",
-    "title_prefix": "أضف ",
-    "title_accent": "أبناءك",
-    "subtitle": "لكل طفل صورة شخصية وتقدّمه الخاص.",
-    "name_label": "الاسم",
-    "name_hint": "مثال: يوسف",
-    "age_label": "العمر",
-    "add_child": "إضافة طفل آخر",
-    "skip": "سأفعل ذلك لاحقاً",
-    "sheet_title": "اختر صورة شخصية",
-    "sheet_sub": "اختر شخصية تشبهك",
-    "password_set": "تم تعيين كلمة المرور",
-    "password_set_cta": "تعيين كلمة المرور",
-    "password_label": "كلمة المرور",
-    "password_hint": "٤ أحرف على الأقل",
-    "password_sheet_title": "تعيين كلمة مرور",
-    "password_sheet_sub": "تُستخدم لتسجيل دخول {}",
-    "password_sheet_fallback_name": "هذا الطفل",
-    "password_too_short": "يجب أن تتكوّن كلمة المرور من {} أحرف على الأقل.",
-    "password_required_for_all": "يرجى تعيين كلمة مرور لكل طفل قبل المتابعة."
+  "team": {
+   "eyebrow": "نافِس أصدقاءك",
+   "title_prefix": "انضمّ إلى ",
+   "title_accent": "فريق",
+   "subtitle": "اصعدوا قائمة المتصدّرين معًا",
+   "modal": {
+    "eyebrow": "الأصدقاء",
+    "title_prefix": "انضمّ إلى ",
+    "title_accent": "فريق",
+    "code_label": "رمز الفريق",
+    "code_placeholder": "ABCD-1234",
+    "submit": "انضمّ للفريق"
+   },
+   "joined_eyebrow": "فريقي",
+   "open": "→ افتح",
+   "rank_label": "الترتيب",
+   "companions_count": "{} رفيقًا"
   },
-  "home_nav": {
-    "home": "الرئيسية",
-    "categories": "الفئات",
-    "leaderboard": "المتصدّرون",
-    "profile": "حسابي"
+  "hadith": {
+   "section_title": "حديث اليوم",
+   "view_all": "عرض الكل",
+   "narrator_prefix": "رواه ",
+   "hadith_no": "حديث رقم {}"
+  },
+  "date_ember_cta": "عرض لوحة صدارة التمر والجمر",
+  "why_login": {
+   "guest_tag": "تتصفّح كضيف",
+   "title": "أنشئ حسابك المجاني",
+   "benefits": {
+    "streak_title": "لا تفقد سلسلتك أبدًا",
+    "streak_subtitle": "شُعلتك اليومية محفوظة للأبد",
+    "teams_title": "انضمّ وأنشئ الفرق",
+    "teams_subtitle": "ادرس مع الرفقة، وارتقوا معًا",
+    "ranks_title": "اكسب الأوسمة والمراتب",
+    "ranks_subtitle": "تسلّق لوحة المتصدّرين العالمية",
+    "sync_title": "المزامنة عبر الأجهزة",
+    "sync_subtitle": "تابع من حيث توقفت، في أي مكان"
+   },
+   "cta": "أنشئ حسابًا مجانيًا",
+   "have_account": "لديك حساب بالفعل؟ ",
+   "sign_in": "تسجيل الدخول"
+  }
+ },
+ "categories": {
+  "eyebrow": "رحلتك",
+  "title": "الفئات",
+  "subtitle": "امضِ على المسار بهدوء — كل خطوة تفتح ما بعدها.",
+  "overall": {
+   "label": "التقدّم الإجمالي"
+  },
+  "progress": {
+   "percent": "{}٪ مكتمل",
+   "levels": "{} / {} مستويات",
+   "not_started": "لم يبدأ بعد"
+  },
+  "state": {
+   "completed": "مكتمل",
+   "in_progress": "قيد التقدّم",
+   "locked": "مغلق"
+  },
+  "levels_screen": {
+   "eyebrow": "المستويات",
+   "heading": "{} من {} مستويات مكتملة"
+  },
+  "reset": {
+   "confirm_title": "إعادة ضبط هذه الفئة؟",
+   "confirm_subtitle": "سيتم مسح تقدّمك في جميع مستويات هذه الفئة. لا يمكن التراجع عن ذلك.",
+   "confirm_cta": "إعادة ضبط الفئة"
+  }
+ },
+ "levels": {
+  "title": "المستويات",
+  "eyebrow": "المستويات",
+  "heading": "{} من {} مستويات مكتملة",
+  "percent": "{}٪ مكتمل",
+  "count": "{} / {} مستويات",
+  "questions": "{} / {} أسئلة",
+  "pass": "النجاح: {}٪",
+  "state": {
+   "completed": "مكتمل",
+   "in_progress": "قيد التقدّم",
+   "unlocked": "متاح",
+   "locked": "مغلق"
+  },
+  "reset": {
+   "action": "إعادة ضبط المستوى",
+   "confirm_title": "إعادة ضبط هذا المستوى؟",
+   "confirm_subtitle": "سيتم مسح تقدّمك ونقاطك في هذا المستوى. لا يمكن التراجع عن ذلك.",
+   "confirm_cta": "إعادة ضبط المستوى"
+  }
+ },
+ "quiz": {
+  "eyebrow": "اختبار",
+  "question_eyebrow": "السؤال",
+  "feedback": {
+   "correct_eyebrow": "إجابة موفقة",
+   "incorrect_eyebrow": "حاول مرة أخرى",
+   "explanation": "الشرح",
+   "reference": "المصدر",
+   "correct_title_1": "ما شاء الله",
+   "correct_title_2": "أحسنت",
+   "correct_title_3": "ممتاز",
+   "correct_title_4": "بارك الله فيك",
+   "wrong_title_1": "حاول مجدداً",
+   "wrong_title_2": "لا تستسلم",
+   "wrong_title_3": "اقتربت",
+   "wrong_title_4": "واصل المسير"
+  },
+  "actions": {
+   "save": "احفظ السؤال",
+   "saved": "تم الحفظ للمراجعة",
+   "report": "الإبلاغ عن سؤال",
+   "report_sent": "شكراً لك، تم استلام إبلاغك",
+   "next": "التالي",
+   "finish": "إنهاء",
+   "previous": "السؤال السابق"
+  },
+  "exit": {
+   "confirm_title": "مغادرة الاختبار؟",
+   "confirm_subtitle": "سيتم فقدان تقدمك في هذه المحاولة. يمكنك البدء من جديد في أي وقت.",
+   "confirm_cta": "مغادرة الاختبار"
+  },
+  "report": {
+   "title": "ما المشكلة في هذا السؤال؟",
+   "reason_wrong_answer": "الإجابة غير صحيحة",
+   "reason_unclear": "السؤال غير واضح",
+   "reason_typo": "خطأ إملائي",
+   "reason_other": "سبب آخر",
+   "message_hint": "أضف أي تفاصيل (اختياري)",
+   "submit": "إرسال البلاغ"
+  },
+  "result": {
+   "eyebrow": "رحلة طلب العلم",
+   "title": "أتممت المستوى",
+   "level_complete": "المستوى {} · مكتمل",
+   "answered_prefix": "أجبت على",
+   "continue": "متابعة",
+   "score": "النتيجة",
+   "points_label": "نقطة",
+   "questions_completed": "{} سؤال مكتمل",
+   "revisited": "راجعت {} أسئلة حتى أتقنتها",
+   "closing": "زادك الله فهماً وعلماً 🌿",
+   "blessing": "ما شاء الله",
+   "done": "تم",
+   "stat_correct": "صحيحة",
+   "stat_time": "الوقت",
+   "stat_accuracy": "الدقة",
+   "stat_xp_earned": "النقاط المكتسبة",
+   "stat_xp": "النقاط",
+   "stat_revisits": "مراجعات"
+  },
+  "motivation": {
+   "correct_1": "ما شاء الله! إجابة موفقة 🌿",
+   "correct_2": "بارك الله فيك، استمر 💚",
+   "correct_3": "أحسنت، زادك الله علماً 📖",
+   "wrong_1": "لا بأس، حاول مجدداً 🌱",
+   "wrong_2": "كل طالب علم بدأ من هنا 📖",
+   "wrong_3": "اقتربت كثيراً، استمر 💚",
+   "finish_1": "رحلة طلب العلم مستمرة 🌿",
+   "finish_2": "العلم نور، فاستمر 💡",
+   "finish_3": "زادك الله فهماً وعلماً"
+  }
+ },
+ "profile_select": {
+  "eyebrow": "الملفات الشخصية",
+  "title_prefix": "من ",
+  "title_accent": "يقرأ",
+  "subtitle": "اختر ملفًا شخصيًا لمواصلة رحلتك.",
+  "role_parent": "ولي الأمر",
+  "age_label": "العمر {}",
+  "days": "أيام",
+  "add_child": "إضافة طفل",
+  "manage": "إدارة الملفات",
+  "continue_current_account": "المتابعة بالحساب الحالي",
+  "current_account": "الحساب الحالي"
+ },
+ "auth": {
+  "login": "تسجيل الدخول",
+  "logout": "تسجيل الخروج",
+  "register": "إنشاء حساب",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "forgot_password": "هل نسيت كلمة المرور؟",
+  "email_hint": "you@example.com",
+  "password_hint": "كلمة المرور",
+  "or_continue": "أو تابع باستخدام",
+  "continue_google": "المتابعة باستخدام Google",
+  "continue_guest": "المتابعة كضيف",
+  "upgrade_screen": {
+   "title": "أنشئ حسابك",
+   "subtitle": "أضف بريدًا إلكترونيًا وكلمة مرور لحفظ تقدّمك والاحتفاظ بحسابك على كل جهاز.",
+   "cta": "إنشاء حساب",
+   "success": "تم إنشاء حسابك. أهلًا بك!"
+  },
+  "login_screen": {
+   "welcome_prefix": "مرحبا بعودتك",
+   "welcome_accent": "",
+   "subtitle": "سجّل الدخول لمواصلة ممارستك اليومية.",
+   "sign_in": "تسجيل الدخول",
+   "new_prompt": "جديد في زاد؟ ",
+   "create_account": "أنشئ حسابًا"
+  },
+  "signup_screen": {
+   "username_hint": "اسم المستخدم",
+   "headline_prefix": "ابدأ ",
+   "headline_accent": "رحلتك",
+   "create_account": "أنشئ حسابًا",
+   "have_account_prompt": "لديك حساب؟ ",
+   "sign_in": "تسجيل الدخول"
+  },
+  "signup_success": {
+   "title_prefix": "أهلًا بك في ",
+   "title_accent": "زاد",
+   "subtitle": "تم إنشاء حسابك. لنُهيّئ مساحتك ونبدأ الرحلة.",
+   "cta": "متابعة"
+  },
+  "forgot_password_screen": {
+   "headline_prefix": "نسيت ",
+   "headline_accent": "كلمة المرور",
+   "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمزًا مكوّنًا من 6 أرقام لإعادة تعيين كلمة المرور.",
+   "email_hint": "you@example.com",
+   "send_code": "إرسال الرمز",
+   "back_to_login_prompt": "تتذكر كلمة المرور؟  ",
+   "back_to_login": "تسجيل الدخول",
+   "otp_sent": "أرسلنا رمزًا مكوّنًا من 6 أرقام إلى بريدك الإلكتروني."
+  },
+  "reset_password_dialog": {
+   "title": "إعادة تعيين كلمة المرور",
+   "subtitle": "أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى العنوان أدناه واختر كلمة مرور جديدة.",
+   "otp_hint": "الرمز المكوّن من 6 أرقام",
+   "new_password_hint": "كلمة المرور الجديدة",
+   "submit": "إعادة التعيين",
+   "cancel": "إلغاء",
+   "success": "تمت إعادة تعيين كلمة المرور. سجّل الدخول بكلمة المرور الجديدة."
+  },
+  "verify_email_dialog": {
+   "title": "تأكيد بريدك الإلكتروني",
+   "subtitle": "أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى العنوان أدناه لتفعيل حسابك.",
+   "verify": "تأكيد",
+   "no_code": "لم يصلك الرمز؟ ",
+   "resend": "إعادة الإرسال"
+  }
+ },
+ "errors": {
+  "generic": "حدث خطأ ما",
+  "no_internet": "لا يوجد اتصال بالإنترنت",
+  "required_field": "هذا الحقل مطلوب"
+ },
+ "please_enter_email": "يرجى إدخال البريد الإلكتروني",
+ "please_enter_valid_email": "يرجى إدخال بريد إلكتروني صحيح",
+ "please_enter_password": "يرجى إدخال كلمة المرور",
+ "password_min_length": "يجب ألا تقل كلمة المرور عن {} أحرف",
+ "please_enter_your_name": "يرجى إدخال اسمك",
+ "full_name_max_length": "الاسم طويل جدًا",
+ "cancel": "إلغاء",
+ "language": "اللغة",
+ "language_eyebrow": "اللغة",
+ "language_title_lead": "اختر",
+ "language_title_accent": "لغتك",
+ "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",
+ "language_save_cta": "حفظ التغييرات",
+ "change_language": "تغيير اللغة",
+ "failed_to_update_language": "تعذّر تحديث اللغة",
+ "notifications": {
+  "title": "الإشعارات",
+  "clear_all": "مسح الكل",
+  "empty_title": "لا توجد إشعارات",
+  "empty_subtitle": "ستظهر هنا التذكيرات والإنجازات والمستجدّات.",
+  "load_failed": "تعذّر تحميل الإشعارات",
+  "delete_failed": "تعذّر حذف الإشعار",
+  "types": {
+   "reminder": "تذكير",
+   "reading": "قراءة",
+   "achievement": "إنجاز",
+   "child_activity": "نشاط الطفل",
+   "announcement": "إعلان",
+   "other": "إشعار"
+  },
+  "time": {
+   "just_now": "الآن",
+   "minutes_ago": "قبل {} دقيقة",
+   "hours_ago": "قبل {} ساعة",
+   "days_ago": "قبل {} يوم"
+  },
+  "mock": {
+   "reminder_title": "حان وقت ذكرك المسائي",
+   "reminder_body": "دقائق هادئة تصنع الفرق. افتح زاد لتبدأ.",
+   "achievement_title": "حصدت سلسلة 7 أيام",
+   "achievement_body": "حافظت على ممارستك اليومية أسبوعًا كاملًا. عملٌ جميل.",
+   "reading_title": "فصلٌ جديد في مكتبتك",
+   "reading_body": "أُضيفت لك تأمّلات قصيرة عن الصبر.",
+   "child_activity_title": "أنهى يوسف درس اليوم",
+   "child_activity_body": "أكمل هدف القراءة وحصل على نجمة.",
+   "announcement_title": "أهلًا بك في زاد",
+   "announcement_body": "شكرًا لانضمامك. نحن سعداء بوجودك معنا.",
+   "evening_reminder_title": "لا تنسَ خطة الغد",
+   "evening_reminder_body": "مراجعتك الأسبوعية مجدولة في الصباح."
+  }
+ },
+ "drafts": {
+  "title": "المسودات",
+  "empty_title": "لا توجد أسئلة محفوظة بعد",
+  "empty_subtitle": "انقر على إشارة الحفظ في أي سؤال لمراجعته لاحقًا.",
+  "load_failed": "تعذّر تحميل المسودات",
+  "delete_failed": "تعذّر حذف المسودة",
+  "delete_confirm_title": "إزالة هذه المسودة؟",
+  "delete_confirm_subtitle": "لن تظهر بعد ذلك في قائمتك المحفوظة.",
+  "delete_confirm_cta": "إزالة",
+  "note_label": "ملاحظة",
+  "note_hint": "أضف ملاحظة شخصية…",
+  "note_subtitle": "اكتب ملاحظة خاصة لتتذكر هذا السؤال.",
+  "note_save": "حفظ الملاحظة",
+  "note_saved": "تم حفظ الملاحظة",
+  "no_note": "لا توجد ملاحظة",
+  "edit_note": "تعديل الملاحظة",
+  "view_details": "اضغط لعرض التفاصيل",
+  "correct_answer": "الإجابة الصحيحة",
+  "your_note": "ملاحظتك",
+  "remove_note": "حذف الملاحظة"
+ },
+ "profile": {
+  "practice": "الممارسة",
+  "library": "المحتوى",
+  "account": "الحساب",
+  "drafts": "المسودات",
+  "my_children": "أبنائي",
+  "reminders": "التذكيرات",
+  "language": "اللغة",
+  "theme": "المظهر",
+  "theme_system": "النظام",
+  "theme_light": "فاتح",
+  "theme_dark": "داكن",
+  "edit_profile": "تعديل الملف الشخصي",
+  "upgrade_account": "ترقية الحساب",
+  "view_profile": "عرض الملف الشخصي",
+  "privacy": "الخصوصية",
+  "help_support": "المساعدة والدعم",
+  "support_tickets": "تذاكر الدعم",
+  "sign_out": "تسجيل الخروج",
+  "sign_out_confirm_title": "تسجيل الخروج؟",
+  "sign_out_confirm_subtitle": "ستحتاج إلى تسجيل الدخول مجدّدًا للوصول إلى حسابك.",
+  "sign_out_confirm_cta": "نعم، سجّل خروجي",
+  "reset_progress": "إعادة ضبط كل التقدّم",
+  "reset_progress_confirm_title": "إعادة ضبط كل التقدّم؟",
+  "reset_progress_confirm_subtitle": "سيؤدي هذا إلى مسح تقدّمك في جميع الفئات والمستويات. لا يمكن التراجع عن ذلك.",
+  "reset_progress_confirm_cta": "نعم، أعد ضبط كل شيء",
+  "reset_progress_success": "تمت إعادة ضبط تقدّمك",
+  "downloads": "التنزيلات"
+ },
+ "edit_profile": {
+  "name_label": "الاسم",
+  "name_hint": "اسمك الكامل",
+  "email_label": "البريد الإلكتروني",
+  "email_locked": "لا يمكن تغيير البريد الإلكتروني.",
+  "birthday_label": "تاريخ الميلاد",
+  "birthday_hint": "اختر تاريخ ميلادك",
+  "update_success": "تم تحديث الملف الشخصي",
+  "update_failed": "تعذّر تحديث الملف الشخصي",
+  "delete_account": "حذف الحساب",
+  "delete_account_description": "سيؤدي هذا إلى حذف ملفك الشخصي وتقدّمك وإشاراتك المحفوظة بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+  "delete_account_cta": "حذف حسابي",
+  "delete_confirm_title": "حذف حسابك؟",
+  "delete_confirm_subtitle": "سيؤدي هذا إلى حذف حسابك وجميع بياناتك بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.",
+  "delete_confirm_cta": "نعم، احذف حسابي",
+  "delete_password_title": "أكّد بكلمة المرور",
+  "delete_password_title_lead": "تأكيد",
+  "delete_password_title_accent": "الحذف",
+  "delete_password_eyebrow": "إزالة الحساب",
+  "delete_password_subtitle": "أدخل كلمة المرور لحذف حسابك نهائيًا.",
+  "delete_password_helper": "هذا الإجراء نهائي ولا يمكن التراجع عنه.",
+  "delete_password_label": "كلمة المرور",
+  "delete_password_hint": "كلمة المرور",
+  "delete_password_required": "يرجى إدخال كلمة المرور",
+  "delete_password_cta": "حذف الحساب",
+  "change_password": "تغيير كلمة المرور",
+  "change_password_eyebrow": "الأمان",
+  "change_password_title": "تغيير كلمة المرور",
+  "change_password_title_lead": "تغيير",
+  "change_password_title_accent": "كلمة المرور",
+  "change_password_subtitle": "أدخل كلمة المرور الحالية واختر كلمة مرور جديدة.",
+  "change_password_helper": "استخدم 8 أحرف على الأقل مع مزيج من الأحرف والأرقام والرموز.",
+  "current_password_label": "كلمة المرور الحالية",
+  "new_password_label": "كلمة المرور الجديدة",
+  "confirm_password_label": "تأكيد كلمة المرور الجديدة",
+  "current_password_hint": "كلمة المرور الحالية",
+  "new_password_hint": "8 أحرف على الأقل",
+  "confirm_password_hint": "كرّر كلمة المرور الجديدة",
+  "password_required": "يرجى إدخال كلمة المرور",
+  "password_min_length": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+  "password_mismatch": "كلمتا المرور غير متطابقتين",
+  "change_password_cta": "تحديث كلمة المرور",
+  "change_password_success": "تم تحديث كلمة المرور"
+ },
+ "help_center": {
+  "title": "المساعدة والدعم",
+  "subtitle": "نحن هنا لنستمع",
+  "eyebrow": "نستمع إليك",
+  "heading": "كيف يمكننا مساعدتك؟",
+  "lede": "أخبرنا بما يدور في خاطرك. كلّ رسالة يقرأها شخصٌ حقيقي.",
+  "choose_topic": "اختر الموضوع",
+  "pick_topic_hint": "اختر موضوعًا أعلاه لتبدأ كتابة رسالتك.",
+  "subject_label": "العنوان (اختياري)",
+  "subject_hint": "عنوان مختصر",
+  "message_label": "رسالتك",
+  "message_hint": "اكتب بالتفصيل الذي تريده — سنقرأ كلّ كلمة.",
+  "char_floor": "اكتب 10 أحرف على الأقل",
+  "ready_to_send": "جاهزة للإرسال",
+  "send_cta": "إرسال الرسالة",
+  "sending": "جارٍ الإرسال…",
+  "send_failed": "تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى.",
+  "reply_window": "نردّ عادةً خلال 24 ساعة",
+  "topics": {
+   "feedback": {
+    "label": "ملاحظات",
+    "description": "شاركنا ما تحبّه أو ما يمكن تحسينه."
+   },
+   "question": {
+    "label": "سؤال",
+    "description": "اسألنا عن أيّ شيء يخصّ زاد."
+   },
+   "bug": {
+    "label": "بلاغ خلل",
+    "description": "حدث شيء لم يعمل كما هو متوقّع."
+   },
+   "technical": {
+    "label": "تقني",
+    "description": "مشاكل في الحساب، المزامنة، أو الجهاز."
+   }
+  },
+  "success": {
+   "title": "رسالتك في طريقها إلينا",
+   "subtitle": "شكرًا لكتابتك إلينا. سنتواصل معك قريبًا.",
+   "topic_label": "الموضوع",
+   "reference_label": "المرجع",
+   "send_another": "إرسال رسالة أخرى",
+   "close": "العودة إلى الإعدادات"
+  }
+ },
+ "support_tickets": {
+  "title": "تذاكر الدعم",
+  "new_ticket": "تذكرة جديدة",
+  "empty_title": "لا توجد تذاكر بعد",
+  "empty_subtitle": "أرسل لنا رسالة وسنتابع المحادثة هنا.",
+  "load_failed": "تعذّر تحميل تذاكرك",
+  "reply_count": {
+   "zero": "لا توجد ردود",
+   "one": "ردّ واحد",
+   "two": "ردّان",
+   "few": "{} ردود",
+   "many": "{} ردًّا",
+   "other": "{} ردّ"
+  },
+  "status": {
+   "pending": "قيد الانتظار",
+   "open": "مفتوحة",
+   "in_review": "قيد المراجعة",
+   "resolved": "تم الحل",
+   "closed": "مغلقة",
+   "closed_by_user": "أغلقتها أنت"
+  },
+  "detail": {
+   "title": "تفاصيل التذكرة",
+   "ref_label": "رقم",
+   "replies_section": "المحادثة",
+   "original_message": "الرسالة الأصلية",
+   "no_replies": "استلمنا رسالتك وسيتواصل معك أحد أعضاء الفريق قريبًا.",
+   "from_admin": "فريق الدعم",
+   "from_you": "أنت",
+   "close_ticket": "إغلاق التذكرة",
+   "close_card_lead": "ما زالت مفتوحة",
+   "close_card_body": "أغلقها متى شعرت بأنّ المشكلة قد حُلّت.",
+   "close_confirm_title": "إغلاق هذه التذكرة؟",
+   "close_confirm_body": "إغلاق التذكرة يعني اعتبار المحادثة منتهية. يمكنك دومًا فتح تذكرة جديدة لاحقًا.",
+   "close_success": "تمّ إغلاق التذكرة",
+   "close_failed": "تعذّر إغلاق التذكرة. يرجى المحاولة مرة أخرى."
+  }
+ },
+ "teams": {
+  "loader": {
+   "title": "نجمع رفاقك…",
+   "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
+  },
+  "empty": {
+   "eyebrow": "الرفاق",
+   "title": "فريقك",
+   "title_lede": "لا فريق بعد — ابدؤوا معًا.",
+   "hadith_ar": "المؤمن للمؤمن كالبنيان",
+   "lede": "كوّن دائرة من الرفاق لتدرسوا وتقرأوا وتنموا معًا — أو انضم إلى إحداها برمز دعوة.",
+   "cta_create": "إنشاء فريق",
+   "cta_join": "الانضمام برمز"
+  },
+  "create": {
+   "title": "إنشاء فريق",
+   "step": "الخطوة ١ من ١",
+   "sheet_eyebrow": "الرفاق",
+   "sheet_title_lead": "سمِّ",
+   "sheet_title_accent": "فريقك",
+   "sheet_title": "سمِّ فريقك",
+   "sheet_lede": "أعطِ دائرتك اسمًا — يمكنك تغييره لاحقًا.",
+   "name_label": "اسم الفريق",
+   "name_hint": "مثال: رفاق المدينة",
+   "name_error": "يجب أن يحوي الاسم ٣ أحرف على الأقل.",
+   "intent_label": "الغاية — اختيارية",
+   "intent_hint": "ماذا يدرس هذا الفريق معًا؟",
+   "intent_helper": "تظهر للأعضاء في الصفحة الرئيسية للفريق.",
+   "add_banner": "إضافة غلاف · اختياري",
+   "add_avatar": "إضافة صورة",
+   "avatar_set": "تمّت إضافة الصورة ✓",
+   "cta": "إنشاء الفريق",
+   "submitting": "نرسل الدعوة إلى الغيب…",
+   "success_arabic": "بَارَكَ اللهُ فِيكُم",
+   "success_open": "بات مَختومًا ومَفتوحًا.",
+   "success_lede": "شارك رمز الدعوة مع حتى ١٩ رفيقًا، أو انتظر بهدوء — سنقودك إلى الصفحة الرئيسية.",
+   "success_eyebrow": "مَرْسومُ الرُّفقة",
+   "success_invite_label": "رمز الدعوة",
+   "success_expires": "ينتهي خلال ٧ أيام · حتى ١٩ رفيقًا",
+   "success_cta": "الدخول إلى فريقك",
+   "success_skip": "مشاركة الدعوة لاحقًا",
+   "copied": "تم نسخ رمز الدعوة",
+   "share_subject": "انضمّ إلى فريقي على Zaad",
+   "share_message": "انضمّ إلى دائرتي على Zaad — استخدم رمز الدعوة {code}\n{link}"
+  },
+  "join": {
+   "title": "الانضمام لفريق",
+   "eyebrow": "الرفاق",
+   "find_circle": "ابحث عن حلقتك",
+   "lede_title": "لديك دعوة؟",
+   "lede": "أدخل الرمز المكوّن من ثمانية أحرف الذي شاركه معك قائد الفريق.",
+   "code_label": "رمز الدعوة",
+   "code_hint": "XXXX-XXXX",
+   "code_helper": "أو افتح رابط دعوة Zad من أي محادثة — سيُدرج هنا تلقائيًا.",
+   "paste": "لصق",
+   "or": "أو",
+   "deep_link_hint": "افتح رابط دعوة Zad من أي محادثة — سيظهر هنا تلقائيًا.",
+   "cta": "اطرق الباب",
+   "submitting": "نطرق الباب…",
+   "error_title": "لا يفتح هنا باب.",
+   "error_lede": "انتهت صلاحية هذه الدعوة أو لم تعد موجودة. اطلب من قائد الفريق رمزًا جديدًا.",
+   "error_try_again": "أعد المحاولة",
+   "error_help": "تحتاج مساعدة",
+   "success_arabic": "أَهْلًا وَسَهْلًا",
+   "success_youre_in": "أنت في",
+   "success_lede": "{count} رفيقًا يقرأون معًا — أوّل فصلٍ ينتظرك.",
+   "success_cta": "عرض الفريق"
   },
   "home": {
-    "greeting_morning": "صباح الخير،",
-    "greeting_afternoon": "مساء الخير،",
-    "greeting_evening": "مساء الخير،",
-    "salam_arabic": "السلام عليكم",
-    "fallback_name": "صديقي",
-    "load_failed": "تعذّر تحميل الصفحة — حاول مرة أخرى",
-    "streak": {
-      "eyebrow_prefix": "تتابعك ",
-      "eyebrow_accent": "اليومي",
-      "days_word": "أيام",
-      "in_a_row": "متتالية",
-      "motto_en": "أحبّ الأعمال إلى الله أدومها وإن قلّ.",
-      "motto_ar": "أحب الأعمال إلى الله أدومها",
-      "personal_best": "أفضل رقم لك",
-      "personal_best_value": "{} يومًا",
-      "next_milestone": "الهدف القادم",
-      "next_milestone_value": "{} · أسبوعان"
-    },
-    "play": {
-      "eyebrow": "اختبر معلوماتك",
-      "title_prefix": "ابدأ ",
-      "title_accent": "اللعب",
-      "subtitle": "اختر فئة وتدرّج في المستويات"
-    },
-    "team": {
-      "eyebrow": "نافِس أصدقاءك",
-      "title_prefix": "انضمّ إلى ",
-      "title_accent": "فريق",
-      "subtitle": "اصعدوا قائمة المتصدّرين معًا",
-      "modal": {
-        "eyebrow": "الأصدقاء",
-        "title_prefix": "انضمّ إلى ",
-        "title_accent": "فريق",
-        "code_label": "رمز الفريق",
-        "code_placeholder": "ABCD-1234",
-        "submit": "انضمّ للفريق"
-      },
-      "joined_eyebrow": "فريقي",
-      "open": "→ افتح",
-      "rank_label": "الترتيب",
-      "companions_count": "{} رفيقًا"
-    },
-    "hadith": {
-      "section_title": "حديث اليوم",
-      "view_all": "عرض الكل",
-      "narrator_prefix": "رواه ",
-      "hadith_no": "حديث رقم {}"
-    },
-    "date_ember_cta": "عرض لوحة صدارة التمر والجمر",
-    "why_login": {
-      "guest_tag": "تتصفّح كضيف",
-      "title": "أنشئ حسابك المجاني",
-      "benefits": {
-        "streak_title": "لا تفقد سلسلتك أبدًا",
-        "streak_subtitle": "شُعلتك اليومية محفوظة للأبد",
-        "teams_title": "انضمّ وأنشئ الفرق",
-        "teams_subtitle": "ادرس مع الرفقة، وارتقوا معًا",
-        "ranks_title": "اكسب الأوسمة والمراتب",
-        "ranks_subtitle": "تسلّق لوحة المتصدّرين العالمية",
-        "sync_title": "المزامنة عبر الأجهزة",
-        "sync_subtitle": "تابع من حيث توقفت، في أي مكان"
-      },
-      "cta": "أنشئ حسابًا مجانيًا",
-      "have_account": "لديك حساب بالفعل؟ ",
-      "sign_in": "تسجيل الدخول"
-    }
+   "eyebrow": "فريقي",
+   "subtitle": "الرفاق",
+   "companions": "الرفاق",
+   "progress": "التقدم",
+   "categories": "الفئات",
+   "solved": "مُنجزة",
+   "rank": "الترتيب",
+   "next_rank": "إلى الرتبة التالية",
+   "view_all": "عرض الكل →",
+   "week_title": "مسار هذا الأسبوع",
+   "week_chip": "الإثنين · ٣ متقدّمون",
+   "recent": "الأحدث",
+   "activity": {
+    "completed": "أنهى {name} الفصل {chapter}",
+    "streak": "حافظ {name} على عَدّ {days} يومًا",
+    "goal": "حدّد {name} هدف هذا الأسبوع"
+   }
   },
-  "categories": {
-    "eyebrow": "رحلتك",
-    "title": "الفئات",
-    "subtitle": "امضِ على المسار بهدوء — كل خطوة تفتح ما بعدها.",
-    "overall": {
-      "label": "التقدّم الإجمالي"
-    },
-    "progress": {
-      "percent": "{}٪ مكتمل",
-      "levels": "{} / {} مستويات",
-      "not_started": "لم يبدأ بعد"
-    },
-    "state": {
-      "completed": "مكتمل",
-      "in_progress": "قيد التقدّم",
-      "locked": "مغلق"
-    },
-    "levels_screen": {
-      "eyebrow": "المستويات",
-      "heading": "{} من {} مستويات مكتملة"
-    },
-    "reset": {
-      "confirm_title": "إعادة ضبط هذه الفئة؟",
-      "confirm_subtitle": "سيتم مسح تقدّمك في جميع مستويات هذه الفئة. لا يمكن التراجع عن ذلك.",
-      "confirm_cta": "إعادة ضبط الفئة"
-    }
+  "tabs": {
+   "home": "الرئيسية",
+   "members": "الأعضاء",
+   "progress": "التقدم"
   },
-  "levels": {
-    "title": "المستويات",
-    "eyebrow": "المستويات",
-    "heading": "{} من {} مستويات مكتملة",
-    "percent": "{}٪ مكتمل",
-    "count": "{} / {} مستويات",
-    "questions": "{} / {} أسئلة",
-    "pass": "النجاح: {}٪",
-    "state": {
-      "completed": "مكتمل",
-      "in_progress": "قيد التقدّم",
-      "unlocked": "متاح",
-      "locked": "مغلق"
-    },
-    "reset": {
-      "action": "إعادة ضبط المستوى",
-      "confirm_title": "إعادة ضبط هذا المستوى؟",
-      "confirm_subtitle": "سيتم مسح تقدّمك ونقاطك في هذا المستوى. لا يمكن التراجع عن ذلك.",
-      "confirm_cta": "إعادة ضبط المستوى"
-    }
+  "members": {
+   "title": "الأعضاء · {count}",
+   "role_leader": "القائد",
+   "meta": "{done} / {total} مرحلة",
+   "code_label": "رمز الفريق",
+   "empty_filter": "لا أعضاء يطابقون هذا الفلتر.",
+   "filter": {
+    "all": "الكل",
+    "leaders": "القادة"
+   }
   },
-  "quiz": {
-    "eyebrow": "اختبار",
-    "question_eyebrow": "السؤال",
-    "feedback": {
-      "correct_eyebrow": "إجابة موفقة",
-      "incorrect_eyebrow": "حاول مرة أخرى",
-      "explanation": "الشرح",
-      "reference": "المصدر",
-      "correct_title_1": "ما شاء الله",
-      "correct_title_2": "أحسنت",
-      "correct_title_3": "ممتاز",
-      "correct_title_4": "بارك الله فيك",
-      "wrong_title_1": "حاول مجدداً",
-      "wrong_title_2": "لا تستسلم",
-      "wrong_title_3": "اقتربت",
-      "wrong_title_4": "واصل المسير"
-    },
-    "actions": {
-      "save": "احفظ السؤال",
-      "saved": "تم الحفظ للمراجعة",
-      "report": "الإبلاغ عن سؤال",
-      "report_sent": "شكراً لك، تم استلام إبلاغك",
-      "next": "التالي",
-      "finish": "إنهاء",
-      "previous": "السؤال السابق"
-    },
-    "exit": {
-      "confirm_title": "مغادرة الاختبار؟",
-      "confirm_subtitle": "سيتم فقدان تقدمك في هذه المحاولة. يمكنك البدء من جديد في أي وقت.",
-      "confirm_cta": "مغادرة الاختبار"
-    },
-    "report": {
-      "title": "ما المشكلة في هذا السؤال؟",
-      "reason_wrong_answer": "الإجابة غير صحيحة",
-      "reason_unclear": "السؤال غير واضح",
-      "reason_typo": "خطأ إملائي",
-      "reason_other": "سبب آخر",
-      "message_hint": "أضف أي تفاصيل (اختياري)",
-      "submit": "إرسال البلاغ"
-    },
-    "result": {
-      "eyebrow": "رحلة طلب العلم",
-      "title": "أتممت المستوى",
-      "level_complete": "المستوى {} · مكتمل",
-      "answered_prefix": "أجبت على",
-      "continue": "متابعة",
-      "score": "النتيجة",
-      "points_label": "نقطة",
-      "questions_completed": "{} سؤال مكتمل",
-      "revisited": "راجعت {} أسئلة حتى أتقنتها",
-      "closing": "زادك الله فهماً وعلماً 🌿",
-      "blessing": "ما شاء الله",
-      "done": "تم",
-      "stat_correct": "صحيحة",
-      "stat_time": "الوقت",
-      "stat_accuracy": "الدقة",
-      "stat_xp_earned": "النقاط المكتسبة",
-      "stat_xp": "النقاط",
-      "stat_revisits": "مراجعات"
-    },
-    "motivation": {
-      "correct_1": "ما شاء الله! إجابة موفقة 🌿",
-      "correct_2": "بارك الله فيك، استمر 💚",
-      "correct_3": "أحسنت، زادك الله علماً 📖",
-      "wrong_1": "لا بأس، حاول مجدداً 🌱",
-      "wrong_2": "كل طالب علم بدأ من هنا 📖",
-      "wrong_3": "اقتربت كثيراً، استمر 💚",
-      "finish_1": "رحلة طلب العلم مستمرة 🌿",
-      "finish_2": "العلم نور، فاستمر 💡",
-      "finish_3": "زادك الله فهماً وعلماً"
-    }
+  "progress": {
+   "title": "التقدم",
+   "overall": "تقدم الفريق",
+   "goal": "هدف الفريق",
+   "avg_member": "المتوسّط لكل عضو",
+   "levels_done": "مراحل مكتملة",
+   "top_contributors": "أكثر المساهمين",
+   "no_contributors": "لا مساهمات بعد."
   },
-  "profile_select": {
-    "eyebrow": "الملفات الشخصية",
-    "title_prefix": "من ",
-    "title_accent": "يقرأ",
-    "subtitle": "اختر ملفًا شخصيًا لمواصلة رحلتك.",
-    "role_parent": "ولي الأمر",
-    "age_label": "العمر {}",
-    "days": "أيام",
-    "add_child": "إضافة طفل",
-    "manage": "إدارة الملفات",
-    "continue_current_account": "المتابعة بالحساب الحالي",
-    "current_account": "الحساب الحالي"
+  "leave": {
+   "confirm_title": "تأكيد المغادرة",
+   "confirm_lede_title": "تنفّس مرة أخرى.",
+   "confirm_lede": "اكتب اسم الفريق أدناه لتأكيد مغادرة {name}.",
+   "team_name_label": "اسم الفريق",
+   "cta": "مغادرة الفريق",
+   "never_mind": "تراجع",
+   "warning_title": "هل تغادر الفريق؟",
+   "warning_arabic": "إِنَّ الجَمَاعَةَ بَرَكَة",
+   "warning_bullet_1": "مساهمتك في مسار هذا الأسبوع تبقى مع الفريق.",
+   "warning_bullet_2": "نقاطك وعَدّك الشخصي يبقيان معك.",
+   "warning_bullet_3": "ستحتاج دعوة جديدة للعودة.",
+   "warning_cta": "متابعة المغادرة",
+   "warning_stay": "البقاء مع الفريق"
   },
-  "auth": {
-    "login": "تسجيل الدخول",
-    "logout": "تسجيل الخروج",
-    "register": "إنشاء حساب",
-    "email": "البريد الإلكتروني",
-    "password": "كلمة المرور",
-    "forgot_password": "هل نسيت كلمة المرور؟",
-    "email_hint": "you@example.com",
-    "password_hint": "كلمة المرور",
-    "or_continue": "أو تابع باستخدام",
-    "continue_google": "المتابعة باستخدام Google",
-    "continue_guest": "المتابعة كضيف",
-    "upgrade_screen": {
-      "title": "أنشئ حسابك",
-      "subtitle": "أضف بريدًا إلكترونيًا وكلمة مرور لحفظ تقدّمك والاحتفاظ بحسابك على كل جهاز.",
-      "cta": "إنشاء حساب",
-      "success": "تم إنشاء حسابك. أهلًا بك!"
-    },
-    "login_screen": {
-      "welcome_prefix": "مرحبا بعودتك",
-      "welcome_accent": "",
-      "subtitle": "سجّل الدخول لمواصلة ممارستك اليومية.",
-      "sign_in": "تسجيل الدخول",
-      "new_prompt": "جديد في زاد؟ ",
-      "create_account": "أنشئ حسابًا"
-    },
-    "signup_screen": {
-      "username_hint": "اسم المستخدم",
-      "headline_prefix": "ابدأ ",
-      "headline_accent": "رحلتك",
-      "create_account": "أنشئ حسابًا",
-      "have_account_prompt": "لديك حساب؟ ",
-      "sign_in": "تسجيل الدخول"
-    },
-    "signup_success": {
-      "title_prefix": "أهلًا بك في ",
-      "title_accent": "زاد",
-      "subtitle": "تم إنشاء حسابك. لنُهيّئ مساحتك ونبدأ الرحلة.",
-      "cta": "متابعة"
-    },
-    "forgot_password_screen": {
-      "headline_prefix": "نسيت ",
-      "headline_accent": "كلمة المرور",
-      "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمزًا مكوّنًا من 6 أرقام لإعادة تعيين كلمة المرور.",
-      "email_hint": "you@example.com",
-      "send_code": "إرسال الرمز",
-      "back_to_login_prompt": "تتذكر كلمة المرور؟  ",
-      "back_to_login": "تسجيل الدخول",
-      "otp_sent": "أرسلنا رمزًا مكوّنًا من 6 أرقام إلى بريدك الإلكتروني."
-    },
-    "reset_password_dialog": {
-      "title": "إعادة تعيين كلمة المرور",
-      "subtitle": "أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى العنوان أدناه واختر كلمة مرور جديدة.",
-      "otp_hint": "الرمز المكوّن من 6 أرقام",
-      "new_password_hint": "كلمة المرور الجديدة",
-      "submit": "إعادة التعيين",
-      "cancel": "إلغاء",
-      "success": "تمت إعادة تعيين كلمة المرور. سجّل الدخول بكلمة المرور الجديدة."
-    },
-    "verify_email_dialog": {
-      "title": "تأكيد بريدك الإلكتروني",
-      "subtitle": "أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى العنوان أدناه لتفعيل حسابك.",
-      "verify": "تأكيد",
-      "no_code": "لم يصلك الرمز؟ ",
-      "resend": "إعادة الإرسال"
-    }
-  },
-  "errors": {
-    "generic": "حدث خطأ ما",
-    "no_internet": "لا يوجد اتصال بالإنترنت",
-    "required_field": "هذا الحقل مطلوب"
-  },
-  "please_enter_email": "يرجى إدخال البريد الإلكتروني",
-  "please_enter_valid_email": "يرجى إدخال بريد إلكتروني صحيح",
-  "please_enter_password": "يرجى إدخال كلمة المرور",
-  "password_min_length": "يجب ألا تقل كلمة المرور عن {} أحرف",
-  "please_enter_your_name": "يرجى إدخال اسمك",
-  "full_name_max_length": "الاسم طويل جدًا",
-  "cancel": "إلغاء",
-  "language": "اللغة",
-  "language_eyebrow": "اللغة",
-  "language_title_lead": "اختر",
-  "language_title_accent": "لغتك",
-  "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",
-  "language_save_cta": "حفظ التغييرات",
-  "change_language": "تغيير اللغة",
-  "failed_to_update_language": "تعذّر تحديث اللغة",
-  "notifications": {
-    "title": "الإشعارات",
-    "clear_all": "مسح الكل",
-    "empty_title": "لا توجد إشعارات",
-    "empty_subtitle": "ستظهر هنا التذكيرات والإنجازات والمستجدّات.",
-    "load_failed": "تعذّر تحميل الإشعارات",
-    "delete_failed": "تعذّر حذف الإشعار",
-    "types": {
-      "reminder": "تذكير",
-      "reading": "قراءة",
-      "achievement": "إنجاز",
-      "child_activity": "نشاط الطفل",
-      "announcement": "إعلان",
-      "other": "إشعار"
-    },
-    "time": {
-      "just_now": "الآن",
-      "minutes_ago": "قبل {} دقيقة",
-      "hours_ago": "قبل {} ساعة",
-      "days_ago": "قبل {} يوم"
-    },
-    "mock": {
-      "reminder_title": "حان وقت ذكرك المسائي",
-      "reminder_body": "دقائق هادئة تصنع الفرق. افتح زاد لتبدأ.",
-      "achievement_title": "حصدت سلسلة 7 أيام",
-      "achievement_body": "حافظت على ممارستك اليومية أسبوعًا كاملًا. عملٌ جميل.",
-      "reading_title": "فصلٌ جديد في مكتبتك",
-      "reading_body": "أُضيفت لك تأمّلات قصيرة عن الصبر.",
-      "child_activity_title": "أنهى يوسف درس اليوم",
-      "child_activity_body": "أكمل هدف القراءة وحصل على نجمة.",
-      "announcement_title": "أهلًا بك في زاد",
-      "announcement_body": "شكرًا لانضمامك. نحن سعداء بوجودك معنا.",
-      "evening_reminder_title": "لا تنسَ خطة الغد",
-      "evening_reminder_body": "مراجعتك الأسبوعية مجدولة في الصباح."
-    }
-  },
-  "drafts": {
-    "title": "المسودات",
-    "empty_title": "لا توجد أسئلة محفوظة بعد",
-    "empty_subtitle": "انقر على إشارة الحفظ في أي سؤال لمراجعته لاحقًا.",
-    "load_failed": "تعذّر تحميل المسودات",
-    "delete_failed": "تعذّر حذف المسودة",
-    "delete_confirm_title": "إزالة هذه المسودة؟",
-    "delete_confirm_subtitle": "لن تظهر بعد ذلك في قائمتك المحفوظة.",
-    "delete_confirm_cta": "إزالة",
-    "note_label": "ملاحظة",
-    "note_hint": "أضف ملاحظة شخصية…",
-    "note_subtitle": "اكتب ملاحظة خاصة لتتذكر هذا السؤال.",
-    "note_save": "حفظ الملاحظة",
-    "note_saved": "تم حفظ الملاحظة",
-    "no_note": "لا توجد ملاحظة",
-    "edit_note": "تعديل الملاحظة",
-    "view_details": "اضغط لعرض التفاصيل",
-    "correct_answer": "الإجابة الصحيحة",
-    "your_note": "ملاحظتك",
-    "remove_note": "حذف الملاحظة"
-  },
-  "profile": {
-    "practice": "الممارسة",
-    "library": "المحتوى",
-    "account": "الحساب",
-    "drafts": "المسودات",
-    "my_children": "أبنائي",
-    "reminders": "التذكيرات",
-    "language": "اللغة",
-    "theme": "المظهر",
-    "theme_system": "النظام",
-    "theme_light": "فاتح",
-    "theme_dark": "داكن",
-    "edit_profile": "تعديل الملف الشخصي",
-    "upgrade_account": "ترقية الحساب",
-    "view_profile": "عرض الملف الشخصي",
-    "privacy": "الخصوصية",
-    "help_support": "المساعدة والدعم",
-    "support_tickets": "تذاكر الدعم",
-    "sign_out": "تسجيل الخروج",
-    "sign_out_confirm_title": "تسجيل الخروج؟",
-    "sign_out_confirm_subtitle": "ستحتاج إلى تسجيل الدخول مجدّدًا للوصول إلى حسابك.",
-    "sign_out_confirm_cta": "نعم، سجّل خروجي",
-    "reset_progress": "إعادة ضبط كل التقدّم",
-    "reset_progress_confirm_title": "إعادة ضبط كل التقدّم؟",
-    "reset_progress_confirm_subtitle": "سيؤدي هذا إلى مسح تقدّمك في جميع الفئات والمستويات. لا يمكن التراجع عن ذلك.",
-    "reset_progress_confirm_cta": "نعم، أعد ضبط كل شيء",
-    "reset_progress_success": "تمت إعادة ضبط تقدّمك",
-    "downloads": "التنزيلات"
-  },
-  "edit_profile": {
-    "name_label": "الاسم",
-    "name_hint": "اسمك الكامل",
-    "email_label": "البريد الإلكتروني",
-    "email_locked": "لا يمكن تغيير البريد الإلكتروني.",
-    "birthday_label": "تاريخ الميلاد",
-    "birthday_hint": "اختر تاريخ ميلادك",
-    "update_success": "تم تحديث الملف الشخصي",
-    "update_failed": "تعذّر تحديث الملف الشخصي",
-    "delete_account": "حذف الحساب",
-    "delete_account_description": "سيؤدي هذا إلى حذف ملفك الشخصي وتقدّمك وإشاراتك المحفوظة بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
-    "delete_account_cta": "حذف حسابي",
-    "delete_confirm_title": "حذف حسابك؟",
-    "delete_confirm_subtitle": "سيؤدي هذا إلى حذف حسابك وجميع بياناتك بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.",
-    "delete_confirm_cta": "نعم، احذف حسابي",
-    "delete_password_title": "أكّد بكلمة المرور",
-    "delete_password_title_lead": "تأكيد",
-    "delete_password_title_accent": "الحذف",
-    "delete_password_eyebrow": "إزالة الحساب",
-    "delete_password_subtitle": "أدخل كلمة المرور لحذف حسابك نهائيًا.",
-    "delete_password_helper": "هذا الإجراء نهائي ولا يمكن التراجع عنه.",
-    "delete_password_label": "كلمة المرور",
-    "delete_password_hint": "كلمة المرور",
-    "delete_password_required": "يرجى إدخال كلمة المرور",
-    "delete_password_cta": "حذف الحساب",
-    "change_password": "تغيير كلمة المرور",
-    "change_password_eyebrow": "الأمان",
-    "change_password_title": "تغيير كلمة المرور",
-    "change_password_title_lead": "تغيير",
-    "change_password_title_accent": "كلمة المرور",
-    "change_password_subtitle": "أدخل كلمة المرور الحالية واختر كلمة مرور جديدة.",
-    "change_password_helper": "استخدم 8 أحرف على الأقل مع مزيج من الأحرف والأرقام والرموز.",
-    "current_password_label": "كلمة المرور الحالية",
-    "new_password_label": "كلمة المرور الجديدة",
-    "confirm_password_label": "تأكيد كلمة المرور الجديدة",
-    "current_password_hint": "كلمة المرور الحالية",
-    "new_password_hint": "8 أحرف على الأقل",
-    "confirm_password_hint": "كرّر كلمة المرور الجديدة",
-    "password_required": "يرجى إدخال كلمة المرور",
-    "password_min_length": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
-    "password_mismatch": "كلمتا المرور غير متطابقتين",
-    "change_password_cta": "تحديث كلمة المرور",
-    "change_password_success": "تم تحديث كلمة المرور"
-  },
-  "help_center": {
-    "title": "المساعدة والدعم",
-    "subtitle": "نحن هنا لنستمع",
-    "eyebrow": "نستمع إليك",
-    "heading": "كيف يمكننا مساعدتك؟",
-    "lede": "أخبرنا بما يدور في خاطرك. كلّ رسالة يقرأها شخصٌ حقيقي.",
-    "choose_topic": "اختر الموضوع",
-    "pick_topic_hint": "اختر موضوعًا أعلاه لتبدأ كتابة رسالتك.",
-    "subject_label": "العنوان (اختياري)",
-    "subject_hint": "عنوان مختصر",
-    "message_label": "رسالتك",
-    "message_hint": "اكتب بالتفصيل الذي تريده — سنقرأ كلّ كلمة.",
-    "char_floor": "اكتب 10 أحرف على الأقل",
-    "ready_to_send": "جاهزة للإرسال",
-    "send_cta": "إرسال الرسالة",
-    "sending": "جارٍ الإرسال…",
-    "send_failed": "تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى.",
-    "reply_window": "نردّ عادةً خلال 24 ساعة",
-    "topics": {
-      "feedback": {
-        "label": "ملاحظات",
-        "description": "شاركنا ما تحبّه أو ما يمكن تحسينه."
-      },
-      "question": {
-        "label": "سؤال",
-        "description": "اسألنا عن أيّ شيء يخصّ زاد."
-      },
-      "bug": {
-        "label": "بلاغ خلل",
-        "description": "حدث شيء لم يعمل كما هو متوقّع."
-      },
-      "technical": {
-        "label": "تقني",
-        "description": "مشاكل في الحساب، المزامنة، أو الجهاز."
-      }
-    },
-    "success": {
-      "title": "رسالتك في طريقها إلينا",
-      "subtitle": "شكرًا لكتابتك إلينا. سنتواصل معك قريبًا.",
-      "topic_label": "الموضوع",
-      "reference_label": "المرجع",
-      "send_another": "إرسال رسالة أخرى",
-      "close": "العودة إلى الإعدادات"
-    }
-  },
-  "support_tickets": {
-    "title": "تذاكر الدعم",
-    "new_ticket": "تذكرة جديدة",
-    "empty_title": "لا توجد تذاكر بعد",
-    "empty_subtitle": "أرسل لنا رسالة وسنتابع المحادثة هنا.",
-    "load_failed": "تعذّر تحميل تذاكرك",
-    "reply_count": {
-      "zero": "لا توجد ردود",
-      "one": "ردّ واحد",
-      "two": "ردّان",
-      "few": "{} ردود",
-      "many": "{} ردًّا",
-      "other": "{} ردّ"
-    },
-    "status": {
-      "pending": "قيد الانتظار",
-      "open": "مفتوحة",
-      "in_review": "قيد المراجعة",
-      "resolved": "تم الحل",
-      "closed": "مغلقة",
-      "closed_by_user": "أغلقتها أنت"
-    },
-    "detail": {
-      "title": "تفاصيل التذكرة",
-      "ref_label": "رقم",
-      "replies_section": "المحادثة",
-      "original_message": "الرسالة الأصلية",
-      "no_replies": "استلمنا رسالتك وسيتواصل معك أحد أعضاء الفريق قريبًا.",
-      "from_admin": "فريق الدعم",
-      "from_you": "أنت",
-      "close_ticket": "إغلاق التذكرة",
-      "close_card_lead": "ما زالت مفتوحة",
-      "close_card_body": "أغلقها متى شعرت بأنّ المشكلة قد حُلّت.",
-      "close_confirm_title": "إغلاق هذه التذكرة؟",
-      "close_confirm_body": "إغلاق التذكرة يعني اعتبار المحادثة منتهية. يمكنك دومًا فتح تذكرة جديدة لاحقًا.",
-      "close_success": "تمّ إغلاق التذكرة",
-      "close_failed": "تعذّر إغلاق التذكرة. يرجى المحاولة مرة أخرى."
-    }
-  },
-  "teams": {
-    "loader": {
-      "title": "نجمع رفاقك…",
-      "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
-    },
-    "empty": {
-      "eyebrow": "الرفاق",
-      "title": "فريقك",
-      "title_lede": "لا فريق بعد — ابدؤوا معًا.",
-      "hadith_ar": "المؤمن للمؤمن كالبنيان",
-      "lede": "كوّن دائرة من الرفاق لتدرسوا وتقرأوا وتنموا معًا — أو انضم إلى إحداها برمز دعوة.",
-      "cta_create": "إنشاء فريق",
-      "cta_join": "الانضمام برمز"
-    },
-    "create": {
-      "title": "إنشاء فريق",
-      "step": "الخطوة ١ من ١",
-      "sheet_eyebrow": "الرفاق",
-      "sheet_title_lead": "سمِّ",
-      "sheet_title_accent": "فريقك",
-      "sheet_title": "سمِّ فريقك",
-      "sheet_lede": "أعطِ دائرتك اسمًا — يمكنك تغييره لاحقًا.",
-      "name_label": "اسم الفريق",
-      "name_hint": "مثال: رفاق المدينة",
-      "name_error": "يجب أن يحوي الاسم ٣ أحرف على الأقل.",
-      "intent_label": "الغاية — اختيارية",
-      "intent_hint": "ماذا يدرس هذا الفريق معًا؟",
-      "intent_helper": "تظهر للأعضاء في الصفحة الرئيسية للفريق.",
-      "add_banner": "إضافة غلاف · اختياري",
-      "add_avatar": "إضافة صورة",
-      "avatar_set": "تمّت إضافة الصورة ✓",
-      "cta": "إنشاء الفريق",
-      "submitting": "نرسل الدعوة إلى الغيب…",
-      "success_arabic": "بَارَكَ اللهُ فِيكُم",
-      "success_open": "بات مَختومًا ومَفتوحًا.",
-      "success_lede": "شارك رمز الدعوة مع حتى ١٩ رفيقًا، أو انتظر بهدوء — سنقودك إلى الصفحة الرئيسية.",
-      "success_eyebrow": "مَرْسومُ الرُّفقة",
-      "success_invite_label": "رمز الدعوة",
-      "success_expires": "ينتهي خلال ٧ أيام · حتى ١٩ رفيقًا",
-      "success_cta": "الدخول إلى فريقك",
-      "success_skip": "مشاركة الدعوة لاحقًا",
-      "copied": "تم نسخ رمز الدعوة",
-      "share_subject": "انضمّ إلى فريقي على Zaad",
-      "share_message": "انضمّ إلى دائرتي على Zaad — استخدم رمز الدعوة {code}\n{link}"
-    },
-    "join": {
-      "title": "الانضمام لفريق",
-      "eyebrow": "الرفاق",
-      "find_circle": "ابحث عن حلقتك",
-      "lede_title": "لديك دعوة؟",
-      "lede": "أدخل الرمز المكوّن من ثمانية أحرف الذي شاركه معك قائد الفريق.",
-      "code_label": "رمز الدعوة",
-      "code_hint": "XXXX-XXXX",
-      "code_helper": "أو افتح رابط دعوة Zad من أي محادثة — سيُدرج هنا تلقائيًا.",
-      "paste": "لصق",
-      "or": "أو",
-      "deep_link_hint": "افتح رابط دعوة Zad من أي محادثة — سيظهر هنا تلقائيًا.",
-      "cta": "اطرق الباب",
-      "submitting": "نطرق الباب…",
-      "error_title": "لا يفتح هنا باب.",
-      "error_lede": "انتهت صلاحية هذه الدعوة أو لم تعد موجودة. اطلب من قائد الفريق رمزًا جديدًا.",
-      "error_try_again": "أعد المحاولة",
-      "error_help": "تحتاج مساعدة",
-      "success_arabic": "أَهْلًا وَسَهْلًا",
-      "success_youre_in": "أنت في",
-      "success_lede": "{count} رفيقًا يقرأون معًا — أوّل فصلٍ ينتظرك.",
-      "success_cta": "عرض الفريق"
-    },
-    "home": {
-      "eyebrow": "فريقي",
-      "subtitle": "الرفاق",
-      "companions": "الرفاق",
-      "progress": "التقدم",
-      "categories": "الفئات",
-      "solved": "مُنجزة",
-      "rank": "الترتيب",
-      "next_rank": "إلى الرتبة التالية",
-      "view_all": "عرض الكل →",
-      "week_title": "مسار هذا الأسبوع",
-      "week_chip": "الإثنين · ٣ متقدّمون",
-      "recent": "الأحدث",
-      "activity": {
-        "completed": "أنهى {name} الفصل {chapter}",
-        "streak": "حافظ {name} على عَدّ {days} يومًا",
-        "goal": "حدّد {name} هدف هذا الأسبوع"
-      }
-    },
-    "tabs": {
-      "home": "الرئيسية",
-      "members": "الأعضاء",
-      "progress": "التقدم"
-    },
-    "members": {
-      "title": "الأعضاء · {count}",
-      "role_leader": "القائد",
-      "meta": "{done} / {total} مرحلة",
-      "code_label": "رمز الفريق",
-      "empty_filter": "لا أعضاء يطابقون هذا الفلتر.",
-      "filter": {
-        "all": "الكل",
-        "leaders": "القادة"
-      }
-    },
-    "progress": {
-      "title": "التقدم",
-      "overall": "تقدم الفريق",
-      "goal": "هدف الفريق",
-      "avg_member": "المتوسّط لكل عضو",
-      "levels_done": "مراحل مكتملة",
-      "top_contributors": "أكثر المساهمين",
-      "no_contributors": "لا مساهمات بعد."
-    },
-    "leave": {
-      "confirm_title": "تأكيد المغادرة",
-      "confirm_lede_title": "تنفّس مرة أخرى.",
-      "confirm_lede": "اكتب اسم الفريق أدناه لتأكيد مغادرة {name}.",
-      "team_name_label": "اسم الفريق",
-      "cta": "مغادرة الفريق",
-      "never_mind": "تراجع",
-      "warning_title": "هل تغادر الفريق؟",
-      "warning_arabic": "إِنَّ الجَمَاعَةَ بَرَكَة",
-      "warning_bullet_1": "مساهمتك في مسار هذا الأسبوع تبقى مع الفريق.",
-      "warning_bullet_2": "نقاطك وعَدّك الشخصي يبقيان معك.",
-      "warning_bullet_3": "ستحتاج دعوة جديدة للعودة.",
-      "warning_cta": "متابعة المغادرة",
-      "warning_stay": "البقاء مع الفريق"
-    }
-  },
-  "leaderboard": {
-    "eyebrow": "الدوري العالمي",
-    "title": "لوحة المتصدرين",
-    "empty": "لا توجد تصنيفات بعد.",
-    "error": "تعذّر تحميل لوحة المتصدرين.",
-    "top_three": "الثلاثة الأوائل",
-    "category_all": "الكل",
-    "all_members": "كل الأعضاء · {count}",
-    "levels_progress": "{completed} / {total} مستوى",
-    "you": "أنت",
-    "you_pill": "أنت",
-    "name_you": "{name} · أنت",
-    "your_rank": "ترتيبك",
-    "your_team": "فريقك",
-    "podium_empty": "لا يوجد تقدم للفريق بعد.",
-    "no_team": {
-      "title": "انضم إلى سباق الفِرق",
-      "lede": "لست في فريق بعد. أنشئ فريقًا أو انضم برمز لتتسلق لوحة الفِرق.",
-      "create": "إنشاء فريق",
-      "join": "انضمام برمز"
-    },
-    "scope": {
-      "individuals": "الأفراد",
-      "teams": "الفِرق"
-    },
-    "member_count": {
-      "zero": "لا أعضاء",
-      "one": "عضو واحد",
-      "two": "عضوان",
-      "few": "{} أعضاء",
-      "many": "{} عضوًا",
-      "other": "{} عضو"
-    }
-  },
-  "offline": {
-    "banner_message": "أنت غير متصل — يتم عرض المحتوى الذي تم تنزيله"
-  },
-  "downloads": {
-    "title": "التنزيلات",
-    "empty": "لا توجد تنزيلات بعد",
-    "empty_subtitle": "قم بتنزيل فئة لدراستها بدون اتصال.",
-    "download": "تنزيل",
-    "downloading": "جارٍ التنزيل…",
-    "downloaded": "تم التنزيل",
-    "remove": "إزالة التنزيل",
-    "remove_confirm": "إزالة هذه الفئة التي تم تنزيلها؟ ستحتاج إلى الإنترنت لتنزيلها مرة أخرى.",
-    "error": "فشل التنزيل. تحقق من اتصالك وحاول مرة أخرى.",
-    "levels_count": "{} مستوى",
-    "unsynced_on_logout": "لديك إجابات غير متزامنة. المزامنة قبل تسجيل الخروج؟"
+  "number_one": {
+   "eyebrow": "قائد الفريق الجديد",
+   "title": "أنتَ الأوّل!",
+   "arabic": "تَصَدَّرْتَ فَرِيقَك",
+   "subtitle_prefix": "تصدّرتَ المركز الأول في",
+   "subtitle_suffix": "— تقود {count} من الرفاق هذا الأسبوع.",
+   "row_meta": "{accuracy}% دقة · {streak} يوم تتابع",
+   "share_cta": "شارك اللحظة",
+   "view_cta": "عرض لوحة الصدارة كاملة"
   }
+ },
+ "leaderboard": {
+  "eyebrow": "الدوري العالمي",
+  "title": "لوحة المتصدرين",
+  "empty": "لا توجد تصنيفات بعد.",
+  "error": "تعذّر تحميل لوحة المتصدرين.",
+  "top_three": "الثلاثة الأوائل",
+  "category_all": "الكل",
+  "all_members": "كل الأعضاء · {count}",
+  "levels_progress": "{completed} / {total} مستوى",
+  "you": "أنت",
+  "you_pill": "أنت",
+  "name_you": "{name} · أنت",
+  "your_rank": "ترتيبك",
+  "your_team": "فريقك",
+  "podium_empty": "لا يوجد تقدم للفريق بعد.",
+  "no_team": {
+   "title": "انضم إلى سباق الفِرق",
+   "lede": "لست في فريق بعد. أنشئ فريقًا أو انضم برمز لتتسلق لوحة الفِرق.",
+   "create": "إنشاء فريق",
+   "join": "انضمام برمز"
+  },
+  "scope": {
+   "individuals": "الأفراد",
+   "teams": "الفِرق"
+  },
+  "member_count": {
+   "zero": "لا أعضاء",
+   "one": "عضو واحد",
+   "two": "عضوان",
+   "few": "{} أعضاء",
+   "many": "{} عضوًا",
+   "other": "{} عضو"
+  }
+ },
+ "offline": {
+  "banner_message": "أنت غير متصل — يتم عرض المحتوى الذي تم تنزيله"
+ },
+ "downloads": {
+  "title": "التنزيلات",
+  "empty": "لا توجد تنزيلات بعد",
+  "empty_subtitle": "قم بتنزيل فئة لدراستها بدون اتصال.",
+  "download": "تنزيل",
+  "downloading": "جارٍ التنزيل…",
+  "downloaded": "تم التنزيل",
+  "remove": "إزالة التنزيل",
+  "remove_confirm": "إزالة هذه الفئة التي تم تنزيلها؟ ستحتاج إلى الإنترنت لتنزيلها مرة أخرى.",
+  "error": "فشل التنزيل. تحقق من اتصالك وحاول مرة أخرى.",
+  "levels_count": "{} مستوى",
+  "unsynced_on_logout": "لديك إجابات غير متزامنة. المزامنة قبل تسجيل الخروج؟"
+ }
 }

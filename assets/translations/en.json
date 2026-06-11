@@ -1,744 +1,754 @@
 {
-  "app_name": "Zaad",
-  "did_not_receive_code": "Didn't receive the code?",
-  "resend": "Resend",
-  "resend_in": "Resend in",
-  "seconds": "seconds",
-  "common": {
-    "ok": "OK",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "back": "Back",
-    "next": "Next",
-    "done": "Done",
-    "continue": "CONTINUE",
-    "loading": "Loading...",
-    "retry": "Retry",
-    "yes": "Yes",
-    "no": "No",
-    "reset": "Reset"
+ "app_name": "Zaad",
+ "did_not_receive_code": "Didn't receive the code?",
+ "resend": "Resend",
+ "resend_in": "Resend in",
+ "seconds": "seconds",
+ "common": {
+  "ok": "OK",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "back": "Back",
+  "next": "Next",
+  "done": "Done",
+  "continue": "CONTINUE",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "yes": "Yes",
+  "no": "No",
+  "reset": "Reset"
+ },
+ "role_select": {
+  "eyebrow": "Step 1 of 2",
+  "title_prefix": "Who's ",
+  "title_accent": "this for",
+  "subtitle": "Tell us how you'll use Zaad so we can shape the experience around you.",
+  "individual_label": "For myself",
+  "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
+  "family_label": "For my family",
+  "family_desc": "Set up child profiles with their own progress, gentle goals, and guided content.",
+  "footer_prefix": "You can change this later in ",
+  "footer_settings": "Settings"
+ },
+ "create_profiles": {
+  "step": "STEP 2 OF 2",
+  "eyebrow": "Family setup",
+  "title_prefix": "Add your ",
+  "title_accent": "children",
+  "subtitle": "Each child gets their own avatar and progress.",
+  "name_label": "Name",
+  "name_hint": "e.g. Yusuf",
+  "age_label": "Age",
+  "add_child": "ADD ANOTHER CHILD",
+  "skip": "I'll do this later",
+  "sheet_title": "Choose an avatar",
+  "sheet_sub": "Pick a character that feels like home",
+  "password_set": "Password set",
+  "password_set_cta": "Set password",
+  "password_label": "Password",
+  "password_hint": "At least 4 characters",
+  "password_sheet_title": "Set a password",
+  "password_sheet_sub": "Used by {} to sign in",
+  "password_sheet_fallback_name": "this child",
+  "password_too_short": "Password must be at least {} characters.",
+  "password_required_for_all": "Please set a password for every child before continuing."
+ },
+ "home_nav": {
+  "home": "Home",
+  "categories": "Categories",
+  "leaderboard": "Leaderboard",
+  "profile": "Account"
+ },
+ "home": {
+  "greeting_morning": "Good morning,",
+  "greeting_afternoon": "Good afternoon,",
+  "greeting_evening": "Good evening,",
+  "salam_arabic": "السلام عليكم",
+  "fallback_name": "friend",
+  "load_failed": "Couldn't load your home — please try again",
+  "streak": {
+   "eyebrow_prefix": "Your ",
+   "eyebrow_accent": "streak",
+   "days_word": "days",
+   "in_a_row": "IN A ROW",
+   "motto_en": "A constant deed, however small, is most beloved to Allāh.",
+   "motto_ar": "أحب الأعمال إلى الله أدومها",
+   "personal_best": "PERSONAL BEST",
+   "personal_best_value": "{} days",
+   "next_milestone": "NEXT MILESTONE",
+   "next_milestone_value": "{} · two weeks"
   },
-  "role_select": {
-    "eyebrow": "Step 1 of 2",
-    "title_prefix": "Who's ",
-    "title_accent": "this for",
-    "subtitle": "Tell us how you'll use Zaad so we can shape the experience around you.",
-    "individual_label": "For myself",
-    "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
-    "family_label": "For my family",
-    "family_desc": "Set up child profiles with their own progress, gentle goals, and guided content.",
-    "footer_prefix": "You can change this later in ",
-    "footer_settings": "Settings"
+  "play": {
+   "eyebrow": "Test your knowledge",
+   "title_prefix": "Start ",
+   "title_accent": "playing",
+   "subtitle": "Pick a category and climb the levels"
   },
-  "create_profiles": {
-    "step": "STEP 2 OF 2",
-    "eyebrow": "Family setup",
-    "title_prefix": "Add your ",
-    "title_accent": "children",
-    "subtitle": "Each child gets their own avatar and progress.",
-    "name_label": "Name",
-    "name_hint": "e.g. Yusuf",
-    "age_label": "Age",
-    "add_child": "ADD ANOTHER CHILD",
-    "skip": "I'll do this later",
-    "sheet_title": "Choose an avatar",
-    "sheet_sub": "Pick a character that feels like home",
-    "password_set": "Password set",
-    "password_set_cta": "Set password",
-    "password_label": "Password",
-    "password_hint": "At least 4 characters",
-    "password_sheet_title": "Set a password",
-    "password_sheet_sub": "Used by {} to sign in",
-    "password_sheet_fallback_name": "this child",
-    "password_too_short": "Password must be at least {} characters.",
-    "password_required_for_all": "Please set a password for every child before continuing."
+  "team": {
+   "eyebrow": "Compete with friends",
+   "title_prefix": "Join a ",
+   "title_accent": "team",
+   "subtitle": "Climb the leaderboard together",
+   "modal": {
+    "eyebrow": "Friends",
+    "title_prefix": "Join a ",
+    "title_accent": "team",
+    "code_label": "Team code",
+    "code_placeholder": "ABCD-1234",
+    "submit": "Join team"
+   },
+   "joined_eyebrow": "My team",
+   "open": "Open →",
+   "rank_label": "Rank",
+   "companions_count": "{} companions"
   },
-  "home_nav": {
-    "home": "Home",
-    "categories": "Categories",
-    "leaderboard": "Leaderboard",
-    "profile": "Account"
+  "hadith": {
+   "section_title": "Hadith of the day",
+   "view_all": "VIEW ALL",
+   "narrator_prefix": "Narrated by ",
+   "hadith_no": "Hadith №{}"
+  },
+  "date_ember_cta": "View the Date & Ember leaderboard",
+  "why_login": {
+   "guest_tag": "Browsing as guest",
+   "title": "Create your free account",
+   "benefits": {
+    "streak_title": "Never lose your streak",
+    "streak_subtitle": "Your daily flame is saved forever",
+    "teams_title": "Join & create teams",
+    "teams_subtitle": "Study with companions, rise together",
+    "ranks_title": "Earn medals & ranks",
+    "ranks_subtitle": "Climb the global leaderboard",
+    "sync_title": "Sync across devices",
+    "sync_subtitle": "Pick up where you left off, anywhere"
+   },
+   "cta": "Create free account",
+   "have_account": "Already have one? ",
+   "sign_in": "Sign in"
+  }
+ },
+ "categories": {
+  "eyebrow": "YOUR JOURNEY",
+  "title": "Categories",
+  "subtitle": "Walk the path at your own pace. Each step opens the next.",
+  "overall": {
+   "label": "OVERALL PROGRESS"
+  },
+  "progress": {
+   "percent": "{}% complete",
+   "levels": "{} / {} levels",
+   "not_started": "Not started"
+  },
+  "state": {
+   "completed": "DONE",
+   "in_progress": "IN PROGRESS",
+   "locked": "LOCKED"
+  },
+  "levels_screen": {
+   "eyebrow": "LEVELS",
+   "heading": "{} of {} levels complete"
+  },
+  "reset": {
+   "confirm_title": "Reset this category?",
+   "confirm_subtitle": "Your progress across all levels in this category will be cleared. This cannot be undone.",
+   "confirm_cta": "Reset category"
+  }
+ },
+ "levels": {
+  "title": "Levels",
+  "eyebrow": "LEVELS",
+  "heading": "{} of {} levels complete",
+  "percent": "{}% complete",
+  "count": "{} / {} levels",
+  "questions": "{} / {} questions",
+  "pass": "Pass: {}%",
+  "state": {
+   "completed": "DONE",
+   "in_progress": "IN PROGRESS",
+   "unlocked": "READY",
+   "locked": "LOCKED"
+  },
+  "reset": {
+   "action": "Reset level",
+   "confirm_title": "Reset this level?",
+   "confirm_subtitle": "Your progress and score for this level will be cleared. This cannot be undone.",
+   "confirm_cta": "Reset level"
+  }
+ },
+ "quiz": {
+  "eyebrow": "QUIZ",
+  "question_eyebrow": "QUESTION",
+  "feedback": {
+   "correct_eyebrow": "WELL DONE",
+   "incorrect_eyebrow": "TRY AGAIN",
+   "explanation": "EXPLANATION",
+   "reference": "REFERENCE",
+   "correct_title_1": "Mashallah",
+   "correct_title_2": "Excellent",
+   "correct_title_3": "Brilliant",
+   "correct_title_4": "Well Done",
+   "wrong_title_1": "Try Again",
+   "wrong_title_2": "Keep Going",
+   "wrong_title_3": "Almost",
+   "wrong_title_4": "Stay Strong"
+  },
+  "actions": {
+   "save": "Save question",
+   "saved": "Saved for later review",
+   "report": "Report this question",
+   "report_sent": "Thank you, your report was received",
+   "next": "Next",
+   "finish": "Finish",
+   "previous": "Previous question"
+  },
+  "exit": {
+   "confirm_title": "Leave the quiz?",
+   "confirm_subtitle": "Your progress in this attempt will be lost. You can start again anytime.",
+   "confirm_cta": "Leave quiz"
+  },
+  "report": {
+   "title": "What's wrong with this question?",
+   "reason_wrong_answer": "Incorrect answer",
+   "reason_unclear": "Question is unclear",
+   "reason_typo": "Spelling mistake",
+   "reason_other": "Other",
+   "message_hint": "Add any details (optional)",
+   "submit": "Send report"
+  },
+  "result": {
+   "eyebrow": "JOURNEY OF KNOWLEDGE",
+   "title": "Level Complete",
+   "level_complete": "LEVEL {} · COMPLETE",
+   "answered_prefix": "You answered",
+   "continue": "Continue",
+   "score": "SCORE",
+   "points_label": "POINTS",
+   "questions_completed": "{} questions completed",
+   "revisited": "You revisited {} questions until mastery",
+   "closing": "May Allah grant you understanding 🌿",
+   "blessing": "Mashallah",
+   "done": "Done",
+   "stat_correct": "Correct",
+   "stat_time": "Time",
+   "stat_accuracy": "Accuracy",
+   "stat_xp_earned": "XP earned",
+   "stat_xp": "XP",
+   "stat_revisits": "Revisits"
+  },
+  "motivation": {
+   "correct_1": "Mashallah! A blessed answer 🌿",
+   "correct_2": "Barakallahu feek, keep going 💚",
+   "correct_3": "Excellent — may Allah increase you in knowledge 📖",
+   "wrong_1": "No worries, try again 🌱",
+   "wrong_2": "Every scholar starts here 📖",
+   "wrong_3": "So close — keep going 💚",
+   "finish_1": "The journey of knowledge continues 🌿",
+   "finish_2": "Knowledge is light — keep going 💡",
+   "finish_3": "May Allah grant you understanding and knowledge"
+  }
+ },
+ "profile_select": {
+  "eyebrow": "Profiles",
+  "title_prefix": "Who's ",
+  "title_accent": "reading",
+  "subtitle": "Choose a profile to continue your journey.",
+  "role_parent": "Parent",
+  "age_label": "Age {}",
+  "days": "days",
+  "add_child": "Add a child",
+  "manage": "Manage profiles",
+  "continue_current_account": "Continue with current account",
+  "current_account": "Current account"
+ },
+ "auth": {
+  "login": "Login",
+  "logout": "Logout",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "forgot_password": "Forgot password?",
+  "email_hint": "you@example.com",
+  "password_hint": "Your password",
+  "or_continue": "OR CONTINUE WITH",
+  "continue_google": "Continue with Google",
+  "continue_guest": "Continue as guest",
+  "upgrade_screen": {
+   "title": "Create your account",
+   "subtitle": "Add an email and password to save your progress and keep your account on every device.",
+   "cta": "CREATE ACCOUNT",
+   "success": "Your account is ready. Welcome aboard!"
+  },
+  "login_screen": {
+   "welcome_prefix": "Welcome ",
+   "welcome_accent": "home",
+   "subtitle": "Sign in to continue your daily practice.",
+   "sign_in": "SIGN IN",
+   "new_prompt": "New to Zaad?  ",
+   "create_account": "Create an account"
+  },
+  "signup_screen": {
+   "username_hint": "username",
+   "headline_prefix": "Begin your ",
+   "headline_accent": "journey",
+   "create_account": "CREATE ACCOUNT",
+   "have_account_prompt": "Already have an account?  ",
+   "sign_in": "Sign in"
+  },
+  "signup_success": {
+   "title_prefix": "Welcome to ",
+   "title_accent": "Zaad",
+   "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
+   "cta": "CONTINUE"
+  },
+  "forgot_password_screen": {
+   "headline_prefix": "Forgot ",
+   "headline_accent": "password",
+   "subtitle": "Enter your email and we'll send you a 6-digit code to reset your password.",
+   "email_hint": "you@example.com",
+   "send_code": "SEND CODE",
+   "back_to_login_prompt": "Remember your password?  ",
+   "back_to_login": "Sign in",
+   "otp_sent": "We sent a 6-digit code to your email."
+  },
+  "reset_password_dialog": {
+   "title": "Reset password",
+   "subtitle": "Enter the 6-digit code we sent to the address below and choose a new password.",
+   "otp_hint": "6-digit code",
+   "new_password_hint": "New password",
+   "submit": "RESET PASSWORD",
+   "cancel": "Cancel",
+   "success": "Your password has been reset. Sign in with your new password."
+  },
+  "verify_email_dialog": {
+   "title": "Verify your email",
+   "subtitle": "Enter the 6-digit code we sent to the address below to activate your account.",
+   "verify": "VERIFY",
+   "no_code": "Didn't get a code? ",
+   "resend": "Resend"
+  }
+ },
+ "errors": {
+  "generic": "Something went wrong",
+  "no_internet": "No internet connection",
+  "required_field": "This field is required"
+ },
+ "please_enter_email": "Please enter your email",
+ "please_enter_valid_email": "Please enter a valid email",
+ "please_enter_password": "Please enter your password",
+ "password_min_length": "Password must be at least {} characters",
+ "please_enter_your_name": "Please enter your name",
+ "full_name_max_length": "Name is too long",
+ "cancel": "Cancel",
+ "language": "Language",
+ "language_eyebrow": "LANGUAGE",
+ "language_title_lead": "Choose your",
+ "language_title_accent": "tongue",
+ "language_subtitle": "You can change the app language at any time.",
+ "language_save_cta": "Save changes",
+ "change_language": "Change language",
+ "failed_to_update_language": "Failed to update language",
+ "notifications": {
+  "title": "Notifications",
+  "clear_all": "CLEAR ALL",
+  "empty_title": "You're all caught up",
+  "empty_subtitle": "New reminders, achievements, and updates will appear here.",
+  "load_failed": "Couldn't load notifications",
+  "delete_failed": "Couldn't delete notification",
+  "types": {
+   "reminder": "Reminder",
+   "reading": "Reading",
+   "achievement": "Achievement",
+   "child_activity": "Child activity",
+   "announcement": "Announcement",
+   "other": "Notification"
+  },
+  "time": {
+   "just_now": "Just now",
+   "minutes_ago": "{} min ago",
+   "hours_ago": "{} h ago",
+   "days_ago": "{} d ago"
+  },
+  "mock": {
+   "reminder_title": "Time for your evening dhikr",
+   "reminder_body": "A few quiet minutes go a long way. Open Zaad to begin.",
+   "achievement_title": "Streak unlocked: 7 days",
+   "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
+   "reading_title": "New chapter in your library",
+   "reading_body": "A short reflection on patience has been added for you.",
+   "child_activity_title": "Yusuf finished today's lesson",
+   "child_activity_body": "He completed his reading goal and earned a star.",
+   "announcement_title": "Welcome to Zaad",
+   "announcement_body": "Thank you for joining. We're glad you're here.",
+   "evening_reminder_title": "Don't forget tomorrow's plan",
+   "evening_reminder_body": "Your weekly review is scheduled for the morning."
+  }
+ },
+ "drafts": {
+  "title": "Drafts",
+  "empty_title": "No saved questions yet",
+  "empty_subtitle": "Tap the bookmark on any quiz question to keep it for later review.",
+  "load_failed": "Couldn't load drafts",
+  "delete_failed": "Couldn't delete draft",
+  "delete_confirm_title": "Remove this draft?",
+  "delete_confirm_subtitle": "It will no longer appear in your saved list.",
+  "delete_confirm_cta": "Remove",
+  "note_label": "Note",
+  "note_hint": "Add a personal note…",
+  "note_subtitle": "Write a private note to remember this question.",
+  "note_save": "Save note",
+  "note_saved": "Note saved",
+  "no_note": "No note added",
+  "edit_note": "Edit note",
+  "view_details": "Tap to view details",
+  "correct_answer": "CORRECT ANSWER",
+  "your_note": "YOUR NOTE",
+  "remove_note": "Remove note"
+ },
+ "profile": {
+  "practice": "Practice",
+  "library": "Library",
+  "account": "Account",
+  "drafts": "Drafts",
+  "my_children": "My children",
+  "reminders": "Reminders",
+  "language": "Language",
+  "theme": "Appearance",
+  "theme_system": "System",
+  "theme_light": "Light",
+  "theme_dark": "Dark",
+  "edit_profile": "Edit profile",
+  "upgrade_account": "Upgrade account",
+  "view_profile": "View profile",
+  "privacy": "Privacy",
+  "help_support": "Help & support",
+  "support_tickets": "My support tickets",
+  "sign_out": "Sign out",
+  "sign_out_confirm_title": "Sign out?",
+  "sign_out_confirm_subtitle": "You'll need to sign in again to access your account.",
+  "sign_out_confirm_cta": "Yes, sign out",
+  "reset_progress": "Reset all progress",
+  "reset_progress_confirm_title": "Reset all progress?",
+  "reset_progress_confirm_subtitle": "This clears your progress across every category and level. This cannot be undone.",
+  "reset_progress_confirm_cta": "Yes, reset everything",
+  "reset_progress_success": "Your progress has been reset",
+  "downloads": "Downloads"
+ },
+ "edit_profile": {
+  "name_label": "NAME",
+  "name_hint": "Your full name",
+  "email_label": "EMAIL",
+  "email_locked": "Your email cannot be changed.",
+  "birthday_label": "BIRTHDAY",
+  "birthday_hint": "Choose your birth date",
+  "update_success": "Profile updated",
+  "update_failed": "Couldn't update profile",
+  "delete_account": "Delete account",
+  "delete_account_description": "This will permanently remove your profile, progress, and saved bookmarks. This action cannot be undone.",
+  "delete_account_cta": "DELETE MY ACCOUNT",
+  "delete_confirm_title": "Delete your account?",
+  "delete_confirm_subtitle": "This will permanently remove your account and all associated data. This action cannot be undone.",
+  "delete_confirm_cta": "Yes, delete my account",
+  "delete_password_title": "Confirm with your password",
+  "delete_password_title_lead": "Confirm",
+  "delete_password_title_accent": "deletion",
+  "delete_password_eyebrow": "ACCOUNT REMOVAL",
+  "delete_password_subtitle": "Enter your password to permanently delete your account.",
+  "delete_password_helper": "This action is permanent and cannot be undone.",
+  "delete_password_label": "PASSWORD",
+  "delete_password_hint": "Password",
+  "delete_password_required": "Please enter your password",
+  "delete_password_cta": "Delete account",
+  "change_password": "Change password",
+  "change_password_eyebrow": "SECURITY",
+  "change_password_title": "Change your password",
+  "change_password_title_lead": "Change",
+  "change_password_title_accent": "password",
+  "change_password_subtitle": "Enter your current password and choose a new one.",
+  "change_password_helper": "Use at least 8 characters with a mix of letters, numbers, and symbols.",
+  "current_password_label": "CURRENT PASSWORD",
+  "new_password_label": "NEW PASSWORD",
+  "confirm_password_label": "CONFIRM NEW PASSWORD",
+  "current_password_hint": "Current password",
+  "new_password_hint": "At least 8 characters",
+  "confirm_password_hint": "Repeat new password",
+  "password_required": "Please enter your password",
+  "password_min_length": "Password must be at least 8 characters",
+  "password_mismatch": "Passwords don't match",
+  "change_password_cta": "Update password",
+  "change_password_success": "Password updated"
+ },
+ "help_center": {
+  "title": "Help & support",
+  "subtitle": "We're here to listen",
+  "eyebrow": "WE'RE LISTENING",
+  "heading": "How can we help?",
+  "lede": "Tell us what's on your mind. A real person reads every message.",
+  "choose_topic": "PICK A TOPIC",
+  "pick_topic_hint": "Choose a topic above to start writing your message.",
+  "subject_label": "SUBJECT (OPTIONAL)",
+  "subject_hint": "A short headline",
+  "message_label": "YOUR MESSAGE",
+  "message_hint": "Share as much detail as you'd like — we'll read every word.",
+  "char_floor": "Write at least 10 characters",
+  "ready_to_send": "Ready to send",
+  "send_cta": "Send message",
+  "sending": "Sending…",
+  "send_failed": "Couldn't send your message. Please try again.",
+  "reply_window": "We typically reply within 24 hours",
+  "topics": {
+   "feedback": {
+    "label": "Feedback",
+    "description": "Share what you love or what could be better."
+   },
+   "question": {
+    "label": "Question",
+    "description": "Ask us anything about Zaad."
+   },
+   "bug": {
+    "label": "Bug report",
+    "description": "Something didn't work as expected."
+   },
+   "technical": {
+    "label": "Technical",
+    "description": "Account, sync, or device issues."
+   }
+  },
+  "success": {
+   "title": "Your message is on its way",
+   "subtitle": "Thank you for taking a moment to write to us. We'll be in touch soon.",
+   "topic_label": "TOPIC",
+   "reference_label": "REFERENCE",
+   "send_another": "Send another message",
+   "close": "Back to settings"
+  }
+ },
+ "support_tickets": {
+  "title": "My support tickets",
+  "new_ticket": "New ticket",
+  "empty_title": "No tickets yet",
+  "empty_subtitle": "Send us a message and we'll keep track of the conversation here.",
+  "load_failed": "Couldn't load your tickets",
+  "reply_count": {
+   "zero": "No replies",
+   "one": "1 reply",
+   "two": "{} replies",
+   "few": "{} replies",
+   "many": "{} replies",
+   "other": "{} replies"
+  },
+  "status": {
+   "pending": "Pending",
+   "open": "Open",
+   "in_review": "In review",
+   "resolved": "Resolved",
+   "closed": "Closed",
+   "closed_by_user": "Closed by you"
+  },
+  "detail": {
+   "title": "Ticket details",
+   "ref_label": "REF",
+   "replies_section": "CONVERSATION",
+   "original_message": "ORIGINAL MESSAGE",
+   "no_replies": "We've received your message and a real person will get back to you soon.",
+   "from_admin": "Support team",
+   "from_you": "You",
+   "close_ticket": "Close ticket",
+   "close_card_lead": "Still open",
+   "close_card_body": "Wrap this up when you feel the issue is resolved.",
+   "close_confirm_title": "Close this ticket?",
+   "close_confirm_body": "Closing marks the conversation as resolved. You can always open a new ticket later.",
+   "close_success": "Ticket closed",
+   "close_failed": "Couldn't close the ticket. Please try again."
+  }
+ },
+ "teams": {
+  "loader": {
+   "title": "Gathering your companions…",
+   "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
+  },
+  "empty": {
+   "eyebrow": "Companions",
+   "title": "Your team",
+   "title_lede": "No team yet — begin together.",
+   "hadith_ar": "المؤمن للمؤمن كالبنيان",
+   "lede": "Form a circle of companions to study, recite, and grow together — or join one with an invite code.",
+   "cta_create": "Create a team",
+   "cta_join": "Join with code"
+  },
+  "create": {
+   "title": "Create a team",
+   "step": "Step 1 of 1",
+   "sheet_eyebrow": "Companions",
+   "sheet_title_lead": "Name your",
+   "sheet_title_accent": "team",
+   "sheet_title": "Name your team",
+   "sheet_lede": "Give your circle a name — you can always change it later.",
+   "name_label": "Team name",
+   "name_hint": "e.g. The Companions of Madinah",
+   "name_error": "Name must be at least 3 characters.",
+   "intent_label": "Intent — optional",
+   "intent_hint": "What does this team study together?",
+   "intent_helper": "Visible to members on the team home.",
+   "add_banner": "Add banner · optional",
+   "add_avatar": "Add avatar",
+   "avatar_set": "Avatar ✓",
+   "cta": "Create team",
+   "submitting": "Sending invitation to the unseen…",
+   "success_arabic": "بَارَكَ اللهُ فِيكُم",
+   "success_open": "is now sealed and open.",
+   "success_lede": "Share your invite code with up to 19 companions, or wait quietly — we'll lead you home.",
+   "success_eyebrow": "Decree of Companionship",
+   "success_invite_label": "Invite Code",
+   "success_expires": "Expires in 7 days · up to 19 companions",
+   "success_cta": "Enter your team home",
+   "success_skip": "Share invite later",
+   "copied": "Invite code copied",
+   "share_subject": "Join my Zaad team",
+   "share_message": "Join my circle on Zaad — use invite code {code}\n{link}"
+  },
+  "join": {
+   "title": "Join a team",
+   "eyebrow": "Companions",
+   "find_circle": "Find your circle",
+   "lede_title": "Have an invite?",
+   "lede": "Enter the eight-character code your team leader shared with you.",
+   "code_label": "Invite code",
+   "code_hint": "XXXX-XXXX",
+   "code_helper": "Or open a Zad invite link from any chat — it lands here.",
+   "paste": "Paste",
+   "or": "or",
+   "deep_link_hint": "Open a Zad invite link from any chat — it lands here automatically.",
+   "cta": "Knock on the door",
+   "submitting": "Knocking…",
+   "error_title": "No door opens here.",
+   "error_lede": "This invite has expired or no longer exists. Ask the team leader for a fresh code.",
+   "error_try_again": "Try again",
+   "error_help": "Need help",
+   "success_arabic": "أَهْلًا وَسَهْلًا",
+   "success_youre_in": "You're in",
+   "success_lede": "{count} companions reading together — your first chapter is waiting.",
+   "success_cta": "See the team"
   },
   "home": {
-    "greeting_morning": "Good morning,",
-    "greeting_afternoon": "Good afternoon,",
-    "greeting_evening": "Good evening,",
-    "salam_arabic": "السلام عليكم",
-    "fallback_name": "friend",
-    "load_failed": "Couldn't load your home — please try again",
-    "streak": {
-      "eyebrow_prefix": "Your ",
-      "eyebrow_accent": "streak",
-      "days_word": "days",
-      "in_a_row": "IN A ROW",
-      "motto_en": "A constant deed, however small, is most beloved to Allāh.",
-      "motto_ar": "أحب الأعمال إلى الله أدومها",
-      "personal_best": "PERSONAL BEST",
-      "personal_best_value": "{} days",
-      "next_milestone": "NEXT MILESTONE",
-      "next_milestone_value": "{} · two weeks"
-    },
-    "play": {
-      "eyebrow": "Test your knowledge",
-      "title_prefix": "Start ",
-      "title_accent": "playing",
-      "subtitle": "Pick a category and climb the levels"
-    },
-    "team": {
-      "eyebrow": "Compete with friends",
-      "title_prefix": "Join a ",
-      "title_accent": "team",
-      "subtitle": "Climb the leaderboard together",
-      "modal": {
-        "eyebrow": "Friends",
-        "title_prefix": "Join a ",
-        "title_accent": "team",
-        "code_label": "Team code",
-        "code_placeholder": "ABCD-1234",
-        "submit": "Join team"
-      },
-      "joined_eyebrow": "My team",
-      "open": "Open →",
-      "rank_label": "Rank",
-      "companions_count": "{} companions"
-    },
-    "hadith": {
-      "section_title": "Hadith of the day",
-      "view_all": "VIEW ALL",
-      "narrator_prefix": "Narrated by ",
-      "hadith_no": "Hadith №{}"
-    },
-    "date_ember_cta": "View the Date & Ember leaderboard",
-    "why_login": {
-      "guest_tag": "Browsing as guest",
-      "title": "Create your free account",
-      "benefits": {
-        "streak_title": "Never lose your streak",
-        "streak_subtitle": "Your daily flame is saved forever",
-        "teams_title": "Join & create teams",
-        "teams_subtitle": "Study with companions, rise together",
-        "ranks_title": "Earn medals & ranks",
-        "ranks_subtitle": "Climb the global leaderboard",
-        "sync_title": "Sync across devices",
-        "sync_subtitle": "Pick up where you left off, anywhere"
-      },
-      "cta": "Create free account",
-      "have_account": "Already have one? ",
-      "sign_in": "Sign in"
-    }
+   "eyebrow": "My team",
+   "subtitle": "Companions",
+   "companions": "Companions",
+   "progress": "Progress",
+   "categories": "Categories",
+   "solved": "Solved",
+   "rank": "Rank",
+   "next_rank": "To the next rank",
+   "view_all": "View all →",
+   "week_title": "This week's path",
+   "week_chip": "Mon · 3 ahead",
+   "recent": "Recent",
+   "activity": {
+    "completed": "{name} finished Chapter {chapter}",
+    "streak": "{name} kept his {days}-day streak",
+    "goal": "{name} set this week's goal"
+   }
   },
-  "categories": {
-    "eyebrow": "YOUR JOURNEY",
-    "title": "Categories",
-    "subtitle": "Walk the path at your own pace. Each step opens the next.",
-    "overall": {
-      "label": "OVERALL PROGRESS"
-    },
-    "progress": {
-      "percent": "{}% complete",
-      "levels": "{} / {} levels",
-      "not_started": "Not started"
-    },
-    "state": {
-      "completed": "DONE",
-      "in_progress": "IN PROGRESS",
-      "locked": "LOCKED"
-    },
-    "levels_screen": {
-      "eyebrow": "LEVELS",
-      "heading": "{} of {} levels complete"
-    },
-    "reset": {
-      "confirm_title": "Reset this category?",
-      "confirm_subtitle": "Your progress across all levels in this category will be cleared. This cannot be undone.",
-      "confirm_cta": "Reset category"
-    }
+  "tabs": {
+   "home": "Home",
+   "members": "Members",
+   "progress": "Progress"
   },
-  "levels": {
-    "title": "Levels",
-    "eyebrow": "LEVELS",
-    "heading": "{} of {} levels complete",
-    "percent": "{}% complete",
-    "count": "{} / {} levels",
-    "questions": "{} / {} questions",
-    "pass": "Pass: {}%",
-    "state": {
-      "completed": "DONE",
-      "in_progress": "IN PROGRESS",
-      "unlocked": "READY",
-      "locked": "LOCKED"
-    },
-    "reset": {
-      "action": "Reset level",
-      "confirm_title": "Reset this level?",
-      "confirm_subtitle": "Your progress and score for this level will be cleared. This cannot be undone.",
-      "confirm_cta": "Reset level"
-    }
+  "members": {
+   "title": "Members · {count}",
+   "role_leader": "Leader",
+   "meta": "{done} / {total} levels",
+   "code_label": "Team code",
+   "empty_filter": "No members match this filter.",
+   "filter": {
+    "all": "All",
+    "leaders": "Leaders"
+   }
   },
-  "quiz": {
-    "eyebrow": "QUIZ",
-    "question_eyebrow": "QUESTION",
-    "feedback": {
-      "correct_eyebrow": "WELL DONE",
-      "incorrect_eyebrow": "TRY AGAIN",
-      "explanation": "EXPLANATION",
-      "reference": "REFERENCE",
-      "correct_title_1": "Mashallah",
-      "correct_title_2": "Excellent",
-      "correct_title_3": "Brilliant",
-      "correct_title_4": "Well Done",
-      "wrong_title_1": "Try Again",
-      "wrong_title_2": "Keep Going",
-      "wrong_title_3": "Almost",
-      "wrong_title_4": "Stay Strong"
-    },
-    "actions": {
-      "save": "Save question",
-      "saved": "Saved for later review",
-      "report": "Report this question",
-      "report_sent": "Thank you, your report was received",
-      "next": "Next",
-      "finish": "Finish",
-      "previous": "Previous question"
-    },
-    "exit": {
-      "confirm_title": "Leave the quiz?",
-      "confirm_subtitle": "Your progress in this attempt will be lost. You can start again anytime.",
-      "confirm_cta": "Leave quiz"
-    },
-    "report": {
-      "title": "What's wrong with this question?",
-      "reason_wrong_answer": "Incorrect answer",
-      "reason_unclear": "Question is unclear",
-      "reason_typo": "Spelling mistake",
-      "reason_other": "Other",
-      "message_hint": "Add any details (optional)",
-      "submit": "Send report"
-    },
-    "result": {
-      "eyebrow": "JOURNEY OF KNOWLEDGE",
-      "title": "Level Complete",
-      "level_complete": "LEVEL {} · COMPLETE",
-      "answered_prefix": "You answered",
-      "continue": "Continue",
-      "score": "SCORE",
-      "points_label": "POINTS",
-      "questions_completed": "{} questions completed",
-      "revisited": "You revisited {} questions until mastery",
-      "closing": "May Allah grant you understanding 🌿",
-      "blessing": "Mashallah",
-      "done": "Done",
-      "stat_correct": "Correct",
-      "stat_time": "Time",
-      "stat_accuracy": "Accuracy",
-      "stat_xp_earned": "XP earned",
-      "stat_xp": "XP",
-      "stat_revisits": "Revisits"
-    },
-    "motivation": {
-      "correct_1": "Mashallah! A blessed answer 🌿",
-      "correct_2": "Barakallahu feek, keep going 💚",
-      "correct_3": "Excellent — may Allah increase you in knowledge 📖",
-      "wrong_1": "No worries, try again 🌱",
-      "wrong_2": "Every scholar starts here 📖",
-      "wrong_3": "So close — keep going 💚",
-      "finish_1": "The journey of knowledge continues 🌿",
-      "finish_2": "Knowledge is light — keep going 💡",
-      "finish_3": "May Allah grant you understanding and knowledge"
-    }
+  "progress": {
+   "title": "Progress",
+   "overall": "Team progress",
+   "goal": "Team goal",
+   "avg_member": "Avg / member",
+   "levels_done": "levels done",
+   "top_contributors": "Top contributors",
+   "no_contributors": "No contributions yet."
   },
-  "profile_select": {
-    "eyebrow": "Profiles",
-    "title_prefix": "Who's ",
-    "title_accent": "reading",
-    "subtitle": "Choose a profile to continue your journey.",
-    "role_parent": "Parent",
-    "age_label": "Age {}",
-    "days": "days",
-    "add_child": "Add a child",
-    "manage": "Manage profiles",
-    "continue_current_account": "Continue with current account",
-    "current_account": "Current account"
+  "leave": {
+   "confirm_title": "Confirm leaving",
+   "confirm_lede_title": "One more breath.",
+   "confirm_lede": "Type the team name below to confirm leaving {name}.",
+   "team_name_label": "Team name",
+   "cta": "Leave team",
+   "never_mind": "Never mind",
+   "warning_title": "Leave the team?",
+   "warning_arabic": "إِنَّ الجَمَاعَةَ بَرَكَة",
+   "warning_bullet_1": "Your contribution to this week's path stays with the team.",
+   "warning_bullet_2": "Your personal XP and streak are kept.",
+   "warning_bullet_3": "You'll need a new invite to return.",
+   "warning_cta": "Continue to leave",
+   "warning_stay": "Stay with the team"
   },
-  "auth": {
-    "login": "Login",
-    "logout": "Logout",
-    "register": "Register",
-    "email": "Email",
-    "password": "Password",
-    "forgot_password": "Forgot password?",
-    "email_hint": "you@example.com",
-    "password_hint": "Your password",
-    "or_continue": "OR CONTINUE WITH",
-    "continue_google": "Continue with Google",
-    "continue_guest": "Continue as guest",
-    "upgrade_screen": {
-      "title": "Create your account",
-      "subtitle": "Add an email and password to save your progress and keep your account on every device.",
-      "cta": "CREATE ACCOUNT",
-      "success": "Your account is ready. Welcome aboard!"
-    },
-    "login_screen": {
-      "welcome_prefix": "Welcome ",
-      "welcome_accent": "home",
-      "subtitle": "Sign in to continue your daily practice.",
-      "sign_in": "SIGN IN",
-      "new_prompt": "New to Zaad?  ",
-      "create_account": "Create an account"
-    },
-    "signup_screen": {
-      "username_hint": "username",
-      "headline_prefix": "Begin your ",
-      "headline_accent": "journey",
-      "create_account": "CREATE ACCOUNT",
-      "have_account_prompt": "Already have an account?  ",
-      "sign_in": "Sign in"
-    },
-    "signup_success": {
-      "title_prefix": "Welcome to ",
-      "title_accent": "Zaad",
-      "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
-      "cta": "CONTINUE"
-    },
-    "forgot_password_screen": {
-      "headline_prefix": "Forgot ",
-      "headline_accent": "password",
-      "subtitle": "Enter your email and we'll send you a 6-digit code to reset your password.",
-      "email_hint": "you@example.com",
-      "send_code": "SEND CODE",
-      "back_to_login_prompt": "Remember your password?  ",
-      "back_to_login": "Sign in",
-      "otp_sent": "We sent a 6-digit code to your email."
-    },
-    "reset_password_dialog": {
-      "title": "Reset password",
-      "subtitle": "Enter the 6-digit code we sent to the address below and choose a new password.",
-      "otp_hint": "6-digit code",
-      "new_password_hint": "New password",
-      "submit": "RESET PASSWORD",
-      "cancel": "Cancel",
-      "success": "Your password has been reset. Sign in with your new password."
-    },
-    "verify_email_dialog": {
-      "title": "Verify your email",
-      "subtitle": "Enter the 6-digit code we sent to the address below to activate your account.",
-      "verify": "VERIFY",
-      "no_code": "Didn't get a code? ",
-      "resend": "Resend"
-    }
-  },
-  "errors": {
-    "generic": "Something went wrong",
-    "no_internet": "No internet connection",
-    "required_field": "This field is required"
-  },
-  "please_enter_email": "Please enter your email",
-  "please_enter_valid_email": "Please enter a valid email",
-  "please_enter_password": "Please enter your password",
-  "password_min_length": "Password must be at least {} characters",
-  "please_enter_your_name": "Please enter your name",
-  "full_name_max_length": "Name is too long",
-  "cancel": "Cancel",
-  "language": "Language",
-  "language_eyebrow": "LANGUAGE",
-  "language_title_lead": "Choose your",
-  "language_title_accent": "tongue",
-  "language_subtitle": "You can change the app language at any time.",
-  "language_save_cta": "Save changes",
-  "change_language": "Change language",
-  "failed_to_update_language": "Failed to update language",
-  "notifications": {
-    "title": "Notifications",
-    "clear_all": "CLEAR ALL",
-    "empty_title": "You're all caught up",
-    "empty_subtitle": "New reminders, achievements, and updates will appear here.",
-    "load_failed": "Couldn't load notifications",
-    "delete_failed": "Couldn't delete notification",
-    "types": {
-      "reminder": "Reminder",
-      "reading": "Reading",
-      "achievement": "Achievement",
-      "child_activity": "Child activity",
-      "announcement": "Announcement",
-      "other": "Notification"
-    },
-    "time": {
-      "just_now": "Just now",
-      "minutes_ago": "{} min ago",
-      "hours_ago": "{} h ago",
-      "days_ago": "{} d ago"
-    },
-    "mock": {
-      "reminder_title": "Time for your evening dhikr",
-      "reminder_body": "A few quiet minutes go a long way. Open Zaad to begin.",
-      "achievement_title": "Streak unlocked: 7 days",
-      "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
-      "reading_title": "New chapter in your library",
-      "reading_body": "A short reflection on patience has been added for you.",
-      "child_activity_title": "Yusuf finished today's lesson",
-      "child_activity_body": "He completed his reading goal and earned a star.",
-      "announcement_title": "Welcome to Zaad",
-      "announcement_body": "Thank you for joining. We're glad you're here.",
-      "evening_reminder_title": "Don't forget tomorrow's plan",
-      "evening_reminder_body": "Your weekly review is scheduled for the morning."
-    }
-  },
-  "drafts": {
-    "title": "Drafts",
-    "empty_title": "No saved questions yet",
-    "empty_subtitle": "Tap the bookmark on any quiz question to keep it for later review.",
-    "load_failed": "Couldn't load drafts",
-    "delete_failed": "Couldn't delete draft",
-    "delete_confirm_title": "Remove this draft?",
-    "delete_confirm_subtitle": "It will no longer appear in your saved list.",
-    "delete_confirm_cta": "Remove",
-    "note_label": "Note",
-    "note_hint": "Add a personal note…",
-    "note_subtitle": "Write a private note to remember this question.",
-    "note_save": "Save note",
-    "note_saved": "Note saved",
-    "no_note": "No note added",
-    "edit_note": "Edit note",
-    "view_details": "Tap to view details",
-    "correct_answer": "CORRECT ANSWER",
-    "your_note": "YOUR NOTE",
-    "remove_note": "Remove note"
-  },
-  "profile": {
-    "practice": "Practice",
-    "library": "Library",
-    "account": "Account",
-    "drafts": "Drafts",
-    "my_children": "My children",
-    "reminders": "Reminders",
-    "language": "Language",
-    "theme": "Appearance",
-    "theme_system": "System",
-    "theme_light": "Light",
-    "theme_dark": "Dark",
-    "edit_profile": "Edit profile",
-    "upgrade_account": "Upgrade account",
-    "view_profile": "View profile",
-    "privacy": "Privacy",
-    "help_support": "Help & support",
-    "support_tickets": "My support tickets",
-    "sign_out": "Sign out",
-    "sign_out_confirm_title": "Sign out?",
-    "sign_out_confirm_subtitle": "You'll need to sign in again to access your account.",
-    "sign_out_confirm_cta": "Yes, sign out",
-    "reset_progress": "Reset all progress",
-    "reset_progress_confirm_title": "Reset all progress?",
-    "reset_progress_confirm_subtitle": "This clears your progress across every category and level. This cannot be undone.",
-    "reset_progress_confirm_cta": "Yes, reset everything",
-    "reset_progress_success": "Your progress has been reset",
-    "downloads": "Downloads"
-  },
-  "edit_profile": {
-    "name_label": "NAME",
-    "name_hint": "Your full name",
-    "email_label": "EMAIL",
-    "email_locked": "Your email cannot be changed.",
-    "birthday_label": "BIRTHDAY",
-    "birthday_hint": "Choose your birth date",
-    "update_success": "Profile updated",
-    "update_failed": "Couldn't update profile",
-    "delete_account": "Delete account",
-    "delete_account_description": "This will permanently remove your profile, progress, and saved bookmarks. This action cannot be undone.",
-    "delete_account_cta": "DELETE MY ACCOUNT",
-    "delete_confirm_title": "Delete your account?",
-    "delete_confirm_subtitle": "This will permanently remove your account and all associated data. This action cannot be undone.",
-    "delete_confirm_cta": "Yes, delete my account",
-    "delete_password_title": "Confirm with your password",
-    "delete_password_title_lead": "Confirm",
-    "delete_password_title_accent": "deletion",
-    "delete_password_eyebrow": "ACCOUNT REMOVAL",
-    "delete_password_subtitle": "Enter your password to permanently delete your account.",
-    "delete_password_helper": "This action is permanent and cannot be undone.",
-    "delete_password_label": "PASSWORD",
-    "delete_password_hint": "Password",
-    "delete_password_required": "Please enter your password",
-    "delete_password_cta": "Delete account",
-    "change_password": "Change password",
-    "change_password_eyebrow": "SECURITY",
-    "change_password_title": "Change your password",
-    "change_password_title_lead": "Change",
-    "change_password_title_accent": "password",
-    "change_password_subtitle": "Enter your current password and choose a new one.",
-    "change_password_helper": "Use at least 8 characters with a mix of letters, numbers, and symbols.",
-    "current_password_label": "CURRENT PASSWORD",
-    "new_password_label": "NEW PASSWORD",
-    "confirm_password_label": "CONFIRM NEW PASSWORD",
-    "current_password_hint": "Current password",
-    "new_password_hint": "At least 8 characters",
-    "confirm_password_hint": "Repeat new password",
-    "password_required": "Please enter your password",
-    "password_min_length": "Password must be at least 8 characters",
-    "password_mismatch": "Passwords don't match",
-    "change_password_cta": "Update password",
-    "change_password_success": "Password updated"
-  },
-  "help_center": {
-    "title": "Help & support",
-    "subtitle": "We're here to listen",
-    "eyebrow": "WE'RE LISTENING",
-    "heading": "How can we help?",
-    "lede": "Tell us what's on your mind. A real person reads every message.",
-    "choose_topic": "PICK A TOPIC",
-    "pick_topic_hint": "Choose a topic above to start writing your message.",
-    "subject_label": "SUBJECT (OPTIONAL)",
-    "subject_hint": "A short headline",
-    "message_label": "YOUR MESSAGE",
-    "message_hint": "Share as much detail as you'd like — we'll read every word.",
-    "char_floor": "Write at least 10 characters",
-    "ready_to_send": "Ready to send",
-    "send_cta": "Send message",
-    "sending": "Sending…",
-    "send_failed": "Couldn't send your message. Please try again.",
-    "reply_window": "We typically reply within 24 hours",
-    "topics": {
-      "feedback": {
-        "label": "Feedback",
-        "description": "Share what you love or what could be better."
-      },
-      "question": {
-        "label": "Question",
-        "description": "Ask us anything about Zaad."
-      },
-      "bug": {
-        "label": "Bug report",
-        "description": "Something didn't work as expected."
-      },
-      "technical": {
-        "label": "Technical",
-        "description": "Account, sync, or device issues."
-      }
-    },
-    "success": {
-      "title": "Your message is on its way",
-      "subtitle": "Thank you for taking a moment to write to us. We'll be in touch soon.",
-      "topic_label": "TOPIC",
-      "reference_label": "REFERENCE",
-      "send_another": "Send another message",
-      "close": "Back to settings"
-    }
-  },
-  "support_tickets": {
-    "title": "My support tickets",
-    "new_ticket": "New ticket",
-    "empty_title": "No tickets yet",
-    "empty_subtitle": "Send us a message and we'll keep track of the conversation here.",
-    "load_failed": "Couldn't load your tickets",
-    "reply_count": {
-      "zero": "No replies",
-      "one": "1 reply",
-      "two": "{} replies",
-      "few": "{} replies",
-      "many": "{} replies",
-      "other": "{} replies"
-    },
-    "status": {
-      "pending": "Pending",
-      "open": "Open",
-      "in_review": "In review",
-      "resolved": "Resolved",
-      "closed": "Closed",
-      "closed_by_user": "Closed by you"
-    },
-    "detail": {
-      "title": "Ticket details",
-      "ref_label": "REF",
-      "replies_section": "CONVERSATION",
-      "original_message": "ORIGINAL MESSAGE",
-      "no_replies": "We've received your message and a real person will get back to you soon.",
-      "from_admin": "Support team",
-      "from_you": "You",
-      "close_ticket": "Close ticket",
-      "close_card_lead": "Still open",
-      "close_card_body": "Wrap this up when you feel the issue is resolved.",
-      "close_confirm_title": "Close this ticket?",
-      "close_confirm_body": "Closing marks the conversation as resolved. You can always open a new ticket later.",
-      "close_success": "Ticket closed",
-      "close_failed": "Couldn't close the ticket. Please try again."
-    }
-  },
-  "teams": {
-    "loader": {
-      "title": "Gathering your companions…",
-      "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
-    },
-    "empty": {
-      "eyebrow": "Companions",
-      "title": "Your team",
-      "title_lede": "No team yet — begin together.",
-      "hadith_ar": "المؤمن للمؤمن كالبنيان",
-      "lede": "Form a circle of companions to study, recite, and grow together — or join one with an invite code.",
-      "cta_create": "Create a team",
-      "cta_join": "Join with code"
-    },
-    "create": {
-      "title": "Create a team",
-      "step": "Step 1 of 1",
-      "sheet_eyebrow": "Companions",
-      "sheet_title_lead": "Name your",
-      "sheet_title_accent": "team",
-      "sheet_title": "Name your team",
-      "sheet_lede": "Give your circle a name — you can always change it later.",
-      "name_label": "Team name",
-      "name_hint": "e.g. The Companions of Madinah",
-      "name_error": "Name must be at least 3 characters.",
-      "intent_label": "Intent — optional",
-      "intent_hint": "What does this team study together?",
-      "intent_helper": "Visible to members on the team home.",
-      "add_banner": "Add banner · optional",
-      "add_avatar": "Add avatar",
-      "avatar_set": "Avatar ✓",
-      "cta": "Create team",
-      "submitting": "Sending invitation to the unseen…",
-      "success_arabic": "بَارَكَ اللهُ فِيكُم",
-      "success_open": "is now sealed and open.",
-      "success_lede": "Share your invite code with up to 19 companions, or wait quietly — we'll lead you home.",
-      "success_eyebrow": "Decree of Companionship",
-      "success_invite_label": "Invite Code",
-      "success_expires": "Expires in 7 days · up to 19 companions",
-      "success_cta": "Enter your team home",
-      "success_skip": "Share invite later",
-      "copied": "Invite code copied",
-      "share_subject": "Join my Zaad team",
-      "share_message": "Join my circle on Zaad — use invite code {code}\n{link}"
-    },
-    "join": {
-      "title": "Join a team",
-      "eyebrow": "Companions",
-      "find_circle": "Find your circle",
-      "lede_title": "Have an invite?",
-      "lede": "Enter the eight-character code your team leader shared with you.",
-      "code_label": "Invite code",
-      "code_hint": "XXXX-XXXX",
-      "code_helper": "Or open a Zad invite link from any chat — it lands here.",
-      "paste": "Paste",
-      "or": "or",
-      "deep_link_hint": "Open a Zad invite link from any chat — it lands here automatically.",
-      "cta": "Knock on the door",
-      "submitting": "Knocking…",
-      "error_title": "No door opens here.",
-      "error_lede": "This invite has expired or no longer exists. Ask the team leader for a fresh code.",
-      "error_try_again": "Try again",
-      "error_help": "Need help",
-      "success_arabic": "أَهْلًا وَسَهْلًا",
-      "success_youre_in": "You're in",
-      "success_lede": "{count} companions reading together — your first chapter is waiting.",
-      "success_cta": "See the team"
-    },
-    "home": {
-      "eyebrow": "My team",
-      "subtitle": "Companions",
-      "companions": "Companions",
-      "progress": "Progress",
-      "categories": "Categories",
-      "solved": "Solved",
-      "rank": "Rank",
-      "next_rank": "To the next rank",
-      "view_all": "View all →",
-      "week_title": "This week's path",
-      "week_chip": "Mon · 3 ahead",
-      "recent": "Recent",
-      "activity": {
-        "completed": "{name} finished Chapter {chapter}",
-        "streak": "{name} kept his {days}-day streak",
-        "goal": "{name} set this week's goal"
-      }
-    },
-    "tabs": {
-      "home": "Home",
-      "members": "Members",
-      "progress": "Progress"
-    },
-    "members": {
-      "title": "Members · {count}",
-      "role_leader": "Leader",
-      "meta": "{done} / {total} levels",
-      "code_label": "Team code",
-      "empty_filter": "No members match this filter.",
-      "filter": {
-        "all": "All",
-        "leaders": "Leaders"
-      }
-    },
-    "progress": {
-      "title": "Progress",
-      "overall": "Team progress",
-      "goal": "Team goal",
-      "avg_member": "Avg / member",
-      "levels_done": "levels done",
-      "top_contributors": "Top contributors",
-      "no_contributors": "No contributions yet."
-    },
-    "leave": {
-      "confirm_title": "Confirm leaving",
-      "confirm_lede_title": "One more breath.",
-      "confirm_lede": "Type the team name below to confirm leaving {name}.",
-      "team_name_label": "Team name",
-      "cta": "Leave team",
-      "never_mind": "Never mind",
-      "warning_title": "Leave the team?",
-      "warning_arabic": "إِنَّ الجَمَاعَةَ بَرَكَة",
-      "warning_bullet_1": "Your contribution to this week's path stays with the team.",
-      "warning_bullet_2": "Your personal XP and streak are kept.",
-      "warning_bullet_3": "You'll need a new invite to return.",
-      "warning_cta": "Continue to leave",
-      "warning_stay": "Stay with the team"
-    }
-  },
-  "leaderboard": {
-    "eyebrow": "Global League",
-    "title": "Leaderboard",
-    "empty": "No rankings yet.",
-    "error": "Couldn't load the leaderboard.",
-    "top_three": "Top three",
-    "category_all": "All",
-    "all_members": "All members · {count}",
-    "levels_progress": "{completed} / {total} levels",
-    "you": "You",
-    "you_pill": "YOU",
-    "name_you": "{name} · You",
-    "your_rank": "Your rank",
-    "your_team": "Your team",
-    "podium_empty": "No team progress yet.",
-    "no_team": {
-      "title": "Join the team race",
-      "lede": "You're not on a team yet. Create one or join with a code to climb the team leaderboard.",
-      "create": "Create a team",
-      "join": "Join with code"
-    },
-    "scope": {
-      "individuals": "Individuals",
-      "teams": "Teams"
-    },
-    "member_count": {
-      "zero": "No members",
-      "one": "1 member",
-      "two": "{} members",
-      "few": "{} members",
-      "many": "{} members",
-      "other": "{} members"
-    }
-  },
-  "offline": {
-    "banner_message": "You're offline — showing downloaded content"
-  },
-  "downloads": {
-    "title": "Downloads",
-    "empty": "No downloads yet",
-    "empty_subtitle": "Download a category to study it offline.",
-    "download": "Download",
-    "downloading": "Downloading…",
-    "downloaded": "Downloaded",
-    "remove": "Remove download",
-    "remove_confirm": "Remove this downloaded category? You will need internet to download it again.",
-    "error": "Download failed. Check your connection and try again.",
-    "levels_count": "{} levels",
-    "unsynced_on_logout": "You have unsynced answers. Sync before logging out?"
+  "number_one": {
+   "eyebrow": "New team leader",
+   "title": "You're #1!",
+   "arabic": "تَصَدَّرْتَ فَرِيقَك",
+   "subtitle_prefix": "You've taken the top spot in",
+   "subtitle_suffix": "— leading {count} companions this week.",
+   "row_meta": "{accuracy}% accuracy · {streak}d streak",
+   "share_cta": "Share the moment",
+   "view_cta": "View full leaderboard"
   }
+ },
+ "leaderboard": {
+  "eyebrow": "Global League",
+  "title": "Leaderboard",
+  "empty": "No rankings yet.",
+  "error": "Couldn't load the leaderboard.",
+  "top_three": "Top three",
+  "category_all": "All",
+  "all_members": "All members · {count}",
+  "levels_progress": "{completed} / {total} levels",
+  "you": "You",
+  "you_pill": "YOU",
+  "name_you": "{name} · You",
+  "your_rank": "Your rank",
+  "your_team": "Your team",
+  "podium_empty": "No team progress yet.",
+  "no_team": {
+   "title": "Join the team race",
+   "lede": "You're not on a team yet. Create one or join with a code to climb the team leaderboard.",
+   "create": "Create a team",
+   "join": "Join with code"
+  },
+  "scope": {
+   "individuals": "Individuals",
+   "teams": "Teams"
+  },
+  "member_count": {
+   "zero": "No members",
+   "one": "1 member",
+   "two": "{} members",
+   "few": "{} members",
+   "many": "{} members",
+   "other": "{} members"
+  }
+ },
+ "offline": {
+  "banner_message": "You're offline — showing downloaded content"
+ },
+ "downloads": {
+  "title": "Downloads",
+  "empty": "No downloads yet",
+  "empty_subtitle": "Download a category to study it offline.",
+  "download": "Download",
+  "downloading": "Downloading…",
+  "downloaded": "Downloaded",
+  "remove": "Remove download",
+  "remove_confirm": "Remove this downloaded category? You will need internet to download it again.",
+  "error": "Download failed. Check your connection and try again.",
+  "levels_count": "{} levels",
+  "unsynced_on_logout": "You have unsynced answers. Sync before logging out?"
+ }
 }

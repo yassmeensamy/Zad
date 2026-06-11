@@ -1,7 +1,5 @@
 import '../../../../core/api/endpoints/app_endpoints.dart';
 import '../../../../core/api/network_service.dart';
-import '../../../../core/expections/server_exception.dart';
-import '../../../../core/utils/logger.dart';
 
 import '../responses/auth_response.dart';
 import 'auth_remote_data_source.dart';
@@ -16,16 +14,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) : _networkService = networkService,
        _endpoints = endpoints;
 
-  void _validateResponse(
-    dynamic response, [
-    List<int> validCodes = const [200, 201],
-  ]) {
-    if (!validCodes.contains(response.statusCode)) {
-      logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromResponse(response);
-    }
-  }
-
   @override
   Future<AuthResponse> signup({
     required String email,
@@ -37,7 +25,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email, 'password': password, 'fullName': fullName},
       skipAuth: true,
     );
-    _validateResponse(response, const [200, 201, 202]);
+    response.validated(const [200, 201, 202]);
     return AuthResponse.fromMap(response.data);
   }
 
@@ -51,7 +39,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'identifier': identifier, 'password': password},
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -61,7 +49,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.guestLogin,
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -75,7 +63,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.upgradeGuest,
       data: {'email': email, 'password': password, 'fullName': fullName},
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -86,7 +74,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'idToken': idToken},
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -97,7 +85,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email},
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
   }
 
   @override
@@ -111,7 +99,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email, 'otp': otp, 'newPassword': newPassword},
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
   }
 
   @override
@@ -124,7 +112,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email, 'otp': otp},
       skipAuth: true,
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -135,7 +123,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email},
       skipAuth: true,
     );
-    _validateResponse(response, const [200, 202]);
+    response.validated(const [200, 202]);
   }
 
   @override
@@ -144,7 +132,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.switchAccount,
       data: {'childId': childId},
     );
-    _validateResponse(response);
+    response.validated();
     return AuthResponse.fromMap(response.data);
   }
 
@@ -154,7 +142,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.logout,
       data: {'refreshToken': refreshToken},
     );
-    _validateResponse(response, [200, 204]);
+    response.validated([200, 204]);
   }
 
   @override
@@ -163,6 +151,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.me,
       data: {'password': password},
     );
-    _validateResponse(response, [204]);
+    response.validated([204]);
   }
 }

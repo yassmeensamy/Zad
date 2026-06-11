@@ -1,6 +1,5 @@
 import '../../../../core/api/endpoints/app_endpoints.dart';
 import '../../../../core/api/network_service.dart';
-import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../../models/child_model.dart';
 
@@ -28,20 +27,10 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
   final NetworkService _networkService;
   final AppEndpoint _endpoints;
 
-  void _validateResponse(
-    dynamic response, [
-    List<int> validCodes = const [200, 201],
-  ]) {
-    if (!validCodes.contains(response.statusCode)) {
-      logger.debug('validateResponse: ${response.data}');
-      throw ServerException.fromResponse(response);
-    }
-  }
-
   @override
   Future<List<ChildModel>> getChildren() async {
     final response = await _networkService.get(_endpoints.children);
-    _validateResponse(response);
+    response.validated();
     final list = response.data as List<dynamic>;
     return list
         .map((e) => ChildModel.fromMap(e as Map<String, dynamic>))
@@ -60,7 +49,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
           'birthDate': child.birthDate!.toIso8601String(),
       },
     );
-    _validateResponse(response);
+    response.validated();
     logger.debug('createChild response: ${response.data}');
     return ChildModel.fromMap(response.data as Map<String, dynamic>);
   }
@@ -84,7 +73,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
         if (birthDate != null) 'birthDate': birthDate.toIso8601String(),
       },
     );
-    _validateResponse(response);
+    response.validated();
     return ChildModel.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -93,6 +82,6 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
     final response = await _networkService.delete(
       _endpoints.childById(childId),
     );
-    _validateResponse(response, [200, 204]);
+    response.validated([200, 204]);
   }
 }

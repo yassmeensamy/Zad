@@ -90,26 +90,37 @@ class _LeaderboardViewState extends State<_LeaderboardView>
                   builder: (context, state) {
                     final cubit = context.read<RankingsCubit>();
                     return Column(
-                  children: [
-                    const _Header(),
-                    const SizedBox(height: 14),
-                    _ScopeSegmented(value: state.scope, onChanged: cubit.setScope),
-                    if (state.isIndividuals) ...[
-                      const SizedBox(height: 12),
-                      BlocBuilder<CategoriesCubit, CategoriesState>(
-                        builder: (context, catState) => _CategoryFilter(
-                          categories: catState.categories,
-                          selectedId: state.categoryId,
-                          onSelected: cubit.setCategory,
+                      children: [
+                        const _Header(),
+                        const SizedBox(height: 14),
+                        _ScopeSegmented(
+                          value: state.scope,
+                          onChanged: cubit.setScope,
                         ),
-                      ),
-                    ],
-                    const SizedBox(height: 14),
-                    Expanded(
-                      child: _Body(state: state, controller: scrollController),
-                    ),
-                    _Footer(state: state),
-                  ],
+                        if (state.isIndividuals) ...[
+                          const SizedBox(height: 12),
+                          BlocSelector<
+                            CategoriesCubit,
+                            CategoriesState,
+                            List<CategoryModel>
+                          >(
+                            selector: (catState) => catState.categories,
+                            builder: (context, categories) => _CategoryFilter(
+                              categories: categories,
+                              selectedId: state.categoryId,
+                              onSelected: cubit.setCategory,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 14),
+                        Expanded(
+                          child: _Body(
+                            state: state,
+                            controller: scrollController,
+                          ),
+                        ),
+                        _Footer(state: state),
+                      ],
                     );
                   },
                 );
@@ -165,7 +176,11 @@ class _EmberBackdrop extends StatelessWidget {
         gradient: RadialGradient(
           center: const Alignment(0, -1.05),
           radius: 1.35,
-          colors: [colors.backdropTop, colors.backdropMid, colors.backdropBottom],
+          colors: [
+            colors.backdropTop,
+            colors.backdropMid,
+            colors.backdropBottom,
+          ],
           stops: const [0.0, 0.42, 1.0],
         ),
       ),
@@ -180,7 +195,9 @@ class _EmberBackdrop extends StatelessWidget {
                   repeat: ImageRepeat.repeat,
                   alignment: Alignment.topLeft,
                   color: isDark ? colors.textPrimary : colors.textTertiary,
-                  colorBlendMode: isDark ? BlendMode.screen : BlendMode.multiply,
+                  colorBlendMode: isDark
+                      ? BlendMode.screen
+                      : BlendMode.multiply,
                 ),
               ),
             ),
@@ -207,10 +224,7 @@ class _EmberBackdrop extends StatelessWidget {
           ),
           Positioned.fill(
             child: IgnorePointer(
-              child: _EmberField(
-                core: colors.accentSoft,
-                glow: colors.accent,
-              ),
+              child: _EmberField(core: colors.accentSoft, glow: colors.accent),
             ),
           ),
           child,
@@ -471,8 +485,7 @@ class _Body extends StatelessWidget {
         SliverList.separated(
           itemCount: state.activeCount,
           separatorBuilder: (_, _) => const SizedBox(height: 6),
-          itemBuilder: (context, i) =>
-              _RankRow(seed: _rowAt(state, i)),
+          itemBuilder: (context, i) => _RankRow(seed: _rowAt(state, i)),
         ),
         if (state.loadingMore)
           SliverToBoxAdapter(
@@ -571,7 +584,10 @@ class _Podium extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (seeds.isEmpty) {
-      return const _EmptyHint(textKey: 'leaderboard.podium_empty', vertical: 28);
+      return const _EmptyHint(
+        textKey: 'leaderboard.podium_empty',
+        vertical: 28,
+      );
     }
     _RankSeed? at(int i) => i < seeds.length ? seeds[i] : null;
 
@@ -849,7 +865,9 @@ class _RankRow extends StatelessWidget {
               children: [
                 ResponsiveText(
                   isMe
-                      ? 'leaderboard.name_you'.tr(namedArgs: {'name': seed.name})
+                      ? 'leaderboard.name_you'.tr(
+                          namedArgs: {'name': seed.name},
+                        )
                       : seed.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -954,6 +972,40 @@ class _MyRankCta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = context.isDark;
+
+    // Dark mode reads as a warm ember highlight. In light, the same cta (olive)
+    // tokens washed out to a muddy grey-green over the cream page, so we gild
+    // the card instead — a soft gold gradient, a crisp amber hairline and a
+    // lighter warm lift — echoing the leaderboard's gold-medal motif. The olive
+    // rank badge then pops against it.
+    final bgGradient = isDark
+        ? [
+            colors.ctaMid.withValues(alpha: 0.18),
+            colors.ctaBottom.withValues(alpha: 0.08),
+          ]
+        : [
+            colors.accent.withValues(alpha: 0.22),
+            colors.accentSoft.withValues(alpha: 0.12),
+          ];
+    final borderColor = isDark
+        ? colors.ctaTop.withValues(alpha: 0.4)
+        : colors.accent.withValues(alpha: 0.5);
+    final shadow = isDark
+        ? BoxShadow(
+            color: colors.heroShadow.withValues(alpha: 0.45),
+            blurRadius: 30,
+            offset: const Offset(0, 16),
+          )
+        : BoxShadow(
+            color: colors.accent.withValues(alpha: 0.22),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          );
+    // Deeper amber for the eyebrow + chevron so they keep contrast on the
+    // warmer light card (plain accent would blend into the gold wash).
+    final accentInk = isDark ? colors.accent : colors.accentDeep;
+
     final card = Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
@@ -962,19 +1014,10 @@ class _MyRankCta extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            colors.ctaMid.withValues(alpha: 0.18),
-            colors.ctaBottom.withValues(alpha: 0.08),
-          ],
+          colors: bgGradient,
         ),
-        border: Border.all(color: colors.ctaTop.withValues(alpha: 0.4)),
-        boxShadow: [
-          BoxShadow(
-            color: colors.heroShadow.withValues(alpha: 0.45),
-            blurRadius: 30,
-            offset: const Offset(0, 16),
-          ),
-        ],
+        border: Border.all(color: borderColor),
+        boxShadow: [shadow],
       ),
       child: Row(
         children: [
@@ -1016,7 +1059,7 @@ class _MyRankCta extends StatelessWidget {
                     fontSize: 8.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.4,
-                    color: colors.accent,
+                    color: accentInk,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -1036,7 +1079,7 @@ class _MyRankCta extends StatelessWidget {
           ),
           if (onTap != null) ...[
             const SizedBox(width: 8),
-            Icon(Icons.arrow_forward, size: 16, color: colors.accent),
+            Icon(Icons.arrow_forward, size: 16, color: accentInk),
           ],
         ],
       ),
@@ -1257,12 +1300,20 @@ class _Disc extends StatelessWidget {
         AppColors.discGoldMid.withValues(alpha: 0.55),
       ),
       _DiscStyle.silver => (
-        [AppColors.discSilverHi, AppColors.discSilverMid, AppColors.discSilverLo],
+        [
+          AppColors.discSilverHi,
+          AppColors.discSilverMid,
+          AppColors.discSilverLo,
+        ],
         AppColors.discGoldInk,
         AppColors.discSilverMid.withValues(alpha: 0.5),
       ),
       _DiscStyle.bronze => (
-        [AppColors.discBronzeHi, AppColors.discBronzeMid, AppColors.discBronzeLo],
+        [
+          AppColors.discBronzeHi,
+          AppColors.discBronzeMid,
+          AppColors.discBronzeLo,
+        ],
         AppColors.discBronzeInk,
         AppColors.discBronzeMid.withValues(alpha: 0.5),
       ),

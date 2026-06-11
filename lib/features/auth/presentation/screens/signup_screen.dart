@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -53,7 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _recomputeFilled() {
-    final filled = _usernameController.text.trim().isNotEmpty &&
+    final filled =
+        _usernameController.text.trim().isNotEmpty &&
         _emailController.text.trim().isNotEmpty &&
         _passwordController.text.isNotEmpty;
     if (filled != _allFilled) {
@@ -143,56 +143,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-      child: MultiBlocListener(
-        listeners: [
-          // Launches the PIN dialog exactly once, when signup enters the
-          // pending-verification state (a resend keeps it pending, so this
-          // won't re-fire).
-          BlocListener<AuthCubit, AuthState>(
-            listenWhen: (previous, current) =>
-                !previous.isAwaitingVerification &&
-                current.isPendingVerification,
-            listener: _onVerificationStarted,
-          ),
-          // Handles the non-verification paths (direct login / errors); the
-          // verification login is owned by the dialog flow above.
-          BlocListener<AuthCubit, AuthState>(
-            listenWhen: (previous, current) =>
-                previous.status != current.status &&
-                !previous.isAwaitingVerification,
-            listener: _onAuthStateChanged,
-          ),
-          // Guest upgrade tracks its outcome on `upgradeStatus`, not the auth
-          // `status` (which is already loggedIn for a guest), so the listeners
-          // above can't see it. Surface success and failure explicitly.
-          BlocListener<AuthCubit, AuthState>(
-            listenWhen: (previous, current) =>
-                !previous.isUpgradeSuccess && current.isUpgradeSuccess,
-            listener: (context, state) {
-              _awaitingSignupResult = false;
-              _showSuccess(context);
-            },
-          ),
-          BlocListener<AuthCubit, AuthState>(
-            listenWhen: (previous, current) =>
-                !previous.isUpgradeError && current.isUpgradeError,
-            listener: (context, state) {
-              _awaitingSignupResult = false;
-              if (state.errorMessage != null) {
-                SnackBarHelper.showError(context, message: state.errorMessage!);
-              }
-            },
-          ),
-        ],
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: DesertBackground(
+    // Status-bar overlay & dark-mode canvas are owned by DesertBackground.
+    return MultiBlocListener(
+      listeners: [
+        // Launches the PIN dialog exactly once, when signup enters the
+        // pending-verification state (a resend keeps it pending, so this
+        // won't re-fire).
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isAwaitingVerification && current.isPendingVerification,
+          listener: _onVerificationStarted,
+        ),
+        // Handles the non-verification paths (direct login / errors); the
+        // verification login is owned by the dialog flow above.
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              previous.status != current.status &&
+              !previous.isAwaitingVerification,
+          listener: _onAuthStateChanged,
+        ),
+        // Guest upgrade tracks its outcome on `upgradeStatus`, not the auth
+        // `status` (which is already loggedIn for a guest), so the listeners
+        // above can't see it. Surface success and failure explicitly.
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isUpgradeSuccess && current.isUpgradeSuccess,
+          listener: (context, state) {
+            _awaitingSignupResult = false;
+            _showSuccess(context);
+          },
+        ),
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isUpgradeError && current.isUpgradeError,
+          listener: (context, state) {
+            _awaitingSignupResult = false;
+            if (state.errorMessage != null) {
+              SnackBarHelper.showError(context, message: state.errorMessage!);
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: DesertBackground(
           child: SafeArea(
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
@@ -200,7 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-             
+
                   const ZaadBrand.compact(),
                   const SizedBox(height: 24),
                   const _Headline(),
@@ -279,7 +273,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
-      ),
       ),
     );
   }

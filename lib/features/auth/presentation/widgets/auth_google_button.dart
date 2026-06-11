@@ -26,7 +26,10 @@ class AuthGoogleButton extends StatelessWidget {
       theme: CustomButtonTheme(
         height: 46,
         borderRadius: 14,
-        backgroundColor: AppColors.white,
+        // Opaque white in light, raised night surface in dark — pairs with the
+        // `oliveDeep` ink (date in light, ivory in dark) so the label stays
+        // legible in both themes.
+        backgroundColor: colors.inputSurface,
         borderColor: colors.oliveSoft.withValues(alpha: 0.22),
         textColor: colors.oliveDeep,
       ),

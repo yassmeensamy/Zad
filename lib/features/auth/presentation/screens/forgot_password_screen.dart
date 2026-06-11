@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -93,73 +92,66 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-      child: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
-        listener: _onForgotStateChanged,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: DesertBackground(
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(32, 12, 32, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: IconButton(
-                        onPressed: _onBackToLogin,
-                        icon: Icon(
-                          Directionality.of(context) == TextDirection.rtl
-                              ? Icons.arrow_forward_rounded
-                              : Icons.arrow_back_rounded,
-                          color: colors.oliveDeep,
-                        ),
+    // Status-bar overlay & dark-mode canvas are owned by DesertBackground.
+    return BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
+      listener: _onForgotStateChanged,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: DesertBackground(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(32, 12, 32, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: IconButton(
+                      onPressed: _onBackToLogin,
+                      icon: Icon(
+                        Directionality.of(context) == TextDirection.rtl
+                            ? Icons.arrow_forward_rounded
+                            : Icons.arrow_back_rounded,
+                        color: colors.oliveDeep,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    const ZaadBrand.compact(),
-                    const SizedBox(height: 24),
-                    const _Headline(),
-                    const SizedBox(height: 24),
-                    ZaadTextField(
-                      hintText: 'auth.forgot_password_screen.email_hint',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      textInputAction: TextInputAction.done,
-                      prefixIcon: Icon(
-                        Icons.mail_outline_rounded,
-                        color: colors.oliveSoft,
-                        size: 20,
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  const ZaadBrand.compact(),
+                  const SizedBox(height: 24),
+                  const _Headline(),
+                  const SizedBox(height: 24),
+                  ZaadTextField(
+                    hintText: 'auth.forgot_password_screen.email_hint',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: Icon(
+                      Icons.mail_outline_rounded,
+                      color: colors.oliveSoft,
+                      size: 20,
                     ),
-                    const SizedBox(height: 16),
-                    BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
-                      buildWhen: (previous, current) =>
-                          previous.isSendingOtp != current.isSendingOtp,
-                      builder: (context, state) => AuthPrimaryButton(
-                        label: 'auth.forgot_password_screen.send_code',
-                        loading: state.isSendingOtp,
-                        enabled: _emailFilled,
-                        onTap: _onSendCode,
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+                    buildWhen: (previous, current) =>
+                        previous.isSendingOtp != current.isSendingOtp,
+                    builder: (context, state) => AuthPrimaryButton(
+                      label: 'auth.forgot_password_screen.send_code',
+                      loading: state.isSendingOtp,
+                      enabled: _emailFilled,
+                      onTap: _onSendCode,
                     ),
-                    const SizedBox(height: 24),
-                    AuthPromptLink(
-                      prompt:
-                          'auth.forgot_password_screen.back_to_login_prompt',
-                      action: 'auth.forgot_password_screen.back_to_login',
-                      onTap: _onBackToLogin,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 24),
+                  AuthPromptLink(
+                    prompt: 'auth.forgot_password_screen.back_to_login_prompt',
+                    action: 'auth.forgot_password_screen.back_to_login',
+                    onTap: _onBackToLogin,
+                  ),
+                ],
               ),
             ),
           ),

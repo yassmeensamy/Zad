@@ -24,8 +24,10 @@ class CustomDialog extends StatelessWidget {
   static Future<T?> show<T>({
     required BuildContext context,
     required Widget child,
-    EdgeInsetsGeometry padding =
-        const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(
+      vertical: 24,
+      horizontal: 20,
+    ),
     double radius = ZaadRadii.dialog,
     BoxConstraints? constraints,
     EdgeInsets? insetPadding,
@@ -49,12 +51,14 @@ class CustomDialog extends StatelessWidget {
     final colors = context.appColors;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final maxHeight = screenHeight * 0.85;
-    final mergedConstraints = (constraints ?? const BoxConstraints())
-        .copyWith(maxHeight: constraints?.maxHeight ?? maxHeight);
+    final mergedConstraints = (constraints ?? const BoxConstraints()).copyWith(
+      maxHeight: constraints?.maxHeight ?? maxHeight,
+    );
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: insetPadding ??
+      insetPadding:
+          insetPadding ??
           EdgeInsets.symmetric(
             horizontal: MediaQuery.sizeOf(context).width * 0.07,
           ),
@@ -95,12 +99,12 @@ class CustomDialog extends StatelessWidget {
                 Positioned.fill(
                   child: context.isDark
                       ? const _NightDialogSurface()
-                      : const DesertBackground(child: SizedBox.shrink()),
+                      : const DesertBackground(
+                          setSystemOverlay: false,
+                          child: SizedBox.shrink(),
+                        ),
                 ),
-                SingleChildScrollView(
-                  padding: padding,
-                  child: child,
-                ),
+                SingleChildScrollView(padding: padding, child: child),
               ],
             ),
           ),

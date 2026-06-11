@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -107,18 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-      child: BlocListener<AuthCubit, AuthState>(
-        listenWhen: _shouldHandle,
-        listener: _onAuthStateChanged,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: DesertBackground(
+    // Status-bar overlay & dark-mode canvas are owned by DesertBackground.
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: _shouldHandle,
+      listener: _onAuthStateChanged,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: DesertBackground(
           child: SafeArea(
             child: SingleChildScrollView(
               physics: ClampingScrollPhysics(),
@@ -222,7 +216,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      ),
     );
   }
 }
@@ -258,7 +251,11 @@ class _GuestButton extends StatelessWidget {
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.person_outline_rounded, size: 18, color: colors.olive),
+                Icon(
+                  Icons.person_outline_rounded,
+                  size: 18,
+                  color: colors.olive,
+                ),
                 const SizedBox(width: 10),
                 ResponsiveText(
                   'auth.continue_guest',

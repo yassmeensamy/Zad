@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -31,7 +32,7 @@ class ProfileCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _Avatar(entry: entry, colors: colors),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               ResponsiveText(
                 entry.name,
                 textAlign: TextAlign.center,
@@ -44,7 +45,7 @@ class ProfileCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               _RoleLabel(entry: entry, colors: colors),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               _BottomChip(entry: entry, colors: colors),
             ],
           ),
@@ -67,29 +68,12 @@ class ProfileTileShell extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
 
-  static final BorderRadius _radius = BorderRadius.circular(ZaadRadii.xxl);
-
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: _radius,
-        onTap: onTap,
-        child: Ink(
-          padding: const EdgeInsets.fromLTRB(14, 20, 14, 16),
-          decoration: BoxDecoration(
-            color: AppColors.white.withValues(alpha: 0.55),
-            borderRadius: _radius,
-            border: Border.all(
-              color: colors.oliveSoft.withValues(alpha: 0.20),
-              width: 1.5,
-            ),
-          ),
-          child: child,
-        ),
-      ),
+    return AppCard.glass(
+      onTap: onTap,
+      padding: const EdgeInsets.fromLTRB(14, 20, 14, 16),
+      child: child,
     );
   }
 }

@@ -6,11 +6,9 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
-import '../../../../core/services/upgrade_checker.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/upgrade_dialog.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
@@ -92,52 +90,12 @@ class _HomeView extends StatelessWidget {
 
     // Dark mode relies on the global Date & Ember backdrop (injected in the
     // shell's AppScaffold); light keeps its own cream backdrop + pattern.
-    return OptionalUpdateGate(
-      child: LightModeBackdrop(
-        backdrop: const HomeBackdropPattern(),
-        child: content,
-      ),
+    // The optional update prompt is owned by the home shell, not this screen.
+    return LightModeBackdrop(
+      backdrop: const HomeBackdropPattern(),
+      child: content,
     );
   }
-}
-
-/// Runs a one-shot, non-blocking "update available" check once the home screen
-/// is mounted and surfaces the dismissible [UpgradeDialog] if the store has a
-/// newer version. The blocking force-update path is handled earlier at startup.
-class OptionalUpdateGate extends StatefulWidget {
-  const OptionalUpdateGate({required this.child, super.key});
-
-  final Widget child;
-
-  @override
-  State<OptionalUpdateGate> createState() => _OptionalUpdateGateState();
-}
-
-class _OptionalUpdateGateState extends State<OptionalUpdateGate> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdate());
-  }
-
-  Future<void> _checkForUpdate() async {
-    final checker = sl<UpgradeChecker>();
-    final languageCode = context.locale.languageCode;
-    final available = await checker.isUpdateAvailable(
-      languageCode: languageCode,
-    );
-    if (!available || !mounted) return;
-    await UpgradeDialog.show(
-      context,
-      onUpdate: checker.openAppStore,
-      currentVersion: checker.installedVersion,
-      newVersion: checker.availableVersion,
-      releaseNotes: checker.releaseNotes,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }
 
 const double _kGutter = 24;
@@ -152,63 +110,77 @@ class HomeLoadedContent extends StatelessWidget {
     return BlocSelector<UserCubit, UserState, bool>(
       selector: (state) => state.user?.isAnonymous ?? false,
       builder: (context, isGuest) {
-        return ListView(
-          // Horizontal gutter lives here so every child shares it; only a
-          // full-bleed child would need to opt out via a negative margin.
-          padding: const EdgeInsets.fromLTRB(_kGutter, 0, _kGutter, 120),
+        // Flatten the rows once, then hand them to a builder delegate so only
+        // on-screen children are built (a plain ListView(children:) builds the
+        // whole list eagerly via SliverChildListDelegate).
+        final rows = <Widget>[
+          BlocSelector<UserCubit, UserState, String?>(
+            selector: (state) => state.user?.fullName,
+            builder: (context, fullName) {
+              return HomeHeader(
+                firstName: _firstName(
+                  fullName,
+                  fallback: 'home.fallback_name'.tr(),
+                ),
+                onBellTap: () =>
+                    context.pushNamed(AppRoutes.notificationsName),
+              );
+            },
+          ),
+          const SizedBox(height: 26),
+          if (!isGuest) ...[
+            const HomeStreakSection(),
+            const SizedBox(height: 14),
+          ],
+          PlayCard(
+            onTap: () => context.goNamed(AppRoutes.categoriesName),
+          ),
+          const SizedBox(height: 14),
+          if (isGuest)
+            const HomeWhyLoginSection()
+          else ...[
+            const HomeTeamSection(),
+            const SizedBox(height: 26),
+            ResponsiveText(
+              'This week · team stats',
+              style: context.textTheme.titleMedium?.copyWith(
+                color: context.appColors.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const TeamWeekStats(),
+          ],
+          const SizedBox(height: 26),
+          HadithCard(hadith: overview.hadithOfDay),
+          const SizedBox(height: 14),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const TempTeamHomeScreen(),
+              ),
+            ),
+            child: const ResponsiveText('Team Home (preview)'),
+          ),
+          const SizedBox(height: 8),
+        ];
+
+        return CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
           ),
-          children: [
-            BlocSelector<UserCubit, UserState, String?>(
-              selector: (state) => state.user?.fullName,
-              builder: (context, fullName) {
-                return HomeHeader(
-                  firstName: _firstName(
-                    fullName,
-                    fallback: 'home.fallback_name'.tr(),
-                  ),
-                  onBellTap: () =>
-                      context.pushNamed(AppRoutes.notificationsName),
-                );
-              },
-            ),
-            const SizedBox(height: 26),
-            if (!isGuest) ...[
-              const HomeStreakSection(),
-              const SizedBox(height: 14),
-            ],
-            PlayCard(
-              onTap: () => context.goNamed(AppRoutes.categoriesName),
-            ),
-            const SizedBox(height: 14),
-            if (isGuest)
-              const HomeWhyLoginSection()
-            else ...[
-              const HomeTeamSection(),
-              const SizedBox(height: 26),
-              ResponsiveText(
-                'This week · team stats',
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.appColors.textPrimary,
-                  fontWeight: FontWeight.w700,
+          slivers: [
+            SliverPadding(
+              // Horizontal gutter lives here so every child shares it; only a
+              // full-bleed child would need to opt out via a negative margin.
+              padding: const EdgeInsets.fromLTRB(_kGutter, 0, _kGutter, 120),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => rows[index],
+                  childCount: rows.length,
                 ),
               ),
-              const SizedBox(height: 12),
-              const TeamWeekStats(),
-            ],
-            const SizedBox(height: 26),
-            HadithCard(hadith: overview.hadithOfDay),
-            const SizedBox(height: 14),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const TempTeamHomeScreen(),
-                ),
-              ),
-              child: const Text('Team Home (preview)'),
             ),
-            const SizedBox(height: 8),
           ],
         );
       },

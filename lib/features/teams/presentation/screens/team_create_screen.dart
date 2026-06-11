@@ -188,7 +188,7 @@ class _BannerSlot extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              const Color(0xFF6E5025),
+              AppColors.gildDeep,
               colors.olive,
             ],
           ),

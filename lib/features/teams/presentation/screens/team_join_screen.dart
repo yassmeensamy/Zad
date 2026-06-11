@@ -161,10 +161,13 @@ class _AmberWash extends StatelessWidget {
             widthFactor: 1.6,
             heightFactor: 0.55,
             child: DecoratedBox(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: RadialGradient(
-                  colors: [Color(0x38E0A560), Color(0x00E0A560)],
-                  stops: [0, 0.65],
+                  colors: [
+                    AppColors.amberGlow.withValues(alpha: 0.22),
+                    AppColors.amberGlow.withValues(alpha: 0),
+                  ],
+                  stops: const [0, 0.65],
                 ),
               ),
             ),
@@ -778,7 +781,7 @@ class _ErrorCodeChip extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    ResponsiveText(
                       shown,
                       style: TextStyle(
                         fontFamily: 'monospace',

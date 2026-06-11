@@ -11,8 +11,8 @@ import 'core/navigation/auth_gate.dart';
 import 'core/navigation/deep_link_service.dart';
 import 'core/services/connectivity_service.dart';
 import 'core/services/core_service_locator.dart';
-import 'core/services/upgrade_checker.dart';
-import 'core/widgets/upgrade_dialog.dart';
+import 'core/services/upgrade_service.dart';
+import 'core/widgets/force_update_dialog.dart';
 import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/offline/presentation/cubit/connectivity_cubit.dart';
@@ -77,25 +77,6 @@ class _AppViewState extends State<_AppView> {
   );
 
   bool _started = false;
-  bool _forceUpdateShown = false;
-
-  void _showForceUpdateDialog() {
-    if (_forceUpdateShown) return;
-    // Use the router's navigator context — the builder context this listener
-    // lives in sits above GoRouter's Navigator and can't host a dialog.
-    final dialogContext = AppRouter.rootNavigatorKey.currentContext;
-    if (dialogContext == null) return;
-    _forceUpdateShown = true;
-    final checker = sl<UpgradeChecker>();
-    UpgradeDialog.show(
-      dialogContext,
-      isForceUpdate: true,
-      onUpdate: checker.openAppStore,
-      currentVersion: checker.installedVersion,
-      newVersion: checker.availableVersion,
-      releaseNotes: checker.releaseNotes,
-    );
-  }
 
   @override
   void didChangeDependencies() {
@@ -127,14 +108,34 @@ class _AppViewState extends State<_AppView> {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         routerConfig: _router,
-        // Host the blocking force-update dialog above the router so it has a
-        // Navigator/Overlay and sits over whatever screen the guard lands on.
-        builder: (context, child) => BlocListener<AppStartupCubit, AppStartupState>(
-          listenWhen: (a, b) =>
-              !a.forceUpdateRequired && b.forceUpdateRequired,
-          listener: (context, state) => _showForceUpdateDialog(),
-          child: child,
-        ),
+        // Render the blocking force-update prompt as a persistent overlay above
+        // the router's Navigator. A widget (not an imperative showDialog) so
+        // go_router page changes — e.g. the auth guard redirecting away from the
+        // splash — can't tear it down once it's shown.
+        builder: (context, child) =>
+            BlocBuilder<AppStartupCubit, AppStartupState>(
+              buildWhen: (a, b) =>
+                  a.forceUpdateRequired != b.forceUpdateRequired,
+              builder: (context, state) {
+                final content = child ?? const SizedBox.shrink();
+                if (!state.forceUpdateRequired) return content;
+                final upgrade = sl<UpgradeService>();
+                final info = upgrade.info;
+                return Stack(
+                  children: [
+                    content,
+                    Positioned.fill(
+                      child: AppUpdateDialog.overlay(
+                        onUpdate: upgrade.openStore,
+                        currentVersion: info.installedVersion,
+                        newVersion: info.availableVersion,
+                        releaseNotes: info.releaseNotes,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
       ),
     );
   }

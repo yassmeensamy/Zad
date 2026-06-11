@@ -274,7 +274,7 @@ class _OverallProgress extends StatelessWidget {
           StarMedallion(
             size: 44,
             tint: colors.accent,
-            child: Text(
+            child: ResponsiveText(
               '$percent%',
               style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 11,

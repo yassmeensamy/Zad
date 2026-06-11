@@ -363,7 +363,7 @@ class _TeamCodeCard extends StatelessWidget {
     if (!context.mounted) return;
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       SnackBar(
-        content: Text('teams.create.copied'.tr()),
+        content: ResponsiveText('teams.create.copied'),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),

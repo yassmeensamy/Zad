@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../theme/theme.dart';
 
@@ -418,7 +419,7 @@ class _ContentColumn extends StatelessWidget {
         );
   }
 
-  Widget _eyebrow() => Text(
+  Widget _eyebrow() => ResponsiveText(
         data.eyebrow.toUpperCase(),
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -443,7 +444,7 @@ class _ContentColumn extends StatelessWidget {
           colors: [palette.titleHi, palette.titleMid, palette.titleLo],
           stops: const [0.0, 0.46, 1.0],
         ).createShader(rect),
-        child: Text(
+        child: ResponsiveText(
           data.title,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -473,7 +474,7 @@ class _ContentColumn extends StatelessWidget {
             curve: _ease,
           );
 
-  Widget _arabic(String text) => Text(
+  Widget _arabic(String text) => ResponsiveText(
         text,
         textAlign: TextAlign.center,
         textDirection: TextDirection.rtl,
@@ -594,7 +595,7 @@ class _StatChip extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
+          ResponsiveText(
             stat.label.toUpperCase(),
             style: TextStyle(
               fontSize: 8,
@@ -669,7 +670,7 @@ class _XpCounterState extends State<_XpCounter>
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Text(
+        ResponsiveText(
           'EARNED',
           style: TextStyle(
             fontSize: 9,
@@ -683,7 +684,7 @@ class _XpCounterState extends State<_XpCounter>
           animation: _count,
           builder: (context, _) {
             final shown = (widget.to * _count.value).round();
-            return Text(
+            return ResponsiveText(
               '+$shown XP',
               style: TextStyle(
                 fontSize: 18,
@@ -827,7 +828,7 @@ class _GoldButtonState extends State<_GoldButton>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  ResponsiveText(
                     widget.label.toUpperCase(),
                     style: TextStyle(
                       fontSize: 12,

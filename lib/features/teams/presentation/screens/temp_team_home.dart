@@ -19,7 +19,7 @@ import '../widgets/team_week_stats.dart';
 // before being wired to [TeamsCubit].
 //
 // Theming: the screen is fully brightness-aware. In **dark** mode it reproduces
-// the original Date & Ember design 1:1 (via [DateEmber]); in **light** mode it
+// the original Date & Ember design 1:1 (via [AppColors]); in **light** mode it
 // maps every surface, ink and accent onto the app's semantic [AppColorsTheme]
 // tokens. All of that mapping lives in [_Pal] so the widgets below read colours
 // by role, never by literal. Type uses the app's default family (ElMessiri) —
@@ -317,9 +317,9 @@ class _IdentityCard extends StatelessWidget {
                   gradient: const RadialGradient(
                     center: Alignment(-0.36, -0.44),
                     colors: [
-                      DateEmber.goldHi,
-                      DateEmber.goldMid,
-                      DateEmber.goldLo,
+                      AppColors.discGoldHi,
+                      AppColors.discGoldMid,
+                      AppColors.discGoldLo,
                     ],
                     stops: [0.0, 0.55, 1.0],
                   ),
@@ -335,7 +335,7 @@ class _IdentityCard extends StatelessWidget {
                   'ص',
                   style: TextStyle(
                     fontSize: 29,
-                    color: DateEmber.goldInk,
+                    color: AppColors.discGoldInk,
                   ),
                 ),
               ),
@@ -644,7 +644,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             child: const Icon(
               Icons.ios_share,
               size: 17,
-              color: DateEmber.goldInk,
+              color: AppColors.discGoldInk,
             ),
           ),
         ],
@@ -686,9 +686,11 @@ class _CopiedToast extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: p.greenSurface,
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-              color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 6)),
+              color: Colors.black.withValues(alpha: 0.40),
+              blurRadius: 14,
+              offset: const Offset(0, 6)),
         ],
       ),
       child: ResponsiveText(
@@ -696,7 +698,7 @@ class _CopiedToast extends StatelessWidget {
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w700,
-          color: p.dark ? const Color(0xFF10160B) : Colors.white,
+          color: p.dark ? AppColors.nightOliveCard : Colors.white,
         ),
       ),
     );
@@ -729,8 +731,8 @@ class _ActivityFeed extends StatelessWidget {
         node: const _AvatarIcon(
           letter: 'A',
           hi: DateEmberRoles.oliveLight,
-          lo: DateEmber.oliveLo,
-          ink: DateEmber.oliveInk,
+          lo: AppColors.discOliveLo,
+          ink: AppColors.discOliveInk,
         ),
         name: 'Aisha',
         rest: ' completed Level 7',
@@ -1004,9 +1006,9 @@ class _Leaderboard extends StatelessWidget {
           medal: true,
           avatar: _LbAvatar(
             letter: 'Y',
-            hi: DateEmber.goldHi,
-            lo: DateEmber.goldLo,
-            ink: DateEmber.goldInk,
+            hi: AppColors.discGoldHi,
+            lo: AppColors.discGoldLo,
+            ink: AppColors.discGoldInk,
           ),
           name: 'Yūsuf A.',
           meta: '94% accuracy · 38d streak',
@@ -1021,8 +1023,8 @@ class _Leaderboard extends StatelessWidget {
           avatar: _LbAvatar(
             letter: 'A',
             hi: DateEmberRoles.oliveLight,
-            lo: DateEmber.oliveLo,
-            ink: DateEmber.oliveInk,
+            lo: AppColors.discOliveLo,
+            ink: AppColors.discOliveInk,
           ),
           name: 'Aisha M.',
           meta: '91% accuracy · 24d streak',
@@ -1036,9 +1038,9 @@ class _Leaderboard extends StatelessWidget {
           rival: true,
           avatar: _LbAvatar(
             letter: 'M',
-            hi: DateEmber.goldHi,
-            lo: DateEmber.goldLo,
-            ink: DateEmber.goldInk,
+            hi: AppColors.discGoldHi,
+            lo: AppColors.discGoldLo,
+            ink: AppColors.discGoldInk,
           ),
           name: 'Maryam K.',
           tag: _LbTag.rival,
@@ -1053,9 +1055,9 @@ class _Leaderboard extends StatelessWidget {
           me: true,
           avatar: _LbAvatar(
             letter: 'ز',
-            hi: DateEmber.goldHi,
-            lo: DateEmber.goldLo,
-            ink: DateEmber.goldInk,
+            hi: AppColors.discGoldHi,
+            lo: AppColors.discGoldLo,
+            ink: AppColors.discGoldInk,
           ),
           name: 'Zayd N.',
           tag: _LbTag.you,
@@ -1319,8 +1321,8 @@ class _TabBar extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: p.dark
               ? [
-                  DateEmber.raised.withValues(alpha: 0.94),
-                  DateEmber.surface.withValues(alpha: 0.94),
+                  AppColors.nightRaised.withValues(alpha: 0.94),
+                  AppColors.nightSurface.withValues(alpha: 0.94),
                 ]
               : [p.bgTop, p.bgMid],
         ),

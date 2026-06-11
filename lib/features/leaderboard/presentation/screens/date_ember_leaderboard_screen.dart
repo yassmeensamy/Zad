@@ -1,15 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:my_app/core/widgets/responsive_text.dart';
+import 'package:my_app/theme/app_colors.dart';
 
-import '../../../../theme/date_ember_palette.dart';
 
 /// Zad — Date & Ember leaderboard screen.
 ///
 /// A single-file, self-contained recreation of the `Zad Date and Ember
 /// Screen.html` design handed off from Claude Design. Roasted-brown depths,
 /// ember accents, gold foil and rising sparks. Every colour in the design is
-/// captured in [DateEmber] (lib/theme/date_ember_palette.dart) — the shared palette this screen and the app dark theme both use.
+/// captured in [AppColors] (lib/theme/app_colors.dart) — the shared palette this screen and the app dark theme both use.
 ///
 /// This screen is intentionally independent of the app theme — it is a faithful
 /// port of the mock, not yet  wired to live leaderboard data.
@@ -19,7 +20,7 @@ class DateEmberLeaderboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: DateEmber.canvas,
+      backgroundColor: AppColors.canvasNight,
       body: _DateEmberBody(),
     );
   }
@@ -42,7 +43,7 @@ class _DateEmberBody extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0, -1.05),
           radius: 1.35,
-          colors: [DateEmber.raised, DateEmber.surface, DateEmber.base],
+          colors: [AppColors.nightRaised, AppColors.nightSurface, AppColors.nightLow],
           stops: [0.0, 0.42, 1.0],
         ),
       ),
@@ -57,14 +58,14 @@ class _DateEmberBody extends StatelessWidget {
                   image: AssetImage('assets/images/islamic-pattern.png'),
                   repeat: ImageRepeat.repeat,
                   alignment: Alignment.topLeft,
-                  color: DateEmber.ivory,
+                  color: AppColors.ivory,
                   colorBlendMode: BlendMode.screen,
                 ),
               ),
             ),
           ),
           // Warm amber wash at the top.
-          const Positioned(
+          Positioned(
             left: -120,
             right: -120,
             top: -120,
@@ -74,7 +75,10 @@ class _DateEmberBody extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     radius: 0.65,
-                    colors: [Color(0x38E1A560), Color(0x00E1A560)],
+                    colors: [
+                      AppColors.washAmber.withValues(alpha: 0.22),
+                      AppColors.washAmber.withValues(alpha: 0),
+                    ],
                     stops: [0.0, 1.0],
                   ),
                 ),
@@ -122,17 +126,17 @@ class _TopBar extends StatelessWidget {
           Expanded(
             child: Column(
               children: const [
-                Text(
+                ResponsiveText(
                   'LEAGUE · WEEK 12',
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 3.2,
-                    color: DateEmber.amber,
+                    color: AppColors.amberGlow,
                   ),
                 ),
                 SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   'Companions of Sabr',
                   style: TextStyle(
                     fontFamily: _serif,
@@ -141,7 +145,7 @@ class _TopBar extends StatelessWidget {
                     fontSize: 21,
                     height: 1,
                     letterSpacing: -0.3,
-                    color: DateEmber.ivory,
+                    color: AppColors.ivory,
                   ),
                 ),
               ],
@@ -163,8 +167,8 @@ class _GlassIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0x0DF4ECD8), // ivory @ 0.05
-      shape: const CircleBorder(side: BorderSide(color: DateEmber.glassBorder)),
+      color: AppColors.ivory.withValues(alpha: 0.05), // ivory @ 0.05
+      shape: const CircleBorder(side: BorderSide(color: AppColors.nightOutline)),
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
@@ -179,7 +183,7 @@ extension on SizedBox {
   Widget withChild(IconData icon) => SizedBox(
     width: width,
     height: height,
-    child: Icon(icon, size: 16, color: DateEmber.ivory),
+    child: Icon(icon, size: 16, color: AppColors.ivory),
   );
 }
 
@@ -244,15 +248,15 @@ class _SummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: DateEmber.glassBorder),
+        border: Border.all(color: AppColors.nightOutline),
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
+          colors: [AppColors.ivory06, AppColors.ivory02],
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x80000000),
+            color: Colors.black.withValues(alpha: 0.50),
             blurRadius: 40,
             offset: Offset(0, 20),
           ),
@@ -281,13 +285,13 @@ class _SummaryCard extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      DateEmber.amberLight,
-                      DateEmber.amber,
-                      DateEmber.amberDeep,
+                      AppColors.amberLight,
+                      AppColors.amberGlow,
+                      AppColors.discGoldLo,
                     ],
                     stops: [0.0, 0.55, 1.0],
                   ).createShader(r),
-                  child: const Text(
+                  child: const ResponsiveText(
                     '12,480',
                     style: TextStyle(
                       fontFamily: _serif,
@@ -301,14 +305,14 @@ class _SummaryCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 11),
-                const Text(
+                const ResponsiveText(
                   'XP',
                   style: TextStyle(
                     fontFamily: _mono,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.2,
-                    color: DateEmber.txtFaint,
+                    color: AppColors.ivory40,
                   ),
                 ),
               ],
@@ -346,14 +350,14 @@ class _Eyebrow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return ResponsiveText(
       text,
       style: const TextStyle(
         fontFamily: _mono,
         fontSize: 9,
         fontWeight: FontWeight.w600,
         letterSpacing: 3.2,
-        color: DateEmber.amber,
+        color: AppColors.amberGlow,
       ),
     );
   }
@@ -368,15 +372,15 @@ class _DeltaBadge extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.keyboard_arrow_up, size: 12, color: DateEmber.olive),
+        const Icon(Icons.keyboard_arrow_up, size: 12, color: AppColors.oliveLight),
         const SizedBox(width: 2),
-        Text(
+        ResponsiveText(
           text,
           style: const TextStyle(
             fontFamily: _mono,
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: DateEmber.olive,
+            color: AppColors.oliveLight,
           ),
         ),
       ],
@@ -405,7 +409,7 @@ class _StatCell extends StatelessWidget {
               fontWeight: FontWeight.w300,
               fontSize: 19,
               height: 1,
-              color: DateEmber.ivory,
+              color: AppColors.ivory,
             ),
             children: [
               if (sub != null)
@@ -413,20 +417,20 @@ class _StatCell extends StatelessWidget {
                   text: sub,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: DateEmber.txtFaint,
+                    color: AppColors.ivory40,
                   ),
                 ),
             ],
           ),
         ),
         const SizedBox(height: 3),
-        Text(
+        ResponsiveText(
           label,
           style: const TextStyle(
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 2.0,
-            color: DateEmber.txtMute,
+            color: AppColors.ivory62,
           ),
         ),
       ],
@@ -443,11 +447,15 @@ class _StatPipe extends StatelessWidget {
       width: 1,
       height: 34,
       margin: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x00E1A560), Color(0x40E1A560), Color(0x00E1A560)],
+          colors: [
+            AppColors.washAmber.withValues(alpha: 0),
+            AppColors.washAmber.withValues(alpha: 0.25),
+            AppColors.washAmber.withValues(alpha: 0),
+          ],
         ),
       ),
     );
@@ -459,7 +467,7 @@ class _CornerBracketPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = DateEmber.amber
+      ..color = AppColors.amberGlow
       ..strokeWidth = 1.3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -553,10 +561,13 @@ class _SparklinePainter extends CustomPainter {
     canvas.drawPath(
       fill,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x59E0A560), Color(0x00E0A560)],
+          colors: [
+            AppColors.amberGlow.withValues(alpha: 0.35),
+            AppColors.amberGlow.withValues(alpha: 0),
+          ],
         ).createShader(Offset.zero & size),
     );
 
@@ -569,20 +580,20 @@ class _SparklinePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round
         ..shader = const LinearGradient(
-          colors: [DateEmber.amberDeep, DateEmber.amberLight],
+          colors: [AppColors.discGoldLo, AppColors.amberLight],
         ).createShader(Offset.zero & size),
     );
 
     // End marker.
     final end = map(_pts.last);
-    canvas.drawCircle(end, 3, Paint()..color = DateEmber.amberLight);
+    canvas.drawCircle(end, 3, Paint()..color = AppColors.amberLight);
     canvas.drawCircle(
       end,
       6,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
-        ..color = DateEmber.amber.withValues(alpha: 0.5),
+        ..color = AppColors.amberGlow.withValues(alpha: 0.5),
     );
   }
 
@@ -606,7 +617,7 @@ class _DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = DateEmber.washAmber.withValues(alpha: 0.22)
+      ..color = AppColors.washAmber.withValues(alpha: 0.22)
       ..strokeWidth = 1;
     const dash = 4.0;
     const gap = 4.0;
@@ -640,9 +651,9 @@ class _SegmentedState extends State<_Segmented> {
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: const Color(0x0AF4ECD8),
+        color: AppColors.ivory.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: DateEmber.hairline),
+        border: Border.all(color: AppColors.ivory08),
       ),
       child: Row(
         children: [
@@ -656,23 +667,26 @@ class _SegmentedState extends State<_Segmented> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(9),
                     gradient: i == _selected
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Color(0x33F1C57A), Color(0x1FA6622A)],
+                            colors: [
+                              AppColors.amberLight.withValues(alpha: 0.20),
+                              AppColors.discGoldLo.withValues(alpha: 0.12),
+                            ],
                           )
                         : null,
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: ResponsiveText(
                     _items[i],
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.8,
                       color: i == _selected
-                          ? DateEmber.amberLight
-                          : DateEmber.txtMute,
+                          ? AppColors.amberLight
+                          : AppColors.ivory62,
                     ),
                   ),
                 ),
@@ -696,36 +710,36 @@ class _EyebrowRule extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(
+        SizedBox(
           width: 26,
           height: 1,
           child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0x00E0A560), DateEmber.amber],
+                colors: [AppColors.amberGlow.withValues(alpha: 0), AppColors.amberGlow],
               ),
             ),
           ),
         ),
         const SizedBox(width: 10),
-        Text(
+        ResponsiveText(
           label,
           style: const TextStyle(
             fontFamily: _mono,
             fontSize: 9,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
-            color: DateEmber.amber,
+            color: AppColors.amberGlow,
           ),
         ),
         const SizedBox(width: 10),
-        const SizedBox(
+        SizedBox(
           width: 26,
           height: 1,
           child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [DateEmber.amber, Color(0x00E0A560)],
+                colors: [AppColors.amberGlow, AppColors.amberGlow.withValues(alpha: 0)],
               ),
             ),
           ),
@@ -802,9 +816,9 @@ class _PodiumPillar extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFirst = place == 1;
     final accent = switch (place) {
-      1 => DateEmber.amber,
-      2 => DateEmber.silverMid,
-      _ => DateEmber.emberLight,
+      1 => AppColors.amberGlow,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.emberBright,
     };
     final pedHeight = switch (place) {
       1 => 46.0,
@@ -812,9 +826,9 @@ class _PodiumPillar extends StatelessWidget {
       _ => 25.0,
     };
     final pedTint = switch (place) {
-      1 => DateEmber.amber,
-      2 => DateEmber.silverMid,
-      _ => DateEmber.ember,
+      1 => AppColors.amberGlow,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.ember,
     };
     final avatarSize = isFirst ? 62.0 : 52.0;
 
@@ -859,18 +873,18 @@ class _PodiumPillar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
-        Text(
+        ResponsiveText(
           name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 12,
             fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-            color: isFirst ? DateEmber.amberLight : DateEmber.ivory,
+            color: isFirst ? AppColors.amberLight : AppColors.ivory,
           ),
         ),
         const SizedBox(height: 2),
-        Text(
+        ResponsiveText(
           points,
           style: TextStyle(
             fontFamily: _mono,
@@ -901,7 +915,7 @@ class _PodiumPillar extends StatelessWidget {
               ],
             ),
           ),
-          child: Text(
+          child: ResponsiveText(
             '0$place',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -930,10 +944,10 @@ class _RankBadge extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: DateEmber.base,
+        color: AppColors.nightLow,
         border: Border.all(color: color, width: 2),
       ),
-      child: Text(
+      child: ResponsiveText(
         '$place',
         style: TextStyle(
           fontFamily: _mono,
@@ -980,7 +994,7 @@ class _CrownPainter extends CustomPainter {
         ..shader = const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [DateEmber.amberLight, DateEmber.amberDeep],
+          colors: [AppColors.amberLight, AppColors.discGoldLo],
         ).createShader(Offset.zero & size),
     );
     canvas.drawPath(
@@ -989,7 +1003,7 @@ class _CrownPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8
         ..strokeJoin = StrokeJoin.round
-        ..color = DateEmber.bronzeLo,
+        ..color = AppColors.discBronzeLo,
     );
   }
 
@@ -1019,29 +1033,29 @@ class _Disc extends StatelessWidget {
   Widget build(BuildContext context) {
     final (colors, ink, ringColor) = switch (style) {
       _DiscStyle.gold => (
-        [DateEmber.goldHi, DateEmber.goldMid, DateEmber.goldLo],
-        DateEmber.goldInk,
-        const Color(0x8CE1A560),
+        [AppColors.discGoldHi, AppColors.discGoldMid, AppColors.discGoldLo],
+        AppColors.discGoldInk,
+        AppColors.washAmber.withValues(alpha: 0.55),
       ),
       _DiscStyle.silver => (
-        [DateEmber.silverHi, DateEmber.silverMid, DateEmber.silverLo],
-        DateEmber.goldInk,
-        const Color(0x80DCCDB4),
+        [AppColors.discSilverHi, AppColors.discSilverMid, AppColors.discSilverLo],
+        AppColors.discGoldInk,
+        AppColors.sandWarm.withValues(alpha: 0.50),
       ),
       _DiscStyle.bronze => (
-        [DateEmber.bronzeHi, DateEmber.bronzeMid, DateEmber.bronzeLo],
-        DateEmber.bronzeInk,
-        const Color(0x80C9512B),
+        [AppColors.discBronzeHi, AppColors.discBronzeMid, AppColors.discBronzeLo],
+        AppColors.discBronzeInk,
+        AppColors.ember.withValues(alpha: 0.50),
       ),
       _DiscStyle.olive => (
-        [DateEmber.oliveHi, DateEmber.oliveMid, DateEmber.oliveLo],
-        DateEmber.oliveInk,
-        const Color(0x33E1A560),
+        [AppColors.discOliveHi, AppColors.discOliveMid, AppColors.discOliveLo],
+        AppColors.discOliveInk,
+        AppColors.nightOutline,
       ),
       _DiscStyle.date => (
-        [DateEmber.dateHi, DateEmber.dateMid, DateEmber.dateLo],
-        DateEmber.ivory,
-        const Color(0x33E1A560),
+        [AppColors.discDateHi, AppColors.discDateMid, AppColors.discDateLo],
+        AppColors.ivory,
+        AppColors.nightOutline,
       ),
     };
 
@@ -1059,7 +1073,7 @@ class _Disc extends StatelessWidget {
         ),
         border: Border.all(color: ringColor, width: 2),
       ),
-      child: Text(
+      child: ResponsiveText(
         initial,
         style: TextStyle(fontFamily: _serif, fontSize: fontSize, color: ink),
       ),
@@ -1077,16 +1091,16 @@ class _DottedDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: SizedBox(
             height: 1,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0x00E1A560),
-                    Color(0x4DE1A560),
-                    Color(0x00E1A560),
+                    AppColors.washAmber.withValues(alpha: 0),
+                    AppColors.washAmber.withValues(alpha: 0.30),
+                    AppColors.washAmber.withValues(alpha: 0),
                   ],
                 ),
               ),
@@ -1099,19 +1113,19 @@ class _DottedDivider extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: DateEmber.amber,
+            color: AppColors.amberGlow,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: SizedBox(
             height: 1,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0x00E1A560),
-                    Color(0x4DE1A560),
-                    Color(0x00E1A560),
+                    AppColors.washAmber.withValues(alpha: 0),
+                    AppColors.washAmber.withValues(alpha: 0.30),
+                    AppColors.washAmber.withValues(alpha: 0),
                   ],
                 ),
               ),
@@ -1160,27 +1174,32 @@ class _RankRow extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         gradient: isMe
-            ? const LinearGradient(
-                colors: [Color(0x1FE1A560), Color(0x05E1A560)],
+            ? LinearGradient(
+                colors: [
+                  AppColors.washAmber.withValues(alpha: 0.12),
+                  AppColors.washAmber.withValues(alpha: 0.02),
+                ],
               )
             : null,
-        color: isMe ? null : const Color(0x06F4ECD8),
+        color: isMe ? null : AppColors.ivory.withValues(alpha: 0.02),
         border: Border.all(
-          color: isMe ? const Color(0x66E1A560) : const Color(0x0DF4ECD8),
+          color: isMe
+              ? AppColors.washAmber.withValues(alpha: 0.40)
+              : AppColors.ivory.withValues(alpha: 0.05),
         ),
       ),
       child: Row(
         children: [
           SizedBox(
             width: 22,
-            child: Text(
+            child: ResponsiveText(
               rank,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: _mono,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: isMe ? DateEmber.amber : DateEmber.txtFaint,
+                color: isMe ? AppColors.amberGlow : AppColors.ivory40,
               ),
             ),
           ),
@@ -1200,15 +1219,15 @@ class _RankRow extends StatelessWidget {
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
                       height: 1.1,
-                      color: isMe ? DateEmber.amberLight : DateEmber.ivory,
+                      color: isMe ? AppColors.amberLight : AppColors.ivory,
                     ),
                     children: [
                       if (youSuffix != null)
                         TextSpan(
                           text: youSuffix,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: Color(0xA6F1C57A),
+                            color: AppColors.amberLight.withValues(alpha: 0.65),
                           ),
                         ),
                     ],
@@ -1219,11 +1238,11 @@ class _RankRow extends StatelessWidget {
                   children: [
                     _StatusDot(state: dot),
                     const SizedBox(width: 7),
-                    Text(
+                    ResponsiveText(
                       role,
                       style: const TextStyle(
                         fontSize: 10,
-                        color: DateEmber.txtMute,
+                        color: AppColors.ivory62,
                       ),
                     ),
                   ],
@@ -1234,13 +1253,13 @@ class _RankRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              ResponsiveText(
                 points,
                 style: TextStyle(
                   fontFamily: _mono,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isMe ? DateEmber.amberLight : DateEmber.ivory,
+                  color: isMe ? AppColors.amberLight : AppColors.ivory,
                 ),
               ),
               const SizedBox(height: 2),
@@ -1250,15 +1269,15 @@ class _RankRow extends StatelessWidget {
                   const Icon(
                     Icons.keyboard_arrow_up,
                     size: 10,
-                    color: DateEmber.olive,
+                    color: AppColors.oliveLight,
                   ),
-                  Text(
+                  ResponsiveText(
                     trend,
                     style: const TextStyle(
                       fontFamily: _mono,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
-                      color: DateEmber.olive,
+                      color: AppColors.oliveLight,
                     ),
                   ),
                 ],
@@ -1301,9 +1320,9 @@ class _StatusDotState extends State<_StatusDot>
   @override
   Widget build(BuildContext context) {
     final color = switch (widget.state) {
-      _DotState.active => DateEmber.ember,
-      _DotState.steady => DateEmber.amber,
-      _DotState.idle => const Color(0x38F4ECD8),
+      _DotState.active => AppColors.ember,
+      _DotState.steady => AppColors.amberGlow,
+      _DotState.idle => AppColors.ivory.withValues(alpha: 0.22),
     };
     if (widget.state != _DotState.active) {
       return _dot(color, 0.18);
@@ -1346,17 +1365,20 @@ class _StreakCta extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x2EC9512B), Color(0x147A2E15)],
+          colors: [
+            AppColors.ember.withValues(alpha: 0.18),
+            AppColors.discBronzeLo.withValues(alpha: 0.08),
+          ],
         ),
-        border: Border.all(color: const Color(0x66E07A48)),
-        boxShadow: const [
+        border: Border.all(color: AppColors.emberBright.withValues(alpha: 0.40)),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x73000000),
+            color: Colors.black.withValues(alpha: 0.45),
             blurRadius: 30,
-            offset: Offset(0, 16),
+            offset: const Offset(0, 16),
           ),
         ],
       ),
@@ -1371,11 +1393,11 @@ class _StreakCta extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [DateEmber.emberLight, DateEmber.ember],
+                colors: [AppColors.emberBright, AppColors.ember],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: DateEmber.ember.withValues(alpha: 0.55),
+                  color: AppColors.ember.withValues(alpha: 0.55),
                   blurRadius: 18,
                 ),
               ],
@@ -1383,7 +1405,7 @@ class _StreakCta extends StatelessWidget {
             child: const Icon(
               Icons.local_fire_department,
               size: 20,
-              color: DateEmber.emberInk,
+              color: AppColors.emberInk,
             ),
           ),
           const SizedBox(width: 13),
@@ -1391,25 +1413,25 @@ class _StreakCta extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text(
+                ResponsiveText(
                   'Keep your ember alight — 38 days.',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.1,
-                    color: DateEmber.amberLight,
+                    color: AppColors.amberLight,
                   ),
                 ),
                 SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   'One more solve to climb to #4 tonight.',
-                  style: TextStyle(fontSize: 10.5, color: DateEmber.txtMute),
+                  style: TextStyle(fontSize: 10.5, color: AppColors.ivory62),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.arrow_forward, size: 16, color: DateEmber.amber),
+          const Icon(Icons.arrow_forward, size: 16, color: AppColors.amberGlow),
         ],
       ),
     );
@@ -1504,9 +1526,9 @@ class _EmberPainter extends CustomPainter {
       final paint = Paint()
         ..shader = RadialGradient(
           colors: [
-            DateEmber.amberLight.withValues(alpha: opacity),
-            DateEmber.emberLight.withValues(alpha: opacity * 0.6),
-            DateEmber.emberLight.withValues(alpha: 0),
+            AppColors.amberLight.withValues(alpha: opacity),
+            AppColors.emberBright.withValues(alpha: opacity * 0.6),
+            AppColors.emberBright.withValues(alpha: 0),
           ],
           stops: const [0.0, 0.6, 1.0],
         ).createShader(Rect.fromCircle(center: Offset(dx, dy), radius: radius));

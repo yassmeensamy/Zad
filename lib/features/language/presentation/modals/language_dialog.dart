@@ -230,7 +230,7 @@ class _LanguageTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        ResponsiveText(
                           option.native,
                           style: AppTextStyles.titleMedium.copyWith(
                             fontSize: option.isArabic ? 18 : 16,
@@ -239,7 +239,7 @@ class _LanguageTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
+                        ResponsiveText(
                           option.english,
                           style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 11,
@@ -289,7 +289,7 @@ class _FlagBadge extends StatelessWidget {
         ),
       ),
       alignment: Alignment.center,
-      child: Text(
+      child: ResponsiveText(
         flag,
         style: AppTextStyles.titleLarge.copyWith(
           fontSize: isArabic ? 18 : 13,

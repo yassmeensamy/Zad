@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 /// Zad — **Team Number One Celebration** dialog.
@@ -411,7 +412,7 @@ class _Dialog extends StatelessWidget {
           children: [
             _Crown(color: p.emberLight, width: 10),
             const SizedBox(width: 6),
-            Text(
+            ResponsiveText(
               'teams.number_one.eyebrow'.tr().toUpperCase(),
               style: TextStyle(
                 fontSize: 9,
@@ -437,8 +438,8 @@ class _Dialog extends StatelessWidget {
           colors: [p.titleHi, p.titleMid, p.titleLo],
           stops: const [0.0, 0.46, 1.0],
         ).createShader(rect),
-        child: Text(
-          'teams.number_one.title'.tr(),
+        child: ResponsiveText(
+          'teams.number_one.title',
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 40,
@@ -455,8 +456,8 @@ class _Dialog extends StatelessWidget {
           .scaleXY(begin: 0.94, end: 1, delay: 1300.ms, duration: 700.ms, curve: _pop)
           .moveY(begin: 14, end: 0, delay: 1300.ms, duration: 700.ms, curve: _ease);
 
-  Widget _arabic(_CelPalette p) => Text(
-        'teams.number_one.arabic'.tr(),
+  Widget _arabic(_CelPalette p) => ResponsiveText(
+        'teams.number_one.arabic',
         textAlign: TextAlign.center,
         textDirection: TextDirection.rtl,
         style: TextStyle(
@@ -714,7 +715,7 @@ class _CoinState extends State<_Coin> with TickerProviderStateMixin {
           gradient: RadialGradient(
             center: const Alignment(-0.32, -0.48),
             colors: [
-              const Color(0xFFFCE9C6),
+              AppColors.medallionHighlight,
               p.goldLight,
               p.accent,
               p.accentDeep,
@@ -734,7 +735,7 @@ class _CoinState extends State<_Coin> with TickerProviderStateMixin {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Text(
+              ResponsiveText(
                 widget.initial,
                 style: TextStyle(
                   fontSize: 34,
@@ -871,12 +872,12 @@ class _RaysPainter extends CustomPainter {
       Paint()
         ..blendMode = BlendMode.dstIn
         ..shader = RadialGradient(
-          colors: const [
-            Color(0x00FFFFFF),
-            Color(0x00FFFFFF),
+          colors: [
+            AppColors.white.withValues(alpha: 0),
+            AppColors.white.withValues(alpha: 0),
             Colors.white,
             Colors.white,
-            Color(0x00FFFFFF),
+            AppColors.white.withValues(alpha: 0),
           ],
           stops: const [0.0, 0.44, 0.5, 0.74, 0.82],
         ).createShader(rect),
@@ -1010,7 +1011,7 @@ class _OrbitDotState extends State<_OrbitDot>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [const Color(0xFFFCE9C6), p.accent],
+                    colors: [AppColors.medallionHighlight, p.accent],
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -1150,7 +1151,7 @@ class _RankBadge extends StatelessWidget {
           ),
         ],
       ),
-      child: Text(
+      child: ResponsiveText(
         '#1',
         style: TextStyle(
           fontFamily: 'monospace',
@@ -1363,7 +1364,7 @@ class _StatCell extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          Text(
+          ResponsiveText(
             label.toUpperCase(),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -1485,7 +1486,7 @@ class _GoldButtonState extends State<_GoldButton>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  ResponsiveText(
                     widget.label.toUpperCase(),
                     style: TextStyle(
                       fontSize: 11.5,

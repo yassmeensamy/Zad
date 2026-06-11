@@ -324,7 +324,7 @@ class _ReceiptRow extends StatelessWidget {
             ),
           ),
           if (isRaw)
-            Text(
+            ResponsiveText(
               value,
               style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 13,

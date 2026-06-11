@@ -384,7 +384,11 @@ class _RaysPainter extends CustomPainter {
       Paint()
         ..blendMode = BlendMode.dstIn
         ..shader = RadialGradient(
-          colors: const [Colors.white, Colors.white, Color(0x00FFFFFF)],
+          colors: [
+            Colors.white,
+            Colors.white,
+            AppColors.white.withValues(alpha: 0),
+          ],
           stops: const [0.0, 0.30, 0.72],
         ).createShader(rect),
     );

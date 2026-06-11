@@ -34,6 +34,10 @@ class AuthGate {
     logger.debug('AuthGate.phase: startup=${_startup.state.status}, auth=${_auth.state.status}, user=${_user.state.status}');
     final startup = _startup.state;
     if (startup.isInitial || startup.isLoading) return AuthPhase.unknown;
+    // Force update is blocking: keep the router pinned to the splash route so
+    // the persistent update overlay sits over the splash and the guard never
+    // redirects on to home/login behind it.
+    if (startup.forceUpdateRequired) return AuthPhase.unknown;
     if (startup.isError) return AuthPhase.signedOut;
     if (startup.needsOnboarding) return AuthPhase.onboarding;
 

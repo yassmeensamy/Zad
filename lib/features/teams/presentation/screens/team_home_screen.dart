@@ -213,22 +213,22 @@ class _HeroCard extends StatelessWidget {
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: DateEmber.glassBorder),
+        border: Border.all(color: AppColors.nightOutline),
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
+          colors: [AppColors.ivory06, AppColors.ivory02],
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x80000000),
+            color: Colors.black.withValues(alpha: 0.50),
             blurRadius: 40,
-            offset: Offset(0, 20),
+            offset: const Offset(0, 20),
           ),
         ],
       ),
       child: CustomPaint(
-        foregroundPainter: _HeroBracketPainter(color: DateEmber.amber),
+        foregroundPainter: _HeroBracketPainter(color: AppColors.amberGlow),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -253,13 +253,13 @@ class _HeroCard extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      DateEmber.amberLight,
-                      DateEmber.amber,
-                      DateEmber.amberDeep,
+                      AppColors.amberLight,
+                      AppColors.amberGlow,
+                      AppColors.discGoldLo,
                     ],
                     stops: [0.0, 0.55, 1.0],
                   ).createShader(r),
-                  child: Text(
+                  child: ResponsiveText(
                     '$pct',
                     style: const TextStyle(
                       fontFamily: _serif,
@@ -273,14 +273,14 @@ class _HeroCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 11),
-                const Text(
+                const ResponsiveText(
                   '%',
                   style: TextStyle(
                     fontFamily: _mono,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.2,
-                    color: DateEmber.txtFaint,
+                    color: AppColors.ivory40,
                   ),
                 ),
               ],
@@ -289,7 +289,7 @@ class _HeroCard extends StatelessWidget {
             // Real progress bar in place of the design's sparkline.
             _GlassProgressBar(ratio: ratio),
             const SizedBox(height: 9),
-            _DashedRule(color: DateEmber.washAmber.withValues(alpha: 0.22)),
+            _DashedRule(color: AppColors.washAmber.withValues(alpha: 0.22)),
             const SizedBox(height: 9),
             Row(
               children: [
@@ -299,7 +299,7 @@ class _HeroCard extends StatelessWidget {
                     label: 'teams.home.companions'.tr().toUpperCase(),
                   ),
                 ),
-                _StatPipe(color: DateEmber.washAmber),
+                _StatPipe(color: AppColors.washAmber),
                 Expanded(
                   child: _StatCell(
                     value: '$solved',
@@ -307,7 +307,7 @@ class _HeroCard extends StatelessWidget {
                     label: 'teams.home.solved'.tr().toUpperCase(),
                   ),
                 ),
-                _StatPipe(color: DateEmber.washAmber),
+                _StatPipe(color: AppColors.washAmber),
                 Expanded(
                   child: _StatCell(
                     value: hasRank ? '#$rank' : '—',
@@ -331,7 +331,7 @@ class _Eyebrow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return ResponsiveText(
       text,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -340,7 +340,7 @@ class _Eyebrow extends StatelessWidget {
         fontSize: 9,
         fontWeight: FontWeight.w600,
         letterSpacing: 3.2,
-        color: DateEmber.amber,
+        color: AppColors.amberGlow,
       ),
     );
   }
@@ -358,16 +358,16 @@ class _RankBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: DateEmber.glassBorder),
-        color: DateEmber.washAmber.withValues(alpha: 0.10),
+        border: Border.all(color: AppColors.nightOutline),
+        color: AppColors.washAmber.withValues(alpha: 0.10),
       ),
-      child: Text(
+      child: ResponsiveText(
         text,
         style: const TextStyle(
           fontFamily: _mono,
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: DateEmber.amber,
+          color: AppColors.amberGlow,
         ),
       ),
     );
@@ -386,17 +386,20 @@ class _GlassProgressBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(3),
       child: Stack(
         children: [
-          Container(height: 6, width: double.infinity, color: DateEmber.hairline),
+          Container(height: 6, width: double.infinity, color: AppColors.ivory08),
           FractionallySizedBox(
             widthFactor: ratio.clamp(0.0, 1.0),
             child: Container(
               height: 6,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [DateEmber.amberDeep, DateEmber.amberLight],
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.discGoldLo, AppColors.amberLight],
                 ),
                 boxShadow: [
-                  BoxShadow(color: Color(0x66E0A560), blurRadius: 8),
+                  BoxShadow(
+                    color: AppColors.amberGlow.withValues(alpha: 0.40),
+                    blurRadius: 8,
+                  ),
                 ],
               ),
             ),
@@ -429,7 +432,7 @@ class _StatCell extends StatelessWidget {
               fontWeight: FontWeight.w300,
               fontSize: 19,
               height: 1,
-              color: DateEmber.ivory,
+              color: AppColors.ivory,
             ),
             children: [
               if (sub != null)
@@ -437,14 +440,14 @@ class _StatCell extends StatelessWidget {
                   text: sub,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: DateEmber.txtFaint,
+                    color: AppColors.ivory40,
                   ),
                 ),
             ],
           ),
         ),
         const SizedBox(height: 3),
-        Text(
+        ResponsiveText(
           label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -452,7 +455,7 @@ class _StatCell extends StatelessWidget {
             fontSize: 8.5,
             fontWeight: FontWeight.w600,
             letterSpacing: 2.0,
-            color: DateEmber.txtMute,
+            color: AppColors.ivory62,
           ),
         ),
       ],

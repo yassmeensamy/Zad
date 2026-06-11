@@ -11,6 +11,7 @@ import '../../../../core/services/share_service.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/navigation/deep_links.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/team_model.dart';
 import '../cubit/teams_cubit.dart';
@@ -154,7 +155,7 @@ class _PatternOverlay extends StatelessWidget {
           fit: BoxFit.none,
           alignment: Alignment.topCenter,
           colorBlendMode: BlendMode.multiply,
-          color: const Color(0xFF8B6A2C),
+          color: AppColors.goldBlend,
         ),
       ),
     );
@@ -202,8 +203,8 @@ class _Eyebrow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final goldDeep = context.appColors.goldDeep;
-    final text = Text(
-      'teams.create.success_eyebrow'.tr(),
+    final text = ResponsiveText(
+      'teams.create.success_eyebrow',
       style: TextStyle(
         fontSize: 9,
         fontWeight: FontWeight.w600,
@@ -312,11 +313,11 @@ class _MedallionState extends State<_Medallion>
                           gradient: RadialGradient(
                             colors: [
                               Color.lerp(
-                                const Color(0x52E8B968),
-                                const Color(0x8EE8B968),
+                                AppColors.goldMid.withValues(alpha: 0.32),
+                                AppColors.goldMid.withValues(alpha: 0.56),
                                 t,
                               )!,
-                              const Color(0x00E8B968),
+                              AppColors.goldMid.withValues(alpha: 0),
                             ],
                             stops: const [0.0, 0.7],
                           ),
@@ -341,7 +342,7 @@ class _MedallionState extends State<_Medallion>
           ),
 
           // Monogram — initial of the team name, gold-debossed.
-          Text(
+          ResponsiveText(
             _monogram,
             style: TextStyle(
               fontFamily: 'ElMessiri',
@@ -349,10 +350,10 @@ class _MedallionState extends State<_Medallion>
               fontSize: 38,
               color: colors.inkBrown,
               height: 1,
-              shadows: const [
+              shadows: [
                 Shadow(
-                  color: Color(0x66FFFFFF),
-                  offset: Offset(0, 1),
+                  color: AppColors.white.withValues(alpha: 0.40),
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
@@ -422,11 +423,11 @@ class _CheckSeal extends StatelessWidget {
           colors: [colors.sealGreen, colors.sealGreenDeep],
         ),
         border: Border.all(color: colors.parchmentTop, width: 2.5),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x592A331C),
+            color: AppColors.oliveDeep.withValues(alpha: 0.35),
             blurRadius: 8,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -499,7 +500,7 @@ class _MedallionPainter extends CustomPainter {
     final fillSoft = Paint()
       ..style = PaintingStyle.fill
       ..shader = starShader
-      ..color = const Color(0x38000000);
+      ..color = Colors.black.withValues(alpha: 0.22);
     final starStroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8 * unit
@@ -625,16 +626,21 @@ class _CopyBlock extends StatelessWidget {
         ],
         stops: const [0.0, 0.6, 1.0],
       ),
-      style: const TextStyle(
+      style: TextStyle(
         fontFamily: 'ElMessiri',
         fontWeight: FontWeight.w700,
         fontSize: 30,
         height: 1.0,
-        shadows: [Shadow(color: Color(0x66FFFFFF), offset: Offset(0, 1))],
+        shadows: [
+          Shadow(
+            color: AppColors.white.withValues(alpha: 0.40),
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
     );
 
-    final name = Text(
+    final name = ResponsiveText(
       teamName,
       textAlign: TextAlign.center,
       style: TextStyle(
@@ -648,8 +654,8 @@ class _CopyBlock extends StatelessWidget {
       ),
     );
 
-    final sub = Text(
-      'teams.create.success_open'.tr(),
+    final sub = ResponsiveText(
+      'teams.create.success_open',
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'ElMessiri',
@@ -721,7 +727,7 @@ class _GradientText extends StatelessWidget {
     return ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (rect) => gradient.createShader(rect),
-      child: Text(
+      child: ResponsiveText(
         text,
         textAlign: TextAlign.center,
         style: style.copyWith(color: Colors.white),
@@ -807,7 +813,7 @@ class _GildedInviteChip extends StatelessWidget {
     final messenger = ScaffoldMessenger.maybeOf(context);
     messenger?.showSnackBar(
       SnackBar(
-        content: Text('teams.create.copied'.tr()),
+        content: ResponsiveText('teams.create.copied'),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -848,7 +854,7 @@ class _GildedInviteChip extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    ResponsiveText(
                       'teams.create.success_invite_label'.tr().toUpperCase(),
                       style: TextStyle(
                         fontSize: 8.5,
@@ -904,8 +910,8 @@ class _GildedInviteChip extends StatelessWidget {
                   ),
                   const SizedBox(width: 5),
                   Expanded(
-                    child: Text(
-                      'teams.create.success_expires'.tr(),
+                    child: ResponsiveText(
+                      'teams.create.success_expires',
                       style: TextStyle(
                         fontSize: 10,
                         height: 1.3,
@@ -1013,7 +1019,7 @@ class _GhostButton extends StatelessWidget {
       child:
           TextButton(
             onPressed: onTap,
-            child: Text(
+            child: ResponsiveText(
               'teams.create.success_skip'.tr().toUpperCase(),
               style: TextStyle(
                 fontSize: 10.5,
@@ -1085,15 +1091,15 @@ class _Ember extends StatelessWidget {
           Container(
                 width: 4,
                 height: 4,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
                       AppColors.flameLight,
                       AppColors.flameGold,
-                      Color(0x00F1C57A),
+                      AppColors.amberLight.withValues(alpha: 0),
                     ],
-                    stops: [0.0, 0.5, 0.8],
+                    stops: const [0.0, 0.5, 0.8],
                   ),
                 ),
               )

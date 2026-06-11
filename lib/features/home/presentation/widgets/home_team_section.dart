@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../teams/presentation/widgets/team_card.dart';
 import '../../../../theme/theme.dart';
@@ -80,8 +81,8 @@ class _JoinTeamCard extends StatelessWidget {
           children: [
             _JoinCrest(colors: colors),
             const SizedBox(height: 13),
-            Text(
-              'Walk the path together.',
+            ResponsiveText(
+              'home.team.join_title',
               textAlign: TextAlign.center,
               style: AppTextStyles.displaySmall.copyWith(
                 fontStyle: FontStyle.italic,
@@ -94,9 +95,8 @@ class _JoinTeamCard extends StatelessWidget {
             const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22),
-              child: Text(
-                'Join a circle of companions to study, recite, and rise '
-                'together — or start your own.',
+              child: ResponsiveText(
+                'home.team.join_subtitle',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodySmall.copyWith(
                   fontSize: 11.5,
@@ -110,7 +110,7 @@ class _JoinTeamCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ZaadPrimaryButton(
-                    label: 'Create'.toUpperCase(),
+                    label: 'home.team.create'.tr().toUpperCase(),
                     onTap: onTap,
                     trailingIcon: Icons.add_rounded,
                     height: 44,
@@ -124,7 +124,7 @@ class _JoinTeamCard extends StatelessWidget {
                 const SizedBox(width: 9),
                 Expanded(
                   child: _JoinGhostButton(
-                    label: 'Join with code',
+                    label: 'home.team.join_with_code'.tr(),
                     onTap: onTap,
                   ),
                 ),
@@ -223,7 +223,7 @@ class _JoinGhostButton extends StatelessWidget {
             width: 1.5,
           ),
         ),
-        child: Text(
+        child: ResponsiveText(
           label.toUpperCase(),
           style: AppTextStyles.labelSmall.copyWith(
             fontWeight: FontWeight.w600,
@@ -256,8 +256,8 @@ class _TeamSectionHeader extends StatelessWidget {
           color: colors.accent,
         ),
         const SizedBox(width: 8),
-        Text(
-          'home.team.joined_eyebrow'.tr(),
+        ResponsiveText(
+          'home.team.joined_eyebrow',
           // tracking 0.306 == the prior 3.06 over the default size 10.
           style: AppTextStyles.eyebrow(tracking: 0.306, color: colors.accent),
         ),
@@ -265,7 +265,7 @@ class _TeamSectionHeader extends StatelessWidget {
         GestureDetector(
           onTap: onOpen,
           behavior: HitTestBehavior.opaque,
-          child: Text(
+          child: ResponsiveText(
             'home.team.open'.tr().toUpperCase(),
             // tracking 0.152 == the prior 1.52 over the default size 10.
             style: AppTextStyles.eyebrow(

@@ -1,15 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:my_app/core/widgets/responsive_text.dart';
+import 'package:my_app/theme/app_colors.dart';
 
-import '../../../../theme/date_ember_palette.dart';
 
 /// Zad — Date & Ember profile screen.
 ///
 /// A single-file, faithful port of the `Zad Date and Ember Profile.html`
 /// design: a gilded avatar hero, level badge, stat trio, earned medals and a
 /// calm settings list over the roasted-brown radial vignette. Every colour in
-/// the design lives in [DateEmber] (lib/theme/date_ember_palette.dart) — the shared palette this screen and the app dark theme both use.
+/// the design lives in [AppColors] (lib/theme/app_colors.dart) — the shared palette this screen and the app dark theme both use.
 ///
 /// Standalone showcase — not yet wired to the live user/profile cubits.
 class DateEmberProfileScreen extends StatelessWidget {
@@ -18,7 +19,7 @@ class DateEmberProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: DateEmber.canvas,
+      backgroundColor: AppColors.canvasNight,
       body: _ProfileBody(),
     );
   }
@@ -38,7 +39,7 @@ class _ProfileBody extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0, -1.1),
           radius: 1.4,
-          colors: [DateEmber.raised, DateEmber.surface, DateEmber.base],
+          colors: [AppColors.nightRaised, AppColors.nightSurface, AppColors.nightLow],
           stops: [0.0, 0.42, 1.0],
         ),
       ),
@@ -52,13 +53,13 @@ class _ProfileBody extends StatelessWidget {
                   image: AssetImage('assets/images/islamic-pattern.png'),
                   repeat: ImageRepeat.repeat,
                   alignment: Alignment.topLeft,
-                  color: DateEmber.ivory,
+                  color: AppColors.ivory,
                   colorBlendMode: BlendMode.screen,
                 ),
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             left: -120,
             right: -120,
             top: -110,
@@ -68,7 +69,10 @@ class _ProfileBody extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     radius: 0.65,
-                    colors: [Color(0x3DE1A560), Color(0x00E1A560)],
+                    colors: [
+                      AppColors.washAmber.withValues(alpha: 0.24),
+                      AppColors.washAmber.withValues(alpha: 0),
+                    ],
                   ),
                 ),
               ),
@@ -113,17 +117,17 @@ class _TopBar extends StatelessWidget {
           Expanded(
             child: Column(
               children: const [
-                Text(
+                ResponsiveText(
                   'MY ACCOUNT',
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 3.0,
-                    color: DateEmber.amber,
+                    color: AppColors.amberGlow,
                   ),
                 ),
                 SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   'Profile',
                   style: TextStyle(
                     fontFamily: _serif,
@@ -132,7 +136,7 @@ class _TopBar extends StatelessWidget {
                     fontSize: 21,
                     height: 1,
                     letterSpacing: -0.3,
-                    color: DateEmber.ivory,
+                    color: AppColors.ivory,
                   ),
                 ),
               ],
@@ -154,15 +158,15 @@ class _GlassIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0x0DF4ECD8),
-      shape: const CircleBorder(side: BorderSide(color: DateEmber.glassBorder)),
+      color: AppColors.ivory.withValues(alpha: 0.05),
+      shape: const CircleBorder(side: BorderSide(color: AppColors.nightOutline)),
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
         child: SizedBox(
           width: 38,
           height: 38,
-          child: Icon(icon, size: 16, color: DateEmber.ivory),
+          child: Icon(icon, size: 16, color: AppColors.ivory),
         ),
       ),
     );
@@ -208,7 +212,7 @@ class _Hero extends StatelessWidget {
       children: [
         const SizedBox(width: 104, height: 104, child: _AvatarHero()),
         const SizedBox(height: 11),
-        const Text(
+        const ResponsiveText(
           'Zayd Naseer',
           style: TextStyle(
             fontFamily: _serif,
@@ -217,15 +221,15 @@ class _Hero extends StatelessWidget {
             fontSize: 25,
             height: 1,
             letterSpacing: -0.5,
-            color: DateEmber.ivory,
+            color: AppColors.ivory,
           ),
         ),
         const SizedBox(height: 5),
-        Text(
+        ResponsiveText(
           'زَيْد نَصِير',
           style: TextStyle(
             fontSize: 14,
-            color: DateEmber.amber.withValues(alpha: 0.9),
+            color: AppColors.amberGlow.withValues(alpha: 0.9),
           ),
         ),
         const SizedBox(height: 9),
@@ -234,7 +238,7 @@ class _Hero extends StatelessWidget {
           children: const [
             _MetaTag(icon: Icons.groups_outlined, label: 'Companions of Sabr'),
             SizedBox(width: 8),
-            _MetaTag(icon: Icons.star_outline, label: '#5', iconColor: DateEmber.olive),
+            _MetaTag(icon: Icons.star_outline, label: '#5', iconColor: AppColors.oliveLight),
           ],
         ),
       ],
@@ -278,8 +282,8 @@ class _AvatarHeroState extends State<_AvatarHero>
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  DateEmber.amberLight.withValues(alpha: 0.2 + 0.2 * _c.value),
-                  DateEmber.amberLight.withValues(alpha: 0),
+                  AppColors.amberLight.withValues(alpha: 0.2 + 0.2 * _c.value),
+                  AppColors.amberLight.withValues(alpha: 0),
                 ],
                 stops: const [0.5, 1.0],
               ),
@@ -302,24 +306,27 @@ class _AvatarHeroState extends State<_AvatarHero>
             gradient: const RadialGradient(
               center: Alignment(-0.36, -0.44),
               radius: 0.95,
-              colors: [DateEmber.goldHi, DateEmber.goldMid, DateEmber.goldLo],
+              colors: [AppColors.discGoldHi, AppColors.discGoldMid, AppColors.discGoldLo],
               stops: [0.0, 0.55, 1.0],
             ),
-            border: Border.all(color: const Color(0x80E1A560), width: 2),
+            border: Border.all(
+              color: AppColors.washAmber.withValues(alpha: 0.50),
+              width: 2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: DateEmber.ember.withValues(alpha: 0.30),
+                color: AppColors.ember.withValues(alpha: 0.30),
                 blurRadius: 26,
                 offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: const Text(
+          child: const ResponsiveText(
             'ز',
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 38,
-              color: DateEmber.goldInk,
+              color: AppColors.discGoldInk,
             ),
           ),
         ),
@@ -340,7 +347,7 @@ class _DashedRingPainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8
-      ..color = DateEmber.washAmber.withValues(alpha: 0.5);
+      ..color = AppColors.washAmber.withValues(alpha: 0.5);
     const dash = 2.0;
     const gap = 5.0;
     final circumference = 2 * math.pi * radius;
@@ -377,25 +384,25 @@ class _LevelBadge extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [DateEmber.emberLight, DateEmber.ember],
+          colors: [AppColors.emberBright, AppColors.ember],
         ),
-        border: Border.all(color: DateEmber.surface, width: 2.5),
+        border: Border.all(color: AppColors.nightSurface, width: 2.5),
         boxShadow: [
-          BoxShadow(color: DateEmber.ember.withValues(alpha: 0.5), blurRadius: 12),
+          BoxShadow(color: AppColors.ember.withValues(alpha: 0.5), blurRadius: 12),
         ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star, size: 10, color: DateEmber.emberInk),
+          const Icon(Icons.star, size: 10, color: AppColors.emberInk),
           const SizedBox(width: 3),
-          Text(
+          ResponsiveText(
             '$level',
             style: const TextStyle(
               fontFamily: _mono,
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: DateEmber.emberInk,
+              color: AppColors.emberInk,
             ),
           ),
         ],
@@ -408,7 +415,7 @@ class _MetaTag extends StatelessWidget {
   const _MetaTag({
     required this.icon,
     required this.label,
-    this.iconColor = DateEmber.amber,
+    this.iconColor = AppColors.amberGlow,
   });
 
   final IconData icon;
@@ -421,17 +428,17 @@ class _MetaTag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(99),
-        color: const Color(0x0DF4ECD8),
-        border: Border.all(color: DateEmber.glassBorder),
+        color: AppColors.ivory.withValues(alpha: 0.05),
+        border: Border.all(color: AppColors.nightOutline),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 11, color: iconColor),
           const SizedBox(width: 5),
-          Text(
+          ResponsiveText(
             label,
-            style: const TextStyle(fontSize: 11, color: DateEmber.txtMute),
+            style: const TextStyle(fontSize: 11, color: AppColors.ivory62),
           ),
         ],
       ),
@@ -480,7 +487,7 @@ class _StatCard extends StatelessWidget {
       fontWeight: FontWeight.w300,
       fontSize: 24,
       height: 0.9,
-      color: DateEmber.ivory,
+      color: AppColors.ivory,
     );
 
     Widget valueWidget;
@@ -489,15 +496,15 @@ class _StatCard extends StatelessWidget {
         shaderCallback: (r) => const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [DateEmber.amberLight, DateEmber.amber, DateEmber.amberDeep],
+          colors: [AppColors.amberLight, AppColors.amberGlow, AppColors.discGoldLo],
           stops: [0.0, 0.55, 1.0],
         ).createShader(r),
-        child: Text(value, style: valueStyle.copyWith(color: Colors.white)),
+        child: ResponsiveText(value, style: valueStyle.copyWith(color: Colors.white)),
       );
     } else {
-      valueWidget = Text(
+      valueWidget = ResponsiveText(
         value,
-        style: valueStyle.copyWith(color: fire ? DateEmber.emberLight : DateEmber.ivory),
+        style: valueStyle.copyWith(color: fire ? AppColors.emberBright : AppColors.ivory),
       );
     }
 
@@ -508,22 +515,22 @@ class _StatCard extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
+          colors: [AppColors.ivory06, AppColors.ivory02],
         ),
-        border: Border.all(color: DateEmber.glassBorder),
+        border: Border.all(color: AppColors.nightOutline),
       ),
       child: Column(
         children: [
           valueWidget,
           const SizedBox(height: 6),
-          Text(
+          ResponsiveText(
             label,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 8,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,
-              color: DateEmber.txtMute,
+              color: AppColors.ivory62,
             ),
           ),
         ],
@@ -546,27 +553,27 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Row(
         children: [
-          Container(width: 16, height: 1, color: DateEmber.amber),
+          Container(width: 16, height: 1, color: AppColors.amberGlow),
           const SizedBox(width: 8),
-          Text(
+          ResponsiveText(
             label,
             style: const TextStyle(
               fontFamily: _mono,
               fontSize: 9,
               fontWeight: FontWeight.w600,
               letterSpacing: 3.2,
-              color: DateEmber.amber,
+              color: AppColors.amberGlow,
             ),
           ),
           const Spacer(),
           if (trailing != null)
-            Text(
+            ResponsiveText(
               trailing!,
               style: const TextStyle(
                 fontSize: 9.5,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.4,
-                color: DateEmber.amber,
+                color: AppColors.amberGlow,
               ),
             ),
         ],
@@ -627,32 +634,37 @@ class _Medal extends StatelessWidget {
                   ? const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
+                      colors: [AppColors.ivory06, AppColors.ivory02],
                     )
-                  : const LinearGradient(
+                  : LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Color(0x2EE1A560), Color(0x14A6622A)],
+                      colors: [
+                        AppColors.washAmber.withValues(alpha: 0.18),
+                        AppColors.discGoldLo.withValues(alpha: 0.08),
+                      ],
                     ),
               border: Border.all(
-                color: locked ? DateEmber.glassBorder : const Color(0x80E1A560),
+                color: locked
+                    ? AppColors.nightOutline
+                    : AppColors.washAmber.withValues(alpha: 0.50),
               ),
             ),
             child: Icon(
               icon,
               size: 22,
-              color: locked ? DateEmber.txtFaint : DateEmber.amberLight,
+              color: locked ? AppColors.ivory40 : AppColors.amberLight,
             ),
           ),
           const SizedBox(height: 7),
-          Text(
+          ResponsiveText(
             label,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w600,
               height: 1.2,
-              color: DateEmber.txtMute,
+              color: AppColors.ivory62,
             ),
           ),
         ],
@@ -672,8 +684,8 @@ class _SettingsList extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: const Color(0x06F4ECD8),
-        border: Border.all(color: DateEmber.hairline),
+        color: AppColors.ivory.withValues(alpha: 0.02),
+        border: Border.all(color: AppColors.ivory08),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -709,7 +721,7 @@ class _SettingDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 1, color: DateEmber.hairline);
+      const Divider(height: 1, thickness: 1, color: AppColors.ivory08);
 }
 
 class _SettingRow extends StatelessWidget {
@@ -737,29 +749,29 @@ class _SettingRow extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0x1AE1A560),
-              border: Border.all(color: DateEmber.glassBorder),
+              color: AppColors.washAmber.withValues(alpha: 0.10),
+              border: Border.all(color: AppColors.nightOutline),
             ),
-            child: Icon(icon, size: 16, color: DateEmber.amber),
+            child: Icon(icon, size: 16, color: AppColors.amberGlow),
           ),
           const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   title,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     height: 1.1,
-                    color: DateEmber.ivory,
+                    color: AppColors.ivory,
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
+                ResponsiveText(
                   subtitle,
-                  style: const TextStyle(fontSize: 10.5, color: DateEmber.txtMute),
+                  style: const TextStyle(fontSize: 10.5, color: AppColors.ivory62),
                 ),
               ],
             ),
@@ -769,21 +781,23 @@ class _SettingRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(99),
-                color: const Color(0x29C9512B),
-                border: Border.all(color: const Color(0x59E07A48)),
+                color: AppColors.ember.withValues(alpha: 0.16),
+                border: Border.all(
+                  color: AppColors.emberBright.withValues(alpha: 0.35),
+                ),
               ),
-              child: Text(
+              child: ResponsiveText(
                 pill!,
                 style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.0,
-                  color: DateEmber.emberLight,
+                  color: AppColors.emberBright,
                 ),
               ),
             )
           else
-            const Icon(Icons.chevron_right, size: 16, color: DateEmber.txtFaint),
+            const Icon(Icons.chevron_right, size: 16, color: AppColors.ivory40),
         ],
       ),
     );
@@ -803,14 +817,21 @@ class _TabBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xEB271A10), Color(0xEB1A120B)],
+          colors: [
+            AppColors.nightRaised.withValues(alpha: 0.92),
+            AppColors.nightSurface.withValues(alpha: 0.92),
+          ],
         ),
-        border: Border.all(color: DateEmber.glassBorder),
-        boxShadow: const [
-          BoxShadow(color: Color(0x80000000), blurRadius: 30, offset: Offset(0, 14)),
+        border: Border.all(color: AppColors.nightOutline),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.50),
+            blurRadius: 30,
+            offset: const Offset(0, 14),
+          ),
         ],
       ),
       child: Row(
@@ -834,7 +855,7 @@ class _TabItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? DateEmber.amberLight : DateEmber.txtFaint;
+    final color = active ? AppColors.amberLight : AppColors.ivory40;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -845,13 +866,13 @@ class _TabItem extends StatelessWidget {
                   width: 26,
                   height: 3,
                   decoration: BoxDecoration(
-                    color: DateEmber.amber,
+                    color: AppColors.amberGlow,
                     borderRadius: const BorderRadius.vertical(
                       bottom: Radius.circular(3),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: DateEmber.amber.withValues(alpha: 0.7),
+                        color: AppColors.amberGlow.withValues(alpha: 0.7),
                         blurRadius: 10,
                       ),
                     ],
@@ -862,7 +883,7 @@ class _TabItem extends StatelessWidget {
         const SizedBox(height: 5),
         Icon(icon, size: 20, color: color),
         const SizedBox(height: 3),
-        Text(
+        ResponsiveText(
           label,
           style: TextStyle(
             fontSize: 8.5,
@@ -961,9 +982,9 @@ class _EmberPainter extends CustomPainter {
       final paint = Paint()
         ..shader = RadialGradient(
           colors: [
-            DateEmber.amberLight.withValues(alpha: opacity),
-            DateEmber.emberLight.withValues(alpha: opacity * 0.6),
-            DateEmber.emberLight.withValues(alpha: 0),
+            AppColors.amberLight.withValues(alpha: opacity),
+            AppColors.emberBright.withValues(alpha: opacity * 0.6),
+            AppColors.emberBright.withValues(alpha: 0),
           ],
           stops: const [0.0, 0.6, 1.0],
         ).createShader(Rect.fromCircle(center: Offset(dx, dy), radius: radius));

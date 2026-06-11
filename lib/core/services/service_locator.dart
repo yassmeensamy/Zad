@@ -70,6 +70,7 @@ import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.
 import '../../features/teams/data/remote/teams_remote_data_source.dart';
 import '../../features/teams/data/repositories/teams_repository.dart';
 import '../../features/teams/presentation/cubit/teams_cubit.dart';
+import '../../features/upgrade/presentation/cubit/upgrade_cubit.dart';
 import '../../features/user/data/remote/user_remote_data_source.dart';
 import '../../features/user/data/repositories/user_repository.dart';
 import '../../features/user/presentation/cubit/user_cubit.dart';
@@ -84,8 +85,7 @@ import 'notification_service.dart';
 import 'permession_service.dart';
 import 'remote_config_service.dart';
 import 'share_service.dart';
-import 'upgrade_checker.dart';
-import 'upgrader_service.dart';
+import 'upgrade_service.dart';
 
 class ServiceLocator {
   Future<void> init({
@@ -105,9 +105,11 @@ class ServiceLocator {
     sl.registerLazySingleton<RemoteConfigService>(
       () => RemoteConfigServiceImpl(),
     );
-    sl.registerLazySingleton<UpgraderService>(() => UpgraderServiceImpl());
-    sl.registerLazySingleton<UpgradeChecker>(
-      () => UpgradeChecker(upgrader: sl(), remoteConfig: sl()),
+    sl.registerLazySingleton<UpgradeService>(
+      () => UpgradeServiceImpl(remoteConfig: sl()),
+    );
+    sl.registerFactory<UpgradeCubit>(
+      () => UpgradeCubit(upgradeService: sl()),
     );
 
     sl.registerLazySingleton<AppEndpoint>(() => AppEndpoint(baseUrl: baseUrl));
@@ -171,7 +173,7 @@ class ServiceLocator {
         onboardingRepository: sl(),
         notificationService: sl(),
         cacheService: sl(),
-        upgradeChecker: sl(),
+        upgradeService: sl(),
       ),
     );
 

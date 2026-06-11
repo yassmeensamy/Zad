@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
@@ -39,17 +40,10 @@ class FeedbackPanel extends StatelessWidget {
           ),
         );
       },
-      child: Container(
+      child: AppCard.tinted(
+        tint: accent,
         width: double.infinity,
         padding: const EdgeInsetsDirectional.fromSTEB(18, 16, 18, 18),
-        decoration: BoxDecoration(
-          color: Color.lerp(colors.canvasRaised, accent, 0.06),
-          borderRadius: ZaadRadii.xlAll,
-          border: Border.all(
-            color: accent.withValues(alpha: 0.30),
-            width: 0.8,
-          ),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

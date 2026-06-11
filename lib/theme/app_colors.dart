@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'date_ember_palette.dart';
-
 /// Raw Desert Sand palette. Internal to the theme layer.
 /// Outside `theme/`, use `context.colorScheme.X` or `context.appColors.Y`.
+///
+/// This is the single source of truth for both the warm Desert Sand light
+/// theme and the roasted-brown **Date & Ember** dark theme (night canvas, gold
+/// /amber accents, the ember CTA, ivory ink and the metallic disc ramps).
 class AppColors {
   AppColors._();
 
@@ -46,59 +48,65 @@ class AppColors {
   // separate clearly from the page. `canvasNight` is the page surface;
   // `nightLow` recesses below it and the ramp above lifts cards, sheets, menus
   // & the brightest containers. The backdrop vignette runs raised→surface→base.
-  static const Color canvasNight = DateEmber.canvas; // canvas — page bg
-  static const Color canvasNight2 = DateEmber.raised; // raised — backdrop top
-  static const Color nightSurface = DateEmber.surface; // surface — backdrop mid
-  static const Color nightLow = DateEmber.base; // base — recessed / bottom
-  static const Color nightRaised = DateEmber.raised; // raised surface (cards)
-  static const Color nightHigh = DateEmber.raised; // highest surface
-  static const Color nightTop = DateEmber.raised; // brightest container
-  static const Color nightOutline = DateEmber.glassBorder; // amber hairline
-  static const Color nightOutlineVariant = DateEmber.hairline; // ivory hairline
+  static const Color canvasNight = Color(0xFF140F0A); // canvas — page bg
+  static const Color canvasNight2 = Color(0xFF271A10); // raised — backdrop top
+  static const Color nightSurface = Color(0xFF1A120B); // surface — backdrop mid
+  static const Color nightLow = Color(0xFF0E0905); // base — recessed / bottom
+  static const Color nightRaised = Color(0xFF271A10); // raised surface (cards)
+  static const Color nightHigh = Color(0xFF271A10); // highest surface
+  static const Color nightTop = Color(0xFF271A10); // brightest container
+  static const Color nightOutline = Color(0x33E1A560); // amber hairline
+  static const Color nightOutlineVariant = Color(0x14F4ECD8); // ivory hairline
 
-  // Container & frosted-surface tints, all sourced from the Date & Ember
-  // palette so the whole dark mode derives from one set of colours.
-  static const Color nightBeige = DateEmber.raised; // warm container
+  // Container & frosted-surface tints — the whole dark mode derives from one
+  // set of roasted-brown colours.
+  static const Color nightBeige = Color(0xFF271A10); // warm container
   static const Color nightGlass = Color(0x1FF4ECD8); // ~12% ivory frosted film
 
-  // Brightened accents tuned for legibility on the dark canvas — sourced from
-  // the Date & Ember palette.
-  static const Color amberLight = DateEmber.amberLight; // highlight gold
-  static const Color oliveLight = DateEmber.olive; // success olive
+  // Gold / amber family — brightened accents tuned for legibility on the dark
+  // canvas. `washAmber` is the bare amber wash behind glass borders.
+  static const Color amberLight = Color(0xFFF1C57A); // highlight gold
+  static const Color washAmber = Color(0xFFE1A560); // amber wash / glass tint
+  static const Color oliveLight = Color(0xFF7A8A5A); // success olive
 
   // Ember — the warm CTA accent for dark mode (terracotta orange).
-  // Matches the Date & Ember CTA: ember-light (#E07A48) → ember (#C9512B).
-  static const Color ember = DateEmber.ember; // CTA base
-  static const Color emberBright = DateEmber.emberLight; // CTA gradient top
-  static const Color emberDeep = DateEmber.emberDeep; // CTA gradient bottom
-  static const Color emberInk = DateEmber.emberInk; // ink over ember fills
+  // The Date & Ember CTA: ember-light (#E07A48) → ember (#C9512B).
+  static const Color ember = Color(0xFFC9512B); // CTA base
+  static const Color emberBright = Color(0xFFE07A48); // CTA gradient top
+  static const Color emberDeep = Color(0xFFA53E1E); // CTA gradient bottom
+  static const Color emberInk = Color(0xFF1A0E06); // ink over ember fills
 
   // ── Date & Ember metallic disc ramps (avatars / podium) ───────────────
-  // Sourced from the Date & Ember palette so the leaderboard discs, podium
-  // pedestals and any avatar gradients all read from AppColors. `disc`-prefixed
-  // to stay distinct from the manuscript golds above.
-  static const Color discGoldHi = DateEmber.goldHi;
-  static const Color discGoldMid = DateEmber.goldMid;
-  static const Color discGoldLo = DateEmber.goldLo;
-  static const Color discGoldInk = DateEmber.goldInk;
-  static const Color discSilverHi = DateEmber.silverHi;
-  static const Color discSilverMid = DateEmber.silverMid;
-  static const Color discSilverLo = DateEmber.silverLo;
-  static const Color discBronzeHi = DateEmber.bronzeHi;
-  static const Color discBronzeMid = DateEmber.bronzeMid;
-  static const Color discBronzeLo = DateEmber.bronzeLo;
-  static const Color discBronzeInk = DateEmber.bronzeInk;
-  static const Color discOliveHi = DateEmber.oliveHi;
-  static const Color discOliveMid = DateEmber.oliveMid;
-  static const Color discOliveLo = DateEmber.oliveLo;
-  static const Color discOliveInk = DateEmber.oliveInk;
-  static const Color discDateHi = DateEmber.dateHi;
-  static const Color discDateMid = DateEmber.dateMid;
-  static const Color discDateLo = DateEmber.dateLo;
+  // The leaderboard discs, podium pedestals and any avatar gradients all read
+  // from here. `disc`-prefixed to stay distinct from the manuscript golds.
+  static const Color discGoldHi = Color(0xFFF1C57A);
+  static const Color discGoldMid = Color(0xFFE0A560);
+  static const Color discGoldLo = Color(0xFFA6622A);
+  static const Color discGoldInk = Color(0xFF2A1B0A);
+  static const Color discSilverHi = Color(0xFFF4EBDC);
+  static const Color discSilverMid = Color(0xFFCDBFA6);
+  static const Color discSilverLo = Color(0xFF8A7456);
+  static const Color discBronzeHi = Color(0xFFE8A877);
+  static const Color discBronzeMid = Color(0xFFC9512B);
+  static const Color discBronzeLo = Color(0xFF7A2E15);
+  static const Color discBronzeInk = Color(0xFF2A1206);
+  static const Color discOliveHi = Color(0xFFA6B584);
+  static const Color discOliveMid = Color(0xFF7A8A5A);
+  static const Color discOliveLo = Color(0xFF42502E);
+  static const Color discOliveInk = Color(0xFF1A2010);
+  static const Color discDateHi = Color(0xFFD9A878);
+  static const Color discDateMid = Color(0xFFA6622A);
+  static const Color discDateLo = Color(0xFF5E3115);
+
+  // App-update dialog medallion — the gilded disc highlight and the brown ink
+  // for its arrow glyph. Kept constant across light/dark; the rest of the disc
+  // ramp reuses [discGoldHi]/[discGoldMid]/[discGoldLo].
+  static const Color medallionHighlight = Color(0xFFFCE9C6);
+  static const Color medallionInk = Color(0xFF3A2510);
 
   // Ivory ink at fixed alphas — text & hairlines over the night canvas.
   static const Color ivory78 = Color(0xC7F4ECD8); // secondary text
-  static const Color ivory62 = DateEmber.txtMute; // Date & Ember muted text
+  static const Color ivory62 = Color(0x9EF4ECD8); // Date & Ember muted text
   static const Color ivory60 = Color(0x99F4ECD8); // tertiary text
   static const Color ivory40 = Color(0x66F4ECD8); // placeholder text
   static const Color ivory32 = Color(0x52F4ECD8); // strong border
@@ -127,7 +135,7 @@ class AppColors {
   static const Color creamDeep = Color(0xFFF1E3C2);
 
   // Decorative flame palette — used by the streak flame painter.
-  static const Color amberGlow = DateEmber.amber;
+  static const Color amberGlow = Color(0xFFE0A560);
   static const Color flameHalo = Color(0xFFF0B862);
   static const Color flameLight = Color(0xFFFCE5BC);
   static const Color flameGold = Color(0xFFF1C57A);
@@ -182,4 +190,25 @@ class AppColors {
   static const Color errRimLight = Color(0xFFD27866);
   static const Color errRimDark = Color(0xFF8B3A30);
   static const Color errStroke = Color(0xFFB5564A);
+
+  // ── Centralised feature tones (previously inline hex literals) ────────────
+  // Gilded gradient stops used by the team create / decree banners. Deeper than
+  // the manuscript golds; pair with [olive] and the gold multiply blend.
+  static const Color gildDeep = Color(0xFF6E5025); // banner gradient deep stop
+  static const Color goldBlend = Color(0xFF8B6A2C); // logo multiply-blend gold
+
+  // Date & Ember trend tints — the design's `--up` / `--down` (dark mode).
+  static const Color trendUp = Color(0xFF9CCB8E); // gain / success arrow
+  static const Color trendDown = Color(0xFFD98A6F); // loss / down arrow
+
+  // Dark roasted-brown surfaces & scrims for dialogs (used at high alpha).
+  // `cardNight*` are the force-update card gradient; `scrimNight` is the outer
+  // backdrop vignette; `nightOliveCard` backs the team-home card in dark mode.
+  static const Color cardNightTop = Color(0xFF281C12); // dialog card top
+  static const Color cardNightBottom = Color(0xFF140E09); // dialog card bottom
+  static const Color scrimNight = Color(0xFF080503); // backdrop outer scrim
+  static const Color nightOliveCard = Color(0xFF10160B); // dark team-home card
+
+  // Warm sand used by leaderboard surfaces at partial alpha.
+  static const Color sandWarm = Color(0xFFDCCDB4);
 }

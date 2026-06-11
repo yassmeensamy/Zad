@@ -74,8 +74,9 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
           color: colors.oliveDeep,
         ),
       ),
-      subtitle: Text(
-        'create_profiles.password_sheet_sub'.tr(args: [name]),
+      subtitle: ResponsiveText(
+        'create_profiles.password_sheet_sub',
+        args: [name],
         textAlign: TextAlign.center,
         style: AppTextStyles.bodySmall.copyWith(
           fontSize: 11,
@@ -98,7 +99,7 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
           ),
           if (_error != null) ...[
             const SizedBox(height: 6),
-            Text(
+            ResponsiveText(
               _error!,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 11.5,

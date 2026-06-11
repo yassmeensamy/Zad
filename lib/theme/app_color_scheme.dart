@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
-import 'date_ember_palette.dart';
 
 @immutable
 class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
@@ -132,6 +131,20 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color errRose;
   final Color errStroke;
 
+  // ── App-update dialog (force + optional) ─────────────────────────────────
+  // Card surfaces, scrim, recess and hairline shift between the cream parchment
+  // (light) and the roasted-brown canvas (dark); the medallion/ember accents are
+  // kept constant and live in [AppColors]. See force_update_dialog.
+  final Color updateSurfaceTop;
+  final Color updateSurfaceBottom;
+  final Color updateBorder;
+  final Color updateShadow;
+  final Color updateScrimInner;
+  final Color updateScrimOuter;
+  final Color updateRecess;
+  final Color updateHairline;
+  final Color updateBrandAccent;
+
   const AppColorsTheme({
     required this.textPrimary,
     required this.textSecondary,
@@ -206,6 +219,15 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.errRimDark,
     required this.errRose,
     required this.errStroke,
+    required this.updateSurfaceTop,
+    required this.updateSurfaceBottom,
+    required this.updateBorder,
+    required this.updateShadow,
+    required this.updateScrimInner,
+    required this.updateScrimOuter,
+    required this.updateRecess,
+    required this.updateHairline,
+    required this.updateBrandAccent,
   });
 
   static const AppColorsTheme light = AppColorsTheme(
@@ -282,24 +304,33 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     errRimDark: AppColors.errRimDark,
     errRose: AppColors.roseBlush,
     errStroke: AppColors.errStroke,
+    updateSurfaceTop: AppColors.creamMid,
+    updateSurfaceBottom: AppColors.creamDeep,
+    updateBorder: AppColors.creamBorderDark,
+    updateShadow: Color(0x33000000),
+    updateScrimInner: Color(0x4D3D3A1F), // darkOlive @ 30%
+    updateScrimOuter: Color(0x9E3D3A1F), // darkOlive @ 62%
+    updateRecess: AppColors.sand,
+    updateHairline: AppColors.sand,
+    updateBrandAccent: AppColors.amberDeep,
   );
 
   static const AppColorsTheme dark = AppColorsTheme(
-    textPrimary: DateEmber.ivory,
-    textSecondary: DateEmber.txtMute,
-    textTertiary: DateEmber.txtFaint,
+    textPrimary: AppColors.ivory,
+    textSecondary: AppColors.ivory62,
+    textTertiary: AppColors.ivory40,
     textPlaceholder: AppColors.ivory40,
-    textInverse: DateEmber.canvas,
-    textArabic: DateEmber.amber,
-    dateSoft: DateEmber.amberLight,
-    borderSubtle: DateEmber.hairline,
+    textInverse: AppColors.canvasNight,
+    textArabic: AppColors.amberGlow,
+    dateSoft: AppColors.amberLight,
+    borderSubtle: AppColors.ivory08,
     borderDefault: AppColors.ivory16,
     borderStrong: AppColors.ivory32,
-    canvas: DateEmber.canvas,
+    canvas: AppColors.canvasNight,
     canvasRaised: AppColors.nightRaised,
-    accent: DateEmber.amber,
-    accentSoft: DateEmber.amberLight,
-    accentDeep: DateEmber.amberDeep,
+    accent: AppColors.amberGlow,
+    accentSoft: AppColors.amberLight,
+    accentDeep: AppColors.discGoldLo,
     // Olive is freed to read as IVORY ink on the dark canvas (it drives most
     // headings, body & icons); the green identity is reserved for `success`,
     // avatars & a few accents via `olive`/`oliveLeaf`.
@@ -371,6 +402,15 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     errRimDark: AppColors.errRimDark,
     errRose: AppColors.roseBlush,
     errStroke: AppColors.errStroke,
+    updateSurfaceTop: Color(0xFA281C12),
+    updateSurfaceBottom: Color(0xFA140E09),
+    updateBorder: AppColors.nightOutline,
+    updateShadow: Color(0x9E000000),
+    updateScrimInner: Color(0x800E0905),
+    updateScrimOuter: Color(0xE0080503),
+    updateRecess: Color(0x660E0905),
+    updateHairline: AppColors.ivory08,
+    updateBrandAccent: AppColors.amberLight,
   );
 
   @override
@@ -448,6 +488,15 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? errRimDark,
     Color? errRose,
     Color? errStroke,
+    Color? updateSurfaceTop,
+    Color? updateSurfaceBottom,
+    Color? updateBorder,
+    Color? updateShadow,
+    Color? updateScrimInner,
+    Color? updateScrimOuter,
+    Color? updateRecess,
+    Color? updateHairline,
+    Color? updateBrandAccent,
   }) => AppColorsTheme(
     textPrimary: textPrimary ?? this.textPrimary,
     textSecondary: textSecondary ?? this.textSecondary,
@@ -522,6 +571,15 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     errRimDark: errRimDark ?? this.errRimDark,
     errRose: errRose ?? this.errRose,
     errStroke: errStroke ?? this.errStroke,
+    updateSurfaceTop: updateSurfaceTop ?? this.updateSurfaceTop,
+    updateSurfaceBottom: updateSurfaceBottom ?? this.updateSurfaceBottom,
+    updateBorder: updateBorder ?? this.updateBorder,
+    updateShadow: updateShadow ?? this.updateShadow,
+    updateScrimInner: updateScrimInner ?? this.updateScrimInner,
+    updateScrimOuter: updateScrimOuter ?? this.updateScrimOuter,
+    updateRecess: updateRecess ?? this.updateRecess,
+    updateHairline: updateHairline ?? this.updateHairline,
+    updateBrandAccent: updateBrandAccent ?? this.updateBrandAccent,
   );
 
   @override
@@ -637,6 +695,35 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       errRimDark: Color.lerp(errRimDark, other.errRimDark, t)!,
       errRose: Color.lerp(errRose, other.errRose, t)!,
       errStroke: Color.lerp(errStroke, other.errStroke, t)!,
+      updateSurfaceTop: Color.lerp(
+        updateSurfaceTop,
+        other.updateSurfaceTop,
+        t,
+      )!,
+      updateSurfaceBottom: Color.lerp(
+        updateSurfaceBottom,
+        other.updateSurfaceBottom,
+        t,
+      )!,
+      updateBorder: Color.lerp(updateBorder, other.updateBorder, t)!,
+      updateShadow: Color.lerp(updateShadow, other.updateShadow, t)!,
+      updateScrimInner: Color.lerp(
+        updateScrimInner,
+        other.updateScrimInner,
+        t,
+      )!,
+      updateScrimOuter: Color.lerp(
+        updateScrimOuter,
+        other.updateScrimOuter,
+        t,
+      )!,
+      updateRecess: Color.lerp(updateRecess, other.updateRecess, t)!,
+      updateHairline: Color.lerp(updateHairline, other.updateHairline, t)!,
+      updateBrandAccent: Color.lerp(
+        updateBrandAccent,
+        other.updateBrandAccent,
+        t,
+      )!,
     );
   }
 }
@@ -675,21 +762,21 @@ class AppColorSchemes {
   );
 
   static const ColorScheme dark = ColorScheme.dark(
-    primary: DateEmber.amber,
-    onPrimary: DateEmber.canvas,
-    primaryContainer: DateEmber.raised,
-    onPrimaryContainer: DateEmber.amberLight,
-    secondary: DateEmber.amberLight,
-    onSecondary: DateEmber.canvas,
-    secondaryContainer: DateEmber.raised,
-    onSecondaryContainer: DateEmber.ivory,
-    tertiary: DateEmber.olive,
-    onTertiary: DateEmber.canvas,
+    primary: AppColors.amberGlow,
+    onPrimary: AppColors.canvasNight,
+    primaryContainer: AppColors.nightRaised,
+    onPrimaryContainer: AppColors.amberLight,
+    secondary: AppColors.amberLight,
+    onSecondary: AppColors.canvasNight,
+    secondaryContainer: AppColors.nightRaised,
+    onSecondaryContainer: AppColors.ivory,
+    tertiary: AppColors.oliveLight,
+    onTertiary: AppColors.canvasNight,
     error: AppColors.error,
     onError: AppColors.ivory,
-    surface: DateEmber.canvas,
-    onSurface: DateEmber.ivory,
-    onSurfaceVariant: DateEmber.txtMute,
+    surface: AppColors.canvasNight,
+    onSurface: AppColors.ivory,
+    onSurfaceVariant: AppColors.ivory62,
     surfaceContainerLowest: AppColors.nightLow,
     surfaceContainerLow: AppColors.canvasNight2,
     surfaceContainer: AppColors.nightRaised,

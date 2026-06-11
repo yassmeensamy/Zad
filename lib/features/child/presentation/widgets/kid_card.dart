@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/textforms/main_text_form.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -56,13 +57,8 @@ class KidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final cubit = context.read<ChildDraftCubit>();
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(ZaadRadii.xl),
-        border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.22)),
-      ),
+    return AppCard.glass(
+      radius: ZaadRadii.xl,
       child: Stack(
         children: [
           Row(

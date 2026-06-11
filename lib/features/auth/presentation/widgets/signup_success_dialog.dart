@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class SignupSuccessDialog extends StatefulWidget {
@@ -145,8 +146,8 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
         const SizedBox(height: 12),
         _FadeUp(
           animation: _subtitle,
-          child: Text(
-            'auth.signup_success.subtitle'.tr(),
+          child: ResponsiveText(
+            'auth.signup_success.subtitle',
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium.copyWith(
               height: 1.5,

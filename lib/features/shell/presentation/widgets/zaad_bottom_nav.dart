@@ -86,7 +86,7 @@ class _NavSlot extends StatelessWidget {
     final restColor = colors.textArabic.withValues(alpha: 0.50);
     // Selected slot uses the Date & Ember gold gradient; dark ink reads
     // crisply on the bright gold (ivory would wash out).
-    const onGold = DateEmber.goldInk;
+    const onGold = AppColors.discGoldInk;
 
     return Material(
       color: Colors.transparent,
@@ -105,9 +105,9 @@ class _NavSlot extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        DateEmber.amberLight,
-                        DateEmber.amber,
-                        DateEmber.amberDeep,
+                        AppColors.amberLight,
+                        AppColors.amberGlow,
+                        AppColors.discGoldLo,
                       ],
                     )
                   : null,
@@ -115,7 +115,7 @@ class _NavSlot extends StatelessWidget {
               boxShadow: selected
                   ? [
                       BoxShadow(
-                        color: DateEmber.amber.withValues(alpha: 0.32),
+                        color: AppColors.amberGlow.withValues(alpha: 0.32),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
+import 'responsive_text.dart';
 
 /// Circular avatar that prefers a remote image and falls back to a tinted
 /// circle showing the first letter of [name]. Use when an `imageUrl` may or
@@ -87,7 +88,7 @@ class _Initial extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Text(
+        child: ResponsiveText(
           _initialOf(name),
           style: TextStyle(
             fontFamily: AppTextStyles.headlineMedium.fontFamily,

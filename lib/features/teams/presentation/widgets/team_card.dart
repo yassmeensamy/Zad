@@ -35,9 +35,9 @@ class TeamCard extends StatelessWidget {
   // Decorative avatar identities (gradient + letter ink), cycled per member.
   // Mid-tone so they read on both the cream and brown card surfaces.
   static const List<(List<Color>, Color)> _avatarPalettes = [
-    ([Color(0xFFF1C57A), Color(0xFFA6622A)], Color(0xFF2A1B0A)),
-    ([Color(0xFFA6B584), Color(0xFF42502E)], Color(0xFF1A2010)),
-    ([Color(0xFFE8A877), Color(0xFF7A2E15)], Color(0xFF2A1206)),
+    ([AppColors.amberLight, AppColors.discGoldLo], AppColors.discGoldInk),
+    ([AppColors.discOliveHi, AppColors.discOliveLo], AppColors.discOliveInk),
+    ([AppColors.discBronzeHi, AppColors.discBronzeLo], AppColors.discBronzeInk),
   ];
 
   /// First visible character of [s] (works for Latin and Arabic names).

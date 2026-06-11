@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 /// Gold-gradient pill CTA shared by the Decree (create-success) and
@@ -48,8 +49,8 @@ class GildedCta extends StatelessWidget {
                 stops: const [0.0, 0.45, 1.0],
               ),
               borderRadius: BorderRadius.circular(14),
-              border: const Border(
-                top: BorderSide(color: Color(0x80FFFFFF)),
+              border: Border(
+                top: BorderSide(color: AppColors.white.withValues(alpha: 0.50)),
               ),
               boxShadow: enabled
                   ? [
@@ -76,7 +77,7 @@ class GildedCta extends StatelessWidget {
                     : Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
+                          ResponsiveText(
                             label.toUpperCase(),
                             style: TextStyle(
                               fontSize: 12,

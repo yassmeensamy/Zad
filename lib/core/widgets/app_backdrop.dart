@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/date_ember_palette.dart';
+import '../../theme/app_colors.dart';
 
 /// The app-wide **Date & Ember** background for dark mode.
 ///
@@ -16,14 +16,14 @@ class AppBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const IgnorePointer(
+    return IgnorePointer(
       child: DecoratedBox(
         // radial-gradient(130% 75% at 50% -8%, #271A10, #1A120B 42%, #0E0905)
         decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment(0, -1.05),
             radius: 1.4,
-            colors: [DateEmber.raised, DateEmber.surface, DateEmber.base],
+            colors: [AppColors.nightRaised, AppColors.nightSurface, AppColors.nightLow],
             stops: [0.0, 0.42, 1.0],
           ),
         ),
@@ -37,7 +37,7 @@ class AppBackdrop extends StatelessWidget {
                 image: AssetImage('assets/images/islamic-pattern.png'),
                 repeat: ImageRepeat.repeat,
                 alignment: Alignment.topLeft,
-                color: DateEmber.ivory,
+                color: AppColors.ivory,
                 colorBlendMode: BlendMode.screen,
               ),
             ),
@@ -47,7 +47,10 @@ class AppBackdrop extends StatelessWidget {
                 gradient: RadialGradient(
                   center: Alignment(0, -0.95),
                   radius: 0.9,
-                  colors: [Color(0x29E1A560), Color(0x00E1A560)],
+                  colors: [
+                    AppColors.washAmber.withValues(alpha: 0.16),
+                    AppColors.washAmber.withValues(alpha: 0),
+                  ],
                   stops: [0.0, 0.65],
                 ),
               ),

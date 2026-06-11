@@ -9,6 +9,7 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../../drafts/presentation/cubit/drafts_cubit.dart';
@@ -533,8 +534,8 @@ class _PreviousQuestionButton extends StatelessWidget {
                   color: fg,
                 ),
                 const SizedBox(width: 6),
-                Text(
-                  'quiz.actions.previous'.tr(),
+                ResponsiveText(
+                  'quiz.actions.previous',
                   style: AppTextStyles.bodySmall.copyWith(
                     color: fg,
                     fontWeight: FontWeight.w600,

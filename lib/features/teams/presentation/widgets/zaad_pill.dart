@@ -62,7 +62,7 @@ class ZaadPill extends StatelessWidget {
         LinearGradient(
           colors: [colors.warningSurface, colors.warningSurface],
         ),
-        const Color(0xFFB5564A),
+        AppColors.errStroke,
         null,
       ),
       ZaadPillTone.ivory => (

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_images.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -39,34 +40,11 @@ class CategoryCard extends StatelessWidget {
         borderRadius: ZaadRadii.xxlAll,
         splashColor: tint.withValues(alpha: 0.10),
         highlightColor: tint.withValues(alpha: 0.05),
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: ZaadRadii.xxlAll,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                colors.canvasRaised,
-                Color.lerp(colors.canvas, tint, 0.06)!,
-              ],
-            ),
-            border: Border.all(color: tint.withValues(alpha: 0.20), width: 0.8),
-            boxShadow: [
-              BoxShadow(
-                color: colors.oliveDeep.withValues(alpha: 0.06),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-              BoxShadow(
-                color: tint.withValues(alpha: 0.04),
-                blurRadius: 30,
-                offset: const Offset(0, 14),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: ZaadRadii.xxlAll,
-            child: Stack(
+        child: AppCard.elevated(
+          tint: tint,
+          radius: ZaadRadii.xxl,
+          padding: EdgeInsets.zero,
+          child: Stack(
               children: [
                 Positioned(
                   top: 0,
@@ -136,7 +114,7 @@ class CategoryCard extends StatelessWidget {
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: AlignmentDirectional.centerStart,
-                              child: Text(
+                              child: ResponsiveText(
                                 isStarted
                                     ? 'categories.progress.percent'.tr(
                                         args: ['$percent'],
@@ -157,13 +135,12 @@ class CategoryCard extends StatelessWidget {
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: AlignmentDirectional.centerEnd,
-                              child: Text(
-                                'categories.progress.levels'.tr(
-                                  args: [
-                                    '${category.completedLevels}',
-                                    '${category.levelCount}',
-                                  ],
-                                ),
+                              child: ResponsiveText(
+                                'categories.progress.levels',
+                                args: [
+                                  '${category.completedLevels}',
+                                  '${category.levelCount}',
+                                ],
                                 maxLines: 1,
                                 style: AppTextStyles.labelMedium.copyWith(
                                   fontSize: 11,
@@ -192,7 +169,6 @@ class CategoryCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
         ),
       ),
     );

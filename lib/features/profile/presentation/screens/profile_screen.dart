@@ -9,6 +9,7 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
+import '../../../../core/widgets/force_update_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -64,6 +65,16 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 22),
             ],
             const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: const _CheckUpdateButton(),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: const _CheckOptionalUpdateButton(),
+            ),
+            const SizedBox(height: 12),
             if (!isGuest) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -96,7 +107,6 @@ List<ProfileSection> _visibleSections(
         ],
       ),
 ];
-
 
 class _MihrabHero extends StatelessWidget {
   const _MihrabHero({required this.colors, required this.user});
@@ -193,7 +203,6 @@ class _AvatarMedallion extends StatelessWidget {
   }
 }
 
-
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.textKey, required this.colors});
   final String textKey;
@@ -226,7 +235,6 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
-
 
 class _SectionCard extends StatelessWidget {
   const _SectionCard({required this.items});
@@ -277,6 +285,108 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+/// Triggers the Date & Ember blocking force-update dialog.
+class _CheckUpdateButton extends StatelessWidget {
+  const _CheckUpdateButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colors.accent.withValues(alpha: 0.32),
+          width: 1.0,
+        ),
+        color: colors.canvas.withValues(alpha: 0.6),
+      ),
+      child: CustomButton.full(
+        onTap: () => AppUpdateDialog.show(
+          context,
+          onUpdate: () => Navigator.of(context).pop(),
+          currentVersion: '2.4.1',
+          newVersion: '3.0.0',
+        ),
+        theme: CustomButtonTheme(
+          height: 52,
+          backgroundColor: Colors.transparent,
+          textColor: colors.accent,
+          borderRadius: 16,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.system_update_rounded, size: 18, color: colors.accent),
+            const SizedBox(width: 10),
+            ResponsiveText(
+              'update.check_for_updates',
+              style: AppTextStyles.labelLarge.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.4,
+                color: colors.accent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Triggers the dismissible (optional) variant of the update dialog with mock
+/// version/release-notes data, for previewing the "Later"/close paths.
+class _CheckOptionalUpdateButton extends StatelessWidget {
+  const _CheckOptionalUpdateButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colors.accent.withValues(alpha: 0.32),
+          width: 1.0,
+        ),
+        color: colors.canvas.withValues(alpha: 0.6),
+      ),
+      child: CustomButton.full(
+        onTap: () => AppUpdateDialog.show(
+          context,
+          isForceUpdate: false,
+          onUpdate: () => Navigator.of(context).pop(),
+          currentVersion: '2.4.1',
+          newVersion: '3.0.0',
+          releaseNotes: 'Faster team sync & live leaderboard\n'
+              '• New medals & achievements\n'
+              '• Bug fixes & security improvements',
+        ),
+        theme: CustomButtonTheme(
+          height: 52,
+          backgroundColor: Colors.transparent,
+          textColor: colors.accent,
+          borderRadius: 16,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.update_rounded, size: 18, color: colors.accent),
+            const SizedBox(width: 10),
+            ResponsiveText(
+              'update.optional_check',
+              style: AppTextStyles.labelLarge.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.4,
+                color: colors.accent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _ResetProgressButton extends StatelessWidget {
   const _ResetProgressButton();
@@ -377,7 +487,6 @@ class _ResetProgressPill extends StatelessWidget {
     );
   }
 }
-
 
 class _SignOutButton extends StatelessWidget {
   const _SignOutButton();

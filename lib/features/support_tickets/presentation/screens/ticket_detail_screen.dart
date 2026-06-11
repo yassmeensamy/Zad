@@ -311,7 +311,7 @@ class _RefPill extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 1),
-          Text(
+          ResponsiveText(
             shortRef,
             style: AppTextStyles.labelLarge.copyWith(
               fontSize: 11,

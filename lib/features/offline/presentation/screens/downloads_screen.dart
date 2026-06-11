@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
@@ -110,7 +111,7 @@ class _DownloadedTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   category.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -120,8 +121,9 @@ class _DownloadedTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  'downloads.levels_count'.tr(args: ['${category.levelCount}']),
+                ResponsiveText(
+                  'downloads.levels_count',
+                  args: ['${category.levelCount}'],
                   style: AppTextStyles.labelMedium.copyWith(
                     fontSize: 11,
                     color: colors.textSecondary,

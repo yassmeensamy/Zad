@@ -148,7 +148,7 @@ class ProfileSelectScreen extends StatelessWidget {
                         const SizedBox(height: 6),
                         Directionality(
                           textDirection: ui.TextDirection.rtl,
-                          child: Text(
+                          child: ResponsiveText(
                             _basmala,
                             style: AppTextStyles.bodyMedium.copyWith(
                               fontSize: 13,
@@ -353,7 +353,7 @@ class _AddTile extends StatelessWidget {
           ),
           // Reserves the height of role label + chip slot from
           // ProfileCard so both tiles end at the same vertical position.
-          const SizedBox(height: 48),
+          const SizedBox(height: 46),
         ],
       ),
     );

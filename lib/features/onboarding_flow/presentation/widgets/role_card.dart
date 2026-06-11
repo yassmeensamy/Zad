@@ -43,13 +43,7 @@ class RoleCard extends StatelessWidget {
               width: 1.5,
             ),
             boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: colors.oliveDeep.withValues(alpha: 0.18),
-                      blurRadius: 28,
-                      offset: const Offset(0, 18),
-                    ),
-                  ]
+                ? ZaadShadows.selected(colors, tint: colors.olive)
                 : null,
           ),
           child: Row(

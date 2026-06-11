@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/offline/presentation/cubit/connectivity_cubit.dart';
 import '../../theme/theme.dart';
 import 'app_backdrop.dart';
+import 'responsive_text.dart';
 
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
@@ -93,8 +93,8 @@ class _OfflineBanner extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Flexible(
-                    child: Text(
-                      'offline.banner_message'.tr(),
+                    child: ResponsiveText(
+                      'offline.banner_message',
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

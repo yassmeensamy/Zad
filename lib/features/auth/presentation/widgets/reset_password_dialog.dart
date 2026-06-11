@@ -102,7 +102,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
           ),
         ),
         const SizedBox(height: 6),
-        Text(
+        ResponsiveText(
           widget.email,
           textAlign: TextAlign.center,
           style: AppTextStyles.labelLarge.copyWith(

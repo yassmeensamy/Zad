@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/notification_model.dart';
@@ -24,24 +25,8 @@ class NotificationCard extends StatelessWidget {
     final colors = context.appColors;
     final accent = notification.notificationType.accent(colors);
 
-    final card = Container(
+    final card = AppCard.flat(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      decoration: BoxDecoration(
-        color: colors.cardSurface,
-        borderRadius: BorderRadius.circular(ZaadRadii.card),
-        border: Border.all(
-          color: colors.olive.withValues(alpha: 0.16),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colors.oliveDeep.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -80,7 +65,7 @@ class NotificationCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     if (notification.createdAt != null)
-                      Text(
+                      ResponsiveText(
                         timeago.format(
                           notification.createdAt!,
                           locale: context.locale.languageCode,

@@ -695,10 +695,13 @@
    "title": "You're #1!",
    "arabic": "تَصَدَّرْتَ فَرِيقَك",
    "subtitle_prefix": "You've taken the top spot in",
-   "subtitle_suffix": "— leading {count} companions this week.",
-   "row_meta": "{accuracy}% accuracy · {streak}d streak",
+   "subtitle_suffix": ", leading {count} companions this week.",
+   "stat_points": "Points",
+   "stat_accuracy": "Accuracy",
+   "stat_streak": "Streak",
    "share_cta": "Share the moment",
-   "view_cta": "View full leaderboard"
+   "back_prefix": "Back to",
+   "back_word": "leaderboard"
   }
  },
  "leaderboard": {

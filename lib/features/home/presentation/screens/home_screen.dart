@@ -8,9 +8,12 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
+import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
+import '../../../teams/presentation/screens/temp_team_home.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/models/hadith_model.dart';
@@ -138,10 +141,30 @@ class HomeLoadedContent extends StatelessWidget {
             const SizedBox(height: 14),
             if (isGuest)
               const HomeWhyLoginSection()
-            else
+            else ...[
               const HomeTeamSection(),
+              const SizedBox(height: 26),
+              ResponsiveText(
+                'This week · team stats',
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: context.appColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const TeamWeekStats(),
+            ],
             const SizedBox(height: 26),
             HadithCard(hadith: overview.hadithOfDay),
+            const SizedBox(height: 14),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const TempTeamHomeScreen(),
+                ),
+              ),
+              child: const Text('Team Home (preview)'),
+            ),
             const SizedBox(height: 8),
           ],
         );

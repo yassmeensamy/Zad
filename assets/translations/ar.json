@@ -695,10 +695,13 @@
    "title": "أنتَ الأوّل!",
    "arabic": "تَصَدَّرْتَ فَرِيقَك",
    "subtitle_prefix": "تصدّرتَ المركز الأول في",
-   "subtitle_suffix": "— تقود {count} من الرفاق هذا الأسبوع.",
-   "row_meta": "{accuracy}% دقة · {streak} يوم تتابع",
+   "subtitle_suffix": "، تقود {count} من الرفاق هذا الأسبوع.",
+   "stat_points": "النقاط",
+   "stat_accuracy": "الدقة",
+   "stat_streak": "التتابع",
    "share_cta": "شارك اللحظة",
-   "view_cta": "عرض لوحة الصدارة كاملة"
+   "back_prefix": "العودة إلى",
+   "back_word": "لوحة الصدارة"
   }
  },
  "leaderboard": {

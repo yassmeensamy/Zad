@@ -104,10 +104,12 @@ dependency_overrides:
 
 flutter_launcher_icons:
   ios: true
-  android: false
-  image_path: "assets/images/app_icon_source.png"
+  android: true
+  image_path: "assets/images/logo_without_BG.png"
   remove_alpha_ios: true
-  background_color_ios: "#E9D9B8"
+  background_color_ios: "#3E4A2A"
+  adaptive_icon_background: "#3E4A2A"
+  adaptive_icon_foreground: "assets/images/logo_without_BG.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

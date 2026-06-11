@@ -1,52 +1,35 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../theme/theme.dart';
 
-/// One row in the team leaderboard shown behind the celebration banner.
-class TeamLeaderEntry {
-  const TeamLeaderEntry({
-    required this.rank,
-    required this.name,
-    required this.accuracy,
-    required this.streak,
-    required this.points,
-    this.isMe = false,
-  });
-
-  final int rank;
-  final String name;
-  final int accuracy;
-  final int streak;
-  final int points;
-
-  /// The companion who just rose to #1 — gets the gilded row + crown.
-  final bool isMe;
-}
-
-/// Zad — **Team Number One Celebration**.
+/// Zad — **Team Number One Celebration** dialog.
 ///
-/// A calm "#1 in the team" moment shown as a dialog: a crown drops onto the
-/// leader's avatar, a soft confetti burst and a warm glow pool bloom, and the
-/// banner ("New team leader · You're #1!") rises over the dimmed leaderboard.
+/// A "#1 in the team" moment: a crowned gold medallion pops above a glass card,
+/// a sunburst spins behind it, the crown drops, twinkles and orbiting sparkles
+/// shimmer, confetti rains, then the title, an Arabic blessing, a stat trio and
+/// the actions rise in — all over a blurred leaderboard.
 ///
 /// Recreated from the `Zad Team Number One Celebration.html` design handoff.
-/// Every colour derives from the semantic theme ([context.appColors]) so it
-/// adapts to both brightnesses — gold accents on the roasted-brown Date & Ember
-/// surface in dark, and on a warm cream surface in light.
+/// Colours derive from the semantic theme ([context.appColors]) so the card
+/// adapts to both brightnesses while the gilded medallion stays gold.
 class TeamNumberOneCelebrationDialog extends StatelessWidget {
   const TeamNumberOneCelebrationDialog({
     super.key,
     required this.teamName,
     required this.companions,
-    required this.entries,
+    required this.leaderName,
+    required this.points,
+    required this.accuracy,
+    required this.streak,
+    this.rank = 1,
     this.onShare,
-    this.onViewLeaderboard,
+    this.onBack,
   });
 
   /// Team the leader topped, e.g. `Companions of Sabr`.
@@ -55,121 +38,71 @@ class TeamNumberOneCelebrationDialog extends StatelessWidget {
   /// Companions led this week — folded into the subtitle.
   final int companions;
 
-  /// The leaderboard rows (top-down). Exactly one should be marked [isMe].
-  final List<TeamLeaderEntry> entries;
+  /// Leader's display name — its first glyph is stamped on the medallion coin.
+  final String leaderName;
+
+  final int points;
+  final int accuracy;
+  final int streak;
+
+  /// Rank reached (the ribbon badge under the coin). Defaults to 1.
+  final int rank;
 
   final VoidCallback? onShare;
-  final VoidCallback? onViewLeaderboard;
-
-  /// The design's sample roster — used by the home preview trigger and as a
-  /// sensible default while the real ranking loads.
-  static const List<TeamLeaderEntry> sampleEntries = [
-    TeamLeaderEntry(
-      rank: 1,
-      name: 'Zayd N.',
-      accuracy: 96,
-      streak: 38,
-      points: 3480,
-      isMe: true,
-    ),
-    TeamLeaderEntry(rank: 2, name: 'Yūsuf A.', accuracy: 94, streak: 36, points: 3420),
-    TeamLeaderEntry(rank: 3, name: 'Aisha M.', accuracy: 91, streak: 24, points: 2980),
-    TeamLeaderEntry(rank: 4, name: 'Maryam K.', accuracy: 89, streak: 16, points: 2210),
-  ];
+  final VoidCallback? onBack;
 
   static Future<T?> show<T>({
     required BuildContext context,
     String teamName = 'Companions of Sabr',
     int companions = 11,
-    List<TeamLeaderEntry> entries = sampleEntries,
+    String leaderName = 'Zayd N.',
+    int points = 3480,
+    int accuracy = 96,
+    int streak = 38,
+    int rank = 1,
     VoidCallback? onShare,
-    VoidCallback? onViewLeaderboard,
+    VoidCallback? onBack,
   }) {
     return showDialog<T>(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.62),
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
       builder: (_) => TeamNumberOneCelebrationDialog(
         teamName: teamName,
         companions: companions,
-        entries: entries,
+        leaderName: leaderName,
+        points: points,
+        accuracy: accuracy,
+        streak: streak,
+        rank: rank,
         onShare: onShare,
-        onViewLeaderboard: onViewLeaderboard,
+        onBack: onBack,
       ),
     );
   }
 
-  static const double _border = 1.6;
-  static const double _radius = 28;
-
   @override
   Widget build(BuildContext context) {
     final p = _CelPalette.of(context);
-    final maxHeight = math.min(MediaQuery.sizeOf(context).height * 0.86, 612.0);
-
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.sizeOf(context).width * 0.06,
-        vertical: 24,
-      ),
-      child: TweenAnimationBuilder<double>(
-        duration: const Duration(milliseconds: 360),
-        curve: Curves.easeOutBack,
-        tween: Tween(begin: 0.92, end: 1),
-        builder: (_, value, child) =>
-            Transform.scale(scale: value, child: child),
-        child: Container(
-          padding: const EdgeInsets.all(_border),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(_radius),
-            // Gilded amber→ivory hairline frame, matching CustomDialog.
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              stops: const [0.35, 0.9],
-              colors: [p.accent.withValues(alpha: 0.55), p.hairline],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: p.glow.withValues(alpha: 0.22),
-                blurRadius: 40,
-                offset: const Offset(0, 18),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.45),
-                blurRadius: 30,
-                offset: const Offset(0, 14),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(_radius - _border),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: maxHeight),
-              child: _CelebrationStage(data: this, palette: p),
-            ),
-          ),
-        ),
-      ),
-    );
+    return _CelebrationStage(data: this, palette: p);
   }
 }
 
 // ─── Theme-derived palette ──────────────────────────────────────────────────
 
-/// Every colour the celebration paints with, resolved once from the active
-/// theme so the dialog reads correctly in both brightnesses.
+/// Every colour the celebration paints with, resolved once from the theme.
 class _CelPalette {
   const _CelPalette({
     required this.isDark,
-    required this.surfaceTop,
-    required this.surfaceBottom,
+    required this.cardTop,
+    required this.cardBottom,
     required this.ink,
     required this.muted,
     required this.faint,
     required this.accent,
     required this.accentSoft,
     required this.accentDeep,
+    required this.goldLight,
     required this.goldInk,
     required this.titleHi,
     required this.titleMid,
@@ -185,9 +118,9 @@ class _CelPalette {
   });
 
   final bool isDark;
-  final Color surfaceTop, surfaceBottom;
+  final Color cardTop, cardBottom;
   final Color ink, muted, faint;
-  final Color accent, accentSoft, accentDeep, goldInk;
+  final Color accent, accentSoft, accentDeep, goldLight, goldInk;
   final Color titleHi, titleMid, titleLo;
   final Color ember, emberLight;
   final Color glow;
@@ -200,24 +133,23 @@ class _CelPalette {
     final dark = context.isDark;
     return _CelPalette(
       isDark: dark,
-      surfaceTop: c.creamSurfaceTop,
-      surfaceBottom: c.creamSurfaceBottom,
+      cardTop: c.creamSurfaceTop,
+      cardBottom: c.creamSurfaceBottom,
       ink: c.textPrimary,
       muted: c.textSecondary,
       faint: c.textTertiary,
       accent: c.accent,
       accentSoft: c.accentSoft,
       accentDeep: c.accentDeep,
+      goldLight: c.goldLight,
       goldInk: c.goldInk,
-      // Gilded title gradient: a light-on-dark sheen in dark mode, a deeper
-      // gold→bronze gilt in light mode so it stays legible on cream.
       titleHi: dark ? c.goldLight : c.accent,
       titleMid: dark ? c.accentSoft : c.accentDeep,
       titleLo: dark ? c.accentDeep : c.goldDark,
       ember: AppColors.ember,
       emberLight: AppColors.emberBright,
       glow: dark ? AppColors.ember : c.accent,
-      glowOpacity: dark ? 1.0 : 0.55,
+      glowOpacity: dark ? 1.0 : 0.6,
       hairline: c.borderSubtle,
       glassBorder: c.accent.withValues(alpha: 0.22),
       crown: c.accentSoft,
@@ -236,8 +168,9 @@ class _CelPalette {
 
 // Shared entrance curve, mirroring the prototype's ease-out reveals.
 const _ease = Curves.easeOutCubic;
+const _pop = Curves.easeOutBack;
 
-// ─── Stage ──────────────────────────────────────────────────────────────────
+// ─── Full-screen stage (blur + scrim + confetti + dialog) ────────────────────
 
 class _CelebrationStage extends StatefulWidget {
   const _CelebrationStage({required this.data, required this.palette});
@@ -256,20 +189,25 @@ class _CelebrationStageState extends State<_CelebrationStage>
   final ValueNotifier<int> _frame = ValueNotifier<int>(0);
   Duration _last = Duration.zero;
   bool _disposed = false;
-  bool _burst = false;
+  bool _started = false;
 
-  Size _lastSize = const Size(340, 600);
+  Size _screen = const Size(392, 812);
 
   @override
   void initState() {
     super.initState();
     _fx = _Fx(widget.palette.confetti);
     _ticker = createTicker(_onTick)..start();
-    // Soft confetti pop just after the crown lands.
-    Future<void>.delayed(const Duration(milliseconds: 560), () {
+    // Two soft confetti volleys, mirroring the prototype.
+    _schedule(420, () => _fx.burst(_screen));
+    _schedule(1150, () => _fx.burst(_screen));
+  }
+
+  void _schedule(int ms, VoidCallback fn) {
+    Future<void>.delayed(Duration(milliseconds: ms), () {
       if (!_disposed) {
-        _fx.burst(_lastSize);
-        _burst = true;
+        fn();
+        _started = true;
       }
     });
   }
@@ -277,7 +215,7 @@ class _CelebrationStageState extends State<_CelebrationStage>
   void _onTick(Duration elapsed) {
     final dt = (elapsed - _last).inMicroseconds / 1e6;
     _last = elapsed;
-    if (_burst && _fx.step(dt.clamp(0.0, 1 / 30), _lastSize)) {
+    if (_started && _fx.step(dt.clamp(0.0, 1 / 30), _screen)) {
       _frame.value++;
     }
   }
@@ -293,91 +231,49 @@ class _CelebrationStageState extends State<_CelebrationStage>
   @override
   Widget build(BuildContext context) {
     final p = widget.palette;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxHeight.isFinite) {
-          _lastSize = Size(constraints.maxWidth, constraints.maxHeight);
-        }
-        return Stack(
-          children: [
-            // Roasted-brown / cream surface, faint pattern + amber wash.
-            Positioned.fill(child: _Surface(palette: p)),
-            // Warm glow pool blooming behind the banner.
-            Positioned(
-              top: -60,
-              left: 0,
-              right: 0,
-              child: Center(child: _GlowPool(palette: p)),
-            ),
-            // Banner + leaderboard + actions.
-            Positioned.fill(child: _Content(data: widget.data, palette: p)),
-            // Confetti, above the content.
-            Positioned.fill(
-              child: IgnorePointer(
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: _ConfettiPainter(_fx, repaint: _frame),
+    _screen = MediaQuery.sizeOf(context);
+
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        children: [
+          // Blurred + dimmed leaderboard behind, dismiss on tap.
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).maybePop(),
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(0, -0.16),
+                      radius: 1.0,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.45),
+                        Colors.black.withValues(alpha: 0.86),
+                      ],
+                      stops: const [0.0, 0.72],
+                    ),
                   ),
                 ),
               ),
             ),
-            // Close control.
-            PositionedDirectional(
-              top: 12,
-              end: 12,
-              child: ZaadCircleIconButton.close(
-                onTap: () => Navigator.of(context).maybePop(),
+          ),
+          // Confetti — behind the dialog card (z36 in the prototype).
+          Positioned.fill(
+            child: IgnorePointer(
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _ConfettiPainter(_fx, repaint: _frame),
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// ─── Surface ────────────────────────────────────────────────────────────────
-
-class _Surface extends StatelessWidget {
-  const _Surface({required this.palette});
-
-  final _CelPalette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = palette;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [p.surfaceTop, p.surfaceBottom],
-        ),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Opacity(
-            opacity: 0.05,
-            child: Image.asset(
-              'assets/images/islamic-pattern.png',
-              repeat: ImageRepeat.repeat,
-              alignment: Alignment.topLeft,
-              color: p.ink,
-              colorBlendMode: BlendMode.screen,
             ),
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: const Alignment(0, -0.92),
-                radius: 0.95,
-                colors: [
-                  p.accent.withValues(alpha: 0.16),
-                  p.accent.withValues(alpha: 0),
-                ],
-                stops: const [0.0, 0.62],
-              ),
+          // The celebration dialog.
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(26, 80, 26, 40),
+              child: _Dialog(data: widget.data, palette: p),
             ),
           ),
         ],
@@ -386,19 +282,624 @@ class _Surface extends StatelessWidget {
   }
 }
 
-// ─── Glow pool ──────────────────────────────────────────────────────────────
+// ─── Dialog card ──────────────────────────────────────────────────────────────
 
-class _GlowPool extends StatefulWidget {
-  const _GlowPool({required this.palette});
+class _Dialog extends StatelessWidget {
+  const _Dialog({required this.data, required this.palette});
+
+  final TeamNumberOneCelebrationDialog data;
+  final _CelPalette palette;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = palette;
+    const radius = 30.0;
+
+    final card = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [p.cardTop, p.cardBottom],
+        ),
+        border: Border.all(color: p.glassBorder),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.55),
+            blurRadius: 60,
+            offset: const Offset(0, 30),
+          ),
+          BoxShadow(
+            color: p.accentSoft.withValues(alpha: 0.24),
+            blurRadius: 0.6,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          // Clipped decoration: top amber glow, faint pattern, rising motes.
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radius),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: const Alignment(0, -1),
+                        radius: 1.05,
+                        colors: [
+                          p.accent.withValues(alpha: 0.24),
+                          p.accent.withValues(alpha: 0),
+                        ],
+                        stops: const [0.0, 0.52],
+                      ),
+                    ),
+                  ),
+                  Opacity(
+                    opacity: 0.06,
+                    child: Image.asset(
+                      'assets/images/islamic-pattern.png',
+                      repeat: ImageRepeat.repeat,
+                      alignment: Alignment.topLeft,
+                      color: p.ink,
+                      colorBlendMode: BlendMode.screen,
+                    ),
+                  ),
+                  _Motes(palette: p),
+                ],
+              ),
+            ),
+          ),
+          // Content.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(22, 0, 22, 22),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Reserve the lower half of the lifted medallion.
+                const SizedBox(height: 78),
+                _ribbon(p),
+                const SizedBox(height: 11),
+                _title(p),
+                const SizedBox(height: 4),
+                _arabic(p),
+                const SizedBox(height: 11),
+                _subtitle(p),
+                const SizedBox(height: 18),
+                _trio(p),
+                const SizedBox(height: 20),
+                _buttons(context, p),
+              ],
+            ),
+          ),
+          // Medallion lifted above the card top.
+          Positioned(
+            top: -58,
+            child: _Medallion(palette: p, initial: _initial),
+          ),
+        ],
+      ),
+    );
+
+    // Card entrance: scale-up with a soft elastic settle.
+    return card
+        .animate()
+        .fadeIn(delay: 150.ms, duration: 400.ms, curve: _ease)
+        .scaleXY(begin: 0.86, end: 1, delay: 150.ms, duration: 700.ms, curve: _pop);
+  }
+
+  String get _initial {
+    final t = data.leaderName.trim();
+    return t.isEmpty ? '?' : t.characters.first;
+  }
+
+  Widget _ribbon(_CelPalette p) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          color: p.ember.withValues(alpha: 0.16),
+          border: Border.all(color: p.emberLight.withValues(alpha: 0.42)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _Crown(color: p.emberLight, width: 10),
+            const SizedBox(width: 6),
+            Text(
+              'teams.number_one.eyebrow'.tr().toUpperCase(),
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2.1,
+                color: p.emberLight,
+              ),
+            ),
+          ],
+        ),
+      ).animate().fadeIn(delay: 1200.ms, duration: 600.ms, curve: _ease).moveY(
+            begin: 10,
+            end: 0,
+            delay: 1200.ms,
+            duration: 600.ms,
+            curve: _ease,
+          );
+
+  Widget _title(_CelPalette p) => ShaderMask(
+        shaderCallback: (rect) => LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [p.titleHi, p.titleMid, p.titleLo],
+          stops: const [0.0, 0.46, 1.0],
+        ).createShader(rect),
+        child: Text(
+          'teams.number_one.title'.tr(),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.italic,
+            height: 0.98,
+            letterSpacing: -1.1,
+            color: Colors.white,
+          ),
+        ),
+      )
+          .animate()
+          .fadeIn(delay: 1300.ms, duration: 700.ms, curve: _ease)
+          .scaleXY(begin: 0.94, end: 1, delay: 1300.ms, duration: 700.ms, curve: _pop)
+          .moveY(begin: 14, end: 0, delay: 1300.ms, duration: 700.ms, curve: _ease);
+
+  Widget _arabic(_CelPalette p) => Text(
+        'teams.number_one.arabic'.tr(),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.rtl,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: p.accent,
+          height: 1.2,
+        ),
+      ).animate().fadeIn(delay: 1500.ms, duration: 600.ms, curve: _ease).moveY(
+            begin: 10,
+            end: 0,
+            delay: 1500.ms,
+            duration: 600.ms,
+            curve: _ease,
+          );
+
+  Widget _subtitle(_CelPalette p) => DefaultTextStyle(
+        style: TextStyle(
+          fontSize: 12.5,
+          height: 1.5,
+          color: p.muted,
+          fontWeight: FontWeight.w400,
+        ),
+        textAlign: TextAlign.center,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 280),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: '${'teams.number_one.subtitle_prefix'.tr()} '),
+                TextSpan(
+                  text: data.teamName,
+                  style: TextStyle(color: p.ink, fontWeight: FontWeight.w600),
+                ),
+                TextSpan(
+                  text: 'teams.number_one.subtitle_suffix'
+                      .tr(namedArgs: {'count': '${data.companions}'}),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ).animate().fadeIn(delay: 1620.ms, duration: 600.ms, curve: _ease).moveY(
+            begin: 10,
+            end: 0,
+            delay: 1620.ms,
+            duration: 600.ms,
+            curve: _ease,
+          );
+
+  Widget _trio(_CelPalette p) {
+    final cells = [
+      _StatCell(
+        value: _formatInt(data.points),
+        label: 'teams.number_one.stat_points'.tr(),
+        palette: p,
+        delayMs: 1740,
+      ),
+      _StatCell(
+        value: '${data.accuracy}',
+        suffix: '%',
+        label: 'teams.number_one.stat_accuracy'.tr(),
+        palette: p,
+        delayMs: 1840,
+      ),
+      _StatCell(
+        value: '${data.streak}',
+        label: 'teams.number_one.stat_streak'.tr(),
+        palette: p,
+        fire: true,
+        delayMs: 1940,
+      ),
+    ];
+    return Row(
+      children: [
+        for (var i = 0; i < cells.length; i++) ...[
+          if (i > 0) const SizedBox(width: 9),
+          Expanded(child: cells[i]),
+        ],
+      ],
+    );
+  }
+
+  Widget _buttons(BuildContext context, _CelPalette p) => Column(
+        children: [
+          _GoldButton(
+            label: 'teams.number_one.share_cta'.tr(),
+            palette: p,
+            onTap: () =>
+                (data.onShare ?? () => Navigator.of(context).maybePop())(),
+          ),
+          const SizedBox(height: 10),
+          _GhostButton(
+            prefix: 'teams.number_one.back_prefix'.tr(),
+            word: 'teams.number_one.back_word'.tr(),
+            palette: p,
+            onTap: () =>
+                (data.onBack ?? () => Navigator.of(context).maybePop())(),
+          ),
+        ],
+      ).animate().fadeIn(delay: 2050.ms, duration: 600.ms, curve: _ease).moveY(
+            begin: 16,
+            end: 0,
+            delay: 2050.ms,
+            duration: 600.ms,
+            curve: _ease,
+          );
+
+  static String _formatInt(int n) {
+    final s = n.toString();
+    final buf = StringBuffer();
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+      buf.write(s[i]);
+    }
+    return buf.toString();
+  }
+}
+
+// ─── Medallion (coin + crown + rays + halo + orbits + twinkles + badge) ───────
+
+class _Medallion extends StatelessWidget {
+  const _Medallion({required this.palette, required this.initial});
+
+  final _CelPalette palette;
+  final String initial;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = palette;
+    return SizedBox(
+      width: 130,
+      height: 130,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          // Spinning sunburst.
+          Positioned.fill(
+            child: OverflowBox(
+              maxWidth: 198,
+              maxHeight: 198,
+              child: _Rays(palette: p),
+            ),
+          ),
+          // Counter-rotating orbiting sparkle dots.
+          _OrbitDot(palette: p, period: 5000, reverse: false, dot: 6),
+          _OrbitDot(palette: p, period: 6500, reverse: true, dot: 4),
+          // Pulsing halo.
+          _Halo(palette: p),
+          // Coin.
+          _Coin(palette: p, initial: initial),
+          // Twinkles.
+          ..._twinkles(p),
+          // Crown dropping on the coin.
+          Positioned(
+            top: -12,
+            child: _Crown(color: p.crown, width: 40)
+                .animate()
+                .fadeIn(delay: 950.ms, duration: 220.ms)
+                .scaleXY(begin: 0.4, end: 1, delay: 950.ms, duration: 750.ms, curve: Curves.elasticOut)
+                .moveY(begin: -20, end: 0, delay: 950.ms, duration: 750.ms, curve: _pop)
+                .rotate(begin: -0.08, end: 0, delay: 950.ms, duration: 750.ms, curve: _pop),
+          ),
+          // #1 ribbon badge under the coin.
+          Positioned(
+            bottom: -6,
+            child: _RankBadge(palette: p)
+                .animate()
+                .scaleXY(begin: 0, end: 1, delay: 1150.ms, duration: 500.ms, curve: Curves.elasticOut),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _twinkles(_CelPalette p) {
+    const specs = [
+      (top: -6.0, left: 6.0, right: null, bottom: null, size: 14.0, delay: 1200),
+      (top: 8.0, left: null, right: -4.0, bottom: null, size: 10.0, delay: 1600),
+      (top: null, left: -10.0, right: null, bottom: 18.0, size: 12.0, delay: 1900),
+      (top: -2.0, left: null, right: 24.0, bottom: null, size: 9.0, delay: 2300),
+      (top: null, left: null, right: 14.0, bottom: 6.0, size: 11.0, delay: 2000),
+    ];
+    return [
+      for (final s in specs)
+        Positioned(
+          top: s.top,
+          left: s.left,
+          right: s.right,
+          bottom: s.bottom,
+          child: _Twinkle(color: p.goldLight, size: s.size, delayMs: s.delay),
+        ),
+    ];
+  }
+}
+
+// ─── Coin ─────────────────────────────────────────────────────────────────────
+
+class _Coin extends StatefulWidget {
+  const _Coin({required this.palette, required this.initial});
+
+  final _CelPalette palette;
+  final String initial;
+
+  @override
+  State<_Coin> createState() => _CoinState();
+}
+
+class _CoinState extends State<_Coin> with TickerProviderStateMixin {
+  late final AnimationController _float;
+  late final AnimationController _shine;
+
+  @override
+  void initState() {
+    super.initState();
+    _float = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3600),
+    );
+    _shine = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 1300), () {
+      if (mounted) {
+        _float.repeat(reverse: true);
+        _shine.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _float.dispose();
+    _shine.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.palette;
+    return AnimatedBuilder(
+      animation: _float,
+      builder: (context, child) {
+        final dy = -5 * Curves.easeInOut.transform(_float.value);
+        return Transform.translate(offset: Offset(0, dy), child: child);
+      },
+      child: Container(
+        width: 82,
+        height: 82,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            center: const Alignment(-0.32, -0.48),
+            colors: [
+              const Color(0xFFFCE9C6),
+              p.goldLight,
+              p.accent,
+              p.accentDeep,
+            ],
+            stops: const [0.0, 0.38, 0.62, 1.0],
+          ),
+          boxShadow: [
+            BoxShadow(color: p.goldLight.withValues(alpha: 0.6), spreadRadius: 2),
+            BoxShadow(
+              color: AppColors.ember.withValues(alpha: 0.46),
+              blurRadius: 30,
+              offset: const Offset(0, 14),
+            ),
+          ],
+        ),
+        child: ClipOval(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Text(
+                widget.initial,
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w700,
+                  color: p.goldInk,
+                  height: 1,
+                ),
+              ),
+              // One-shot diagonal shine sweep.
+              AnimatedBuilder(
+                animation: _shine,
+                builder: (context, _) {
+                  if (_shine.value == 0 || _shine.isCompleted) {
+                    return const SizedBox.shrink();
+                  }
+                  return Positioned.fill(
+                    child: FractionalTranslation(
+                      translation: Offset(-0.8 + 2.0 * _shine.value, 0),
+                      child: Transform.rotate(
+                        angle: 0.32,
+                        child: FractionallySizedBox(
+                          widthFactor: 0.5,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withValues(alpha: 0),
+                                  Colors.white.withValues(alpha: 0.6),
+                                  Colors.white.withValues(alpha: 0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    )
+        .animate()
+        .fadeIn(delay: 350.ms, duration: 300.ms)
+        .scaleXY(begin: 0, end: 1, delay: 350.ms, duration: 800.ms, curve: Curves.elasticOut)
+        .rotate(begin: -0.066, end: 0, delay: 350.ms, duration: 800.ms, curve: _pop);
+  }
+}
+
+// ─── Rays (spinning sunburst) ─────────────────────────────────────────────────
+
+class _Rays extends StatefulWidget {
+  const _Rays({required this.palette});
 
   final _CelPalette palette;
 
   @override
-  State<_GlowPool> createState() => _GlowPoolState();
+  State<_Rays> createState() => _RaysState();
 }
 
-class _GlowPoolState extends State<_GlowPool>
-    with SingleTickerProviderStateMixin {
+class _RaysState extends State<_Rays> with SingleTickerProviderStateMixin {
+  late final AnimationController _spin;
+
+  @override
+  void initState() {
+    super.initState();
+    _spin = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 24),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 1000), () {
+      if (mounted) _spin.repeat();
+    });
+  }
+
+  @override
+  void dispose() {
+    _spin.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _spin,
+      builder: (context, _) => Transform.rotate(
+        angle: _spin.value * 2 * math.pi,
+        child: CustomPaint(
+          size: const Size(198, 198),
+          painter: _RaysPainter(widget.palette.goldLight),
+        ),
+      ),
+    ).animate().fadeIn(delay: 500.ms, duration: 800.ms, curve: _ease);
+  }
+}
+
+class _RaysPainter extends CustomPainter {
+  _RaysPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final center = size.center(Offset.zero);
+    final spike = color.withValues(alpha: 0.30);
+    final clear = color.withValues(alpha: 0);
+
+    final colors = <Color>[];
+    final stops = <double>[];
+    const n = 12;
+    for (var i = 0; i < n; i++) {
+      final base = i / n;
+      stops.add(base);
+      colors.add(clear);
+      stops.add(base + 0.5 / n);
+      colors.add(spike);
+      stops.add(base + 0.98 / n);
+      colors.add(clear);
+    }
+
+    canvas.saveLayer(rect, Paint());
+    canvas.drawCircle(
+      center,
+      size.width / 2,
+      Paint()
+        ..shader = SweepGradient(colors: colors, stops: stops).createShader(rect),
+    );
+    // Ring mask: transparent core, solid mid band, transparent rim.
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..blendMode = BlendMode.dstIn
+        ..shader = RadialGradient(
+          colors: const [
+            Color(0x00FFFFFF),
+            Color(0x00FFFFFF),
+            Colors.white,
+            Colors.white,
+            Color(0x00FFFFFF),
+          ],
+          stops: const [0.0, 0.44, 0.5, 0.74, 0.82],
+        ).createShader(rect),
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_RaysPainter oldDelegate) => oldDelegate.color != color;
+}
+
+// ─── Halo (pulsing glow) ──────────────────────────────────────────────────────
+
+class _Halo extends StatefulWidget {
+  const _Halo({required this.palette});
+
+  final _CelPalette palette;
+
+  @override
+  State<_Halo> createState() => _HaloState();
+}
+
+class _HaloState extends State<_Halo> with SingleTickerProviderStateMixin {
   late final AnimationController _pulse;
 
   @override
@@ -407,7 +908,10 @@ class _GlowPoolState extends State<_GlowPool>
     _pulse = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2800),
-    )..repeat(reverse: true);
+    );
+    Future<void>.delayed(const Duration(milliseconds: 1300), () {
+      if (mounted) _pulse.repeat(reverse: true);
+    });
   }
 
   @override
@@ -422,471 +926,342 @@ class _GlowPoolState extends State<_GlowPool>
     return AnimatedBuilder(
       animation: _pulse,
       builder: (context, _) {
-        final pulse = 1 + 0.07 * Curves.easeInOut.transform(_pulse.value);
+        final t = Curves.easeInOut.transform(_pulse.value);
         return Transform.scale(
-          scale: pulse,
+          scale: 1 + 0.08 * t,
           child: Container(
-            width: 280,
-            height: 280,
+            width: 118,
+            height: 118,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  p.accent.withValues(alpha: 0.45 * p.glowOpacity),
-                  p.glow.withValues(alpha: 0.16 * p.glowOpacity),
-                  p.glow.withValues(alpha: 0),
+                  p.accent.withValues(alpha: (0.5 + 0.1 * t) * p.glowOpacity),
+                  p.accent.withValues(alpha: 0),
                 ],
-                stops: const [0.0, 0.52, 0.72],
+                stops: const [0.0, 0.72],
               ),
             ),
           ),
         );
       },
-    )
-        .animate()
-        .fadeIn(delay: 300.ms, duration: 600.ms, curve: _ease)
-        .scaleXY(begin: 0.5, end: 1, delay: 300.ms, duration: 700.ms, curve: _ease);
+    ).animate().fadeIn(delay: 400.ms, duration: 700.ms, curve: _ease);
   }
 }
 
-// ─── Content (banner + leaderboard + actions) ────────────────────────────────
+// ─── Orbiting sparkle dot ─────────────────────────────────────────────────────
 
-class _Content extends StatelessWidget {
-  const _Content({required this.data, required this.palette});
+class _OrbitDot extends StatefulWidget {
+  const _OrbitDot({
+    required this.palette,
+    required this.period,
+    required this.reverse,
+    required this.dot,
+  });
 
-  final TeamNumberOneCelebrationDialog data;
   final _CelPalette palette;
+  final int period;
+  final bool reverse;
+  final double dot;
+
+  @override
+  State<_OrbitDot> createState() => _OrbitDotState();
+}
+
+class _OrbitDotState extends State<_OrbitDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _spin;
+
+  @override
+  void initState() {
+    super.initState();
+    _spin = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: widget.period),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 1100), () {
+      if (mounted) _spin.repeat();
+    });
+  }
+
+  @override
+  void dispose() {
+    _spin.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final column = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 30),
-        _tag(),
-        const SizedBox(height: 12),
-        _title(),
-        const SizedBox(height: 6),
-        _arabic(),
-        const SizedBox(height: 12),
-        _subtitle(),
-        const SizedBox(height: 22),
-        _board(),
-        const SizedBox(height: 20),
-        _actions(context),
-      ],
-    );
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(22, 0, 22, 24),
-      physics: const ClampingScrollPhysics(),
-      child: column,
-    );
-  }
-
-  Widget _tag() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
-          color: palette.ember.withValues(alpha: 0.16),
-          border: Border.all(color: palette.emberLight.withValues(alpha: 0.42)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _MiniCrown(color: palette.emberLight, size: 11),
-            const SizedBox(width: 6),
-            Text(
-              'teams.number_one.eyebrow'.tr().toUpperCase(),
-              style: TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2,
-                color: palette.emberLight,
+    final p = widget.palette;
+    return AnimatedBuilder(
+      animation: _spin,
+      builder: (context, _) {
+        final dir = widget.reverse ? -1 : 1;
+        return Transform.rotate(
+          angle: dir * _spin.value * 2 * math.pi,
+          child: SizedBox(
+            width: 120,
+            height: 120,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                width: widget.dot,
+                height: widget.dot,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [const Color(0xFFFCE9C6), p.accent],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: p.goldLight.withValues(alpha: 0.9),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ).animate().fadeIn(delay: 1000.ms, duration: 600.ms, curve: _ease).moveY(
-            begin: 10,
-            end: 0,
-            delay: 1000.ms,
-            duration: 600.ms,
-            curve: _ease,
-          );
-
-  Widget _title() => ShaderMask(
-        shaderCallback: (rect) => LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [palette.titleHi, palette.titleMid, palette.titleLo],
-          stops: const [0.0, 0.46, 1.0],
-        ).createShader(rect),
-        child: Text(
-          'teams.number_one.title'.tr(),
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 38,
-            fontWeight: FontWeight.w600,
-            fontStyle: FontStyle.italic,
-            height: 0.98,
-            letterSpacing: -1.1,
-            color: Colors.white,
           ),
-        ),
-      )
-          .animate()
-          .fadeIn(delay: 1100.ms, duration: 700.ms, curve: _ease)
-          .scaleXY(
-            begin: 0.94,
-            end: 1,
-            delay: 1100.ms,
-            duration: 700.ms,
-            curve: Curves.easeOutBack,
-          )
-          .moveY(begin: 14, end: 0, delay: 1100.ms, duration: 700.ms, curve: _ease);
-
-  Widget _arabic() => Text(
-        'teams.number_one.arabic'.tr(),
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.rtl,
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: palette.accent,
-          height: 1.2,
-        ),
-      ).animate().fadeIn(delay: 1300.ms, duration: 600.ms, curve: _ease).moveY(
-            begin: 10,
-            end: 0,
-            delay: 1300.ms,
-            duration: 600.ms,
-            curve: _ease,
-          );
-
-  Widget _subtitle() => DefaultTextStyle(
-        style: TextStyle(
-          fontSize: 13,
-          height: 1.5,
-          color: palette.muted,
-          fontWeight: FontWeight.w400,
-        ),
-        textAlign: TextAlign.center,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 280),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(text: '${'teams.number_one.subtitle_prefix'.tr()} '),
-                TextSpan(
-                  text: data.teamName,
-                  style: TextStyle(
-                    color: palette.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                TextSpan(
-                  text: ' ${'teams.number_one.subtitle_suffix'.tr(namedArgs: {
-                        'count': '${data.companions}',
-                      })}',
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ).animate().fadeIn(delay: 1450.ms, duration: 600.ms, curve: _ease).moveY(
-            begin: 10,
-            end: 0,
-            delay: 1450.ms,
-            duration: 600.ms,
-            curve: _ease,
-          );
-
-  Widget _board() => Column(
-        children: [
-          for (var i = 0; i < data.entries.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            _LeaderRow(entry: data.entries[i], palette: palette)
-                .animate()
-                .fadeIn(
-                  delay: (1500 + i * 90).ms,
-                  duration: 500.ms,
-                  curve: _ease,
-                )
-                .moveY(
-                  begin: 12,
-                  end: 0,
-                  delay: (1500 + i * 90).ms,
-                  duration: 500.ms,
-                  curve: _ease,
-                ),
-          ],
-        ],
-      );
-
-  Widget _actions(BuildContext context) => Column(
-        children: [
-          _GoldButton(
-            label: 'teams.number_one.share_cta'.tr(),
-            icon: Icons.ios_share_rounded,
-            palette: palette,
-            onTap: () =>
-                (data.onShare ?? () => Navigator.of(context).maybePop())(),
-          ),
-          const SizedBox(height: 11),
-          _GhostButton(
-            label: 'teams.number_one.view_cta'.tr(),
-            palette: palette,
-            onTap: () => (data.onViewLeaderboard ??
-                () => Navigator.of(context).maybePop())(),
-          ),
-        ],
-      ).animate().fadeIn(delay: 1900.ms, duration: 600.ms, curve: _ease).moveY(
-            begin: 16,
-            end: 0,
-            delay: 1900.ms,
-            duration: 600.ms,
-            curve: _ease,
-          );
+        );
+      },
+    ).animate().fadeIn(delay: 1100.ms, duration: 600.ms, curve: _ease);
+  }
 }
 
-// ─── Leaderboard row ──────────────────────────────────────────────────────────
+// ─── Twinkling star ───────────────────────────────────────────────────────────
 
-class _LeaderRow extends StatelessWidget {
-  const _LeaderRow({required this.entry, required this.palette});
+class _Twinkle extends StatefulWidget {
+  const _Twinkle({
+    required this.color,
+    required this.size,
+    required this.delayMs,
+  });
 
-  final TeamLeaderEntry entry;
+  final Color color;
+  final double size;
+  final int delayMs;
+
+  @override
+  State<_Twinkle> createState() => _TwinkleState();
+}
+
+class _TwinkleState extends State<_Twinkle>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+    Future<void>.delayed(Duration(milliseconds: widget.delayMs), () {
+      if (mounted) _c.repeat();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, _) {
+        // Triangle peak at 45% of the cycle, per the prototype keyframe.
+        final v = _c.value;
+        final t = v < 0.45 ? v / 0.45 : (1 - v) / 0.55;
+        final e = Curves.easeInOut.transform(t.clamp(0.0, 1.0));
+        return Opacity(
+          opacity: e,
+          child: Transform.rotate(
+            angle: 0.35 * e,
+            child: Transform.scale(
+              scale: 0.3 + 0.7 * e,
+              child: CustomPaint(
+                size: Size(widget.size, widget.size),
+                painter: _StarPainter(widget.color),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StarPainter extends CustomPainter {
+  _StarPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Four-point sparkle on a 24×24 viewBox.
+    final s = size.width / 24;
+    final path = Path()
+      ..moveTo(12 * s, 2 * s)
+      ..lineTo(14 * s, 9 * s)
+      ..lineTo(21 * s, 12 * s)
+      ..lineTo(14 * s, 15 * s)
+      ..lineTo(12 * s, 22 * s)
+      ..lineTo(10 * s, 15 * s)
+      ..lineTo(3 * s, 12 * s)
+      ..lineTo(10 * s, 9 * s)
+      ..close();
+    canvas.drawPath(path, Paint()..color = color..isAntiAlias = true);
+  }
+
+  @override
+  bool shouldRepaint(_StarPainter oldDelegate) => oldDelegate.color != color;
+}
+
+// ─── #1 ribbon badge ──────────────────────────────────────────────────────────
+
+class _RankBadge extends StatelessWidget {
+  const _RankBadge({required this.palette});
+
   final _CelPalette palette;
 
   @override
   Widget build(BuildContext context) {
     final p = palette;
-    final me = entry.isMe;
-
-    final decoration = me
-        ? BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                p.accent.withValues(alpha: 0.18),
-                p.accent.withValues(alpha: 0.04),
-              ],
-            ),
-            border: Border.all(color: p.glassBorder),
-            boxShadow: [
-              BoxShadow(
-                color: p.glow.withValues(alpha: 0.22),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          )
-        : BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: p.ink.withValues(alpha: 0.03),
-            border: Border.all(color: p.hairline),
-          );
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: decoration,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 20,
-            child: Text(
-              '${entry.rank}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: me ? p.accentSoft : p.faint,
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          _Avatar(seed: entry.name, me: me, palette: p),
-          const SizedBox(width: 11),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        entry.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: p.ink,
-                          height: 1.1,
-                        ),
-                      ),
-                    ),
-                    if (me) ...[
-                      const SizedBox(width: 6),
-                      _YouTag(palette: p),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  'teams.number_one.row_meta'.tr(namedArgs: {
-                    'accuracy': '${entry.accuracy}',
-                    'streak': '${entry.streak}',
-                  }),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 10, color: p.muted, height: 1.1),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            _formatPoints(entry.points),
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: me ? p.accentSoft : p.accent,
-            ),
+      height: 26,
+      padding: const EdgeInsets.symmetric(horizontal: 11),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [p.emberLight, p.ember],
+        ),
+        border: Border.all(color: p.cardBottom, width: 2.5),
+        boxShadow: [
+          BoxShadow(
+            color: p.ember.withValues(alpha: 0.5),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
-    );
-  }
-
-  static String _formatPoints(int n) {
-    final s = n.toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
-      buf.write(s[i]);
-    }
-    return buf.toString();
-  }
-}
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.seed, required this.me, required this.palette});
-
-  final String seed;
-  final bool me;
-  final _CelPalette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    final disc = Container(
-      width: 38,
-      height: 38,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          center: const Alignment(-0.36, -0.44),
-          colors: [palette.accentSoft, palette.accentDeep],
-        ),
-      ),
       child: Text(
-        seed.characters.first,
+        '#1',
         style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w400,
-          color: palette.goldInk,
+          fontFamily: 'monospace',
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: AppColors.emberInk,
           height: 1,
         ),
       ),
     );
+  }
+}
 
-    if (!me) return disc;
+// ─── Rising light motes ───────────────────────────────────────────────────────
 
-    // The crown drops onto the leader's avatar.
-    return SizedBox(
-      width: 38,
-      height: 38,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          disc,
-          Positioned(
-            top: -17,
-            child: _MiniCrown(color: palette.crown, size: 22)
-                .animate()
-                .fadeIn(delay: 560.ms, duration: 220.ms)
-                .scaleXY(
-                  begin: 0.4,
-                  end: 1,
-                  delay: 560.ms,
-                  duration: 700.ms,
-                  curve: Curves.elasticOut,
-                )
-                .moveY(
-                  begin: -18,
-                  end: 0,
-                  delay: 560.ms,
-                  duration: 700.ms,
-                  curve: Curves.easeOutBack,
-                )
-                .rotate(
-                  begin: -0.08,
-                  end: 0,
-                  delay: 560.ms,
-                  duration: 700.ms,
-                  curve: Curves.easeOutBack,
-                ),
-          ),
-        ],
+class _Motes extends StatefulWidget {
+  const _Motes({required this.palette});
+
+  final _CelPalette palette;
+
+  @override
+  State<_Motes> createState() => _MotesState();
+}
+
+class _MotesState extends State<_Motes> with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+  late final List<_Mote> _motes;
+
+  @override
+  void initState() {
+    super.initState();
+    final rng = math.Random(7);
+    _motes = List.generate(10, (i) {
+      return _Mote(
+        x: 0.06 + rng.nextDouble() * 0.88,
+        phase: rng.nextDouble(),
+        speed: 0.6 + rng.nextDouble() * 0.5,
+        size: 2.4 + rng.nextDouble() * 2.4,
+      );
+    });
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: _MotesPainter(_motes, _c, widget.palette.accentSoft),
       ),
     );
   }
 }
 
-class _YouTag extends StatelessWidget {
-  const _YouTag({required this.palette});
+class _Mote {
+  _Mote({
+    required this.x,
+    required this.phase,
+    required this.speed,
+    required this.size,
+  });
 
-  final _CelPalette palette;
+  final double x, phase, speed, size;
+}
+
+class _MotesPainter extends CustomPainter {
+  _MotesPainter(this.motes, this.anim, this.color) : super(repaint: anim);
+
+  final List<_Mote> motes;
+  final Animation<double> anim;
+  final Color color;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
-          color: palette.accent.withValues(alpha: 0.2),
-          border: Border.all(color: palette.accent.withValues(alpha: 0.4)),
-        ),
-        child: Text(
-          'leaderboard.you_pill'.tr(),
-          style: TextStyle(
-            fontSize: 7.5,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1,
-            color: palette.accentSoft,
-          ),
-        ),
-      );
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final paint = Paint();
+    for (final m in motes) {
+      final t = (anim.value * m.speed + m.phase) % 1.0;
+      final y = size.height - t * (size.height + 40);
+      // Opacity: ramp up, hold, fade — peaks in the middle of the rise.
+      final a = (t < 0.15 ? t / 0.15 : (t > 0.85 ? (1 - t) / 0.15 : 0.7))
+          .clamp(0.0, 0.7);
+      paint.color = color.withValues(alpha: a);
+      canvas.drawCircle(Offset(m.x * size.width, y), m.size, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_MotesPainter oldDelegate) => false;
 }
 
 // ─── Crown glyph ──────────────────────────────────────────────────────────────
 
 /// The eight-point crown from the design, painted from the prototype's path.
-class _MiniCrown extends StatelessWidget {
-  const _MiniCrown({required this.color, required this.size});
+class _Crown extends StatelessWidget {
+  const _Crown({required this.color, required this.width});
 
   final Color color;
-  final double size;
+  final double width;
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-        size: Size(size, size * 22 / 34),
+        size: Size(width, width * 24 / 36),
         painter: _CrownPainter(color),
       );
 }
@@ -898,7 +1273,6 @@ class _CrownPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Path authored on a 36×24 viewBox; scale to the requested size.
     final sx = size.width / 36;
     final sy = size.height / 24;
     canvas.save();
@@ -928,59 +1302,204 @@ class _CrownPainter extends CustomPainter {
   bool shouldRepaint(_CrownPainter oldDelegate) => oldDelegate.color != color;
 }
 
+// ─── Stat cell ────────────────────────────────────────────────────────────────
+
+class _StatCell extends StatelessWidget {
+  const _StatCell({
+    required this.value,
+    required this.label,
+    required this.palette,
+    required this.delayMs,
+    this.suffix,
+    this.fire = false,
+  });
+
+  final String value;
+  final String? suffix;
+  final String label;
+  final _CelPalette palette;
+  final int delayMs;
+  final bool fire;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = palette;
+    final figure = fire ? p.emberLight : p.accentSoft;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 11),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: p.ink.withValues(alpha: 0.04),
+        border: Border.all(color: p.hairline),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: value,
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w400,
+                    height: 1,
+                    color: figure,
+                  ),
+                ),
+                if (suffix != null)
+                  TextSpan(
+                    text: suffix,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      color: figure,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            label.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 7.5,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
+              color: p.muted,
+            ),
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(delay: delayMs.ms, duration: 500.ms, curve: _ease)
+        .scaleXY(begin: 0.92, end: 1, delay: delayMs.ms, duration: 500.ms, curve: _pop)
+        .moveY(begin: 14, end: 0, delay: delayMs.ms, duration: 500.ms, curve: _ease);
+  }
+}
+
 // ─── Buttons ──────────────────────────────────────────────────────────────────
 
-class _GoldButton extends StatelessWidget {
+class _GoldButton extends StatefulWidget {
   const _GoldButton({
     required this.label,
-    required this.icon,
     required this.palette,
     required this.onTap,
   });
 
   final String label;
-  final IconData icon;
   final _CelPalette palette;
   final VoidCallback onTap;
 
   @override
+  State<_GoldButton> createState() => _GoldButtonState();
+}
+
+class _GoldButtonState extends State<_GoldButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _shine;
+
+  @override
+  void initState() {
+    super.initState();
+    _shine = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3600),
+    );
+    Future<void>.delayed(const Duration(milliseconds: 2600), () {
+      if (mounted) _shine.repeat();
+    });
+  }
+
+  @override
+  void dispose() {
+    _shine.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final p = palette;
+    final p = widget.palette;
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         height: 52,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(15),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [p.accentSoft, p.accent, p.accentDeep],
+            colors: [p.goldLight, p.accent, p.accentDeep],
             stops: const [0.0, 0.5, 1.0],
           ),
           boxShadow: [
             BoxShadow(
-              color: p.accent.withValues(alpha: 0.36),
-              blurRadius: 28,
+              color: p.accent.withValues(alpha: 0.34),
+              blurRadius: 26,
               offset: const Offset(0, 14),
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label.toUpperCase(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.9,
-                color: p.goldInk,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _shine,
+                builder: (context, _) {
+                  final t = Curves.easeInOut.transform(
+                    (_shine.value / 0.24).clamp(0.0, 1.0),
+                  );
+                  return Positioned.fill(
+                    child: FractionalTranslation(
+                      translation: Offset(-0.6 + 2.0 * t, 0),
+                      child: Transform(
+                        transform: Matrix4.skewX(-0.32),
+                        alignment: Alignment.center,
+                        child: FractionallySizedBox(
+                          widthFactor: 0.4,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withValues(alpha: 0),
+                                  Colors.white.withValues(alpha: 0.5),
+                                  Colors.white.withValues(alpha: 0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
-            const SizedBox(width: 9),
-            Icon(icon, size: 15, color: p.goldInk),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.label.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.8,
+                      color: p.goldInk,
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Icon(Icons.ios_share_rounded, size: 14, color: p.goldInk),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -989,12 +1508,14 @@ class _GoldButton extends StatelessWidget {
 
 class _GhostButton extends StatelessWidget {
   const _GhostButton({
-    required this.label,
+    required this.prefix,
+    required this.word,
     required this.palette,
     required this.onTap,
   });
 
-  final String label;
+  final String prefix;
+  final String word;
   final _CelPalette palette;
   final VoidCallback onTap;
 
@@ -1003,21 +1524,28 @@ class _GhostButton extends StatelessWidget {
     final p = palette;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: 46,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: p.ink.withValues(alpha: 0.05),
-          border: Border.all(color: p.glassBorder),
-        ),
-        child: Text(
-          label.toUpperCase(),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: '${prefix.toUpperCase()} '),
+              TextSpan(
+                text: word.toUpperCase(),
+                style: TextStyle(
+                  color: p.accentSoft,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            letterSpacing: 1.5,
-            color: p.ink,
+            letterSpacing: 1.3,
+            color: p.muted,
           ),
         ),
       ),
@@ -1067,10 +1595,10 @@ class _Fx {
   void burst(Size size) {
     final w = size.width;
     final cx = w / 2;
-    final cy = size.height * 0.22;
-    for (var i = 0; i < 48; i++) {
+    final cy = size.height * 0.34;
+    for (var i = 0; i < 56; i++) {
       final ang = _rnd(0, math.pi * 2);
-      final sp = _rnd(3, 8);
+      final sp = _rnd(3, 9);
       confetti.add(_Confetto(
         x: cx,
         y: cy,
@@ -1082,11 +1610,11 @@ class _Fx {
         rot: _rnd(0, 6.28),
         vr: _rnd(-0.3, 0.3),
         col: _pick(),
-        decay: _rnd(0.006, 0.013),
+        decay: _rnd(0.006, 0.012),
         ribbon: _rng.nextDouble() < 0.7,
       ));
     }
-    for (var i = 0; i < 18; i++) {
+    for (var i = 0; i < 20; i++) {
       confetti.add(_Confetto(
         x: _rnd(0, w),
         y: _rnd(-60, -10),
@@ -1098,7 +1626,7 @@ class _Fx {
         rot: _rnd(0, 6.28),
         vr: _rnd(-0.25, 0.25),
         col: _pick(),
-        decay: _rnd(0.004, 0.008),
+        decay: _rnd(0.004, 0.007),
         ribbon: false,
       ));
     }

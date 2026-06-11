@@ -3,64 +3,66 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../theme/date_ember_palette.dart';
+import '../../../../core/widgets/responsive_text.dart';
+import '../../../../theme/theme.dart';
+import '../widgets/date_ember_roles.dart';
+import '../widgets/team_week_stats.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Zad — Team Home · Community
 //
-// A faithful, self-contained port of the `Zad Team Home Community.html` design
-// handoff (Claude Design bundle). A community-first dashboard — identity, your
-// standing, the live pulse of the team, and who you're chasing. No goals, just
-// growth.
+// A community-first team dashboard — identity, your standing, the live pulse of
+// the team, and who you're chasing. No goals, just growth.
 //
 // This is a "temp" showcase screen: it carries its own mock data and renders
 // the full design in a single file so the visual can be reviewed at scale
-// before being wired to [TeamsCubit]. Colours come from [DateEmber] (the shared
-// Date & Ember palette), which matches the design's CSS variables 1:1.
+// before being wired to [TeamsCubit].
 //
-// Type families follow the rest of the Date & Ember set: Fraunces (serif
-// italic) and JetBrains Mono map to the platform generic families.
+// Theming: the screen is fully brightness-aware. In **dark** mode it reproduces
+// the original Date & Ember design 1:1 (via [DateEmber]); in **light** mode it
+// maps every surface, ink and accent onto the app's semantic [AppColorsTheme]
+// tokens. All of that mapping lives in [_Pal] so the widgets below read colours
+// by role, never by literal. Type uses the app's default family (ElMessiri) —
+// no font is bundled here; only weights/styles vary.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const String _serif = 'serif';
-const String _mono = 'monospace';
-
-// Tokens that aren't in [DateEmber] but appear in the design's `:root`.
-const Color _oliveLight = Color(0xFFA6B584); // --olive-light
-const Color _up = Color(0xFF9CCB8E); // --up (positive trend)
-const Color _down = Color(0xFFD98A6F); // --down (negative trend)
-const Color _emberLight = DateEmber.emberLight;
+/// This screen's role-based palette lives in [DateEmberRoles] — shared with
+/// [TeamWeekStats] and the app home screen. Aliased locally so the widgets below
+/// keep reading `_Pal(context)`. Dark mode reproduces the Date & Ember design
+/// 1:1; light mode maps each role onto the app's semantic [AppColorsTheme].
+typedef _Pal = DateEmberRoles;
 
 class TempTeamHomeScreen extends StatelessWidget {
   const TempTeamHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Scaffold(
-      backgroundColor: DateEmber.base,
-      body: Container(
-        // .screen — radial vignette from raised brown at top to near-black.
-        decoration: const BoxDecoration(
+      backgroundColor: p.bgBottom,
+      body: DecoratedBox(
+        // .screen — radial vignette from raised top to base.
+        decoration: BoxDecoration(
           gradient: RadialGradient(
-            center: Alignment(0, -1.16), // 50% -8%
+            center: const Alignment(0, -1.16), // 50% -8%
             radius: 1.3,
-            colors: [DateEmber.raised, DateEmber.surface, DateEmber.base],
-            stops: [0.0, 0.42, 1.0],
+            colors: [p.bgTop, p.bgMid, p.bgBottom],
+            stops: const [0.0, 0.42, 1.0],
           ),
         ),
         child: Stack(
-          children: [
+          children: const [
             SafeArea(
               bottom: false,
               child: Column(
-                children: const [
+                children: [
                   _AppBar(),
                   Expanded(child: _Stage()),
                 ],
               ),
             ),
             // Tab bar floats over the stage at the bottom.
-            const Positioned(
+            Positioned(
               left: 14,
               right: 14,
               bottom: 18,
@@ -80,6 +82,7 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
       child: Row(
@@ -88,29 +91,27 @@ class _AppBar extends StatelessWidget {
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
+              children: [
+                ResponsiveText(
                   'MY TEAM',
                   style: TextStyle(
-                    fontFamily: _mono,
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 3.0,
-                    color: DateEmber.amber,
+                    color: p.amber,
                   ),
                 ),
-                SizedBox(height: 3),
-                Text(
+                const SizedBox(height: 3),
+                ResponsiveText(
                   'Companions of Sabr',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: _serif,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w300,
                     fontSize: 19,
                     height: 1,
                     letterSpacing: -0.3,
-                    color: DateEmber.ivory,
+                    color: p.ink,
                   ),
                 ),
               ],
@@ -132,15 +133,16 @@ class _IconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: DateEmber.surface.withValues(alpha: 0.6),
-          border: Border.all(color: DateEmber.glassBorder),
-        ),
-        child: Icon(icon, size: size, color: DateEmber.ivory),
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: p.cardFill,
+        border: Border.all(color: p.glassBorder),
+      ),
+      child: Icon(icon, size: size, color: p.ink),
     );
   }
 }
@@ -156,59 +158,116 @@ class _Stage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
       physics: const BouncingScrollPhysics(),
       children: const [
+        // This week's team stats lead the screen — the four-square snapshot of
+        // how the team is doing comes first. Extracted into [TeamWeekStats] so
+        // the app home screen can reuse it.
+        _SectionLabel('This week · team stats'),
+        TeamWeekStats(),
+        SizedBox(height: 4),
         _IdentityCard(),
         SizedBox(height: 11),
         _TeamCodeCard(),
+        // Live activity — supporting context, quiet eyebrow.
         _SectionLabel('Live activity', more: 'See all →'),
         _ActivityFeed(),
-        _SectionLabel('Team leaderboard', more: 'Top 10 →'),
+        // Leaderboard — the competitive heart of the screen: promoted to a
+        // primary heading so it reads as the most important block.
+        _SectionLabel(
+          'Team leaderboard',
+          more: 'Top 10 →',
+          emphasis: _LabelEmphasis.primary,
+        ),
         _Leaderboard(),
         _RivalHint(),
-        _SectionLabel('This week · team stats'),
-        _TeamStats(),
       ],
     );
   }
 }
 
-/// Eyebrow section label with a short amber tick rule and optional "more" link.
+/// How loud a [_SectionLabel] should read. [primary] is reserved for the screen's
+/// most important block (the leaderboard); [secondary] is the quiet eyebrow used
+/// for supporting sections.
+enum _LabelEmphasis { secondary, primary }
+
+/// Section label whose visual weight scales with the section's importance.
+///
+/// - [secondary]: a quiet amber eyebrow — a short 1px tick + 9px uppercase amber.
+/// - [primary]: a real heading — a thicker glowing amber rule + a larger ivory
+///   title that out-ranks the eyebrows around it, with extra breathing room
+///   above so the eye registers a new, weightier block.
 class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.label, {this.more});
+  const _SectionLabel(
+    this.label, {
+    this.more,
+    this.emphasis = _LabelEmphasis.secondary,
+  });
 
   final String label;
   final String? more;
+  final _LabelEmphasis emphasis;
+
+  bool get _isPrimary => emphasis == _LabelEmphasis.primary;
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final ruleWidth = _isPrimary ? 22.0 : 16.0;
+    final ruleHeight = _isPrimary ? 2.0 : 1.0;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(2, 20, 2, 11),
+      // Primary sections get more space above to set them apart as a new block.
+      padding: EdgeInsets.fromLTRB(2, _isPrimary ? 30 : 20, 2, 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Container(width: 16, height: 1, color: DateEmber.amber),
-              const SizedBox(width: 8),
-              Text(
-                label.toUpperCase(),
-                style: const TextStyle(
-                  fontFamily: _mono,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 3.0,
-                  color: DateEmber.amber,
+          Flexible(
+            child: Row(
+              children: [
+                Container(
+                  width: ruleWidth,
+                  height: ruleHeight,
+                  decoration: BoxDecoration(
+                    color: p.amber,
+                    borderRadius: BorderRadius.circular(ruleHeight),
+                    boxShadow: _isPrimary
+                        ? [
+                            BoxShadow(
+                              color: p.washAmber.withValues(alpha: 0.6),
+                              blurRadius: 8,
+                            ),
+                          ]
+                        : null,
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(width: _isPrimary ? 10 : 8),
+                Flexible(
+                  child: ResponsiveText(
+                    label.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: _isPrimary ? 12.5 : 9,
+                      fontWeight:
+                          _isPrimary ? FontWeight.w700 : FontWeight.w600,
+                      letterSpacing: _isPrimary ? 2.2 : 3.0,
+                      // Primary reads in ivory ink so it out-ranks the amber
+                      // eyebrows; secondary stays a quiet amber kicker.
+                      color: _isPrimary ? p.ink : p.amber,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           if (more != null)
-            Text(
+            ResponsiveText(
               more!.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 9.5,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.4,
-                color: DateEmber.amber,
+                color: p.amber,
               ),
             ),
         ],
@@ -224,21 +283,22 @@ class _IdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: DateEmber.glassBorder),
-        gradient: const LinearGradient(
+        border: Border.all(color: p.glassBorder),
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x12F4ECD8), Color(0x05F4ECD8)],
+          colors: [p.cardFillStrong, p.cardFillFaint],
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x6B000000),
+            color: Colors.black.withValues(alpha: p.dark ? 0.42 : 0.06),
             blurRadius: 36,
-            offset: Offset(0, 18),
+            offset: const Offset(0, 18),
           ),
         ],
       ),
@@ -247,7 +307,7 @@ class _IdentityCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Crest — gold metallic disc with Arabic glyph.
+              // Crest — gold metallic disc with Arabic glyph (decorative).
               Container(
                 width: 62,
                 height: 62,
@@ -265,16 +325,15 @@ class _IdentityCard extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: DateEmber.ember.withValues(alpha: 0.3),
+                      color: p.ember.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
                   ],
                 ),
-                child: const Text(
+                child: const ResponsiveText(
                   'ص',
                   style: TextStyle(
-                    fontFamily: _serif,
                     fontSize: 29,
                     color: DateEmber.goldInk,
                   ),
@@ -285,34 +344,30 @@ class _IdentityCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    ResponsiveText(
                       'Companions of Sabr',
                       style: TextStyle(
-                        fontFamily: _serif,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w300,
                         fontSize: 23,
                         height: 1.05,
                         letterSpacing: -0.4,
-                        color: DateEmber.ivory,
+                        color: p.ink,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Text(
+                        ResponsiveText(
                           '12 members',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: DateEmber.txtMute,
-                          ),
+                          style: TextStyle(fontSize: 11, color: p.inkMute),
                         ),
                         const SizedBox(width: 8),
-                        Text(
+                        ResponsiveText(
                           '·',
                           style: TextStyle(
                             fontSize: 11,
-                            color: DateEmber.txtMute.withValues(alpha: 0.4),
+                            color: p.inkMute.withValues(alpha: 0.4),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -327,10 +382,8 @@ class _IdentityCard extends StatelessWidget {
           const SizedBox(height: 15),
           Container(
             padding: const EdgeInsets.only(top: 14),
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Color(0x1FF4ECD8)),
-              ),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: p.hairline)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -339,39 +392,37 @@ class _IdentityCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
-                  children: const [
-                    Text(
+                  children: [
+                    ResponsiveText(
                       '#',
                       style: TextStyle(
-                        fontFamily: _mono,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: DateEmber.amber,
+                        color: p.amber,
                       ),
                     ),
-                    SizedBox(width: 6),
-                    Text(
+                    const SizedBox(width: 6),
+                    ResponsiveText(
                       '14',
                       style: TextStyle(
-                        fontFamily: _serif,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w300,
                         fontSize: 30,
                         height: 0.9,
-                        color: _emberLight,
+                        color: p.emberLight,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(width: 10),
-                const Text(
+                ResponsiveText(
                   'GLOBAL\nRANK',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.6,
                     height: 1.4,
-                    color: DateEmber.txtMute,
+                    color: p.inkMute,
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -379,24 +430,23 @@ class _IdentityCard extends StatelessWidget {
                 const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const [
-                    Text(
+                  children: [
+                    ResponsiveText(
                       'of 312',
                       style: TextStyle(
-                        fontFamily: _mono,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: DateEmber.amberLight,
+                        color: p.gold,
                       ),
                     ),
-                    SizedBox(height: 2),
-                    Text(
+                    const SizedBox(height: 2),
+                    ResponsiveText(
                       'TEAMS',
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.6,
-                        color: DateEmber.txtMute,
+                        color: p.inkMute,
                       ),
                     ),
                   ],
@@ -433,12 +483,13 @@ class _ActiveBadgeState extends State<_ActiveBadge>
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(99),
-        color: DateEmber.olive.withValues(alpha: 0.18),
-        border: Border.all(color: DateEmber.olive.withValues(alpha: 0.4)),
+        color: p.greenSurface.withValues(alpha: 0.18),
+        border: Border.all(color: p.greenSurface.withValues(alpha: 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -450,21 +501,19 @@ class _ActiveBadgeState extends State<_ActiveBadge>
               height: 6,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _oliveLight,
-                boxShadow: [
-                  BoxShadow(color: _oliveLight, blurRadius: 7),
-                ],
+                color: p.green,
+                boxShadow: [BoxShadow(color: p.green, blurRadius: 7)],
               ),
             ),
           ),
           const SizedBox(width: 5),
-          const Text(
+          ResponsiveText(
             'Active',
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.7,
-              color: _oliveLight,
+              color: p.green,
             ),
           ),
         ],
@@ -497,15 +546,16 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: DateEmber.hairline),
-        gradient: const LinearGradient(
+        border: Border.all(color: p.hairline),
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0x0DF4ECD8), Color(0x05F4ECD8)],
+          colors: [p.cardFill, p.cardFillFaint],
         ),
       ),
       child: Row(
@@ -513,25 +563,24 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              ResponsiveText(
                 'INVITE CODE',
                 style: TextStyle(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2.0,
-                  color: DateEmber.txtMute,
+                  color: p.inkMute,
                 ),
               ),
               const SizedBox(height: 6),
               _DashedPill(
-                child: const Text(
+                child: ResponsiveText(
                   _code,
                   style: TextStyle(
-                    fontFamily: _mono,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 3.2,
-                    color: DateEmber.amberLight,
+                    color: p.gold,
                   ),
                 ),
               ),
@@ -554,18 +603,18 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(13),
                     color: _copied
-                        ? DateEmber.olive.withValues(alpha: 0.2)
-                        : const Color(0x0DF4ECD8),
+                        ? p.greenSurface.withValues(alpha: 0.2)
+                        : p.cardFill,
                     border: Border.all(
                       color: _copied
-                          ? DateEmber.olive.withValues(alpha: 0.5)
-                          : DateEmber.glassBorder,
+                          ? p.greenSurface.withValues(alpha: 0.5)
+                          : p.glassBorder,
                     ),
                   ),
                   child: Icon(
                     _copied ? Icons.check : Icons.copy_outlined,
                     size: 17,
-                    color: _copied ? _up : DateEmber.ivory,
+                    color: _copied ? p.up : p.ink,
                   ),
                 ),
               ),
@@ -578,19 +627,15 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             height: 42,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  DateEmber.amberLight,
-                  DateEmber.amber,
-                  DateEmber.amberDeep,
-                ],
-                stops: [0.0, 0.55, 1.0],
+                colors: [p.gold, p.amber, p.amberDeep],
+                stops: const [0.0, 0.55, 1.0],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: DateEmber.washAmber.withValues(alpha: 0.26),
+                  color: p.washAmber.withValues(alpha: 0.26),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -615,16 +660,14 @@ class _DashedPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return CustomPaint(
-      painter: _DashedBorderPainter(
-        color: DateEmber.amber,
-        radius: 11,
-      ),
+      painter: _DashedBorderPainter(color: p.amber, radius: 11),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(11),
-          color: DateEmber.washAmber.withValues(alpha: 0.10),
+          color: p.washAmber.withValues(alpha: 0.10),
         ),
         child: child,
       ),
@@ -637,21 +680,23 @@ class _CopiedToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: DateEmber.olive,
+        color: p.greenSurface,
         boxShadow: const [
-          BoxShadow(color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 6)),
+          BoxShadow(
+              color: Color(0x66000000), blurRadius: 14, offset: Offset(0, 6)),
         ],
       ),
-      child: const Text(
+      child: ResponsiveText(
         'Copied ✓',
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF10160B),
+          color: p.dark ? const Color(0xFF10160B) : Colors.white,
         ),
       ),
     );
@@ -667,34 +712,35 @@ class _ActivityFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const entries = <_ActivityEntry>[
+    final p = _Pal(context);
+    final entries = <_ActivityEntry>[
       _ActivityEntry(
         node: _ActivityIcon(
           kind: _IconKind.streak,
-          child: _Flame(size: 18, color: DateEmber.emberInk),
+          child: _Flame(size: 18, color: p.emberInk),
         ),
         name: 'Faisal',
         rest: ' reached a 50-day streak 🔥',
         meta: 'Milestone · 18m ago',
-        trailing: _Sparkle(size: 14, color: DateEmber.amberLight),
+        trailing: _Sparkle(size: 14, color: p.gold),
         gold: true,
       ),
       _ActivityEntry(
-        node: _AvatarIcon(
+        node: const _AvatarIcon(
           letter: 'A',
-          hi: _oliveLight,
+          hi: DateEmberRoles.oliveLight,
           lo: DateEmber.oliveLo,
           ink: DateEmber.oliveInk,
         ),
         name: 'Aisha',
         rest: ' completed Level 7',
         meta: 'Level · 1h ago',
-        trailing: _MiniCheck(),
+        trailing: const _MiniCheck(),
       ),
       _ActivityEntry(
         node: _ActivityIcon(
           kind: _IconKind.quiz,
-          child: Icon(Icons.help_outline, size: 17, color: DateEmber.amberLight),
+          child: Icon(Icons.help_outline, size: 17, color: p.gold),
         ),
         name: 'Maryam',
         rest: ' answered 20 questions today',
@@ -703,7 +749,7 @@ class _ActivityFeed extends StatelessWidget {
       _ActivityEntry(
         node: _ActivityIcon(
           kind: _IconKind.join,
-          child: Icon(Icons.person_add_alt, size: 16, color: DateEmber.ivory),
+          child: Icon(Icons.person_add_alt, size: 16, color: p.ink),
         ),
         name: 'Hamza',
         rest: ' joined the team',
@@ -750,6 +796,7 @@ class _TimelineRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -759,10 +806,10 @@ class _TimelineRow extends StatelessWidget {
             Expanded(
               child: RichText(
                 text: TextSpan(
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     height: 1.3,
-                    color: DateEmber.ivory,
+                    color: p.ink,
                   ),
                   children: [
                     TextSpan(
@@ -781,13 +828,12 @@ class _TimelineRow extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 3),
-        Text(
+        ResponsiveText(
           entry.meta,
-          style: const TextStyle(
-            fontFamily: _mono,
+          style: TextStyle(
             fontSize: 9,
             letterSpacing: 0.4,
-            color: DateEmber.txtFaint,
+            color: p.inkFaint,
           ),
         ),
       ],
@@ -808,7 +854,7 @@ class _TimelineRow extends StatelessWidget {
                     child: Container(
                       width: 2,
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: DateEmber.washAmber.withValues(alpha: 0.16),
+                      color: p.washAmber.withValues(alpha: 0.16),
                     ),
                   ),
               ],
@@ -827,13 +873,13 @@ class _TimelineRow extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: DateEmber.glassBorder),
+                        border: Border.all(color: p.glassBorder),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            DateEmber.washAmber.withValues(alpha: 0.12),
-                            DateEmber.washAmber.withValues(alpha: 0.03),
+                            p.washAmber.withValues(alpha: 0.12),
+                            p.washAmber.withValues(alpha: 0.03),
                           ],
                         ),
                       ),
@@ -858,25 +904,26 @@ class _ActivityIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     BoxDecoration deco;
     switch (kind) {
       case _IconKind.streak:
-        deco = const BoxDecoration(
+        deco = BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [DateEmber.emberLight, DateEmber.ember],
+            colors: [p.emberLight, p.ember],
           ),
         );
       case _IconKind.quiz:
         deco = BoxDecoration(
-          color: DateEmber.washAmber.withValues(alpha: 0.16),
-          border: Border.all(color: DateEmber.washAmber.withValues(alpha: 0.4)),
+          color: p.washAmber.withValues(alpha: 0.16),
+          border: Border.all(color: p.washAmber.withValues(alpha: 0.4)),
         );
       case _IconKind.join:
         deco = BoxDecoration(
-          color: const Color(0x0FF4ECD8),
-          border: Border.all(color: DateEmber.glassBorder),
+          color: p.cardFill,
+          border: Border.all(color: p.glassBorder),
         );
     }
     return Container(
@@ -915,9 +962,9 @@ class _AvatarIcon extends StatelessWidget {
           colors: [hi, lo],
         ),
       ),
-      child: Text(
+      child: ResponsiveText(
         letter,
-        style: TextStyle(fontFamily: _serif, fontSize: 14, color: ink),
+        style: TextStyle(fontSize: 14, color: ink),
       ),
     );
   }
@@ -928,16 +975,17 @@ class _MiniCheck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       width: 28,
       height: 28,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9),
-        color: DateEmber.olive.withValues(alpha: 0.16),
-        border: Border.all(color: DateEmber.olive.withValues(alpha: 0.34)),
+        color: p.greenSurface.withValues(alpha: 0.16),
+        border: Border.all(color: p.greenSurface.withValues(alpha: 0.34)),
       ),
-      child: const Icon(Icons.check, size: 14, color: _oliveLight),
+      child: Icon(Icons.check, size: 14, color: p.green),
     );
   }
 }
@@ -972,7 +1020,7 @@ class _Leaderboard extends StatelessWidget {
           medal: true,
           avatar: _LbAvatar(
             letter: 'A',
-            hi: _oliveLight,
+            hi: DateEmberRoles.oliveLight,
             lo: DateEmber.oliveLo,
             ink: DateEmber.oliveInk,
           ),
@@ -1052,6 +1100,7 @@ class _LbRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     BoxDecoration deco;
     if (me) {
       deco = BoxDecoration(
@@ -1059,11 +1108,11 @@ class _LbRow extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            DateEmber.washAmber.withValues(alpha: 0.12),
-            DateEmber.washAmber.withValues(alpha: 0.03),
+            p.washAmber.withValues(alpha: 0.12),
+            p.washAmber.withValues(alpha: 0.03),
           ],
         ),
-        border: Border.all(color: DateEmber.glassBorder),
+        border: Border.all(color: p.glassBorder),
       );
     } else if (rival) {
       deco = BoxDecoration(
@@ -1071,16 +1120,16 @@ class _LbRow extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            DateEmber.ember.withValues(alpha: 0.12),
-            DateEmber.ember.withValues(alpha: 0.03),
+            p.ember.withValues(alpha: 0.12),
+            p.ember.withValues(alpha: 0.03),
           ],
         ),
-        border: Border.all(color: DateEmber.emberLight.withValues(alpha: 0.34)),
+        border: Border.all(color: p.emberLight.withValues(alpha: 0.34)),
       );
     } else {
       deco = BoxDecoration(
-        color: const Color(0x08F4ECD8),
-        border: Border.all(color: DateEmber.hairline),
+        color: p.cardFill,
+        border: Border.all(color: p.hairline),
       );
     }
 
@@ -1091,14 +1140,13 @@ class _LbRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 22,
-            child: Text(
+            child: ResponsiveText(
               pos,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: _mono,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: medal ? DateEmber.amberLight : DateEmber.txtFaint,
+                color: medal ? p.gold : p.inkFaint,
               ),
             ),
           ),
@@ -1112,14 +1160,15 @@ class _LbRow extends StatelessWidget {
                 Row(
                   children: [
                     Flexible(
-                      child: Text(
+                      child: ResponsiveText(
                         name,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        maxLines: 1,
+                        style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
                           height: 1.1,
-                          color: DateEmber.ivory,
+                          color: p.ink,
                         ),
                       ),
                     ),
@@ -1130,12 +1179,9 @@ class _LbRow extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 3),
-                Text(
+                ResponsiveText(
                   meta,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: DateEmber.txtMute,
-                  ),
+                  style: TextStyle(fontSize: 10, color: p.inkMute),
                 ),
               ],
             ),
@@ -1144,13 +1190,12 @@ class _LbRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              ResponsiveText(
                 points,
-                style: const TextStyle(
-                  fontFamily: _mono,
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: DateEmber.amberLight,
+                  color: p.gold,
                 ),
               ),
               const SizedBox(height: 2),
@@ -1189,9 +1234,9 @@ class _LbAvatar extends StatelessWidget {
           colors: [hi, lo],
         ),
       ),
-      child: Text(
+      child: ResponsiveText(
         letter,
-        style: TextStyle(fontFamily: _serif, fontSize: 14, color: ink),
+        style: TextStyle(fontSize: 14, color: ink),
       ),
     );
   }
@@ -1203,25 +1248,25 @@ class _Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     final isYou = tag == _LbTag.you;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(99),
-        color: (isYou ? DateEmber.washAmber : DateEmber.ember)
+        color: (isYou ? p.washAmber : p.ember)
             .withValues(alpha: isYou ? 0.2 : 0.18),
         border: Border.all(
-          color: (isYou ? DateEmber.washAmber : DateEmber.emberLight)
-              .withValues(alpha: 0.4),
+          color: (isYou ? p.washAmber : p.emberLight).withValues(alpha: 0.4),
         ),
       ),
-      child: Text(
+      child: ResponsiveText(
         isYou ? 'YOU' : 'RIVAL',
         style: TextStyle(
           fontSize: 7.5,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0,
-          color: isYou ? DateEmber.amberLight : _emberLight,
+          color: isYou ? p.gold : p.emberLight,
         ),
       ),
     );
@@ -1233,20 +1278,20 @@ class _RivalHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 9, 4, 0),
       child: Row(
-        children: const [
-          Icon(Icons.schedule, size: 13, color: _emberLight),
-          SizedBox(width: 7),
+        children: [
+          Icon(Icons.schedule, size: 13, color: p.emberLight),
+          const SizedBox(width: 7),
           Expanded(
-            child: Text(
+            child: ResponsiveText(
               'Just 140 points behind Maryam — your closest competitor.',
               style: TextStyle(
-                fontFamily: _serif,
                 fontStyle: FontStyle.italic,
                 fontSize: 10.5,
-                color: _emberLight,
+                color: p.emberLight,
               ),
             ),
           ),
@@ -1256,287 +1301,6 @@ class _RivalHint extends StatelessWidget {
   }
 }
 
-// ───────────────────────── 6 · Team stats ─────────────────────────
-
-class _TeamStats extends StatelessWidget {
-  const _TeamStats();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              Expanded(
-                child: _StatCard(
-                  label: 'Questions answered',
-                  value: '1,284',
-                  trend: '18%',
-                  trendNote: 'vs last week',
-                  spark: true,
-                ),
-              ),
-              SizedBox(width: 9),
-              Expanded(
-                child: _StatCard(
-                  label: 'Avg accuracy',
-                  value: '88%',
-                  trend: '4%',
-                  trendNote: 'vs last week',
-                  ring: 0.83,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 9),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              Expanded(
-                child: _StatCard(
-                  label: 'Active members',
-                  value: '9',
-                  valueSub: ' / 12',
-                  trend: '2',
-                  trendNote: 'this week',
-                ),
-              ),
-              SizedBox(width: 9),
-              Expanded(
-                child: _StatCard(
-                  label: 'Peak activity day',
-                  value: 'Wed',
-                  valueSize: 22,
-                  note: '312 questions · 8pm',
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 9),
-        // Insight banner.
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                DateEmber.olive.withValues(alpha: 0.16),
-                DateEmber.olive.withValues(alpha: 0.05),
-              ],
-            ),
-            border: Border.all(color: DateEmber.olive.withValues(alpha: 0.3)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: DateEmber.olive.withValues(alpha: 0.2),
-                ),
-                child: const Icon(Icons.bar_chart, size: 18, color: _oliveLight),
-              ),
-              const SizedBox(width: 11),
-              Expanded(
-                child: RichText(
-                  text: const TextSpan(
-                    style: TextStyle(
-                      fontFamily: _serif,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 14,
-                      height: 1.35,
-                      color: DateEmber.ivory,
-                    ),
-                    children: [
-                      TextSpan(text: 'Your team is '),
-                      TextSpan(
-                        text: 'improving in accuracy',
-                        style: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w600,
-                          color: _oliveLight,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ' — up 4% and climbing for three weeks straight.',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-    this.valueSub,
-    this.valueSize = 28,
-    this.trend,
-    this.trendNote,
-    this.note,
-    this.spark = false,
-    this.ring,
-  });
-
-  final String label;
-  final String value;
-  final String? valueSub;
-  final double valueSize;
-  final String? trend;
-  final String? trendNote;
-  final String? note;
-  final bool spark;
-  final double? ring;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: DateEmber.hairline),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0x0DF4ECD8), Color(0x05F4ECD8)],
-        ),
-      ),
-      child: Stack(
-        children: [
-          if (ring != null)
-            Positioned(
-              right: 0,
-              top: 0,
-              child: CustomPaint(
-                size: const Size(38, 38),
-                painter: _RingPainter(ring!),
-              ),
-            ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 8,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.4,
-                  color: DateEmber.txtMute,
-                ),
-              ),
-              const SizedBox(height: 7),
-              RichText(
-                text: TextSpan(
-                  text: value,
-                  style: TextStyle(
-                    fontFamily: _serif,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w300,
-                    fontSize: valueSize,
-                    height: 0.95,
-                    color: DateEmber.ivory,
-                  ),
-                  children: [
-                    if (valueSub != null)
-                      TextSpan(
-                        text: valueSub,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: DateEmber.txtFaint,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 7),
-              if (trend != null)
-                Row(
-                  children: [
-                    _TrendChip(value: trend!, up: true),
-                    const SizedBox(width: 5),
-                    Text(
-                      trendNote ?? '',
-                      style: const TextStyle(
-                        fontSize: 9,
-                        color: DateEmber.txtFaint,
-                      ),
-                    ),
-                  ],
-                ),
-              if (note != null)
-                Text(
-                  note!,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    color: DateEmber.txtMute,
-                  ),
-                ),
-              if (spark) ...[
-                const SizedBox(height: 9),
-                const _Spark(),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Seven-bar sparkline; the fifth bar is the "hot" ember peak.
-class _Spark extends StatelessWidget {
-  const _Spark();
-
-  @override
-  Widget build(BuildContext context) {
-    const heights = [0.40, 0.60, 0.48, 0.75, 0.95, 0.30, 0.22];
-    return SizedBox(
-      height: 22,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          for (var i = 0; i < heights.length; i++) ...[
-            Expanded(
-              child: Container(
-                height: 22 * heights[i],
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(2),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: i == 4
-                        ? const [DateEmber.emberLight, DateEmber.ember]
-                        : const [DateEmber.amberLight, DateEmber.amberDeep],
-                  ),
-                ),
-              ),
-            ),
-            if (i < heights.length - 1) const SizedBox(width: 3),
-          ],
-        ],
-      ),
-    );
-  }
-}
 
 // ───────────────────────── Tab bar ─────────────────────────
 
@@ -1545,6 +1309,7 @@ class _TabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = _Pal(context);
     return Container(
       height: 60,
       decoration: BoxDecoration(
@@ -1552,23 +1317,25 @@ class _TabBar extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            DateEmber.raised.withValues(alpha: 0.94),
-            DateEmber.surface.withValues(alpha: 0.94),
-          ],
+          colors: p.dark
+              ? [
+                  DateEmber.raised.withValues(alpha: 0.94),
+                  DateEmber.surface.withValues(alpha: 0.94),
+                ]
+              : [p.bgTop, p.bgMid],
         ),
-        border: Border.all(color: DateEmber.glassBorder),
-        boxShadow: const [
+        border: Border.all(color: p.glassBorder),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x8C000000),
+            color: Colors.black.withValues(alpha: p.dark ? 0.55 : 0.10),
             blurRadius: 30,
-            offset: Offset(0, 14),
+            offset: const Offset(0, 14),
           ),
         ],
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
+        children: [
           _Tab(icon: Icons.home_outlined, label: 'HOME', active: true),
           _Tab(icon: Icons.group_outlined, label: 'MEMBERS'),
           _Tab(icon: Icons.bar_chart, label: 'PROGRESS'),
@@ -1587,7 +1354,8 @@ class _Tab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? DateEmber.amberLight : DateEmber.txtFaint;
+    final p = _Pal(context);
+    final color = active ? p.gold : p.inkFaint;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -1598,13 +1366,13 @@ class _Tab extends StatelessWidget {
             height: 3,
             margin: const EdgeInsets.only(bottom: 7),
             decoration: BoxDecoration(
-              color: DateEmber.amber,
+              color: p.amber,
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(3),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: DateEmber.washAmber.withValues(alpha: 0.7),
+                  color: p.washAmber.withValues(alpha: 0.7),
                   blurRadius: 10,
                 ),
               ],
@@ -1614,7 +1382,7 @@ class _Tab extends StatelessWidget {
           const SizedBox(height: 10),
         Icon(icon, size: 20, color: color),
         const SizedBox(height: 3),
-        Text(
+        ResponsiveText(
           label,
           style: TextStyle(
             fontSize: 8.5,
@@ -1630,7 +1398,7 @@ class _Tab extends StatelessWidget {
 
 // ───────────────────────── Shared atoms ─────────────────────────
 
-/// Mono up/down trend chip with a small chevron.
+/// Up/down trend chip with a small chevron.
 class _TrendChip extends StatelessWidget {
   const _TrendChip({required this.value, required this.up});
 
@@ -1639,7 +1407,8 @@ class _TrendChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = up ? _up : _down;
+    final p = _Pal(context);
+    final color = up ? p.up : p.down;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1648,10 +1417,9 @@ class _TrendChip extends StatelessWidget {
           size: 12,
           color: color,
         ),
-        Text(
+        ResponsiveText(
           value,
           style: TextStyle(
-            fontFamily: _mono,
             fontSize: 10,
             fontWeight: FontWeight.w600,
             color: color,
@@ -1714,37 +1482,6 @@ class _Flame extends StatelessWidget {
 }
 
 /// Accuracy ring — a 270°-style arc filled to [ratio].
-class _RingPainter extends CustomPainter {
-  _RingPainter(this.ratio);
-  final double ratio;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final radius = size.width / 2 - 2;
-    final track = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5
-      ..color = DateEmber.ivory.withValues(alpha: 0.10);
-    final arc = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5
-      ..strokeCap = StrokeCap.round
-      ..color = DateEmber.amber;
-    canvas.drawCircle(center, radius, track);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      2 * math.pi * ratio.clamp(0.0, 1.0),
-      false,
-      arc,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_RingPainter old) => old.ratio != ratio;
-}
-
 /// Dashed rounded-rect border for the invite-code pill.
 class _DashedBorderPainter extends CustomPainter {
   _DashedBorderPainter({required this.color, required this.radius});

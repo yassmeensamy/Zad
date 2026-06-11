@@ -127,11 +127,10 @@
       "rank_label": "الترتيب",
       "companions_count": "{} رفيقًا"
     },
-    "hadith": {
-      "section_title": "حديث اليوم",
+    "quran_sign": {
+      "section_title": "علامة قرآنية اليوم",
       "view_all": "عرض الكل",
-      "narrator_prefix": "رواه ",
-      "hadith_no": "حديث رقم {}"
+      "reference_no": "المرجع رقم {}"
     },
     "date_ember_cta": "عرض لوحة صدارة التمر والجمر",
     "why_login": {

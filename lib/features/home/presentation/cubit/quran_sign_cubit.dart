@@ -6,51 +6,53 @@ import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/events/app_events.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
-import '../../data/repositories/home_repository.dart';
-import 'home_state.dart';
+import '../../data/repositories/quran_sign_repository.dart';
+import 'quran_sign_state.dart';
 
-class HomeCubit extends BaseCubit<HomeState> {
-  HomeCubit({required HomeRepository homeRepository, required EventBus eventBus})
-    : _homeRepository = homeRepository,
-      super(const HomeState()) {
+class QuranSignCubit extends BaseCubit<QuranSignState> {
+  QuranSignCubit({
+    required QuranSignRepository quranSignRepository,
+    required EventBus eventBus,
+  }) : _quranSignRepository = quranSignRepository,
+       super(const QuranSignState()) {
     _langSub = eventBus.on<LanguageChangedEvent>().listen((e) {
       logger.debug(
-        '🏠 [home] got LanguageChangedEvent(${e.languageCode}) '
+        '🏠 [quran-sign] got LanguageChangedEvent(${e.languageCode}) '
         'status=${state.status} → ${state.isInitial ? "SKIP (initial)" : "refetch"}',
       );
-      getOverview(refresh: true);
+      load(refresh: true);
     });
   }
 
-  final HomeRepository _homeRepository;
+  final QuranSignRepository _quranSignRepository;
   StreamSubscription<LanguageChangedEvent>? _langSub;
 
-  Future<void> getOverview({bool refresh = false}) async {
+  Future<void> load({bool refresh = false}) async {
     if (!refresh) {
       emit(
         state.copyWith(
-          status: HomeStatus.loading,
+          status: QuranSignStatus.loading,
           errorMessage: () => null,
         ),
       );
     }
     try {
-      final overview = await _homeRepository.getOverview();
+      final sign = await _quranSignRepository.getRandomSign();
       emit(
-        state.copyWith(status: HomeStatus.loaded, overview: overview),
+        state.copyWith(status: QuranSignStatus.loaded, sign: sign),
       );
     } on ServerException catch (e) {
       emit(
         state.copyWith(
-          status: HomeStatus.error,
+          status: QuranSignStatus.error,
           errorMessage: () => e.message,
         ),
       );
     } catch (e) {
-      logger.error('HomeCubit.getOverview failed: $e');
+      logger.error('QuranSignCubit.load failed: $e');
       emit(
         state.copyWith(
-          status: HomeStatus.error,
+          status: QuranSignStatus.error,
           errorMessage: () => 'home.load_failed',
         ),
       );

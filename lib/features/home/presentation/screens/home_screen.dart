@@ -17,15 +17,14 @@ import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../teams/presentation/screens/temp_team_home.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
-import '../../data/models/hadith_model.dart';
-import '../../data/models/home_overview_model.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
+import '../../data/models/quran_sign_model.dart';
+import '../cubit/quran_sign_cubit.dart';
+import '../cubit/quran_sign_state.dart';
 import '../widgets/home_backdrop_pattern.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_streak_section.dart';
 import '../widgets/home_team_section.dart';
-import '../widgets/hadith_card.dart';
+import '../widgets/quran_sign_card.dart';
 import '../widgets/home_why_login_section.dart';
 import '../widgets/play_card.dart';
 
@@ -36,8 +35,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomeCubit>(
-          create: (_) => sl<HomeCubit>()..getOverview(),
+        BlocProvider<QuranSignCubit>(
+          create: (_) => sl<QuranSignCubit>()..load(),
         ),
         BlocProvider<StreakCubit>(
           create: (_) => sl<StreakCubit>()..load(),
@@ -60,29 +59,29 @@ class _HomeView extends StatelessWidget {
 
     final content = SafeArea(
       bottom: false,
-      child: BlocBuilder<HomeCubit, HomeState>(
-        buildWhen: (a, b) => a.status != b.status || a.overview != b.overview,
+      child: BlocBuilder<QuranSignCubit, QuranSignState>(
+        buildWhen: (a, b) => a.status != b.status || a.sign != b.sign,
         builder: (context, state) {
-          if (state.isError && !state.hasOverview) {
+          if (state.isError && !state.hasSign) {
             return ErrorState(
               message: state.errorMessage ?? 'home.load_failed'.tr(),
-              onRetry: () => context.read<HomeCubit>().getOverview(),
+              onRetry: () => context.read<QuranSignCubit>().load(),
             );
           }
           final showSkeleton =
-              state.isInitial || state.isLoading || !state.hasOverview;
-          final overview = state.overview ?? _placeholderOverview;
+              state.isInitial || state.isLoading || !state.hasSign;
+          final sign = state.sign ?? _placeholderSign;
           return RefreshIndicator(
             color: colors.olive,
             onRefresh: () async {
               await Future.wait([
-                context.read<HomeCubit>().getOverview(refresh: true),
+                context.read<QuranSignCubit>().load(refresh: true),
                 context.read<StreakCubit>().load(refresh: true),
               ]);
             },
             child: Skeletonizer(
               enabled: showSkeleton,
-              child: HomeLoadedContent(overview: overview),
+              child: HomeLoadedContent(sign: sign),
             ),
           );
         },
@@ -102,9 +101,9 @@ class _HomeView extends StatelessWidget {
 const double _kGutter = 24;
 
 class HomeLoadedContent extends StatelessWidget {
-  const HomeLoadedContent({required this.overview, super.key});
+  const HomeLoadedContent({required this.sign, super.key});
 
-  final HomeOverviewModel overview;
+  final QuranSignModel sign;
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +152,7 @@ class HomeLoadedContent extends StatelessWidget {
             const TeamWeekStats(),
           ],
           const SizedBox(height: 26),
-          HadithCard(hadith: overview.hadithOfDay),
+          QuranSignCard(sign: sign),
           const SizedBox(height: 14),
           ElevatedButton(
             onPressed: () => Navigator.of(context).push(
@@ -214,16 +213,10 @@ class HomeLoadedContent extends StatelessWidget {
   }
 }
 
-/// Lookalike payload used while the real overview loads, so [Skeletonizer]
+/// Lookalike payload used while the real sign loads, so [Skeletonizer]
 /// has shapes of the right size to mask.
-const _placeholderOverview = HomeOverviewModel(
-  hadithOfDay: HadithModel(
-    id: 0,
-    source: '────────────────',
-    arabic: '──────────────────────',
-    english:
-        '─────────────────────────────────────────────────────────────',
-    narrator: '──────────────',
-    hadithNumber: 0,
-  ),
+const _placeholderSign = QuranSignModel(
+  id: 0,
+  text: '──────────────────────────────────────────────────────────────',
+  referenceNumber: 0,
 );

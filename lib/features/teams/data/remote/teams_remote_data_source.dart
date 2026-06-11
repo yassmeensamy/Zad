@@ -74,7 +74,7 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       _endpoints.teams,
       data: request.toMap(),
     );
-    response.validated();
+    response.validated([201]);
     return CreatedTeamModel.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -84,13 +84,13 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       _endpoints.joinTeam,
       data: request.toMap(),
     );
-    response.validated();
+    response.validated([200]);
     return JoinedTeamModel.fromMap(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> leaveTeam() async {
     final response = await _networkService.delete(_endpoints.leaveTeam);
-    response.validated();
+    response.validated([204]);
   }
 }

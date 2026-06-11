@@ -35,9 +35,9 @@ import '../../features/drafts/data/repositories/drafts_repository.dart';
 import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
 import '../../features/help_center/data/repositories/help_center_repository.dart';
 import '../../features/help_center/presentation/cubit/help_center_cubit.dart';
-import '../../features/home/data/remote/home_remote_data_source.dart';
-import '../../features/home/data/repositories/home_repository.dart';
-import '../../features/home/presentation/cubit/home_cubit.dart';
+import '../../features/home/data/remote/quran_sign_remote_data_source.dart';
+import '../../features/home/data/repositories/quran_sign_repository.dart';
+import '../../features/home/presentation/cubit/quran_sign_cubit.dart';
 import '../../features/leaderboard/data/remote/rankings_remote_data_source.dart';
 import '../../features/leaderboard/data/repositories/rankings_repository.dart';
 import '../../features/leaderboard/presentation/cubit/rankings_cubit.dart';
@@ -202,14 +202,14 @@ class ServiceLocator {
       () => NotificationCubit(notificationRepository: sl()),
     );
 
-    sl.registerLazySingleton<HomeRemoteDataSource>(
-      () => HomeRemoteDataSourceImpl(),
+    sl.registerLazySingleton<QuranSignRemoteDataSource>(
+      () => QuranSignRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
-    sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(remoteDataSource: sl()),
+    sl.registerLazySingleton<QuranSignRepository>(
+      () => QuranSignRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<HomeCubit>(
-      () => HomeCubit(homeRepository: sl(), eventBus: sl()),
+    sl.registerFactory<QuranSignCubit>(
+      () => QuranSignCubit(quranSignRepository: sl(), eventBus: sl()),
     );
 
     sl.registerLazySingleton<HelpCenterRepository>(

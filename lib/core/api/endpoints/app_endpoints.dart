@@ -27,6 +27,8 @@ class AppEndpoint {
   String get streak => '${baseUrl}api/users/me/streak';
   String get weeklyStreak => '${baseUrl}api/users/me/streak/weekly';
 
+  String get randomQuranSign => '${baseUrl}api/quran-signs/random';
+
   String get quizCategories => '${baseUrl}api/quiz/categories';
 
   String levelsByCategoryId(int categoryId) =>

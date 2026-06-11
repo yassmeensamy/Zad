@@ -127,11 +127,10 @@
       "rank_label": "Rank",
       "companions_count": "{} companions"
     },
-    "hadith": {
-      "section_title": "Hadith of the day",
+    "quran_sign": {
+      "section_title": "Quran sign of the day",
       "view_all": "VIEW ALL",
-      "narrator_prefix": "Narrated by ",
-      "hadith_no": "Hadith №{}"
+      "reference_no": "Reference №{}"
     },
     "date_ember_cta": "View the Date & Ember leaderboard",
     "why_login": {

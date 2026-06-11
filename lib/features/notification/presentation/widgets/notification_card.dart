@@ -4,12 +4,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../../core/widgets/app_card.dart';
-import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/notification_model.dart';
 
 /// A single notification row. Type-driven accent color paints the icon
 /// medallion while the rest of the card stays in the warm canvas palette.
+/// Unread rows carry a small accent dot and slightly stronger weight.
+/// Swiping reveals [onDelete].
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
     super.key,
@@ -24,6 +25,8 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final accent = notification.notificationType.accent(colors);
+    final isUnread = !notification.isRead;
+    final textScaler = MediaQuery.textScalerOf(context);
 
     final card = AppCard.flat(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -39,20 +42,44 @@ class NotificationCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ResponsiveText(
-                  notification.title,
-                  style: AppTextStyles.titleMedium.copyWith(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    height: 1.3,
-                    color: colors.oliveDeep,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        notification.title ?? '',
+                        textScaler: textScaler,
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontSize: 15,
+                          fontWeight:
+                              isUnread ? FontWeight.w700 : FontWeight.w600,
+                          height: 1.3,
+                          color: colors.oliveDeep,
+                        ),
+                      ),
+                    ),
+                    if (isUnread) ...[
+                      const SizedBox(width: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: colors.accent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 if (notification.messageBody != null &&
                     notification.messageBody!.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  ResponsiveText(
-                    notification.messageBody,
+                  Text(
+                    notification.messageBody!,
+                    textScaler: textScaler,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontSize: 13,
                       height: 1.45,
@@ -61,23 +88,22 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (notification.createdAt != null)
-                      ResponsiveText(
-                        timeago.format(
-                          notification.createdAt!,
-                          locale: context.locale.languageCode,
-                        ),
-                        style: AppTextStyles.labelMedium.copyWith(
-                          fontSize: 11,
-                          letterSpacing: 0,
-                          color: colors.textTertiary,
-                        ),
+                if (notification.sentAt != null)
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Text(
+                      timeago.format(
+                        notification.sentAt!,
+                        locale: context.locale.languageCode,
                       ),
-                  ],
-                ),
+                      textScaler: textScaler,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        fontSize: 11,
+                        letterSpacing: 0,
+                        color: colors.textTertiary,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -130,7 +156,6 @@ class NotificationCard extends StatelessWidget {
       child: card,
     );
   }
-
 }
 
 class _IconMedallion extends StatelessWidget {

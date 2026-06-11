@@ -4,37 +4,49 @@ import '../../data/models/notification_model.dart';
 
 enum NotificationStatus { initial, loading, loaded, error }
 
-enum DeleteNotificationStatus { initial, loading, success, error }
-
 class NotificationState {
   const NotificationState({
     this.status = NotificationStatus.initial,
     this.notifications = const [],
     this.errorMessage,
-    this.deleteStatus = DeleteNotificationStatus.initial,
-    this.deleteErrorMessage,
+    this.loadingMore = false,
+    this.currentPage = 0,
+    this.totalPages = 0,
+    this.actionError,
   });
 
   final NotificationStatus status;
   final List<NotificationModel> notifications;
+
+  /// Message key shown on the full-screen error state (initial load failure).
   final String? errorMessage;
-  final DeleteNotificationStatus deleteStatus;
-  final String? deleteErrorMessage;
+
+  /// True while an additional page is being appended.
+  final bool loadingMore;
+
+  final int currentPage;
+  final int totalPages;
+
+  /// One-shot message key for a failed action (read / mark-all / delete),
+  /// surfaced as a snackbar then cleared via [NotificationCubit.clearActionError].
+  final String? actionError;
 
   NotificationState copyWith({
     NotificationStatus? status,
     List<NotificationModel>? notifications,
     String? Function()? errorMessage,
-    DeleteNotificationStatus? deleteStatus,
-    String? Function()? deleteErrorMessage,
+    bool? loadingMore,
+    int? currentPage,
+    int? totalPages,
+    String? Function()? actionError,
   }) => NotificationState(
     status: status ?? this.status,
     notifications: notifications ?? this.notifications,
     errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
-    deleteStatus: deleteStatus ?? this.deleteStatus,
-    deleteErrorMessage: deleteErrorMessage != null
-        ? deleteErrorMessage()
-        : this.deleteErrorMessage,
+    loadingMore: loadingMore ?? this.loadingMore,
+    currentPage: currentPage ?? this.currentPage,
+    totalPages: totalPages ?? this.totalPages,
+    actionError: actionError != null ? actionError() : this.actionError,
   );
 
   @override
@@ -44,8 +56,10 @@ class NotificationState {
         other.status == status &&
         listEquals(other.notifications, notifications) &&
         other.errorMessage == errorMessage &&
-        other.deleteStatus == deleteStatus &&
-        other.deleteErrorMessage == deleteErrorMessage;
+        other.loadingMore == loadingMore &&
+        other.currentPage == currentPage &&
+        other.totalPages == totalPages &&
+        other.actionError == actionError;
   }
 
   @override
@@ -53,8 +67,10 @@ class NotificationState {
     status,
     Object.hashAll(notifications),
     errorMessage,
-    deleteStatus,
-    deleteErrorMessage,
+    loadingMore,
+    currentPage,
+    totalPages,
+    actionError,
   ]);
 }
 
@@ -64,10 +80,7 @@ extension NotificationStateX on NotificationState {
   bool get isLoaded => status == NotificationStatus.loaded;
   bool get isError => status == NotificationStatus.error;
 
-  bool get isDeleteInitial => deleteStatus == DeleteNotificationStatus.initial;
-  bool get isDeleteLoading => deleteStatus == DeleteNotificationStatus.loading;
-  bool get isDeleteSuccess => deleteStatus == DeleteNotificationStatus.success;
-  bool get isDeleteError => deleteStatus == DeleteNotificationStatus.error;
-
   bool get hasNotifications => notifications.isNotEmpty;
+
+  bool get hasMore => currentPage < totalPages - 1;
 }

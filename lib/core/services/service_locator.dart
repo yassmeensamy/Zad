@@ -57,6 +57,7 @@ import '../../features/quiz/presentation/cubit/quiz_cubit.dart';
 import '../../features/profile/presentation/cubit/progress_reset_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
+import '../../features/notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
@@ -193,13 +194,16 @@ class ServiceLocator {
     );
 
     sl.registerLazySingleton<NotificationRemoteDataSource>(
-      () => NotificationRemoteDataSourceImpl(),
+      () => NotificationRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
     sl.registerLazySingleton<NotificationRepository>(
       () => NotificationRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<NotificationCubit>(
       () => NotificationCubit(notificationRepository: sl()),
+    );
+    sl.registerFactory<NotificationBadgeCubit>(
+      () => NotificationBadgeCubit(notificationRepository: sl()),
     );
 
     sl.registerLazySingleton<QuranSignRemoteDataSource>(

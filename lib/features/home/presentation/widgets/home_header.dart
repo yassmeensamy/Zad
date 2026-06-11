@@ -5,10 +5,16 @@ import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_number_one_dialog.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key, this.firstName, this.onBellTap});
+  const HomeHeader({
+    super.key,
+    this.firstName,
+    this.onBellTap,
+    this.unreadCount = 0,
+  });
 
   final String? firstName;
   final VoidCallback? onBellTap;
+  final int unreadCount;
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +109,10 @@ class HomeHeader extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Badge(
-              smallSize: 7,
+              isLabelVisible: unreadCount > 0,
+              label: Text(unreadCount > 99 ? '99+' : '$unreadCount'),
               backgroundColor: colors.accent,
+              textColor: colors.goldInk,
               child: Icon(
                 Icons.notifications_none_rounded,
                 size: 19,

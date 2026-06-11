@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/utils/snackbar_helper.dart';
-import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
-import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/notification_model.dart';
@@ -22,14 +22,23 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NotificationCubit>(
-      create: (_) => sl<NotificationCubit>()..getNotifications(),
+      create: (_) => sl<NotificationCubit>()..openInbox(),
       child: const _NotificationView(),
     );
   }
 }
 
-class _NotificationView extends StatelessWidget {
+class _NotificationView extends StatefulWidget {
   const _NotificationView();
+
+  @override
+  State<_NotificationView> createState() => _NotificationViewState();
+}
+
+class _NotificationViewState extends State<_NotificationView>
+    with ScrollPaginationMixin {
+  @override
+  void onLoadMore() => context.read<NotificationCubit>().loadMore();
 
   @override
   Widget build(BuildContext context) {
@@ -38,33 +47,19 @@ class _NotificationView extends StatelessWidget {
       appBar: ZaadAppBar(
         title: 'notifications.title',
         onBack: context.canPop() ? () => context.pop() : null,
-        action: BlocBuilder<NotificationCubit, NotificationState>(
-          buildWhen: (a, b) =>
-              a.hasNotifications != b.hasNotifications ||
-              a.deleteStatus != b.deleteStatus,
-          builder: (context, state) {
-            if (!state.hasNotifications) return const SizedBox.shrink();
-            return _ClearAllButton(
-              onTap: () =>
-                  context.read<NotificationCubit>().deleteAllNotifications(),
-            );
-          },
-        ),
       ),
       body: BlocListener<NotificationCubit, NotificationState>(
-        listenWhen: (a, b) =>
-            a.deleteStatus != b.deleteStatus &&
-            b.deleteStatus == DeleteNotificationStatus.error,
+        listenWhen: (a, b) => a.actionError != b.actionError,
         listener: (context, state) {
-          if (state.deleteErrorMessage == null) return;
-          SnackBarHelper.showError(
-            context,
-            message: state.deleteErrorMessage!,
-          );
-          context.read<NotificationCubit>().resetDeleteStatus();
+          if (state.actionError == null) return;
+          SnackBarHelper.showError(context, message: state.actionError!);
+          context.read<NotificationCubit>().clearActionError();
         },
         child: BlocBuilder<NotificationCubit, NotificationState>(
-          buildWhen: (a, b) => a.status != b.status || a.notifications != b.notifications,
+          buildWhen: (a, b) =>
+              a.status != b.status ||
+              a.notifications != b.notifications ||
+              a.loadingMore != b.loadingMore,
           builder: (context, state) {
             if (state.isInitial || state.isLoading) {
               return const _LoadingSkeleton();
@@ -89,10 +84,14 @@ class _NotificationView extends StatelessWidget {
                   .read<NotificationCubit>()
                   .getNotifications(refresh: true),
               child: ListView.builder(
+                controller: scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                itemCount: state.notifications.length,
+                itemCount: state.notifications.length + (state.hasMore ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (index >= state.notifications.length) {
+                    return const _PaginationLoader();
+                  }
                   final notification = state.notifications[index];
                   return NotificationCard(
                     key: ValueKey(notification.id),
@@ -111,28 +110,19 @@ class _NotificationView extends StatelessWidget {
   }
 }
 
-class _ClearAllButton extends StatelessWidget {
-  const _ClearAllButton({required this.onTap});
-
-  final VoidCallback onTap;
+class _PaginationLoader extends StatelessWidget {
+  const _PaginationLoader();
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return TextButton(
-      onPressed: onTap,
-      style: TextButton.styleFrom(
-        foregroundColor: colors.accentDeep,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        minimumSize: const Size(0, 36),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: ResponsiveText(
-        'notifications.clear_all',
-        style: AppTextStyles.labelMedium.copyWith(
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0,
-          color: colors.accentDeep,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      child: Center(
+        child: SizedBox(
+          width: 22,
+          height: 22,
+          child: CircularProgressIndicator(strokeWidth: 2, color: colors.olive),
         ),
       ),
     );
@@ -151,7 +141,7 @@ class _LoadingSkeleton extends StatelessWidget {
       title: 'A placeholder notification title',
       messageBody:
           'A short body line that mimics the look of a real notification while loading.',
-      createdAt: DateTime.now().subtract(Duration(minutes: (i + 1) * 7)),
+      sentAt: DateTime.now().subtract(Duration(minutes: (i + 1) * 7)),
     ),
   );
 

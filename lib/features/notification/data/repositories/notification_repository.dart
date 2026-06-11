@@ -2,8 +2,12 @@ import '../models/notification_model.dart';
 import '../remote/notification_remote_data_source.dart';
 
 abstract class NotificationRepository {
-  Future<List<NotificationModel>> getNotifications();
-  Future<void> deleteAllNotifications();
+  Future<PaginatedNotifications> getNotifications({
+    required int page,
+    required int size,
+  });
+  Future<int> getUnreadCount();
+  Future<void> markAllAsRead();
   Future<void> deleteNotification(int notificationId);
 }
 
@@ -15,12 +19,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationRemoteDataSource _remoteDataSource;
 
   @override
-  Future<List<NotificationModel>> getNotifications() =>
-      _remoteDataSource.getNotifications();
+  Future<PaginatedNotifications> getNotifications({
+    required int page,
+    required int size,
+  }) => _remoteDataSource.getNotifications(page: page, size: size);
 
   @override
-  Future<void> deleteAllNotifications() =>
-      _remoteDataSource.deleteAllNotifications();
+  Future<int> getUnreadCount() => _remoteDataSource.getUnreadCount();
+
+  @override
+  Future<void> markAllAsRead() => _remoteDataSource.markAllAsRead();
 
   @override
   Future<void> deleteNotification(int notificationId) =>

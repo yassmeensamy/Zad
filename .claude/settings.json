@@ -77,7 +77,9 @@
       "Bash(perl -ni -e \"print unless m{^import 'date_ember_palette\\\\.dart';}\" lib/theme/app_color_scheme.dart)",
       "Bash(perl -pi -e 's{\\\\[AppColors\\\\]/\\\\[DateEmber\\\\]}{[AppColors]}g' lib/core/widgets/force_update_dialog.dart lib/theme/app_color_scheme.dart)",
       "Bash(perl -pi -e 's{\\\\\\(via \\\\[DateEmber\\\\]\\\\\\)}{\\(via [AppColors]\\)}g' lib/features/teams/presentation/screens/temp_team_home.dart)",
-      "Bash(perl -pi -e 's{\\\\[DateEmber\\\\]}{[AppColors]}g' lib/features/teams/presentation/widgets/date_ember_roles.dart)"
+      "Bash(perl -pi -e 's{\\\\[DateEmber\\\\]}{[AppColors]}g' lib/features/teams/presentation/widgets/date_ember_roles.dart)",
+      "Bash(sed -n '1,40p' lib/core/widgets/empty_state.dart)",
+      "Bash(sed -n '1,40p' lib/core/widgets/error_state.dart)"
     ]
   }
 }

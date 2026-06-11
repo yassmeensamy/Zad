@@ -15,6 +15,7 @@ import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../teams/presentation/screens/temp_team_home.dart';
+import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../data/models/quran_sign_model.dart';
@@ -43,6 +44,9 @@ class HomeScreen extends StatelessWidget {
         ),
         BlocProvider<TeamsCubit>(
           create: (_) => sl<TeamsCubit>()..loadTeamStatus(),
+        ),
+        BlocProvider<NotificationBadgeCubit>(
+          create: (_) => sl<NotificationBadgeCubit>()..refresh(),
         ),
       ],
       child: const _HomeView(),
@@ -117,13 +121,22 @@ class HomeLoadedContent extends StatelessWidget {
           BlocSelector<UserCubit, UserState, String?>(
             selector: (state) => state.user?.fullName,
             builder: (context, fullName) {
-              return HomeHeader(
-                firstName: _firstName(
-                  fullName,
-                  fallback: 'home.fallback_name'.tr(),
-                ),
-                onBellTap: () =>
-                    context.pushNamed(AppRoutes.notificationsName),
+              return BlocBuilder<NotificationBadgeCubit, int>(
+                builder: (context, unreadCount) {
+                  return HomeHeader(
+                    firstName: _firstName(
+                      fullName,
+                      fallback: 'home.fallback_name'.tr(),
+                    ),
+                    unreadCount: unreadCount,
+                    onBellTap: () async {
+                      await context.pushNamed(AppRoutes.notificationsName);
+                      if (!context.mounted) return;
+                      // Reads/deletes may have happened in the inbox; resync.
+                      context.read<NotificationBadgeCubit>().refresh();
+                    },
+                  );
+                },
               );
             },
           ),
@@ -142,7 +155,7 @@ class HomeLoadedContent extends StatelessWidget {
             const HomeTeamSection(),
             const SizedBox(height: 26),
             ResponsiveText(
-              'This week · team stats',
+              'home.team.week_stats_title'.tr(),
               style: context.textTheme.titleMedium?.copyWith(
                 color: context.appColors.textPrimary,
                 fontWeight: FontWeight.w700,

@@ -72,4 +72,10 @@ class AppEndpoint {
 
   String get rankingTeams => '${baseUrl}api/rankings/teams';
   String get rankingIndividuals => '${baseUrl}api/rankings/individuals';
+
+  String get notifications => '${baseUrl}api/notifications';
+  String get notificationsUnreadCount =>
+      '${baseUrl}api/notifications/unread-count';
+  String get notificationsReadAll => '${baseUrl}api/notifications/read-all';
+  String notificationById(int id) => '${baseUrl}api/notifications/$id';
 }

@@ -1,34 +1,23 @@
 import 'dart:math' as math;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/navigation/app_routes.dart';
+import '../../../../core/navigation/deep_links.dart';
+import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/share_service.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../categories/presentation/cubit/categories_cubit.dart';
+import '../../../categories/presentation/cubit/categories_state.dart';
+import '../cubit/teams_cubit.dart';
 import '../widgets/date_ember_roles.dart';
+import '../widgets/team_leave_sheet.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Zad — Team Home · Community
-//
-// A community-first team dashboard — identity, your standing, the live pulse of
-// the team, and who you're chasing. No goals, just growth.
-//
-// This is a "temp" showcase screen: it carries its own mock data and renders
-// the full design in a single file so the visual can be reviewed at scale
-// before being wired to [TeamsCubit].
-//
-// Theming: the screen is fully brightness-aware. In **dark** mode it reproduces
-// the original Date & Ember design 1:1 (via [AppColors]); in **light** mode it
-// maps every surface, ink and accent onto the app's semantic [AppColorsTheme]
-// tokens. All of that mapping lives in [_Pal] so the widgets below read colours
-// by role, never by literal. Type uses the app's default family (ElMessiri) —
-// no font is bundled here; only weights/styles vary.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// This screen's role-based palette lives in [DateEmberRoles] — shared with
-/// the app home screen. Aliased locally so the widgets below
-/// keep reading `_Pal(context)`. Dark mode reproduces the Date & Ember design
-/// 1:1; light mode maps each role onto the app's semantic [AppColorsTheme].
 typedef _Pal = DateEmberRoles;
 
 class TempTeamHomeScreen extends StatelessWidget {
@@ -37,44 +26,38 @@ class TempTeamHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
+
+    return BlocProvider<CategoriesCubit>.value(
+      value: sl<CategoriesCubit>()..ensureLoaded(),
+      child: _build(context, p),
+    );
+  }
+
+  Widget _build(BuildContext context, _Pal p) {
     return Scaffold(
       backgroundColor: p.bgBottom,
       body: DecoratedBox(
-        // .screen — radial vignette from raised top to base.
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            center: const Alignment(0, -1.16), // 50% -8%
+            center: const Alignment(0, -1.16),
             radius: 1.3,
             colors: [p.bgTop, p.bgMid, p.bgBottom],
             stops: const [0.0, 0.42, 1.0],
           ),
         ),
-        child: Stack(
-          children: const [
-            SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  _AppBar(),
-                  Expanded(child: _Stage()),
-                ],
-              ),
-            ),
-            // Tab bar floats over the stage at the bottom.
-            Positioned(
-              left: 14,
-              right: 14,
-              bottom: 18,
-              child: _TabBar(),
-            ),
-          ],
+        child: const SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _AppBar(),
+              Expanded(child: _Stage()),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-// ───────────────────────── App bar ─────────────────────────
 
 class _AppBar extends StatelessWidget {
   const _AppBar();
@@ -86,7 +69,13 @@ class _AppBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
       child: Row(
         children: [
-          const _IconButton(icon: Icons.arrow_back, size: 17),
+          _IconButton(
+            icon: Icons.arrow_back,
+            size: 17,
+            onTap: () => context.canPop()
+                ? context.pop()
+                : context.goNamed(AppRoutes.homeName),
+          ),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -116,78 +105,180 @@ class _AppBar extends StatelessWidget {
               ],
             ),
           ),
-          const _IconButton(icon: Icons.more_horiz, size: 18),
+          _IconButton(
+            icon: Icons.more_horiz,
+            size: 18,
+            onTap: () async {
+              final left = await showTeamLeaveSheet(context);
+              if (left && context.mounted) {
+                context.goNamed(AppRoutes.homeName);
+              }
+            },
+          ),
         ],
       ),
     );
   }
 }
 
-/// Round frosted glass icon button — the design's `.ibtn`.
 class _IconButton extends StatelessWidget {
-  const _IconButton({required this.icon, required this.size});
+  const _IconButton({required this.icon, required this.size, this.onTap});
 
   final IconData icon;
   final double size;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: p.cardFill,
-        border: Border.all(color: p.glassBorder),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: p.cardFill,
+          border: Border.all(color: p.glassBorder),
+        ),
+        child: Icon(icon, size: size, color: p.ink),
       ),
-      child: Icon(icon, size: size, color: p.ink),
     );
   }
 }
 
-// ───────────────────────── Stage (scroll body) ─────────────────────────
-
-class _Stage extends StatelessWidget {
+class _Stage extends StatefulWidget {
   const _Stage();
+
+  @override
+  State<_Stage> createState() => _StageState();
+}
+
+class _StageState extends State<_Stage> {
+  int? _categoryId;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
+      padding: const EdgeInsets.fromLTRB(18, 0, 18, 28),
       physics: const BouncingScrollPhysics(),
-      children: const [
-        _IdentityCard(),
-        SizedBox(height: 11),
-        _TeamCodeCard(),
-        // Live activity — supporting context, quiet eyebrow.
-        _SectionLabel('Live activity', more: 'See all →'),
-        _ActivityFeed(),
-        // Leaderboard — the competitive heart of the screen: promoted to a
-        // primary heading so it reads as the most important block.
-        _SectionLabel(
+      children: [
+        const _IdentityCard(),
+        const SizedBox(height: 11),
+        const _TeamCodeCard(),
+
+        const _SectionLabel(
           'Team leaderboard',
           more: 'Top 10 →',
           emphasis: _LabelEmphasis.primary,
         ),
-        _Leaderboard(),
-        _RivalHint(),
+
+        _CategoryFilter(
+          selectedId: _categoryId,
+          onSelect: (id) => setState(() => _categoryId = id),
+        ),
+        const SizedBox(height: 12),
+        _Leaderboard(categoryId: _categoryId),
+
+        if (_categoryId == null) const _RivalHint(),
+
+        const _SectionLabel('Live activity', more: 'See all →'),
+        const _ActivityFeed(),
       ],
     );
   }
 }
 
-/// How loud a [_SectionLabel] should read. [primary] is reserved for the screen's
-/// most important block (the leaderboard); [secondary] is the quiet eyebrow used
-/// for supporting sections.
+class _CategoryFilter extends StatelessWidget {
+  const _CategoryFilter({required this.selectedId, required this.onSelect});
+
+  final int? selectedId;
+  final ValueChanged<int?> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoriesCubit, CategoriesState>(
+      buildWhen: (a, b) => a.categories != b.categories || a.status != b.status,
+      builder: (context, state) {
+        final categories = state.categories;
+
+        return SizedBox(
+          height: 32,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+
+            itemCount: categories.length + 1,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, i) {
+              if (i == 0) {
+                return _CategoryChip(
+                  label: 'All',
+                  active: selectedId == null,
+                  onTap: () => onSelect(null),
+                );
+              }
+              final category = categories[i - 1];
+              return _CategoryChip(
+                label: category.name,
+                active: category.id == selectedId,
+                onTap: () => onSelect(category.id),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  const _CategoryChip({
+    required this.label,
+    required this.active,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(99),
+          color: active ? p.washAmber.withValues(alpha: 0.18) : p.cardFill,
+          border: Border.all(
+            color: active ? p.washAmber.withValues(alpha: 0.5) : p.hairline,
+          ),
+        ),
+        child: ResponsiveText(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+            letterSpacing: 1.2,
+            color: active ? p.gold : p.inkMute,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 enum _LabelEmphasis { secondary, primary }
 
-/// Section label whose visual weight scales with the section's importance.
-///
-/// - [secondary]: a quiet amber eyebrow — a short 1px tick + 9px uppercase amber.
-/// - [primary]: a real heading — a thicker glowing amber rule + a larger ivory
-///   title that out-ranks the eyebrows around it, with extra breathing room
-///   above so the eye registers a new, weightier block.
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(
     this.label, {
@@ -208,7 +299,6 @@ class _SectionLabel extends StatelessWidget {
     final ruleHeight = _isPrimary ? 2.0 : 1.0;
 
     return Padding(
-      // Primary sections get more space above to set them apart as a new block.
       padding: EdgeInsets.fromLTRB(2, _isPrimary ? 30 : 20, 2, 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -241,11 +331,11 @@ class _SectionLabel extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: _isPrimary ? 12.5 : 9,
-                      fontWeight:
-                          _isPrimary ? FontWeight.w700 : FontWeight.w600,
+                      fontWeight: _isPrimary
+                          ? FontWeight.w700
+                          : FontWeight.w600,
                       letterSpacing: _isPrimary ? 2.2 : 3.0,
-                      // Primary reads in ivory ink so it out-ranks the amber
-                      // eyebrows; secondary stays a quiet amber kicker.
+
                       color: _isPrimary ? p.ink : p.amber,
                     ),
                   ),
@@ -269,14 +359,19 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-// ───────────────────────── 1 · Identity ─────────────────────────
-
 class _IdentityCard extends StatelessWidget {
   const _IdentityCard();
 
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
+    final state = context.watch<TeamsCubit>().state;
+    final team = state.team;
+    final progress = state.progress;
+    final name = team?.name ?? progress?.teamName ?? '';
+    final memberCount = team?.memberCount ?? 0;
+    final rank = progress?.teamRank;
+    final totalTeams = progress?.totalTeams;
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -300,7 +395,6 @@ class _IdentityCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Crest — gold metallic disc with Arabic glyph (decorative).
               Container(
                 width: 62,
                 height: 62,
@@ -326,10 +420,7 @@ class _IdentityCard extends StatelessWidget {
                 ),
                 child: const ResponsiveText(
                   'ص',
-                  style: TextStyle(
-                    fontSize: 29,
-                    color: AppColors.discGoldInk,
-                  ),
+                  style: TextStyle(fontSize: 29, color: AppColors.discGoldInk),
                 ),
               ),
               const SizedBox(width: 14),
@@ -338,7 +429,7 @@ class _IdentityCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ResponsiveText(
-                      'Companions of Sabr',
+                      name,
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w300,
@@ -352,7 +443,7 @@ class _IdentityCard extends StatelessWidget {
                     Row(
                       children: [
                         ResponsiveText(
-                          '12 members',
+                          '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
                           style: TextStyle(fontSize: 11, color: p.inkMute),
                         ),
                         const SizedBox(width: 8),
@@ -381,7 +472,6 @@ class _IdentityCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // #14 global rank.
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -396,7 +486,7 @@ class _IdentityCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     ResponsiveText(
-                      '14',
+                      rank != null ? '$rank' : '—',
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w300,
@@ -418,14 +508,12 @@ class _IdentityCard extends StatelessWidget {
                     color: p.inkMute,
                   ),
                 ),
-                const SizedBox(width: 4),
-                const _TrendChip(value: '3', up: true),
                 const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     ResponsiveText(
-                      'of 312',
+                      totalTeams != null ? 'of $totalTeams' : 'of —',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -453,7 +541,6 @@ class _IdentityCard extends StatelessWidget {
   }
 }
 
-/// Pulsing olive "Active" badge.
 class _ActiveBadge extends StatefulWidget {
   const _ActiveBadge();
 
@@ -515,8 +602,6 @@ class _ActiveBadgeState extends State<_ActiveBadge>
   }
 }
 
-// ───────────────────────── 2 · Team code ─────────────────────────
-
 class _TeamCodeCard extends StatefulWidget {
   const _TeamCodeCard();
 
@@ -535,6 +620,16 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
     await Future.delayed(const Duration(milliseconds: 1700));
     if (!mounted) return;
     setState(() => _copied = false);
+  }
+
+  Future<void> _share(BuildContext context) async {
+    await sl<ShareService>().shareFrom(
+      context: context,
+      text: 'teams.create.share_message'.tr(
+        namedArgs: {'code': _code, 'link': DeepLinks.teamInvite(_code)},
+      ),
+      subject: 'teams.create.share_subject'.tr(),
+    );
   }
 
   @override
@@ -580,13 +675,12 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             ],
           ),
           const Spacer(),
-          // Copy button (with toast).
+
           Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.topCenter,
             children: [
-              if (_copied)
-                const Positioned(top: -34, child: _CopiedToast()),
+              if (_copied) const Positioned(top: -34, child: _CopiedToast()),
               GestureDetector(
                 onTap: _copy,
                 child: AnimatedContainer(
@@ -614,30 +708,33 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             ],
           ),
           const SizedBox(width: 8),
-          // Share button — gold gradient.
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [p.gold, p.amber, p.amberDeep],
-                stops: const [0.0, 0.55, 1.0],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: p.washAmber.withValues(alpha: 0.26),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
+
+          GestureDetector(
+            onTap: () => _share(context),
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [p.gold, p.amber, p.amberDeep],
+                  stops: const [0.0, 0.55, 1.0],
                 ),
-              ],
-            ),
-            child: const Icon(
-              Icons.ios_share,
-              size: 17,
-              color: AppColors.discGoldInk,
+                boxShadow: [
+                  BoxShadow(
+                    color: p.washAmber.withValues(alpha: 0.26),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.ios_share,
+                size: 17,
+                color: AppColors.discGoldInk,
+              ),
             ),
           ),
         ],
@@ -646,7 +743,6 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
   }
 }
 
-/// Dashed amber-bordered pill wrapping the invite code.
 class _DashedPill extends StatelessWidget {
   const _DashedPill({required this.child});
   final Widget child;
@@ -681,9 +777,10 @@ class _CopiedToast extends StatelessWidget {
         color: p.greenSurface,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.40),
-              blurRadius: 14,
-              offset: const Offset(0, 6)),
+            color: Colors.black.withValues(alpha: 0.40),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
       child: ResponsiveText(
@@ -698,10 +795,6 @@ class _CopiedToast extends StatelessWidget {
   }
 }
 
-// ───────────────────────── 4 · Activity feed ─────────────────────────
-
-/// The live feed reads as a connected **timeline** — node icons threaded on a
-/// vertical rail — deliberately distinct from the leaderboard's ranked cards.
 class _ActivityFeed extends StatelessWidget {
   const _ActivityFeed();
 
@@ -761,7 +854,6 @@ class _ActivityFeed extends StatelessWidget {
   }
 }
 
-/// Plain data for one feed entry.
 class _ActivityEntry {
   const _ActivityEntry({
     required this.node,
@@ -780,9 +872,6 @@ class _ActivityEntry {
   final bool gold;
 }
 
-/// A single timeline row: the node sits on the rail; a connector line runs from
-/// the node down to the next entry. The milestone (`gold`) entry's text sits in
-/// a faint amber capsule so it still stands out within the thread.
 class _TimelineRow extends StatelessWidget {
   const _TimelineRow({required this.entry, required this.isLast});
 
@@ -801,11 +890,7 @@ class _TimelineRow extends StatelessWidget {
             Expanded(
               child: RichText(
                 text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 1.3,
-                    color: p.ink,
-                  ),
+                  style: TextStyle(fontSize: 12, height: 1.3, color: p.ink),
                   children: [
                     TextSpan(
                       text: entry.name,
@@ -825,11 +910,7 @@ class _TimelineRow extends StatelessWidget {
         const SizedBox(height: 3),
         ResponsiveText(
           entry.meta,
-          style: TextStyle(
-            fontSize: 9,
-            letterSpacing: 0.4,
-            color: p.inkFaint,
-          ),
+          style: TextStyle(fontSize: 9, letterSpacing: 0.4, color: p.inkFaint),
         ),
       ],
     );
@@ -838,7 +919,6 @@ class _TimelineRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Rail: node + connecting line.
           SizedBox(
             width: 36,
             child: Column(
@@ -856,7 +936,7 @@ class _TimelineRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 13),
-          // Content.
+
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(top: 2, bottom: isLast ? 0 : 18),
@@ -957,10 +1037,7 @@ class _AvatarIcon extends StatelessWidget {
           colors: [hi, lo],
         ),
       ),
-      child: ResponsiveText(
-        letter,
-        style: TextStyle(fontSize: 14, color: ink),
-      ),
+      child: ResponsiveText(letter, style: TextStyle(fontSize: 14, color: ink)),
     );
   }
 }
@@ -985,84 +1062,524 @@ class _MiniCheck extends StatelessWidget {
   }
 }
 
-// ───────────────────────── 5 · Leaderboard ─────────────────────────
-
 class _Leaderboard extends StatelessWidget {
-  const _Leaderboard();
+  const _Leaderboard({required this.categoryId});
+
+  final int? categoryId;
 
   @override
   Widget build(BuildContext context) {
+    final entries = categoryId == null
+        ? _overallBoard
+        : _categoryBoards[categoryId! % _categoryBoards.length];
+
+    final podium = entries.take(3).toList();
+    final rest = entries.skip(3).toList();
     return Column(
-      children: const [
-        _LbRow(
-          pos: '1',
-          medal: true,
-          avatar: _LbAvatar(
-            letter: 'Y',
-            hi: AppColors.discGoldHi,
-            lo: AppColors.discGoldLo,
-            ink: AppColors.discGoldInk,
+      children: [
+        if (podium.isNotEmpty) _TopThree(entries: podium),
+        if (podium.isNotEmpty && rest.isNotEmpty) const SizedBox(height: 14),
+        for (var i = 0; i < rest.length; i++) ...[
+          if (i > 0) const SizedBox(height: 7),
+          _LbRow.fromEntry(rest[i]),
+        ],
+      ],
+    );
+  }
+}
+
+class _TopThree extends StatelessWidget {
+  const _TopThree({required this.entries});
+
+  final List<_LbEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    _LbEntry? at(int i) => i < entries.length ? entries[i] : null;
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(flex: 100, child: _PodiumPillar(place: 2, entry: at(1))),
+          const SizedBox(width: 9),
+          Expanded(flex: 115, child: _PodiumPillar(place: 1, entry: at(0))),
+          const SizedBox(width: 9),
+          Expanded(flex: 100, child: _PodiumPillar(place: 3, entry: at(2))),
+        ],
+      ),
+    );
+  }
+}
+
+class _PodiumPillar extends StatelessWidget {
+  const _PodiumPillar({required this.place, required this.entry});
+
+  final int place;
+  final _LbEntry? entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    final isFirst = place == 1;
+
+    final accent = switch (place) {
+      1 => AppColors.discGoldMid,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.discBronzeMid,
+    };
+    final discHi = switch (place) {
+      1 => AppColors.discGoldHi,
+      2 => AppColors.discSilverHi,
+      _ => AppColors.discBronzeHi,
+    };
+    final discLo = switch (place) {
+      1 => AppColors.discGoldLo,
+      2 => AppColors.discSilverLo,
+      _ => AppColors.discBronzeLo,
+    };
+    final avatarSize = isFirst ? 60.0 : 50.0;
+    final pedHeight = switch (place) {
+      1 => 42.0,
+      2 => 30.0,
+      _ => 24.0,
+    };
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          width: avatarSize + 16,
+          height: avatarSize + (isFirst ? 24 : 16),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: avatarSize + 16,
+                height: avatarSize + 16,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      accent.withValues(alpha: 0.5),
+                      accent.withValues(alpha: 0),
+                    ],
+                    stops: const [0.5, 1.0],
+                  ),
+                ),
+              ),
+              Container(
+                width: avatarSize,
+                height: avatarSize,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.36, -0.44),
+                    colors: [discHi, discLo],
+                  ),
+                ),
+                child: ResponsiveText(
+                  entry?.letter ?? '—',
+                  style: TextStyle(
+                    fontSize: isFirst ? 24 : 20,
+                    color: AppColors.discGoldInk,
+                  ),
+                ),
+              ),
+              if (isFirst && entry != null)
+                const Positioned(top: -10, child: _Crown()),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: _PodiumBadge(place: place, color: accent),
+              ),
+            ],
           ),
-          name: 'Yūsuf A.',
-          meta: '94% accuracy · 38d streak',
-          points: '3,420',
-          trend: '0',
-          up: true,
         ),
-        SizedBox(height: 7),
-        _LbRow(
-          pos: '2',
-          medal: true,
-          avatar: _LbAvatar(
-            letter: 'A',
-            hi: DateEmberRoles.oliveLight,
-            lo: AppColors.discOliveLo,
-            ink: AppColors.discOliveInk,
+        const SizedBox(height: 7),
+        ResponsiveText(
+          entry?.name ?? '—',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
+            color: isFirst ? p.gold : p.ink,
           ),
-          name: 'Aisha M.',
-          meta: '91% accuracy · 24d streak',
-          points: '2,980',
-          trend: '1',
-          up: true,
         ),
-        SizedBox(height: 7),
-        _LbRow(
-          pos: '4',
-          rival: true,
-          avatar: _LbAvatar(
-            letter: 'M',
-            hi: AppColors.discGoldHi,
-            lo: AppColors.discGoldLo,
-            ink: AppColors.discGoldInk,
+        const SizedBox(height: 2),
+        ResponsiveText(
+          entry?.points ?? '—',
+          style: TextStyle(
+            fontSize: isFirst ? 12 : 11,
+            fontWeight: FontWeight.w500,
+            color: accent,
           ),
-          name: 'Maryam K.',
-          tag: _LbTag.rival,
-          meta: '2,210 pts · just ahead of you',
-          points: '2,210',
-          trend: '1',
-          up: false,
         ),
-        SizedBox(height: 7),
-        _LbRow(
-          pos: '5',
-          me: true,
-          avatar: _LbAvatar(
-            letter: 'ز',
-            hi: AppColors.discGoldHi,
-            lo: AppColors.discGoldLo,
-            ink: AppColors.discGoldInk,
+        const SizedBox(height: 8),
+
+        Container(
+          height: pedHeight,
+          width: double.infinity,
+          padding: const EdgeInsets.only(top: 7),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
+            border: Border(
+              top: BorderSide(color: accent.withValues(alpha: 0.4)),
+              left: BorderSide(color: accent.withValues(alpha: 0.4)),
+              right: BorderSide(color: accent.withValues(alpha: 0.4)),
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                accent.withValues(alpha: 0.28),
+                accent.withValues(alpha: 0.05),
+              ],
+            ),
           ),
-          name: 'Zayd N.',
-          tag: _LbTag.you,
-          meta: '2,070 pts · 140 to overtake',
-          points: '2,070',
-          trend: '2',
-          up: true,
+          child: ResponsiveText(
+            '0$place',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: accent,
+            ),
+          ),
         ),
       ],
     );
   }
 }
+
+class _PodiumBadge extends StatelessWidget {
+  const _PodiumBadge({required this.place, required this.color});
+
+  final int place;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _Pal(context);
+    return Container(
+      width: 22,
+      height: 22,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: p.bgBottom,
+        border: Border.all(color: color, width: 2),
+      ),
+      child: ResponsiveText(
+        '$place',
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+class _Crown extends StatelessWidget {
+  const _Crown();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 26,
+      height: 16,
+      child: CustomPaint(painter: _CrownPainter()),
+    );
+  }
+}
+
+class _CrownPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final sx = size.width / 26;
+    final sy = size.height / 16;
+    final path = Path()
+      ..moveTo(1.5 * sx, 14 * sy)
+      ..lineTo(4 * sx, 5 * sy)
+      ..lineTo(9.5 * sx, 10.5 * sy)
+      ..lineTo(13 * sx, 2.5 * sy)
+      ..lineTo(16.5 * sx, 10.5 * sy)
+      ..lineTo(22 * sx, 5 * sy)
+      ..lineTo(24.5 * sx, 14 * sy)
+      ..close();
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.discGoldHi, AppColors.discGoldLo],
+        ).createShader(Offset.zero & size),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8
+        ..strokeJoin = StrokeJoin.round
+        ..color = AppColors.discGoldLo,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+enum _AvatarPalette { gold, olive }
+
+class _LbEntry {
+  const _LbEntry({
+    required this.pos,
+    required this.letter,
+    required this.name,
+    required this.meta,
+    required this.points,
+    required this.trend,
+    this.medal = false,
+    this.up = true,
+    this.tag = _LbTag.none,
+    this.palette = _AvatarPalette.gold,
+  });
+
+  final String pos;
+  final String letter;
+  final String name;
+  final String meta;
+  final String points;
+  final String trend;
+  final bool medal;
+  final bool up;
+  final _LbTag tag;
+  final _AvatarPalette palette;
+}
+
+const _overallBoard = <_LbEntry>[
+  _LbEntry(
+    pos: '1',
+    letter: 'Y',
+    name: 'Yūsuf A.',
+    meta: '94% accuracy · 38d streak',
+    points: '3,420',
+    trend: '0',
+    medal: true,
+  ),
+  _LbEntry(
+    pos: '2',
+    letter: 'A',
+    name: 'Aisha M.',
+    meta: '91% accuracy · 24d streak',
+    points: '2,980',
+    trend: '1',
+    medal: true,
+    palette: _AvatarPalette.olive,
+  ),
+  _LbEntry(
+    pos: '4',
+    letter: 'M',
+    name: 'Maryam K.',
+    meta: '2,210 pts · just ahead of you',
+    points: '2,210',
+    trend: '1',
+    up: false,
+    tag: _LbTag.rival,
+  ),
+  _LbEntry(
+    pos: '5',
+    letter: 'ز',
+    name: 'Zayd N.',
+    meta: '2,070 pts · 140 to overtake',
+    points: '2,070',
+    trend: '2',
+    tag: _LbTag.you,
+  ),
+];
+
+const _categoryBoards = <List<_LbEntry>>[
+  [
+    _LbEntry(
+      pos: '1',
+      letter: 'A',
+      name: 'Aisha M.',
+      meta: '1,540 pts · category leader',
+      points: '1,540',
+      trend: '0',
+      medal: true,
+      palette: _AvatarPalette.olive,
+    ),
+    _LbEntry(
+      pos: '2',
+      letter: 'ز',
+      name: 'Zayd N.',
+      meta: '1,420 pts · 120 to the top',
+      points: '1,420',
+      trend: '2',
+      tag: _LbTag.you,
+    ),
+    _LbEntry(
+      pos: '3',
+      letter: 'Y',
+      name: 'Yūsuf A.',
+      meta: '88% accuracy · steady',
+      points: '1,180',
+      trend: '1',
+      up: false,
+    ),
+    _LbEntry(
+      pos: '4',
+      letter: 'M',
+      name: 'Maryam K.',
+      meta: '1,090 pts · just behind you',
+      points: '1,090',
+      trend: '1',
+      up: false,
+      tag: _LbTag.rival,
+    ),
+  ],
+  [
+    _LbEntry(
+      pos: '1',
+      letter: 'Y',
+      name: 'Yūsuf A.',
+      meta: '980 pts · category leader',
+      points: '980',
+      trend: '0',
+      medal: true,
+    ),
+    _LbEntry(
+      pos: '2',
+      letter: 'M',
+      name: 'Maryam K.',
+      meta: '870 pts · just ahead of you',
+      points: '870',
+      trend: '1',
+      tag: _LbTag.rival,
+    ),
+    _LbEntry(
+      pos: '3',
+      letter: 'ز',
+      name: 'Zayd N.',
+      meta: '760 pts · 110 to overtake',
+      points: '760',
+      trend: '1',
+      up: false,
+      tag: _LbTag.you,
+    ),
+    _LbEntry(
+      pos: '4',
+      letter: 'B',
+      name: 'Bilal R.',
+      meta: '85% accuracy · rising',
+      points: '640',
+      trend: '2',
+      palette: _AvatarPalette.olive,
+    ),
+  ],
+  [
+    _LbEntry(
+      pos: '1',
+      letter: 'M',
+      name: 'Maryam K.',
+      meta: '1,310 pts · just ahead of you',
+      points: '1,310',
+      trend: '0',
+      medal: true,
+      tag: _LbTag.rival,
+    ),
+    _LbEntry(
+      pos: '2',
+      letter: 'ز',
+      name: 'Zayd N.',
+      meta: '1,240 pts · 70 to overtake',
+      points: '1,240',
+      trend: '1',
+      tag: _LbTag.you,
+    ),
+    _LbEntry(
+      pos: '3',
+      letter: 'A',
+      name: 'Aisha M.',
+      meta: '90% accuracy · consistent',
+      points: '1,100',
+      trend: '1',
+      up: false,
+      palette: _AvatarPalette.olive,
+    ),
+    _LbEntry(
+      pos: '4',
+      letter: 'Y',
+      name: 'Yūsuf A.',
+      meta: '980 pts · holding',
+      points: '980',
+      trend: '0',
+    ),
+  ],
+  [
+    _LbEntry(
+      pos: '1',
+      letter: 'ز',
+      name: 'Zayd N.',
+      meta: '1,560 pts · you lead this category',
+      points: '1,560',
+      trend: '1',
+      medal: true,
+      tag: _LbTag.you,
+    ),
+    _LbEntry(
+      pos: '2',
+      letter: 'Y',
+      name: 'Yūsuf A.',
+      meta: '1,420 pts · chasing you',
+      points: '1,420',
+      trend: '1',
+      up: false,
+    ),
+    _LbEntry(
+      pos: '3',
+      letter: 'A',
+      name: 'Aisha M.',
+      meta: '92% accuracy · steady',
+      points: '1,260',
+      trend: '0',
+      palette: _AvatarPalette.olive,
+    ),
+    _LbEntry(
+      pos: '4',
+      letter: 'M',
+      name: 'Maryam K.',
+      meta: '1,150 pts · slipping',
+      points: '1,150',
+      trend: '2',
+      up: false,
+      tag: _LbTag.rival,
+    ),
+  ],
+];
+
+_LbAvatar _avatarFor(_AvatarPalette palette, String letter) =>
+    switch (palette) {
+      _AvatarPalette.gold => _LbAvatar(
+        letter: letter,
+        hi: AppColors.discGoldHi,
+        lo: AppColors.discGoldLo,
+        ink: AppColors.discGoldInk,
+      ),
+      _AvatarPalette.olive => _LbAvatar(
+        letter: letter,
+        hi: DateEmberRoles.oliveLight,
+        lo: AppColors.discOliveLo,
+        ink: AppColors.discOliveInk,
+      ),
+    };
 
 enum _LbTag { none, you, rival }
 
@@ -1080,6 +1597,20 @@ class _LbRow extends StatelessWidget {
     this.rival = false,
     this.tag = _LbTag.none,
   });
+
+  factory _LbRow.fromEntry(_LbEntry e) => _LbRow(
+    pos: e.pos,
+    avatar: _avatarFor(e.palette, e.letter),
+    name: e.name,
+    meta: e.meta,
+    points: e.points,
+    trend: e.trend,
+    up: e.up,
+    medal: e.medal,
+    me: e.tag == _LbTag.you,
+    rival: e.tag == _LbTag.rival,
+    tag: e.tag,
+  );
 
   final String pos;
   final Widget avatar;
@@ -1229,10 +1760,7 @@ class _LbAvatar extends StatelessWidget {
           colors: [hi, lo],
         ),
       ),
-      child: ResponsiveText(
-        letter,
-        style: TextStyle(fontSize: 14, color: ink),
-      ),
+      child: ResponsiveText(letter, style: TextStyle(fontSize: 14, color: ink)),
     );
   }
 }
@@ -1249,8 +1777,9 @@ class _Tag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(99),
-        color: (isYou ? p.washAmber : p.ember)
-            .withValues(alpha: isYou ? 0.2 : 0.18),
+        color: (isYou ? p.washAmber : p.ember).withValues(
+          alpha: isYou ? 0.2 : 0.18,
+        ),
         border: Border.all(
           color: (isYou ? p.washAmber : p.emberLight).withValues(alpha: 0.4),
         ),
@@ -1296,104 +1825,6 @@ class _RivalHint extends StatelessWidget {
   }
 }
 
-
-// ───────────────────────── Tab bar ─────────────────────────
-
-class _TabBar extends StatelessWidget {
-  const _TabBar();
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: p.dark
-              ? [
-                  AppColors.nightRaised.withValues(alpha: 0.94),
-                  AppColors.nightSurface.withValues(alpha: 0.94),
-                ]
-              : [p.bgTop, p.bgMid],
-        ),
-        border: Border.all(color: p.glassBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: p.dark ? 0.55 : 0.10),
-            blurRadius: 30,
-            offset: const Offset(0, 14),
-          ),
-        ],
-      ),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _Tab(icon: Icons.home_outlined, label: 'HOME', active: true),
-          _Tab(icon: Icons.group_outlined, label: 'MEMBERS'),
-          _Tab(icon: Icons.bar_chart, label: 'PROGRESS'),
-        ],
-      ),
-    );
-  }
-}
-
-class _Tab extends StatelessWidget {
-  const _Tab({required this.icon, required this.label, this.active = false});
-
-  final IconData icon;
-  final String label;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    final color = active ? p.gold : p.inkFaint;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (active)
-          Container(
-            width: 26,
-            height: 3,
-            margin: const EdgeInsets.only(bottom: 7),
-            decoration: BoxDecoration(
-              color: p.amber,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(3),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: p.washAmber.withValues(alpha: 0.7),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-          )
-        else
-          const SizedBox(height: 10),
-        Icon(icon, size: 20, color: color),
-        const SizedBox(height: 3),
-        ResponsiveText(
-          label,
-          style: TextStyle(
-            fontSize: 8.5,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.3,
-            color: color,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ───────────────────────── Shared atoms ─────────────────────────
-
-/// Up/down trend chip with a small chevron.
 class _TrendChip extends StatelessWidget {
   const _TrendChip({required this.value, required this.up});
 
@@ -1425,7 +1856,6 @@ class _TrendChip extends StatelessWidget {
   }
 }
 
-/// Four-point sparkle star — the design's `<path d="M12 2 L14 9 …">` glyph.
 class _Sparkle extends StatelessWidget {
   const _Sparkle({required this.size, required this.color});
 
@@ -1434,7 +1864,10 @@ class _Sparkle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: Size.square(size), painter: _SparklePainter(color));
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _SparklePainter(color),
+    );
   }
 }
 
@@ -1463,7 +1896,6 @@ class _SparklePainter extends CustomPainter {
   bool shouldRepaint(_SparklePainter old) => old.color != color;
 }
 
-/// Flame glyph — the design's `<path d="M12 2c-1 5-5 5-5 10…">`.
 class _Flame extends StatelessWidget {
   const _Flame({required this.size, required this.color});
 
@@ -1476,8 +1908,6 @@ class _Flame extends StatelessWidget {
   }
 }
 
-/// Accuracy ring — a 270°-style arc filled to [ratio].
-/// Dashed rounded-rect border for the invite-code pill.
 class _DashedBorderPainter extends CustomPainter {
   _DashedBorderPainter({required this.color, required this.radius});
 

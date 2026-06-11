@@ -14,7 +14,6 @@ import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
-import '../../../teams/presentation/screens/temp_team_home.dart';
 import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
@@ -168,10 +167,9 @@ class HomeLoadedContent extends StatelessWidget {
           QuranSignCard(sign: sign),
           const SizedBox(height: 14),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const TempTeamHomeScreen(),
-              ),
+            onPressed: () => context.pushNamed(
+              AppRoutes.teamHomeName,
+              extra: context.read<TeamsCubit>(),
             ),
             child: const ResponsiveText('Team Home (preview)'),
           ),

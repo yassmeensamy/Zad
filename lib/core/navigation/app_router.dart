@@ -37,7 +37,7 @@ import '../../features/support_tickets/presentation/screens/ticket_detail_screen
 import '../../features/teams/presentation/cubit/teams_cubit.dart';
 import '../../features/teams/presentation/screens/team_create_screen.dart';
 import '../../features/teams/presentation/screens/team_create_success_screen.dart';
-import '../../features/teams/presentation/screens/team_home_screen.dart';
+import '../../features/teams/presentation/screens/temp_team_home.dart';
 import '../../features/teams/presentation/screens/team_join_screen.dart';
 import '../../features/teams/presentation/screens/team_join_success_screen.dart';
 import '../../features/teams/presentation/screens/team_loader_screen.dart';
@@ -276,10 +276,19 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.teamHome,
           name: AppRoutes.teamHomeName,
-          builder: (context, state) => BlocProvider<TeamsCubit>(
-            create: (_) => sl<TeamsCubit>(),
-            child: const TeamHomeScreen(),
-          ),
+          builder: (context, state) {
+            final passed = state.extra;
+            if (passed is TeamsCubit) {
+              return BlocProvider<TeamsCubit>.value(
+                value: passed,
+                child: const TempTeamHomeScreen(),
+              );
+            }
+            return BlocProvider<TeamsCubit>(
+              create: (_) => sl<TeamsCubit>()..loadTeamStatus(),
+              child: const TempTeamHomeScreen(),
+            );
+          },
         ),
         GoRoute(
           path: AppRoutes.teamMembers,

@@ -10,14 +10,14 @@ import '../widgets/loader_ring.dart';
 import '../widgets/team_scaffold.dart';
 import '../widgets/teams_app_bar.dart';
 import 'team_empty_screen.dart';
-import 'team_home_screen.dart';
+import 'temp_team_home.dart';
 
 /// Entry point for the Teams flow and the single screen for all of its resting
 /// states. Calls `getMyTeam()` (via [TeamsCubit.loadTeamStatus]), then swaps
 /// only the body below a fixed [TeamsAppBar] — no route change, so the one
 /// cubit survives and the bar never moves:
 ///   * loading  → parchment loader
-///   * hasTeam  → [TeamHomeScreen] (full-screen, bypasses the shared bar)
+///   * hasTeam  → [TempTeamHomeScreen] (full-screen, bypasses the shared bar)
 ///   * hasNoTeam→ [TeamEmptyView]
 ///   * error    → [ErrorState]
 class TeamLoaderScreen extends StatefulWidget {
@@ -70,9 +70,7 @@ class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
         }
       },
       builder: (context, state) {
-        // A resolved team renders the full-screen team home (its own scaffold
-        // and app bar), bypassing the shared loader chrome.
-        if (state.hasTeam) return const TeamHomeScreen();
+        if (state.hasTeam) return const TempTeamHomeScreen();
         return TeamScaffold(
           child: Column(
             children: [

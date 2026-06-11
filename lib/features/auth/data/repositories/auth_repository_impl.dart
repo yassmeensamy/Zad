@@ -1,3 +1,5 @@
+import '../../../../core/services/notification_service.dart';
+import '../../../../core/utils/logger.dart';
 import '../data_source/auth_remote_data_source.dart';
 import '../models/social_provider.dart';
 import '../responses/auth_response.dart';
@@ -10,13 +12,28 @@ class AuthRepositoryImpl implements AuthRepository {
     required AuthRemoteDataSource remoteDataSource,
     required AuthLocalService localService,
     required OAuthStrategyFactory strategyFactory,
+    required NotificationService notificationService,
   }) : _remoteDataSource = remoteDataSource,
        _localService = localService,
-       _strategyFactory = strategyFactory;
+       _strategyFactory = strategyFactory,
+       _notificationService = notificationService;
 
   final AuthRemoteDataSource _remoteDataSource;
   final AuthLocalService _localService;
   final OAuthStrategyFactory _strategyFactory;
+  final NotificationService _notificationService;
+
+  /// Resolves the device FCM token, returning null if it can't be obtained
+  /// (e.g. unsupported platform or denied permission) so auth never fails
+  /// because of notifications.
+  Future<String?> _fcmToken() async {
+    try {
+      return await _notificationService.getDeviceToken();
+    } on Object catch (e) {
+      logger.debug('Failed to get FCM token: $e');
+      return null;
+    }
+  }
 
   @override
   Future<AuthResponse> signup({
@@ -28,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
       email: email,
       password: password,
       fullName: fullName,
+      fcmToken: await _fcmToken(),
     );
     if (!response.isPendingVerification) {
       await _localService.onLoginSuccess(response);
@@ -43,6 +61,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final response = await _remoteDataSource.login(
       identifier: identifier,
       password: password,
+      fcmToken: await _fcmToken(),
     );
     await _localService.onLoginSuccess(response);
     return response;
@@ -79,7 +98,10 @@ class AuthRepositoryImpl implements AuthRepository {
       throw StateError('Google sign-in did not return an idToken');
     }
 
-    final response = await _remoteDataSource.googleAuth(idToken);
+    final response = await _remoteDataSource.googleAuth(
+      idToken,
+      fcmToken: await _fcmToken(),
+    );
     await _localService.onLoginSuccess(response);
     await _localService.setLoginMethod(SocialProvider.google);
     return response;
@@ -128,7 +150,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> logout() async {
     final refreshToken = await _localService.getRefreshToken();
     if (refreshToken != null && refreshToken.isNotEmpty) {
-      await _remoteDataSource.logout(refreshToken);
+      await _remoteDataSource.logout(refreshToken, fcmToken: await _fcmToken());
     }
     await _localService.clearAllAuthData(
       (provider) => _strategyFactory.getStrategy(provider).signOut(),

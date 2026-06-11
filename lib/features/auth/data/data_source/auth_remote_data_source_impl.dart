@@ -19,10 +19,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
     required String fullName,
+    String? fcmToken,
   }) async {
     final response = await _networkService.post(
       _endpoints.signup,
-      data: {'email': email, 'password': password, 'fullName': fullName},
+      data: {
+        'email': email,
+        'password': password,
+        'fullName': fullName,
+        'fcmToken': ?fcmToken,
+      },
       skipAuth: true,
     );
     response.validated(const [200, 201, 202]);
@@ -33,10 +39,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthResponse> login({
     required String identifier,
     required String password,
+    String? fcmToken,
   }) async {
     final response = await _networkService.post(
       _endpoints.login,
-      data: {'identifier': identifier, 'password': password},
+      data: {
+        'identifier': identifier,
+        'password': password,
+        'fcmToken': ?fcmToken,
+      },
       skipAuth: true,
     );
     response.validated();
@@ -68,10 +79,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponse> googleAuth(String idToken) async {
+  Future<AuthResponse> googleAuth(String idToken, {String? fcmToken}) async {
     final response = await _networkService.post(
       _endpoints.google,
-      data: {'idToken': idToken},
+      data: {'idToken': idToken, 'fcmToken': ?fcmToken},
       skipAuth: true,
     );
     response.validated();
@@ -137,10 +148,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> logout(String refreshToken) async {
+  Future<void> logout(String refreshToken, {String? fcmToken}) async {
     final response = await _networkService.post(
       _endpoints.logout,
-      data: {'refreshToken': refreshToken},
+      data: {'refreshToken': refreshToken, 'fcmToken': ?fcmToken},
     );
     response.validated([200, 204]);
   }

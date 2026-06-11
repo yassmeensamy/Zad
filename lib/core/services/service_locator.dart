@@ -133,6 +133,7 @@ class ServiceLocator {
         remoteDataSource: sl(),
         localService: sl(),
         strategyFactory: sl(),
+        notificationService: sl(),
       ),
     );
     sl.registerFactory<AuthCubit>(

@@ -5,11 +5,13 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
     required String fullName,
+    String? fcmToken,
   });
 
   Future<AuthResponse> login({
     required String identifier,
     required String password,
+    String? fcmToken,
   });
 
   Future<AuthResponse> guestLogin();
@@ -20,7 +22,7 @@ abstract class AuthRemoteDataSource {
     required String fullName,
   });
 
-  Future<AuthResponse> googleAuth(String idToken);
+  Future<AuthResponse> googleAuth(String idToken, {String? fcmToken});
 
   Future<void> forgotPassword({required String email});
 
@@ -39,7 +41,7 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResponse> switchAccount(String childId);
 
-  Future<void> logout(String refreshToken);
+  Future<void> logout(String refreshToken, {String? fcmToken});
 
   Future<void> deleteAccount(String password);
 }

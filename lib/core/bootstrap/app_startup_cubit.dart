@@ -6,6 +6,7 @@ import '../constants/storage_keys.dart';
 import '../cubits/base_cubit.dart';
 import '../services/cache_service.dart';
 import '../services/notification_service.dart';
+import '../services/upgrade_checker.dart';
 import '../utils/logger.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import 'app_startup_state.dart';
@@ -15,19 +16,35 @@ class AppStartupCubit extends BaseCubit<AppStartupState> {
     required OnboardingRepository onboardingRepository,
     required NotificationService notificationService,
     required CacheService cacheService,
+    required UpgradeChecker upgradeChecker,
   }) : _onboardingRepository = onboardingRepository,
        _cacheService = cacheService,
        _notificationService = notificationService,
+       _upgradeChecker = upgradeChecker,
        super(const AppStartupState(status: AppStartupStatus.initial));
 
   final OnboardingRepository _onboardingRepository;
   final CacheService _cacheService;
   final NotificationService _notificationService;
+  final UpgradeChecker _upgradeChecker;
 
   Future<void> init(String language) async {
     emit(state.copyWith(status: AppStartupStatus.loading));
 
     try {
+      // Force-update gate runs first; if the installed build is below the
+      // remote minimum, surface the blocking dialog and stop here.
+      final forceUpdate = await _upgradeChecker.isForceUpdateRequired(
+        languageCode: language,
+      );
+      if (forceUpdate) {
+        emit(state.copyWith(
+          status: AppStartupStatus.success,
+          forceUpdateRequired: true,
+        ));
+        return;
+      }
+
       final onboarding = _resolveNeedsOnboarding();
       await Future.wait([
         _cacheService.set<String>(StorageKeys.kLocaleKey, language),

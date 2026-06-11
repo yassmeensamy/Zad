@@ -9,13 +9,24 @@ class GuardRoutes {
     required this.home,
     required this.onboarding,
     String? offlineHome,
+    String? guestHome,
+    this.guestBlocked = const {},
     this.publicRoutes = const {},
-  }) : offlineHome = offlineHome ?? home;
+  }) : offlineHome = offlineHome ?? home,
+       guestHome = guestHome ?? home;
 
   final String splash;
   final String signIn;
   final String home;
   final String offlineHome;
+
+  /// Where a guest (anonymous) user lands instead of [home]; guests skip the
+  /// parent/child selection flow and go straight here.
+  final String guestHome;
+
+  /// Routes a guest may not open (e.g. children management). Hitting one
+  /// redirects the guest back to [guestHome].
+  final Set<String> guestBlocked;
   final String onboarding;
 
   final Set<String> publicRoutes;
@@ -30,6 +41,7 @@ GoRouterRedirect authGuard({
   required GuardRoutes routes,
   required AuthPhase Function() phase,
   bool Function() isOnline = _alwaysOnline,
+  bool Function() isGuest = _notGuest,
   String fromParam = 'from',
 }) {
   return (context, state) {
@@ -55,6 +67,19 @@ GoRouterRedirect authGuard({
         }
         return '${routes.signIn}$suffix';
       case AuthPhase.signedIn:
+        if (isGuest()) {
+          // Guests skip the parent/child flow and cannot open child screens.
+          if (routes.guestBlocked.contains(loc)) return routes.guestHome;
+          if (loc == routes.splash || loc == routes.signIn) {
+            final wantsBlocked =
+                intended != null &&
+                routes.guestBlocked.contains(Uri.parse(intended).path);
+            return (intended == null || wantsBlocked)
+                ? routes.guestHome
+                : intended;
+          }
+          return null;
+        }
         if (loc == routes.splash || loc == routes.signIn) {
           final home = isOnline() ? routes.home : routes.offlineHome;
           return intended ?? home;
@@ -65,3 +90,5 @@ GoRouterRedirect authGuard({
 }
 
 bool _alwaysOnline() => true;
+
+bool _notGuest() => false;

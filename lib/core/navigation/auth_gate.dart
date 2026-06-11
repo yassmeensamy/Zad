@@ -50,6 +50,10 @@ class AuthGate {
     return AuthPhase.signedIn;
   }
 
+  /// Whether the signed-in user is an anonymous guest. Source of truth is
+  /// [UserModel.isAnonymous] from /me, not auth state.
+  bool get isGuest => _user.state.user?.isAnonymous ?? false;
+
   void dispose() {
     for (final source in _sources) {
       source.dispose();

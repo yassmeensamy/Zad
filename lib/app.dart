@@ -4,12 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/bootstrap/app_startup_cubit.dart';
+import 'core/bootstrap/app_startup_state.dart';
 import 'core/navigation/app_router.dart';
 import 'core/navigation/app_routes.dart';
 import 'core/navigation/auth_gate.dart';
 import 'core/navigation/deep_link_service.dart';
 import 'core/services/connectivity_service.dart';
 import 'core/services/core_service_locator.dart';
+import 'core/services/upgrade_checker.dart';
+import 'core/widgets/upgrade_dialog.dart';
 import 'features/auth/core/auth_event_service.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/offline/presentation/cubit/connectivity_cubit.dart';
@@ -74,6 +77,25 @@ class _AppViewState extends State<_AppView> {
   );
 
   bool _started = false;
+  bool _forceUpdateShown = false;
+
+  void _showForceUpdateDialog() {
+    if (_forceUpdateShown) return;
+    // Use the router's navigator context — the builder context this listener
+    // lives in sits above GoRouter's Navigator and can't host a dialog.
+    final dialogContext = AppRouter.rootNavigatorKey.currentContext;
+    if (dialogContext == null) return;
+    _forceUpdateShown = true;
+    final checker = sl<UpgradeChecker>();
+    UpgradeDialog.show(
+      dialogContext,
+      isForceUpdate: true,
+      onUpdate: checker.openAppStore,
+      currentVersion: checker.installedVersion,
+      newVersion: checker.availableVersion,
+      releaseNotes: checker.releaseNotes,
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -105,6 +127,14 @@ class _AppViewState extends State<_AppView> {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         routerConfig: _router,
+        // Host the blocking force-update dialog above the router so it has a
+        // Navigator/Overlay and sits over whatever screen the guard lands on.
+        builder: (context, child) => BlocListener<AppStartupCubit, AppStartupState>(
+          listenWhen: (a, b) =>
+              !a.forceUpdateRequired && b.forceUpdateRequired,
+          listener: (context, state) => _showForceUpdateDialog(),
+          child: child,
+        ),
       ),
     );
   }

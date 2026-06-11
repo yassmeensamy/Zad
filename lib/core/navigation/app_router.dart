@@ -54,11 +54,26 @@ bool _alwaysOnline() => true;
 class AppRouter {
   const AppRouter._();
 
+  /// Top-level navigator key. Lets app-global overlays (e.g. the blocking
+  /// force-update dialog hosted in MaterialApp.router's `builder`, which sits
+  /// above GoRouter's navigator) obtain a context that has a [Navigator].
+  static final GlobalKey<NavigatorState> rootNavigatorKey =
+      GlobalKey<NavigatorState>();
+
   static const GuardRoutes guardRoutes = GuardRoutes(
     splash: AppRoutes.splash,
     signIn: AppRoutes.login,
     home: AppRoutes.profileSelect,
     offlineHome: AppRoutes.home,
+    // Guests have no children, so they bypass profile-select and land on home.
+    guestHome: AppRoutes.home,
+    // Child-management screens are off-limits to guests.
+    guestBlocked: {
+      AppRoutes.profileSelect,
+      AppRoutes.roleSelect,
+      AppRoutes.createProfiles,
+      AppRoutes.myChildren,
+    },
     onboarding: AppRoutes.onboarding,
     publicRoutes: {AppRoutes.signup, AppRoutes.forgotPassword},
   );
@@ -69,12 +84,14 @@ class AppRouter {
     bool Function() isOnline = _alwaysOnline,
   }) {
     return GoRouter(
+      navigatorKey: rootNavigatorKey,
       initialLocation: initialLocation,
       refreshListenable: gate.listenable,
       redirect: authGuard(
         routes: guardRoutes,
         phase: () => gate.phase,
         isOnline: isOnline,
+        isGuest: () => gate.isGuest,
       ),
       routes: [
         GoRoute(

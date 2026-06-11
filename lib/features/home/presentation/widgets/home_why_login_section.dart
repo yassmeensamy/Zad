@@ -126,7 +126,7 @@ class HomeWhyLoginSection extends StatelessWidget {
                   const SizedBox(height: 6),
                   ZaadPrimaryButton(
                     label: 'home.why_login.cta'.tr(),
-                    onTap: () => context.goNamed(AppRoutes.signupName),
+                    onTap: () => context.pushNamed(AppRoutes.signupName),
                     variant: ZaadButtonVariant.accent,
                     trailingIcon: Icons.arrow_forward_rounded,
                     iconSize: 16,

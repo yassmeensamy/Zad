@@ -73,6 +73,9 @@ dependencies:
   hydrated_bloc: ^11.0.0
   event_bus: ^2.0.1
   sentry_dio: ^9.21.0
+  firebase_remote_config: ^6.5.2
+  upgrader: ^13.5.0
+  pub_semver: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -106,8 +109,11 @@ flutter_launcher_icons:
   ios: true
   android: true
   image_path: "assets/images/logo_without_BG.png"
+  # iOS has no layered/adaptive icons, so it must flatten to one opaque image.
+  # remove_alpha_ios + background_color_ios produced a gold-on-gold tile (the
+  # green fill was ignored), so we hand iOS a pre-composited green+logo source.
+  image_path_ios: "assets/images/app_icon_ios.png"
   remove_alpha_ios: true
-  background_color_ios: "#3E4A2A"
   adaptive_icon_background: "#3E4A2A"
   adaptive_icon_foreground: "assets/images/logo_without_BG.png"
 

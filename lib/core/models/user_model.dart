@@ -25,6 +25,9 @@ class UserModel {
   final String? parentId;
   final DateTime createdAt;
   final AvatarModel? avatar;
+  final int childrenCount;
+  final int totalPoints;
+  final String? language;
 
   final bool isAnonymous;
 
@@ -39,6 +42,9 @@ class UserModel {
     this.birthDate,
     this.parentId,
     this.avatar,
+    this.childrenCount = 0,
+    this.totalPoints = 0,
+    this.language,
     this.isAnonymous = false,
   });
 
@@ -57,6 +63,9 @@ class UserModel {
     avatar: map['avatar'] == null
         ? null
         : AvatarModel.fromMap(map['avatar'] as Map<String, dynamic>),
+    childrenCount: (map['childrenCount'] as num?)?.toInt() ?? 0,
+    totalPoints: (map['totalPoints'] as num?)?.toInt() ?? 0,
+    language: map['language'] as String?,
     isAnonymous: map['isAnonymous'] as bool? ?? false,
   );
 
@@ -74,6 +83,9 @@ class UserModel {
     String? parentId,
     DateTime? createdAt,
     AvatarModel? avatar,
+    int? childrenCount,
+    int? totalPoints,
+    String? language,
     bool? isAnonymous,
   }) => UserModel(
     id: id ?? this.id,
@@ -86,6 +98,9 @@ class UserModel {
     parentId: parentId ?? this.parentId,
     createdAt: createdAt ?? this.createdAt,
     avatar: avatar ?? this.avatar,
+    childrenCount: childrenCount ?? this.childrenCount,
+    totalPoints: totalPoints ?? this.totalPoints,
+    language: language ?? this.language,
     isAnonymous: isAnonymous ?? this.isAnonymous,
   );
 
@@ -100,6 +115,9 @@ class UserModel {
     'parentId': parentId,
     'createdAt': createdAt.toIso8601String(),
     'avatar': avatar?.toMap(),
+    'childrenCount': childrenCount,
+    'totalPoints': totalPoints,
+    'language': language,
     'isAnonymous': isAnonymous,
   };
 
@@ -123,7 +141,9 @@ class UserModel {
   String toString() =>
       'UserModel(id: $id, email: $email, username: $username, '
       'fullName: $fullName, role: $role, googleLinked: $googleLinked, '
-      'birthDate: $birthDate, parentId: $parentId, createdAt: $createdAt)';
+      'birthDate: $birthDate, parentId: $parentId, createdAt: $createdAt, '
+      'childrenCount: $childrenCount, totalPoints: $totalPoints, '
+      'language: $language, isAnonymous: $isAnonymous)';
 
   @override
   bool operator ==(Object other) {
@@ -139,6 +159,9 @@ class UserModel {
         other.parentId == parentId &&
         other.createdAt == createdAt &&
         other.avatar == avatar &&
+        other.childrenCount == childrenCount &&
+        other.totalPoints == totalPoints &&
+        other.language == language &&
         other.isAnonymous == isAnonymous;
   }
 
@@ -154,6 +177,9 @@ class UserModel {
     parentId,
     createdAt,
     avatar,
+    childrenCount,
+    totalPoints,
+    language,
     isAnonymous,
   );
 }

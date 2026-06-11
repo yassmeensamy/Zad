@@ -82,7 +82,10 @@ import 'current_user_provider.dart';
 import 'device_info_service.dart';
 import 'notification_service.dart';
 import 'permession_service.dart';
+import 'remote_config_service.dart';
 import 'share_service.dart';
+import 'upgrade_checker.dart';
+import 'upgrader_service.dart';
 
 class ServiceLocator {
   Future<void> init({
@@ -97,6 +100,14 @@ class ServiceLocator {
     sl.registerLazySingleton<ShareService>(() => ShareServiceImpl());
     sl.registerLazySingleton<NotificationService>(
       () => NotificationService(permissionService: sl()),
+    );
+
+    sl.registerLazySingleton<RemoteConfigService>(
+      () => RemoteConfigServiceImpl(),
+    );
+    sl.registerLazySingleton<UpgraderService>(() => UpgraderServiceImpl());
+    sl.registerLazySingleton<UpgradeChecker>(
+      () => UpgradeChecker(upgrader: sl(), remoteConfig: sl()),
     );
 
     sl.registerLazySingleton<AppEndpoint>(() => AppEndpoint(baseUrl: baseUrl));
@@ -160,6 +171,7 @@ class ServiceLocator {
         onboardingRepository: sl(),
         notificationService: sl(),
         cacheService: sl(),
+        upgradeChecker: sl(),
       ),
     );
 

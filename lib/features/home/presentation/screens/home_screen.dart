@@ -6,9 +6,11 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/upgrade_checker.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/upgrade_dialog.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
@@ -90,11 +92,52 @@ class _HomeView extends StatelessWidget {
 
     // Dark mode relies on the global Date & Ember backdrop (injected in the
     // shell's AppScaffold); light keeps its own cream backdrop + pattern.
-    return LightModeBackdrop(
-      backdrop: const HomeBackdropPattern(),
-      child: content,
+    return OptionalUpdateGate(
+      child: LightModeBackdrop(
+        backdrop: const HomeBackdropPattern(),
+        child: content,
+      ),
     );
   }
+}
+
+/// Runs a one-shot, non-blocking "update available" check once the home screen
+/// is mounted and surfaces the dismissible [UpgradeDialog] if the store has a
+/// newer version. The blocking force-update path is handled earlier at startup.
+class OptionalUpdateGate extends StatefulWidget {
+  const OptionalUpdateGate({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  State<OptionalUpdateGate> createState() => _OptionalUpdateGateState();
+}
+
+class _OptionalUpdateGateState extends State<OptionalUpdateGate> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdate());
+  }
+
+  Future<void> _checkForUpdate() async {
+    final checker = sl<UpgradeChecker>();
+    final languageCode = context.locale.languageCode;
+    final available = await checker.isUpdateAvailable(
+      languageCode: languageCode,
+    );
+    if (!available || !mounted) return;
+    await UpgradeDialog.show(
+      context,
+      onUpdate: checker.openAppStore,
+      currentVersion: checker.installedVersion,
+      newVersion: checker.availableVersion,
+      releaseNotes: checker.releaseNotes,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 const double _kGutter = 24;

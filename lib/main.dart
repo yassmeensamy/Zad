@@ -15,7 +15,10 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'app.dart';
 import 'core/navigation/deep_link_service.dart';
 import 'core/navigation/deep_links.dart';
+import 'core/services/core_service_locator.dart';
+import 'core/services/remote_config_service.dart';
 import 'core/services/service_locator.dart';
+import 'core/utils/logger.dart';
 import 'features/auth/data/strategies/oauth_strategy_factory.dart';
 
 Future<void> main() async {
@@ -45,6 +48,12 @@ Future<void> main() async {
     ),
   );
   await serviceLocator.startOffline();
+
+  // Fetch & activate Remote Config so the splash force-update check reads fresh
+  // min-version values. Failures must never block startup.
+  await sl<RemoteConfigService>().init().catchError(
+    (Object e) => logger.error('RemoteConfig init failed: $e'),
+  );
 
   final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
   final initialLink = await deepLinks.initialLocation();

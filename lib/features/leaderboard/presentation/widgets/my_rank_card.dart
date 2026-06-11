@@ -1,111 +1,127 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
+/// The sticky "your rank" / "your team" card at the bottom of the leaderboard.
+/// Reads as a warm ember highlight in dark and a gilded gold card in light.
 class MyRankCard extends StatelessWidget {
   const MyRankCard({
     super.key,
     required this.label,
     required this.rank,
     required this.title,
-    required this.completed,
-    required this.total,
     this.onTap,
   });
 
   final String label;
   final int rank;
   final String title;
-  final int completed;
-  final int total;
-
-  /// When provided, the card becomes tappable (e.g. to open team details).
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = context.isDark;
+
+    // Dark mode reads as a warm ember highlight. In light, the same cta (olive)
+    // tokens washed out to a muddy grey-green over the cream page, so we gild
+    // the card instead — a soft gold gradient, a crisp amber hairline and a
+    // lighter warm lift — echoing the leaderboard's gold-medal motif. The olive
+    // rank badge then pops against it.
+    final bgGradient = isDark
+        ? [
+            colors.ctaMid.withValues(alpha: 0.18),
+            colors.ctaBottom.withValues(alpha: 0.08),
+          ]
+        : [
+            colors.accent.withValues(alpha: 0.22),
+            colors.accentSoft.withValues(alpha: 0.12),
+          ];
+    final borderColor = isDark
+        ? colors.ctaTop.withValues(alpha: 0.4)
+        : colors.accent.withValues(alpha: 0.5);
+    final shadow = isDark
+        ? BoxShadow(
+            color: colors.heroShadow.withValues(alpha: 0.45),
+            blurRadius: 30,
+            offset: const Offset(0, 16),
+          )
+        : BoxShadow(
+            color: colors.accent.withValues(alpha: 0.22),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          );
+    // Deeper amber for the eyebrow + chevron so they keep contrast on the
+    // warmer light card (plain accent would blend into the gold wash).
+    final accentInk = isDark ? colors.accent : colors.accentDeep;
+
     final card = Container(
       margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.amberSoft.withValues(alpha: 0.6),
-            Colors.white.withValues(alpha: 0.9),
-          ],
-        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.amberDeep.withValues(alpha: 0.6),
-          width: 1.4,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: bgGradient,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.amberDeep.withValues(alpha: 0.2),
-            blurRadius: 14,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        border: Border.all(color: borderColor),
+        boxShadow: [shadow],
       ),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ResponsiveText(
-                label.tr().toUpperCase(),
-                style: AppTextStyles.labelSmall.copyWith(
-                  fontSize: 7.5,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.8,
-                  color: AppColors.amberDeep,
-                ),
-              ),
-              const SizedBox(height: 2),
-              ResponsiveText(
-                '#$rank',
-                style: AppTextStyles.displaySmall.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.dateDeep,
-                  height: 1,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 14),
           Container(
-            width: 1,
-            height: 34,
-            color: AppColors.amberDeep.withValues(alpha: 0.25),
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [colors.ctaTop, colors.ctaMid],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.ctaMid.withValues(alpha: 0.55),
+                  blurRadius: 18,
+                ),
+              ],
+            ),
+            child: ResponsiveText(
+              '#$rank',
+              style: AppTextStyles.labelLarge.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: colors.onCta,
+              ),
+            ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ResponsiveText(
+                  label.toUpperCase(),
+                  style: AppTextStyles.labelSmall.copyWith(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2.4,
+                    color: accentInk,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                ResponsiveText(
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.labelMedium.copyWith(
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: colors.oliveDeep,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                ResponsiveText(
-                  'leaderboard.levels_progress'.tr(
-                    namedArgs: {'completed': '$completed', 'total': '$total'},
-                  ),
-                  style: AppTextStyles.labelSmall.copyWith(
-                    fontSize: 11,
-                    color: AppColors.dateDeep,
+                    letterSpacing: -0.1,
+                    color: colors.textPrimary,
                   ),
                 ),
               ],
@@ -113,18 +129,13 @@ class MyRankCard extends StatelessWidget {
           ),
           if (onTap != null) ...[
             const SizedBox(width: 8),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 22,
-              color: AppColors.amberDeep.withValues(alpha: 0.7),
-            ),
+            Icon(Icons.arrow_forward, size: 16, color: accentInk),
           ],
         ],
       ),
     );
 
     if (onTap == null) return card;
-
     return Material(
       color: Colors.transparent,
       child: InkWell(

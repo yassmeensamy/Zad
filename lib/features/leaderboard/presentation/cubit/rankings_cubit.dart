@@ -20,8 +20,7 @@ class RankingsCubit extends BaseCubit<RankingsState> {
         await _loadIndividuals(reset: true);
       }
     } else {
-      if (state.teams.isEmpty &&
-          state.teamStatus != RankingsStatus.loading) {
+      if (state.teams.isEmpty && state.teamStatus != RankingsStatus.loading) {
         await _loadTeams(reset: true);
       }
     }
@@ -100,9 +99,7 @@ class RankingsCubit extends BaseCubit<RankingsState> {
   }
 
   Future<void> _loadTeams({required bool reset}) async {
-    final nextPage = reset
-        ? 0
-        : (state.teamPagination?.currentPage ?? -1) + 1;
+    final nextPage = reset ? 0 : (state.teamPagination?.currentPage ?? -1) + 1;
 
     emit(
       reset
@@ -142,9 +139,7 @@ class RankingsCubit extends BaseCubit<RankingsState> {
   void _emitIndividualError(bool reset, String? message) {
     emit(
       state.copyWith(
-        individualStatus: reset
-            ? RankingsStatus.error
-            : state.individualStatus,
+        individualStatus: reset ? RankingsStatus.error : state.individualStatus,
         loadingMore: false,
         errorMessage: () => message,
       ),

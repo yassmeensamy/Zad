@@ -2,279 +2,241 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
-import '../../../teams/data/models/team_member_progress_model.dart';
-import '../../../teams/presentation/widgets/team_disc.dart';
+import 'leaderboard_disc.dart';
+import 'leaderboard_states.dart';
+import 'rank_seed.dart';
 
+/// Top-three podium: silver (2nd) — gold (1st, raised) — bronze (3rd).
 class Podium extends StatelessWidget {
-  const Podium({super.key, required this.members});
+  const Podium({super.key, required this.seeds});
 
-  final List<TeamMemberProgressModel> members;
+  final List<RankSeed> seeds;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final top = members.take(3).toList();
-
-    if (top.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 32),
-        child: Center(
-          child: ResponsiveText(
-            'leaderboard.podium_empty',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: colors.oliveSoft,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
+    if (seeds.isEmpty) {
+      return const LeaderboardEmptyHint(
+        textKey: 'leaderboard.podium_empty',
+        vertical: 28,
       );
     }
-
-    _PodiumSeed? seedAt(int i) {
-      if (i >= top.length) return null;
-      return _PodiumSeed(
-        name: top[i].username,
-        completed: top[i].completedLevels,
-        total: top[i].totalLevels,
-      );
-    }
-
-    final first = seedAt(0);
-    final second = seedAt(1);
-    final third = seedAt(2);
+    RankSeed? at(int i) => i < seeds.length ? seeds[i] : null;
 
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Expanded(child: _PodiumPlace(seed: second, place: 2)),
-          const SizedBox(width: 14),
-          Expanded(child: _PodiumPlace(seed: first, place: 1, isFirst: true)),
-          const SizedBox(width: 14),
-          Expanded(child: _PodiumPlace(seed: third, place: 3)),
+          Expanded(flex: 100, child: _PodiumPillar(place: 2, seed: at(1))),
+          const SizedBox(width: 9),
+          Expanded(flex: 115, child: _PodiumPillar(place: 1, seed: at(0))),
+          const SizedBox(width: 9),
+          Expanded(flex: 100, child: _PodiumPillar(place: 3, seed: at(2))),
         ],
       ),
     );
   }
 }
 
-class _PodiumSeed {
-  const _PodiumSeed({
-    required this.name,
-    required this.completed,
-    required this.total,
-  });
+class _PodiumPillar extends StatelessWidget {
+  const _PodiumPillar({required this.place, required this.seed});
 
-  final String name;
-  final int completed;
-  final int total;
-}
-
-class _PodiumPlace extends StatelessWidget {
-  const _PodiumPlace({
-    required this.seed,
-    required this.place,
-    this.isFirst = false,
-  });
-
-  final _PodiumSeed? seed;
   final int place;
-  final bool isFirst;
+  final RankSeed? seed;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final s = seed;
-    final tone = switch (place) {
-      1 => _PodiumTone(
-          edge: colors.accentDeep,
-          fill: colors.accentDeep.withValues(alpha: 0.32),
-          text: colors.accentDeep,
-          height: 44,
-        ),
-      2 => _PodiumTone(
-          edge: colors.olive,
-          fill: colors.olive.withValues(alpha: 0.18),
-          text: colors.olive,
-          height: 30,
-        ),
-      _ => _PodiumTone(
-          edge: AppColors.date,
-          fill: AppColors.date.withValues(alpha: 0.22),
-          text: AppColors.date,
-          height: 22,
-        ),
-    };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isFirst && s != null) const _CrownGlyph(),
-          _PodiumAvatar(seed: s?.name ?? '?', place: place, isFirst: isFirst),
-          const SizedBox(height: 8),
-          ResponsiveText(
-            s?.name ?? '—',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelMedium.copyWith(
-              fontSize: isFirst ? 12 : 11,
-              fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-              color: isFirst ? AppColors.dateDeep : colors.oliveDeep,
-              height: 1.15,
-            ),
-          ),
-          const SizedBox(height: 3),
-          ResponsiveText(
-            s == null ? '—' : '${s.completed}/${s.total}',
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            style: AppTextStyles.labelSmall.copyWith(
-              fontFamily: 'monospace',
-              fontSize: isFirst ? 11 : 10,
-              fontWeight: FontWeight.w500,
-              color: tone.text,
-              letterSpacing: 0.4,
-              height: 1,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Container(
-            height: tone.height,
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.only(top: 6),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [tone.fill, tone.fill.withValues(alpha: 0.04)],
-              ),
-              border: Border(
-                top: BorderSide(color: tone.edge.withValues(alpha: 0.45)),
-                left: BorderSide(color: tone.edge.withValues(alpha: 0.45)),
-                right: BorderSide(color: tone.edge.withValues(alpha: 0.45)),
-              ),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(8),
-              ),
-            ),
-            child: ResponsiveText(
-              '0$place',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.labelSmall.copyWith(
-                fontFamily: 'monospace',
-                fontSize: isFirst ? 12 : 11,
-                fontWeight: FontWeight.w700,
-                color: tone.text,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PodiumTone {
-  const _PodiumTone({
-    required this.edge,
-    required this.fill,
-    required this.text,
-    required this.height,
-  });
-
-  final Color edge;
-  final Color fill;
-  final Color text;
-  final double height;
-}
-
-class _PodiumAvatar extends StatelessWidget {
-  const _PodiumAvatar({
-    required this.seed,
-    required this.place,
-    required this.isFirst,
-  });
-
-  final String seed;
-  final int place;
-  final bool isFirst;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = isFirst ? 60.0 : 48.0;
-    final colors = context.appColors;
+    final isFirst = place == 1;
     final accent = switch (place) {
-      1 => colors.accentDeep,
-      2 => colors.oliveSoft,
-      _ => AppColors.date,
+      1 => AppColors.discGoldMid,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.emberBright,
     };
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: accent.withValues(alpha: 0.45),
-            blurRadius: 14,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          TeamDisc(
-            seed: seed,
-            size: size,
-            fontSize: isFirst ? 22 : 18,
-          ),
-          Positioned(
-            right: -2,
-            bottom: -1,
-            child: Container(
-              width: 20,
-              height: 20,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.creamLight,
-                border: Border.all(color: accent, width: 1.5),
-              ),
-              child: ResponsiveText(
-                '$place',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.labelSmall.copyWith(
-                  fontFamily: 'monospace',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: accent,
-                  height: 1,
+    final pedHeight = switch (place) {
+      1 => 46.0,
+      2 => 34.0,
+      _ => 25.0,
+    };
+    final pedTint = switch (place) {
+      1 => AppColors.discGoldMid,
+      2 => AppColors.discSilverMid,
+      _ => AppColors.ember,
+    };
+    final avatarSize = isFirst ? 62.0 : 52.0;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          width: avatarSize + 14,
+          height: avatarSize + (isFirst ? 22 : 14),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: avatarSize + 14,
+                height: avatarSize + 14,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      accent.withValues(alpha: 0.5),
+                      accent.withValues(alpha: 0),
+                    ],
+                    stops: const [0.5, 1.0],
+                  ),
                 ),
               ),
+              LeaderboardDisc(
+                size: avatarSize,
+                initial: discInitial(seed?.name),
+                style: discStyleForPlace(place),
+                fontSize: isFirst ? 24 : 20,
+              ),
+              if (isFirst && seed != null)
+                const Positioned(top: -8, child: _Crown()),
+              Positioned(
+                right: 2,
+                bottom: 2,
+                child: _RankBadge(place: place, color: accent),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 7),
+        ResponsiveText(
+          seed?.name ?? '—',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.labelMedium.copyWith(
+            fontSize: 12,
+            fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
+            color: isFirst ? colors.accent : colors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 2),
+        ResponsiveText(
+          seed == null ? '—' : '${seed!.completed}/${seed!.total}',
+          style: AppTextStyles.labelMedium.copyWith(
+            fontSize: isFirst ? 12 : 11,
+            fontWeight: FontWeight.w500,
+            color: accent,
+          ),
+        ),
+        const SizedBox(height: 7),
+        Container(
+          height: pedHeight,
+          width: double.infinity,
+          padding: const EdgeInsets.only(top: 7),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
+            border: Border(
+              top: BorderSide(color: pedTint.withValues(alpha: 0.4)),
+              left: BorderSide(color: pedTint.withValues(alpha: 0.4)),
+              right: BorderSide(color: pedTint.withValues(alpha: 0.4)),
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                pedTint.withValues(alpha: 0.28),
+                pedTint.withValues(alpha: 0.05),
+              ],
             ),
           ),
-        ],
+          child: ResponsiveText(
+            place < 10 ? '0$place' : '$place',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.labelMedium.copyWith(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: accent,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RankBadge extends StatelessWidget {
+  const _RankBadge({required this.place, required this.color});
+
+  final int place;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Container(
+      width: 24,
+      height: 24,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: colors.canvas,
+        border: Border.all(color: color, width: 2),
+      ),
+      child: ResponsiveText(
+        '$place',
+        style: AppTextStyles.labelSmall.copyWith(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
       ),
     );
   }
 }
 
-class _CrownGlyph extends StatelessWidget {
-  const _CrownGlyph();
+class _Crown extends StatelessWidget {
+  const _Crown();
 
   @override
-  Widget build(BuildContext context) => const Padding(
-        padding: EdgeInsets.only(bottom: 4),
-        child: Icon(
-          Icons.workspace_premium_rounded,
-          size: 20,
-          color: AppColors.amberDeep,
-        ),
-      );
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 26,
+      height: 16,
+      child: CustomPaint(painter: _CrownPainter()),
+    );
+  }
+}
+
+class _CrownPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final sx = size.width / 26;
+    final sy = size.height / 16;
+    final path = Path()
+      ..moveTo(1.5 * sx, 14 * sy)
+      ..lineTo(4 * sx, 5 * sy)
+      ..lineTo(9.5 * sx, 10.5 * sy)
+      ..lineTo(13 * sx, 2.5 * sy)
+      ..lineTo(16.5 * sx, 10.5 * sy)
+      ..lineTo(22 * sx, 5 * sy)
+      ..lineTo(24.5 * sx, 14 * sy)
+      ..close();
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.discGoldHi, AppColors.discGoldLo],
+        ).createShader(Offset.zero & size),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8
+        ..strokeJoin = StrokeJoin.round
+        ..color = AppColors.discBronzeLo,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

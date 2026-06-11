@@ -25,7 +25,6 @@ class DateEmberLeaderboardScreen extends StatelessWidget {
   }
 }
 
-
 // Type families. The design uses Fraunces (serif italic), Inter (sans) and
 // JetBrains Mono. We map these to the platform generic families so the screen
 // stays a single file with no font bundling.
@@ -92,7 +91,7 @@ class _DateEmberBody extends StatelessWidget {
                 _TopBar(),
                 Expanded(child: _Stage()),
                 _StreakCta(),
-               SizedBox(height: 16),
+                SizedBox(height: 16),
               ],
             ),
           ),
@@ -165,16 +164,11 @@ class _GlassIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: const Color(0x0DF4ECD8), // ivory @ 0.05
-      shape: const CircleBorder(
-        side: BorderSide(color: DateEmber.glassBorder),
-      ),
+      shape: const CircleBorder(side: BorderSide(color: DateEmber.glassBorder)),
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: const SizedBox(
-          width: 38,
-          height: 38,
-        ).withChild(icon),
+        child: const SizedBox(width: 38, height: 38).withChild(icon),
       ),
     );
   }
@@ -257,7 +251,11 @@ class _SummaryCard extends StatelessWidget {
           colors: [Color(0x0FF4ECD8), Color(0x05F4ECD8)],
         ),
         boxShadow: const [
-          BoxShadow(color: Color(0x80000000), blurRadius: 40, offset: Offset(0, 20)),
+          BoxShadow(
+            color: Color(0x80000000),
+            blurRadius: 40,
+            offset: Offset(0, 20),
+          ),
         ],
       ),
       child: CustomPaint(
@@ -282,7 +280,11 @@ class _SummaryCard extends StatelessWidget {
                   shaderCallback: (r) => const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [DateEmber.amberLight, DateEmber.amber, DateEmber.amberDeep],
+                    colors: [
+                      DateEmber.amberLight,
+                      DateEmber.amber,
+                      DateEmber.amberDeep,
+                    ],
                     stops: [0.0, 0.55, 1.0],
                   ).createShader(r),
                   child: const Text(
@@ -318,7 +320,9 @@ class _SummaryCard extends StatelessWidget {
             const SizedBox(height: 9),
             Row(
               children: const [
-                Expanded(child: _StatCell(value: '428', label: 'SOLVED')),
+                Expanded(
+                  child: _StatCell(value: '428', label: 'SOLVED'),
+                ),
                 _StatPipe(),
                 Expanded(
                   child: _StatCell(value: '#14', sub: '/312', label: 'RANK'),
@@ -407,7 +411,10 @@ class _StatCell extends StatelessWidget {
               if (sub != null)
                 TextSpan(
                   text: sub,
-                  style: const TextStyle(fontSize: 12, color: DateEmber.txtFaint),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: DateEmber.txtFaint,
+                  ),
                 ),
             ],
           ),
@@ -511,9 +518,18 @@ class _Sparkline extends StatelessWidget {
 class _SparklinePainter extends CustomPainter {
   // Normalised points from the SVG (viewBox 280×40).
   static const List<Offset> _pts = [
-    Offset(0, 30), Offset(23, 26), Offset(46, 28), Offset(70, 20),
-    Offset(93, 22), Offset(116, 15), Offset(140, 18), Offset(163, 11),
-    Offset(186, 14), Offset(210, 8), Offset(233, 11), Offset(256, 5),
+    Offset(0, 30),
+    Offset(23, 26),
+    Offset(46, 28),
+    Offset(70, 20),
+    Offset(93, 22),
+    Offset(116, 15),
+    Offset(140, 18),
+    Offset(163, 11),
+    Offset(186, 14),
+    Offset(210, 8),
+    Offset(233, 11),
+    Offset(256, 5),
     Offset(280, 9),
   ];
 
@@ -654,7 +670,9 @@ class _SegmentedState extends State<_Segmented> {
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.8,
-                      color: i == _selected ? DateEmber.amberLight : DateEmber.txtMute,
+                      color: i == _selected
+                          ? DateEmber.amberLight
+                          : DateEmber.txtMute,
                     ),
                   ),
                 ),
@@ -683,7 +701,9 @@ class _EyebrowRule extends StatelessWidget {
           height: 1,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Color(0x00E0A560), DateEmber.amber]),
+              gradient: LinearGradient(
+                colors: [Color(0x00E0A560), DateEmber.amber],
+              ),
             ),
           ),
         ),
@@ -704,7 +724,9 @@ class _EyebrowRule extends StatelessWidget {
           height: 1,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [DateEmber.amber, Color(0x00E0A560)]),
+              gradient: LinearGradient(
+                colors: [DateEmber.amber, Color(0x00E0A560)],
+              ),
             ),
           ),
         ),
@@ -813,7 +835,10 @@ class _PodiumPillar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [accent.withValues(alpha: 0.5), accent.withValues(alpha: 0)],
+                    colors: [
+                      accent.withValues(alpha: 0.5),
+                      accent.withValues(alpha: 0),
+                    ],
                     stops: const [0.5, 1.0],
                   ),
                 ),
@@ -824,11 +849,7 @@ class _PodiumPillar extends StatelessWidget {
                 style: disc,
                 fontSize: isFirst ? 24 : 20,
               ),
-              if (isFirst)
-                const Positioned(
-                  top: -8,
-                  child: _Crown(),
-                ),
+              if (isFirst) const Positioned(top: -8, child: _Crown()),
               Positioned(
                 right: 2,
                 bottom: 2,
@@ -874,7 +895,10 @@ class _PodiumPillar extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [pedTint.withValues(alpha: 0.28), pedTint.withValues(alpha: 0.05)],
+              colors: [
+                pedTint.withValues(alpha: 0.28),
+                pedTint.withValues(alpha: 0.05),
+              ],
             ),
           ),
           child: Text(
@@ -1037,11 +1061,7 @@ class _Disc extends StatelessWidget {
       ),
       child: Text(
         initial,
-        style: TextStyle(
-          fontFamily: _serif,
-          fontSize: fontSize,
-          color: ink,
-        ),
+        style: TextStyle(fontFamily: _serif, fontSize: fontSize, color: ink),
       ),
     );
   }
@@ -1063,7 +1083,11 @@ class _DottedDivider extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0x00E1A560), Color(0x4DE1A560), Color(0x00E1A560)],
+                  colors: [
+                    Color(0x00E1A560),
+                    Color(0x4DE1A560),
+                    Color(0x00E1A560),
+                  ],
                 ),
               ),
             ),
@@ -1073,7 +1097,10 @@ class _DottedDivider extends StatelessWidget {
           width: 6,
           height: 6,
           margin: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: const BoxDecoration(shape: BoxShape.circle, color: DateEmber.amber),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: DateEmber.amber,
+          ),
         ),
         const Expanded(
           child: SizedBox(
@@ -1081,7 +1108,11 @@ class _DottedDivider extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0x00E1A560), Color(0x4DE1A560), Color(0x00E1A560)],
+                  colors: [
+                    Color(0x00E1A560),
+                    Color(0x4DE1A560),
+                    Color(0x00E1A560),
+                  ],
                 ),
               ),
             ),
@@ -1190,7 +1221,10 @@ class _RankRow extends StatelessWidget {
                     const SizedBox(width: 7),
                     Text(
                       role,
-                      style: const TextStyle(fontSize: 10, color: DateEmber.txtMute),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: DateEmber.txtMute,
+                      ),
                     ),
                   ],
                 ),
@@ -1213,7 +1247,11 @@ class _RankRow extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.keyboard_arrow_up, size: 10, color: DateEmber.olive),
+                  const Icon(
+                    Icons.keyboard_arrow_up,
+                    size: 10,
+                    color: DateEmber.olive,
+                  ),
                   Text(
                     trend,
                     style: const TextStyle(
@@ -1284,7 +1322,11 @@ class _StatusDotState extends State<_StatusDot>
         shape: BoxShape.circle,
         color: color,
         boxShadow: [
-          BoxShadow(color: color.withValues(alpha: glow), blurRadius: 8, spreadRadius: 1),
+          BoxShadow(
+            color: color.withValues(alpha: glow),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
         ],
       ),
     );
@@ -1311,7 +1353,11 @@ class _StreakCta extends StatelessWidget {
         ),
         border: Border.all(color: const Color(0x66E07A48)),
         boxShadow: const [
-          BoxShadow(color: Color(0x73000000), blurRadius: 30, offset: Offset(0, 16)),
+          BoxShadow(
+            color: Color(0x73000000),
+            blurRadius: 30,
+            offset: Offset(0, 16),
+          ),
         ],
       ),
       child: Row(

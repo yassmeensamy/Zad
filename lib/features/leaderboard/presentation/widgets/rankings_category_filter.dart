@@ -1,9 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../categories/data/models/category_model.dart';
 import '../../../../theme/theme.dart';
+import '../../../categories/data/models/category_model.dart';
 
+/// Horizontally scrolling category chips (plus an "All" chip) that filter the
+/// individual rankings.
 class RankingsCategoryFilter extends StatelessWidget {
   const RankingsCategoryFilter({
     super.key,
@@ -13,26 +16,24 @@ class RankingsCategoryFilter extends StatelessWidget {
   });
 
   final List<CategoryModel> categories;
-
   final int? selectedId;
   final ValueChanged<int?> onSelected;
 
   @override
   Widget build(BuildContext context) {
     if (categories.isEmpty) return const SizedBox.shrink();
-    return SizedBox(
-      height: 32,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.zero,
+      child: Row(
         children: [
-          _Chip(
-            label: 'leaderboard.category_all',
+          _CategoryChip(
+            label: 'leaderboard.category_all'.tr(),
             selected: selectedId == null,
             onTap: () => onSelected(null),
           ),
           for (final c in categories)
-            _Chip(
+            _CategoryChip(
               label: c.name,
               selected: selectedId == c.id,
               onTap: () => onSelected(c.id),
@@ -43,8 +44,8 @@ class RankingsCategoryFilter extends StatelessWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
-  const _Chip({
+class _CategoryChip extends StatelessWidget {
+  const _CategoryChip({
     required this.label,
     required this.selected,
     required this.onTap,
@@ -73,16 +74,24 @@ class _Chip extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           decoration: BoxDecoration(
-            color: selected
-                ? colors.oliveDeep
-                : Colors.white.withValues(alpha: 0.55),
-            borderRadius: ZaadRadii.pillAll,
+            gradient: selected
+                ? LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      colors.accent.withValues(alpha: 0.20),
+                      colors.accentDeep.withValues(alpha: 0.12),
+                    ],
+                  )
+                : null,
+            color: selected ? null : colors.cardSurface,
+            borderRadius: BorderRadius.circular(999),
             border: Border.all(
               color: selected
-                  ? colors.oliveDeep
-                  : colors.oliveSoft.withValues(alpha: 0.25),
+                  ? colors.accent.withValues(alpha: 0.45)
+                  : colors.borderSubtle,
             ),
           ),
           child: ResponsiveText(
@@ -92,7 +101,7 @@ class _Chip extends StatelessWidget {
             style: AppTextStyles.labelSmall.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: selected ? AppColors.creamLight : colors.oliveDeep,
+              color: selected ? colors.accent : colors.textSecondary,
             ),
           ),
         ),

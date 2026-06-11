@@ -123,8 +123,7 @@ extension RankingsStateX on RankingsState {
   RankingsStatus get activeStatus =>
       isIndividuals ? individualStatus : teamStatus;
 
-  bool get activeIsEmpty =>
-      isIndividuals ? individuals.isEmpty : teams.isEmpty;
+  bool get activeIsEmpty => isIndividuals ? individuals.isEmpty : teams.isEmpty;
 
   bool get canLoadMore {
     final p = isIndividuals ? individualPagination : teamPagination;

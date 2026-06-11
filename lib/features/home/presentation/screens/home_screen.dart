@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -163,6 +164,11 @@ class HomeLoadedContent extends StatelessWidget {
             child: const ResponsiveText('Team Home (preview)'),
           ),
           const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () => _debugGetDeviceToken(context),
+            child: const ResponsiveText('Get device token (debug)'),
+          ),
+          const SizedBox(height: 8),
         ];
 
         return CustomScrollView(
@@ -185,6 +191,20 @@ class HomeLoadedContent extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> _debugGetDeviceToken(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final token = await sl<NotificationService>().getDeviceToken();
+      messenger.showSnackBar(
+        SnackBar(content: Text('Token: $token')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Token failed: $e')),
+      );
+    }
   }
 
   static String _firstName(String? fullName, {required String fallback}) {

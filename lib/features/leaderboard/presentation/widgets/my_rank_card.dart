@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
@@ -11,12 +12,16 @@ class MyRankCard extends StatelessWidget {
     required this.label,
     required this.rank,
     required this.title,
+    required this.completed,
+    required this.total,
     this.onTap,
   });
 
   final String label;
   final int rank;
   final String title;
+  final int completed;
+  final int total;
   final VoidCallback? onTap;
 
   @override
@@ -57,10 +62,10 @@ class MyRankCard extends StatelessWidget {
     final accentInk = isDark ? colors.accent : colors.accentDeep;
 
     final card = Container(
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -72,11 +77,11 @@ class MyRankCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 36,
+            height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -85,51 +90,73 @@ class MyRankCard extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: colors.ctaMid.withValues(alpha: 0.55),
-                  blurRadius: 18,
+                  blurRadius: 14,
                 ),
               ],
             ),
             child: ResponsiveText(
               '#$rank',
               style: AppTextStyles.labelLarge.copyWith(
-                fontSize: 14,
+                fontSize: 12.5,
                 fontWeight: FontWeight.w700,
                 color: colors.onCta,
               ),
             ),
           ),
-          const SizedBox(width: 13),
+          const SizedBox(width: 11),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ResponsiveText(
                   label.toUpperCase(),
                   style: AppTextStyles.labelSmall.copyWith(
-                    fontSize: 8.5,
+                    fontSize: 8,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 2.4,
+                    letterSpacing: 2.2,
                     color: accentInk,
                   ),
                 ),
-                const SizedBox(height: 3),
-                ResponsiveText(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.1,
-                    color: colors.textPrimary,
-                  ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Flexible(
+                      child: ResponsiveText(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.1,
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ResponsiveText(
+                      'leaderboard.levels_progress'.tr(
+                        namedArgs: {
+                          'completed': '$completed',
+                          'total': '$total',
+                        },
+                      ),
+                      maxLines: 1,
+                      style: AppTextStyles.labelSmall.copyWith(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
           if (onTap != null) ...[
-            const SizedBox(width: 8),
-            Icon(Icons.arrow_forward, size: 16, color: accentInk),
+            const SizedBox(width: 6),
+            Icon(Icons.arrow_forward, size: 15, color: accentInk),
           ],
         ],
       ),
@@ -140,7 +167,7 @@ class MyRankCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: card,
       ),
     );

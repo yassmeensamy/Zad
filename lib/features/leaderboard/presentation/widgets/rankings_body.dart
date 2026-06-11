@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../theme/theme.dart';
 import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
+import 'leaderboard_loading.dart';
 import 'leaderboard_no_team.dart';
 import 'leaderboard_rules.dart';
 import 'leaderboard_states.dart';
@@ -29,18 +29,8 @@ class RankingsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     if (state.activeStatus == RankingsStatus.loading && state.activeIsEmpty) {
-      return Center(
-        child: SizedBox(
-          width: 22,
-          height: 22,
-          child: CircularProgressIndicator(
-            color: colors.accent,
-            strokeWidth: 2,
-          ),
-        ),
-      );
+      return const LeaderboardLoading();
     }
     if (state.activeStatus == RankingsStatus.error && state.activeIsEmpty) {
       return LeaderboardErrorRetry(
@@ -80,19 +70,10 @@ class RankingsBody extends StatelessWidget {
           itemBuilder: (context, i) => RankingRow(seed: _rowAt(state, i)),
         ),
         if (state.loadingMore)
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Center(
-                child: SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    color: colors.accent,
-                    strokeWidth: 2,
-                  ),
-                ),
-              ),
+              padding: EdgeInsets.only(top: 6),
+              child: LeaderboardMoreLoading(),
             ),
           ),
       ],
@@ -163,6 +144,8 @@ class RankingsFooter extends StatelessWidget {
         label: 'leaderboard.your_rank'.tr(),
         rank: me.rank,
         title: 'leaderboard.you'.tr(),
+        completed: me.completedLevels,
+        total: me.totalLevels,
       );
     }
     final me = state.myTeamRank;
@@ -171,6 +154,8 @@ class RankingsFooter extends StatelessWidget {
       label: 'leaderboard.your_team'.tr(),
       rank: me.rank,
       title: me.teamName,
+      completed: me.totalCompletedLevels,
+      total: me.totalLevels,
       onTap: () => context.pushNamed(AppRoutes.teamMembersName),
     );
   }

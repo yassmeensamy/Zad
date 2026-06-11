@@ -34,7 +34,15 @@
       "Bash(grep -iA4 \"repl\\\\|plural\")",
       "Bash(python3 -c 'import json;d=json.load\\(open\\('\\\\''assets/translations/__TRACKED_VAR__.json'\\\\''\\)\\);print\\('\\\\''__TRACKED_VAR__.json OK — leaderboard keys:'\\\\'', list\\(d['\\\\''leaderboard'\\\\''].keys\\(\\)\\)\\)')",
       "Bash(sed -n '1,45p' lib/features/teams/data/models/team_progress_model.dart)",
-      "Bash(sed -n '1,45p' lib/features/teams/data/models/team_progress_summary_model.dart)"
+      "Bash(sed -n '1,45p' lib/features/teams/data/models/team_progress_summary_model.dart)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --http1.1 https://cdn.cocoapods.org/Specs/0/b/5/PromisesObjC/2.4.1/PromisesObjC.podspec.json)",
+      "Bash(curl -sL --http1.1 -o PromisesObjC.podspec.json https://cdn.cocoapods.org/Specs/0/b/5/PromisesObjC/2.4.1/PromisesObjC.podspec.json)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha assets/images/logo_without_BG.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha assets/images/app_icon_source.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png)",
+      "Bash(sips -g all ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png)",
+      "Bash(python3 -c \"from PIL import Image; im=Image.open\\('android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'\\).convert\\('RGBA'\\); print\\('corner', im.getpixel\\(\\(5,5\\)\\), 'size', im.size\\)\")"
     ]
   }
 }

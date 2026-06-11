@@ -74,64 +74,7 @@ class TeamWeekStats extends StatelessWidget {
         ),
         const SizedBox(height: 9),
         // Insight banner.
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                p.greenSurface.withValues(alpha: 0.16),
-                p.greenSurface.withValues(alpha: 0.05),
-              ],
-            ),
-            border: Border.all(color: p.greenSurface.withValues(alpha: 0.3)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: p.greenSurface.withValues(alpha: 0.2),
-                ),
-                child: Icon(Icons.bar_chart, size: 18, color: p.green),
-              ),
-              const SizedBox(width: 11),
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 14,
-                      height: 1.35,
-                      color: p.ink,
-                    ),
-                    children: [
-                      const TextSpan(text: 'Your team is '),
-                      TextSpan(
-                        text: 'improving in accuracy',
-                        style: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w600,
-                          color: p.green,
-                        ),
-                      ),
-                      const TextSpan(
-                        text:
-                            ' — up 4% and climbing for three weeks straight.',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        
       ],
     );
   }

@@ -18,6 +18,7 @@ import '../widgets/corner_flourishes.dart';
 import '../widgets/gilded_cta.dart';
 import '../widgets/gold_rule.dart';
 import '../widgets/team_scaffold.dart';
+import '../widgets/teams_painters.dart';
 
 const int _kInviteCodeLength = 8;
 
@@ -114,7 +115,6 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
                           ? _ErrorContent(
                               enteredCode: _codeController.text,
                               onTryAgain: _handleTryAgain,
-                              onHelp: _clearError,
                             )
                           : _IdleContent(
                               controller: _codeController,
@@ -259,12 +259,10 @@ class _ErrorContent extends StatelessWidget {
   const _ErrorContent({
     required this.enteredCode,
     required this.onTryAgain,
-    required this.onHelp,
   });
 
   final String enteredCode;
   final VoidCallback onTryAgain;
-  final VoidCallback onHelp;
 
   @override
   Widget build(BuildContext context) {
@@ -304,9 +302,42 @@ class _ErrorContent extends StatelessWidget {
         ),
         const SizedBox(height: 18),
         const DotRule(),
-        const SizedBox(height: 12),
-        
+        const SizedBox(height: 18),
+        _TryAgainButton(onTap: onTryAgain),
       ],
+    );
+  }
+}
+
+
+class _TryAgainButton extends StatelessWidget {
+  const _TryAgainButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Center(
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: colors.goldDeep.withValues(alpha: 0.55)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+        ),
+        child: ResponsiveText(
+          'teams.join.error_try_again'.tr().toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2.0,
+            color: colors.goldDeep,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -434,12 +465,12 @@ class _ClosedKeyholePainter extends CustomPainter {
     final c = Offset(size.width / 2, size.height / 2);
     final r = size.width / 2;
 
-    _drawDashedCircle(
+    paintDashedCircle(
       canvas,
       c,
       r * 0.93,
-      dashWidth: 1.5,
-      gapWidth: 4,
+      dash: 1.5,
+      gap: 4,
       paint: Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8
@@ -505,29 +536,6 @@ class _ClosedKeyholePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..color = slash,
     );
-  }
-
-  void _drawDashedCircle(
-    Canvas canvas,
-    Offset center,
-    double radius, {
-    required double dashWidth,
-    required double gapWidth,
-    required Paint paint,
-  }) {
-    final circumference = 2 * math.pi * radius;
-    final dashCount = circumference ~/ (dashWidth + gapWidth);
-    final segment = (dashWidth + gapWidth) / radius;
-    final dashAngle = dashWidth / radius;
-    for (var i = 0; i < dashCount; i++) {
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        i * segment,
-        dashAngle,
-        false,
-        paint,
-      );
-    }
   }
 
   Path _starPath(Offset c, double r, double rIn, double rotation) {
@@ -813,54 +821,6 @@ class _ErrorCodeChip extends StatelessWidget {
         ),
         CornerFlourishes(color: colors.errStroke),
       ],
-    );
-  }
-}
-
-class _RecoveryChip extends StatelessWidget {
-  const _RecoveryChip({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(999),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.6),
-            border: Border.all(color: colors.olive.withValues(alpha: 0.18)),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 11, color: colors.oliveDeep),
-              const SizedBox(width: 6),
-              ResponsiveText(
-                label.tr().toUpperCase(),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.8,
-                  color: colors.oliveDeep,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

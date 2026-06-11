@@ -81,7 +81,9 @@
       "Bash(sed -n '1,40p' lib/core/widgets/empty_state.dart)",
       "Bash(sed -n '1,40p' lib/core/widgets/error_state.dart)",
       "Bash(sed -n '150,185p' lib/features/home/presentation/screens/home_screen.dart)",
-      "Bash(sed -n '270,290p' lib/core/navigation/app_router.dart)"
+      "Bash(sed -n '270,290p' lib/core/navigation/app_router.dart)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(perl -0pi -e 's/const _overallBoard = <_LbEntry>\\\\[.*?\\\\n\\\\];\\\\n\\\\nconst _categoryBoards = <List<_LbEntry>>\\\\[.*?\\\\n\\\\];\\\\n\\\\n//s' lib/features/teams/presentation/screens/temp_team_home.dart)"
     ]
   }
 }

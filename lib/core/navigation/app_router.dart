@@ -35,14 +35,11 @@ import '../../features/support_tickets/presentation/cubit/support_tickets_cubit.
 import '../../features/support_tickets/presentation/screens/support_tickets_screen.dart';
 import '../../features/support_tickets/presentation/screens/ticket_detail_screen.dart';
 import '../../features/teams/presentation/cubit/teams_cubit.dart';
-import '../../features/teams/presentation/screens/team_create_screen.dart';
 import '../../features/teams/presentation/screens/team_create_success_screen.dart';
 import '../../features/teams/presentation/screens/temp_team_home.dart';
 import '../../features/teams/presentation/screens/team_join_screen.dart';
 import '../../features/teams/presentation/screens/team_join_success_screen.dart';
 import '../../features/teams/presentation/screens/team_loader_screen.dart';
-import '../../features/teams/presentation/screens/team_members_screen.dart';
-import '../../features/teams/presentation/screens/team_progress_screen.dart';
 import '../services/core_service_locator.dart';
 import 'app_routes.dart';
 import 'auth_gate.dart';
@@ -240,14 +237,6 @@ class AppRouter {
           ),
         ),
         GoRoute(
-          path: AppRoutes.teamCreate,
-          name: AppRoutes.teamCreateName,
-          builder: (context, state) => BlocProvider<TeamsCubit>(
-            create: (_) => sl<TeamsCubit>(),
-            child: const TeamCreateScreen(),
-          ),
-        ),
-        GoRoute(
           path: AppRoutes.teamCreateSuccess,
           name: AppRoutes.teamCreateSuccessName,
           builder: (context, state) => BlocProvider<TeamsCubit>(
@@ -289,22 +278,6 @@ class AppRouter {
               child: const TempTeamHomeScreen(),
             );
           },
-        ),
-        GoRoute(
-          path: AppRoutes.teamMembers,
-          name: AppRoutes.teamMembersName,
-          builder: (context, state) => BlocProvider<TeamsCubit>(
-            create: (_) => sl<TeamsCubit>(),
-            child: const TeamMembersScreen(),
-          ),
-        ),
-        GoRoute(
-          path: AppRoutes.teamProgress,
-          name: AppRoutes.teamProgressName,
-          builder: (context, state) => BlocProvider<TeamsCubit>(
-            create: (_) => sl<TeamsCubit>(),
-            child: const TeamProgressScreen(),
-          ),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) =>

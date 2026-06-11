@@ -69,20 +69,36 @@ class TeamsCubit extends BaseCubit<TeamsState> {
     }
   }
 
-  Future<void> loadTeamProgress() async {
+  /// Loads team progress. With [categoryId] omitted the leaderboard is scoped
+  /// to all categories; with a [categoryId] the response also carries the
+  /// per-category breakdown in [TeamProgressModel.category].
+  Future<void> loadTeamProgress({int? categoryId}) async {
+    emit(
+      state.copyWith(
+        progressCategoryId: () => categoryId,
+        progressLoading: true,
+      ),
+    );
     try {
-      final progress = await _repository.getMyTeamProgress();
+      final progress = await _repository.getMyTeamProgress(
+        categoryId: categoryId,
+      );
       // The backend no longer exposes `/progress/summary`; the summary is
-      // projected from the single `/progress` payload.
-      final summary = TeamProgressSummaryModel.fromProgress(progress);
+      // projected from the single `/progress` payload. Only the all-categories
+      // payload represents the team's overall summary, so we leave the cached
+      // summary untouched while a specific category is in view.
       emit(
         state.copyWith(
           progress: () => progress,
-          summary: () => summary,
+          summary: categoryId == null
+              ? () => TeamProgressSummaryModel.fromProgress(progress)
+              : null,
+          progressLoading: false,
         ),
       );
     } catch (e) {
       logger.error('TeamsCubit.loadTeamProgress failed: $e');
+      emit(state.copyWith(progressLoading: false));
     }
   }
 
@@ -184,6 +200,8 @@ class TeamsCubit extends BaseCubit<TeamsState> {
           members: () => null,
           progress: () => null,
           summary: () => null,
+          progressCategoryId: () => null,
+          progressLoading: false,
         ),
       );
     } on ServerException catch (e) {

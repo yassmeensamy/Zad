@@ -1,9 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/navigation/app_routes.dart';
 import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import 'leaderboard_loading.dart';
@@ -156,7 +154,6 @@ class RankingsFooter extends StatelessWidget {
       title: me.teamName,
       completed: me.totalCompletedLevels,
       total: me.totalLevels,
-      onTap: () => context.pushNamed(AppRoutes.teamMembersName),
     );
   }
 }

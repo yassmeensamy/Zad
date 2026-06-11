@@ -5,18 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/navigation/deep_links.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
+import '../../../../core/widgets/rank_crown.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
 import '../../../categories/presentation/cubit/categories_state.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
+import '../../data/models/team_member_progress_model.dart';
 import '../cubit/teams_cubit.dart';
+import '../cubit/teams_state.dart';
 import '../widgets/date_ember_roles.dart';
 import '../widgets/team_leave_sheet.dart';
+import '../widgets/teams_painters.dart';
 
 typedef _Pal = DateEmberRoles;
 
@@ -65,6 +71,8 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
+    final state = context.watch<TeamsCubit>().state;
+    final teamName = state.team?.name ?? state.progress?.teamName ?? '';
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
       child: Row(
@@ -91,7 +99,7 @@ class _AppBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 ResponsiveText(
-                  'Companions of Sabr',
+                  teamName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
@@ -148,44 +156,62 @@ class _IconButton extends StatelessWidget {
   }
 }
 
-class _Stage extends StatefulWidget {
+class _Stage extends StatelessWidget {
   const _Stage();
 
   @override
-  State<_Stage> createState() => _StageState();
-}
-
-class _StageState extends State<_Stage> {
-  int? _categoryId;
-
-  @override
   Widget build(BuildContext context) {
+    // This shell never depends on cubit state, so it builds once. Only the
+    // category-aware region below subscribes to the filter selection — the
+    // identity card, team code and activity feed are untouched on filter taps.
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 0, 18, 28),
       physics: const BouncingScrollPhysics(),
-      children: [
-        const _IdentityCard(),
-        const SizedBox(height: 11),
-        const _TeamCodeCard(),
+      children: const [
+        _IdentityCard(),
+        SizedBox(height: 11),
+        _TeamCodeCard(),
 
-        const _SectionLabel(
+        _SectionLabel(
           'Team leaderboard',
           more: 'Top 10 →',
           emphasis: _LabelEmphasis.primary,
         ),
 
-        _CategoryFilter(
-          selectedId: _categoryId,
-          onSelect: (id) => setState(() => _categoryId = id),
-        ),
-        const SizedBox(height: 12),
-        _Leaderboard(categoryId: _categoryId),
+        _LeaderboardSection(),
 
-        if (_categoryId == null) const _RivalHint(),
-
-        const _SectionLabel('Live activity', more: 'See all →'),
-        const _ActivityFeed(),
+        _SectionLabel('Live activity', more: 'See all →'),
+        _ActivityFeed(),
       ],
+    );
+  }
+}
+
+/// Category filter + leaderboard + rival hint. Isolated so that switching the
+/// category filter only rebuilds this region, not the whole [_Stage] list.
+class _LeaderboardSection extends StatelessWidget {
+  const _LeaderboardSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<TeamsCubit, TeamsState, int?>(
+      selector: (state) => state.progressCategoryId,
+      builder: (context, selectedId) {
+        return Column(
+          children: [
+            _CategoryFilter(
+              selectedId: selectedId,
+              onSelect: (id) {
+                if (id == selectedId) return;
+                context.read<TeamsCubit>().loadTeamProgress(categoryId: id);
+              },
+            ),
+            const SizedBox(height: 12),
+            const _Leaderboard(),
+            if (selectedId == null) const _RivalHint(),
+          ],
+        );
+      },
     );
   }
 }
@@ -205,28 +231,25 @@ class _CategoryFilter extends StatelessWidget {
 
         return SizedBox(
           height: 32,
-          child: ListView.separated(
+          child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 2),
-
-            itemCount: categories.length + 1,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, i) {
-              if (i == 0) {
-                return _CategoryChip(
+            child: Row(
+              children: [
+                _CategoryChip(
                   label: 'All',
                   active: selectedId == null,
                   onTap: () => onSelect(null),
-                );
-              }
-              final category = categories[i - 1];
-              return _CategoryChip(
-                label: category.name,
-                active: category.id == selectedId,
-                onTap: () => onSelect(category.id),
-              );
-            },
+                ),
+                for (final category in categories)
+                  _CategoryChip(
+                    label: category.name,
+                    active: category.id == selectedId,
+                    onTap: () => onSelect(category.id),
+                  ),
+              ],
+            ),
           ),
         );
       },
@@ -248,28 +271,41 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(99),
-          color: active ? p.washAmber.withValues(alpha: 0.18) : p.cardFill,
-          border: Border.all(
-            color: active ? p.washAmber.withValues(alpha: 0.5) : p.hairline,
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          onTap();
+          // Auto-scroll the tapped chip to the centre so the active filter is
+          // always fully in view.
+          Scrollable.ensureVisible(
+            context,
+            alignment: 0.5,
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeOutCubic,
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(99),
+            color: active ? p.washAmber.withValues(alpha: 0.18) : p.cardFill,
+            border: Border.all(
+              color: active ? p.washAmber.withValues(alpha: 0.5) : p.hairline,
+            ),
           ),
-        ),
-        child: ResponsiveText(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: active ? FontWeight.w700 : FontWeight.w600,
-            letterSpacing: 1.2,
-            color: active ? p.gold : p.inkMute,
+          child: ResponsiveText(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+              letterSpacing: 1.2,
+              color: active ? p.gold : p.inkMute,
+            ),
           ),
         ),
       ),
@@ -610,11 +646,10 @@ class _TeamCodeCard extends StatefulWidget {
 }
 
 class _TeamCodeCardState extends State<_TeamCodeCard> {
-  static const _code = 'SABR-9F2K';
   bool _copied = false;
 
-  Future<void> _copy() async {
-    await Clipboard.setData(const ClipboardData(text: _code));
+  Future<void> _copy(String code) async {
+    await Clipboard.setData(ClipboardData(text: code));
     if (!mounted) return;
     setState(() => _copied = true);
     await Future.delayed(const Duration(milliseconds: 1700));
@@ -622,11 +657,11 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
     setState(() => _copied = false);
   }
 
-  Future<void> _share(BuildContext context) async {
+  Future<void> _share(BuildContext context, String code) async {
     await sl<ShareService>().shareFrom(
       context: context,
       text: 'teams.create.share_message'.tr(
-        namedArgs: {'code': _code, 'link': DeepLinks.teamInvite(_code)},
+        namedArgs: {'code': code, 'link': DeepLinks.teamInvite(code)},
       ),
       subject: 'teams.create.share_subject'.tr(),
     );
@@ -635,6 +670,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
+    final code = context.watch<TeamsCubit>().state.team?.joinCode ?? '';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       decoration: BoxDecoration(
@@ -663,7 +699,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
               const SizedBox(height: 6),
               _DashedPill(
                 child: ResponsiveText(
-                  _code,
+                  code,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -682,7 +718,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             children: [
               if (_copied) const Positioned(top: -34, child: _CopiedToast()),
               GestureDetector(
-                onTap: _copy,
+                onTap: () => _copy(code),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 42,
@@ -710,7 +746,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
           const SizedBox(width: 8),
 
           GestureDetector(
-            onTap: () => _share(context),
+            onTap: () => _share(context, code),
             child: Container(
               width: 42,
               height: 42,
@@ -1063,30 +1099,118 @@ class _MiniCheck extends StatelessWidget {
 }
 
 class _Leaderboard extends StatelessWidget {
-  const _Leaderboard({required this.categoryId});
-
-  final int? categoryId;
+  const _Leaderboard();
 
   @override
   Widget build(BuildContext context) {
-    final entries = categoryId == null
-        ? _overallBoard
-        : _categoryBoards[categoryId! % _categoryBoards.length];
+    final p = _Pal(context);
+    final state = context.watch<TeamsCubit>().state;
+    final progress = state.progress;
+    final loading = progress == null || state.progressLoading;
+    final myId = context.watch<UserCubit>().state.user?.id;
+
+    final List<_LbEntry> entries;
+    if (progress == null) {
+      // First load — no data yet, so fall back to a fixed placeholder board.
+      entries = _skeletonBoard;
+    } else {
+      // While a category is loading, the previous board stays mounted and is
+      // shimmered in place (same member count, so the leaderboard keeps its
+      // height and the content below it doesn't move); once loaded it swaps to
+      // the real values. `progress.category` is the scoped breakdown, falling
+      // back to the all-categories totals.
+      final source = progress.category?.members ?? progress.members;
+      final members = [...source]
+        ..sort((a, b) => b.completedLevels.compareTo(a.completedLevels));
+      entries = [
+        for (var i = 0; i < members.length; i++)
+          _LbEntry.fromMember(
+            members[i],
+            rank: i + 1,
+            isMe: members[i].userId == myId,
+          ),
+      ];
+    }
 
     final podium = entries.take(3).toList();
     final rest = entries.skip(3).toList();
-    return Column(
-      children: [
-        if (podium.isNotEmpty) _TopThree(entries: podium),
-        if (podium.isNotEmpty && rest.isNotEmpty) const SizedBox(height: 14),
-        for (var i = 0; i < rest.length; i++) ...[
-          if (i > 0) const SizedBox(height: 7),
-          _LbRow.fromEntry(rest[i]),
+    return Skeletonizer(
+      enabled: loading,
+      effect: ShimmerEffect(
+        baseColor: p.washAmber.withValues(alpha: 0.10),
+        highlightColor: p.washAmber.withValues(alpha: 0.22),
+      ),
+      child: Column(
+        children: [
+          if (podium.isNotEmpty) _TopThree(entries: podium),
+          if (podium.isNotEmpty && rest.isNotEmpty) const SizedBox(height: 14),
+          for (var i = 0; i < rest.length; i++) ...[
+            if (i > 0) const SizedBox(height: 7),
+            _LbRow.fromEntry(rest[i]),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
+
+/// Placeholder rows rendered (skeletonized) while team progress loads, so the
+/// leaderboard shows a shimmer in the real layout instead of an empty state.
+const _skeletonBoard = <_LbEntry>[
+  _LbEntry(
+    pos: '1',
+    letter: 'A',
+    name: 'Member name',
+    meta: 'Active',
+    points: '18/20',
+    percent: 90,
+    medal: true,
+  ),
+  _LbEntry(
+    pos: '2',
+    letter: 'B',
+    name: 'Member name',
+    meta: 'Consistent',
+    points: '16/20',
+    percent: 80,
+    medal: true,
+    palette: _AvatarPalette.olive,
+  ),
+  _LbEntry(
+    pos: '3',
+    letter: 'C',
+    name: 'Member name',
+    meta: 'Active',
+    points: '14/20',
+    percent: 70,
+    medal: true,
+  ),
+  _LbEntry(
+    pos: '4',
+    letter: 'D',
+    name: 'Member name',
+    meta: 'Idle',
+    points: '11/20',
+    percent: 55,
+  ),
+  _LbEntry(
+    pos: '5',
+    letter: 'E',
+    name: 'Member name',
+    meta: 'Consistent',
+    points: '9/20',
+    percent: 45,
+    palette: _AvatarPalette.olive,
+  ),
+  _LbEntry(
+    pos: '6',
+    letter: 'F',
+    name: 'Member name',
+    meta: 'Idle',
+    points: '7/20',
+    percent: 35,
+  ),
+];
 
 class _TopThree extends StatelessWidget {
   const _TopThree({required this.entries});
@@ -1188,7 +1312,7 @@ class _PodiumPillar extends StatelessWidget {
                 ),
               ),
               if (isFirst && entry != null)
-                const Positioned(top: -10, child: _Crown()),
+                const Positioned(top: -10, child: RankCrown()),
               Positioned(
                 right: 0,
                 bottom: 0,
@@ -1285,56 +1409,6 @@ class _PodiumBadge extends StatelessWidget {
   }
 }
 
-class _Crown extends StatelessWidget {
-  const _Crown();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 26,
-      height: 16,
-      child: CustomPaint(painter: _CrownPainter()),
-    );
-  }
-}
-
-class _CrownPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final sx = size.width / 26;
-    final sy = size.height / 16;
-    final path = Path()
-      ..moveTo(1.5 * sx, 14 * sy)
-      ..lineTo(4 * sx, 5 * sy)
-      ..lineTo(9.5 * sx, 10.5 * sy)
-      ..lineTo(13 * sx, 2.5 * sy)
-      ..lineTo(16.5 * sx, 10.5 * sy)
-      ..lineTo(22 * sx, 5 * sy)
-      ..lineTo(24.5 * sx, 14 * sy)
-      ..close();
-    canvas.drawPath(
-      path,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.discGoldHi, AppColors.discGoldLo],
-        ).createShader(Offset.zero & size),
-    );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.8
-        ..strokeJoin = StrokeJoin.round
-        ..color = AppColors.discGoldLo,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 enum _AvatarPalette { gold, olive }
 
 class _LbEntry {
@@ -1344,226 +1418,41 @@ class _LbEntry {
     required this.name,
     required this.meta,
     required this.points,
-    required this.trend,
+    required this.percent,
     this.medal = false,
-    this.up = true,
-    this.tag = _LbTag.none,
+    this.isMe = false,
     this.palette = _AvatarPalette.gold,
   });
+
+  factory _LbEntry.fromMember(
+    TeamMemberProgressModel member, {
+    required int rank,
+    required bool isMe,
+  }) {
+    final name = member.username.trim();
+    return _LbEntry(
+      pos: '$rank',
+      letter: name.isEmpty ? '—' : name.substring(0, 1).toUpperCase(),
+      name: name.isEmpty ? 'Member' : name,
+      meta: member.activityStatus.label,
+      points: '${member.completedLevels}/${member.totalLevels}',
+      percent: member.progressPercent,
+      medal: rank <= 3,
+      isMe: isMe,
+      palette: rank.isEven ? _AvatarPalette.olive : _AvatarPalette.gold,
+    );
+  }
 
   final String pos;
   final String letter;
   final String name;
   final String meta;
   final String points;
-  final String trend;
+  final int percent;
   final bool medal;
-  final bool up;
-  final _LbTag tag;
+  final bool isMe;
   final _AvatarPalette palette;
 }
-
-const _overallBoard = <_LbEntry>[
-  _LbEntry(
-    pos: '1',
-    letter: 'Y',
-    name: 'Yūsuf A.',
-    meta: '94% accuracy · 38d streak',
-    points: '3,420',
-    trend: '0',
-    medal: true,
-  ),
-  _LbEntry(
-    pos: '2',
-    letter: 'A',
-    name: 'Aisha M.',
-    meta: '91% accuracy · 24d streak',
-    points: '2,980',
-    trend: '1',
-    medal: true,
-    palette: _AvatarPalette.olive,
-  ),
-  _LbEntry(
-    pos: '4',
-    letter: 'M',
-    name: 'Maryam K.',
-    meta: '2,210 pts · just ahead of you',
-    points: '2,210',
-    trend: '1',
-    up: false,
-    tag: _LbTag.rival,
-  ),
-  _LbEntry(
-    pos: '5',
-    letter: 'ز',
-    name: 'Zayd N.',
-    meta: '2,070 pts · 140 to overtake',
-    points: '2,070',
-    trend: '2',
-    tag: _LbTag.you,
-  ),
-];
-
-const _categoryBoards = <List<_LbEntry>>[
-  [
-    _LbEntry(
-      pos: '1',
-      letter: 'A',
-      name: 'Aisha M.',
-      meta: '1,540 pts · category leader',
-      points: '1,540',
-      trend: '0',
-      medal: true,
-      palette: _AvatarPalette.olive,
-    ),
-    _LbEntry(
-      pos: '2',
-      letter: 'ز',
-      name: 'Zayd N.',
-      meta: '1,420 pts · 120 to the top',
-      points: '1,420',
-      trend: '2',
-      tag: _LbTag.you,
-    ),
-    _LbEntry(
-      pos: '3',
-      letter: 'Y',
-      name: 'Yūsuf A.',
-      meta: '88% accuracy · steady',
-      points: '1,180',
-      trend: '1',
-      up: false,
-    ),
-    _LbEntry(
-      pos: '4',
-      letter: 'M',
-      name: 'Maryam K.',
-      meta: '1,090 pts · just behind you',
-      points: '1,090',
-      trend: '1',
-      up: false,
-      tag: _LbTag.rival,
-    ),
-  ],
-  [
-    _LbEntry(
-      pos: '1',
-      letter: 'Y',
-      name: 'Yūsuf A.',
-      meta: '980 pts · category leader',
-      points: '980',
-      trend: '0',
-      medal: true,
-    ),
-    _LbEntry(
-      pos: '2',
-      letter: 'M',
-      name: 'Maryam K.',
-      meta: '870 pts · just ahead of you',
-      points: '870',
-      trend: '1',
-      tag: _LbTag.rival,
-    ),
-    _LbEntry(
-      pos: '3',
-      letter: 'ز',
-      name: 'Zayd N.',
-      meta: '760 pts · 110 to overtake',
-      points: '760',
-      trend: '1',
-      up: false,
-      tag: _LbTag.you,
-    ),
-    _LbEntry(
-      pos: '4',
-      letter: 'B',
-      name: 'Bilal R.',
-      meta: '85% accuracy · rising',
-      points: '640',
-      trend: '2',
-      palette: _AvatarPalette.olive,
-    ),
-  ],
-  [
-    _LbEntry(
-      pos: '1',
-      letter: 'M',
-      name: 'Maryam K.',
-      meta: '1,310 pts · just ahead of you',
-      points: '1,310',
-      trend: '0',
-      medal: true,
-      tag: _LbTag.rival,
-    ),
-    _LbEntry(
-      pos: '2',
-      letter: 'ز',
-      name: 'Zayd N.',
-      meta: '1,240 pts · 70 to overtake',
-      points: '1,240',
-      trend: '1',
-      tag: _LbTag.you,
-    ),
-    _LbEntry(
-      pos: '3',
-      letter: 'A',
-      name: 'Aisha M.',
-      meta: '90% accuracy · consistent',
-      points: '1,100',
-      trend: '1',
-      up: false,
-      palette: _AvatarPalette.olive,
-    ),
-    _LbEntry(
-      pos: '4',
-      letter: 'Y',
-      name: 'Yūsuf A.',
-      meta: '980 pts · holding',
-      points: '980',
-      trend: '0',
-    ),
-  ],
-  [
-    _LbEntry(
-      pos: '1',
-      letter: 'ز',
-      name: 'Zayd N.',
-      meta: '1,560 pts · you lead this category',
-      points: '1,560',
-      trend: '1',
-      medal: true,
-      tag: _LbTag.you,
-    ),
-    _LbEntry(
-      pos: '2',
-      letter: 'Y',
-      name: 'Yūsuf A.',
-      meta: '1,420 pts · chasing you',
-      points: '1,420',
-      trend: '1',
-      up: false,
-    ),
-    _LbEntry(
-      pos: '3',
-      letter: 'A',
-      name: 'Aisha M.',
-      meta: '92% accuracy · steady',
-      points: '1,260',
-      trend: '0',
-      palette: _AvatarPalette.olive,
-    ),
-    _LbEntry(
-      pos: '4',
-      letter: 'M',
-      name: 'Maryam K.',
-      meta: '1,150 pts · slipping',
-      points: '1,150',
-      trend: '2',
-      up: false,
-      tag: _LbTag.rival,
-    ),
-  ],
-];
 
 _LbAvatar _avatarFor(_AvatarPalette palette, String letter) =>
     switch (palette) {
@@ -1581,8 +1470,6 @@ _LbAvatar _avatarFor(_AvatarPalette palette, String letter) =>
       ),
     };
 
-enum _LbTag { none, you, rival }
-
 class _LbRow extends StatelessWidget {
   const _LbRow({
     required this.pos,
@@ -1590,12 +1477,9 @@ class _LbRow extends StatelessWidget {
     required this.name,
     required this.meta,
     required this.points,
-    required this.trend,
-    required this.up,
+    required this.percent,
     this.medal = false,
     this.me = false,
-    this.rival = false,
-    this.tag = _LbTag.none,
   });
 
   factory _LbRow.fromEntry(_LbEntry e) => _LbRow(
@@ -1604,12 +1488,9 @@ class _LbRow extends StatelessWidget {
     name: e.name,
     meta: e.meta,
     points: e.points,
-    trend: e.trend,
-    up: e.up,
+    percent: e.percent,
     medal: e.medal,
-    me: e.tag == _LbTag.you,
-    rival: e.tag == _LbTag.rival,
-    tag: e.tag,
+    me: e.isMe,
   );
 
   final String pos;
@@ -1617,47 +1498,29 @@ class _LbRow extends StatelessWidget {
   final String name;
   final String meta;
   final String points;
-  final String trend;
-  final bool up;
+  final int percent;
   final bool medal;
   final bool me;
-  final bool rival;
-  final _LbTag tag;
 
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
-    BoxDecoration deco;
-    if (me) {
-      deco = BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            p.washAmber.withValues(alpha: 0.12),
-            p.washAmber.withValues(alpha: 0.03),
-          ],
-        ),
-        border: Border.all(color: p.glassBorder),
-      );
-    } else if (rival) {
-      deco = BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            p.ember.withValues(alpha: 0.12),
-            p.ember.withValues(alpha: 0.03),
-          ],
-        ),
-        border: Border.all(color: p.emberLight.withValues(alpha: 0.34)),
-      );
-    } else {
-      deco = BoxDecoration(
-        color: p.cardFill,
-        border: Border.all(color: p.hairline),
-      );
-    }
+    final deco = me
+        ? BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                p.washAmber.withValues(alpha: 0.12),
+                p.washAmber.withValues(alpha: 0.03),
+              ],
+            ),
+            border: Border.all(color: p.glassBorder),
+          )
+        : BoxDecoration(
+            color: p.cardFill,
+            border: Border.all(color: p.hairline),
+          );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1698,9 +1561,9 @@ class _LbRow extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (tag != _LbTag.none) ...[
+                    if (me) ...[
                       const SizedBox(width: 6),
-                      _Tag(tag),
+                      const _Tag(),
                     ],
                   ],
                 ),
@@ -1725,7 +1588,14 @@ class _LbRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              _TrendChip(value: trend, up: up),
+              ResponsiveText(
+                '$percent%',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: p.up,
+                ),
+              ),
             ],
           ),
         ],
@@ -1766,31 +1636,25 @@ class _LbAvatar extends StatelessWidget {
 }
 
 class _Tag extends StatelessWidget {
-  const _Tag(this.tag);
-  final _LbTag tag;
+  const _Tag();
 
   @override
   Widget build(BuildContext context) {
     final p = _Pal(context);
-    final isYou = tag == _LbTag.you;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(99),
-        color: (isYou ? p.washAmber : p.ember).withValues(
-          alpha: isYou ? 0.2 : 0.18,
-        ),
-        border: Border.all(
-          color: (isYou ? p.washAmber : p.emberLight).withValues(alpha: 0.4),
-        ),
+        color: p.washAmber.withValues(alpha: 0.2),
+        border: Border.all(color: p.washAmber.withValues(alpha: 0.4)),
       ),
       child: ResponsiveText(
-        isYou ? 'YOU' : 'RIVAL',
+        'YOU',
         style: TextStyle(
           fontSize: 7.5,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0,
-          color: isYou ? p.gold : p.emberLight,
+          color: p.gold,
         ),
       ),
     );
@@ -1825,37 +1689,6 @@ class _RivalHint extends StatelessWidget {
   }
 }
 
-class _TrendChip extends StatelessWidget {
-  const _TrendChip({required this.value, required this.up});
-
-  final String value;
-  final bool up;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    final color = up ? p.up : p.down;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          up ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-          size: 12,
-          color: color,
-        ),
-        ResponsiveText(
-          value,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _Sparkle extends StatelessWidget {
   const _Sparkle({required this.size, required this.color});
 
@@ -1866,34 +1699,9 @@ class _Sparkle extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size.square(size),
-      painter: _SparklePainter(color),
+      painter: SparklePainter(color),
     );
   }
-}
-
-class _SparklePainter extends CustomPainter {
-  _SparklePainter(this.color);
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final s = size.width / 24.0;
-    final paint = Paint()..color = color;
-    final path = Path()
-      ..moveTo(12 * s, 2 * s)
-      ..lineTo(14 * s, 9 * s)
-      ..lineTo(21 * s, 12 * s)
-      ..lineTo(14 * s, 15 * s)
-      ..lineTo(12 * s, 22 * s)
-      ..lineTo(10 * s, 15 * s)
-      ..lineTo(3 * s, 12 * s)
-      ..lineTo(10 * s, 9 * s)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(_SparklePainter old) => old.color != color;
 }
 
 class _Flame extends StatelessWidget {

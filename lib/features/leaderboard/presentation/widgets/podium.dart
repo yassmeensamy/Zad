@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/rank_crown.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import 'leaderboard_disc.dart';
@@ -95,7 +96,7 @@ class _PodiumPillar extends StatelessWidget {
                 fontSize: isFirst ? 24 : 20,
               ),
               if (isFirst && seed != null)
-                const Positioned(top: -8, child: _Crown()),
+                const Positioned(top: -8, child: RankCrown()),
               Positioned(
                 right: 2,
                 bottom: 2,
@@ -191,52 +192,3 @@ class _RankBadge extends StatelessWidget {
   }
 }
 
-class _Crown extends StatelessWidget {
-  const _Crown();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 26,
-      height: 16,
-      child: CustomPaint(painter: _CrownPainter()),
-    );
-  }
-}
-
-class _CrownPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final sx = size.width / 26;
-    final sy = size.height / 16;
-    final path = Path()
-      ..moveTo(1.5 * sx, 14 * sy)
-      ..lineTo(4 * sx, 5 * sy)
-      ..lineTo(9.5 * sx, 10.5 * sy)
-      ..lineTo(13 * sx, 2.5 * sy)
-      ..lineTo(16.5 * sx, 10.5 * sy)
-      ..lineTo(22 * sx, 5 * sy)
-      ..lineTo(24.5 * sx, 14 * sy)
-      ..close();
-    canvas.drawPath(
-      path,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.discGoldHi, AppColors.discGoldLo],
-        ).createShader(Offset.zero & size),
-    );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.8
-        ..strokeJoin = StrokeJoin.round
-        ..color = AppColors.discBronzeLo,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

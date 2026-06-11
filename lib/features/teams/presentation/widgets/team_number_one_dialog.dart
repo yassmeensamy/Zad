@@ -8,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import 'teams_painters.dart';
 
 /// Zad — **Team Number One Celebration** dialog.
 ///
@@ -1085,7 +1086,7 @@ class _TwinkleState extends State<_Twinkle>
               scale: 0.3 + 0.7 * e,
               child: CustomPaint(
                 size: Size(widget.size, widget.size),
-                painter: _StarPainter(widget.color),
+                painter: SparklePainter(widget.color),
               ),
             ),
           ),
@@ -1093,32 +1094,6 @@ class _TwinkleState extends State<_Twinkle>
       },
     );
   }
-}
-
-class _StarPainter extends CustomPainter {
-  _StarPainter(this.color);
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Four-point sparkle on a 24×24 viewBox.
-    final s = size.width / 24;
-    final path = Path()
-      ..moveTo(12 * s, 2 * s)
-      ..lineTo(14 * s, 9 * s)
-      ..lineTo(21 * s, 12 * s)
-      ..lineTo(14 * s, 15 * s)
-      ..lineTo(12 * s, 22 * s)
-      ..lineTo(10 * s, 15 * s)
-      ..lineTo(3 * s, 12 * s)
-      ..lineTo(10 * s, 9 * s)
-      ..close();
-    canvas.drawPath(path, Paint()..color = color..isAntiAlias = true);
-  }
-
-  @override
-  bool shouldRepaint(_StarPainter oldDelegate) => oldDelegate.color != color;
 }
 
 // ─── #1 ribbon badge ──────────────────────────────────────────────────────────

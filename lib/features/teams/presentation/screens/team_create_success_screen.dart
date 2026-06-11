@@ -19,6 +19,7 @@ import '../cubit/teams_state.dart';
 import '../widgets/corner_flourishes.dart';
 import '../widgets/gilded_cta.dart';
 import '../widgets/team_scaffold.dart';
+import '../widgets/teams_painters.dart';
 
 /// Decree palette — illuminated-manuscript golds, parchment surfaces and
 /// brown inks for the create-success celebration. All colors live in
@@ -468,12 +469,12 @@ class _MedallionPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.9 * unit
       ..color = goldMid.withValues(alpha: 0.85);
-    _paintDashedCircle(
+    paintDashedCircle(
       canvas,
       Offset.zero,
       96 * unit,
-      dashLen: 2 * unit,
-      gapLen: 6 * unit,
+      dash: 2 * unit,
+      gap: 6 * unit,
       paint: orbitPaint,
     );
     canvas.restore();
@@ -532,12 +533,12 @@ class _MedallionPainter extends CustomPainter {
         ..color = inkBrownDeep,
     );
     // dashed inner highlight
-    _paintDashedCircle(
+    paintDashedCircle(
       canvas,
       center,
       44 * unit,
-      dashLen: 1 * unit,
-      gapLen: 3 * unit,
+      dash: 1 * unit,
+      gap: 3 * unit,
       paint: Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.6 * unit
@@ -572,26 +573,6 @@ class _MedallionPainter extends CustomPainter {
       }
     }
     return path..close();
-  }
-
-  void _paintDashedCircle(
-    Canvas canvas,
-    Offset center,
-    double radius, {
-    required double dashLen,
-    required double gapLen,
-    required Paint paint,
-  }) {
-    final rect = Rect.fromCircle(center: center, radius: radius);
-    final path = Path()..addOval(rect);
-    for (final metric in path.computeMetrics()) {
-      var d = 0.0;
-      while (d < metric.length) {
-        final next = (d + dashLen).clamp(0.0, metric.length);
-        canvas.drawPath(metric.extractPath(d, next), paint);
-        d = next + gapLen;
-      }
-    }
   }
 
   @override

@@ -17,7 +17,6 @@ class TeamWeekStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = DateEmberRoles(context);
     return Column(
       children: [
         const IntrinsicHeight(
@@ -72,9 +71,6 @@ class TeamWeekStats extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 9),
-        // Insight banner.
-        
       ],
     );
   }

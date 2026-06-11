@@ -69,6 +69,10 @@ class _TeamLoaderScreenState extends State<TeamLoaderScreen> {
           _loadAuxData(context.read<TeamsCubit>(), state);
         }
       },
+      // The body swap depends solely on `status`. Without this, every progress
+      // / loading emit (e.g. switching the leaderboard category) re-runs the
+      // builder and the whole team-home subtree below it.
+      buildWhen: (a, b) => a.status != b.status,
       builder: (context, state) {
         if (state.hasTeam) return const TempTeamHomeScreen();
         return TeamScaffold(

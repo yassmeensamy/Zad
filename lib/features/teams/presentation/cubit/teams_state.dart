@@ -26,6 +26,8 @@ class TeamsState {
     this.members,
     this.progress,
     this.summary,
+    this.progressCategoryId,
+    this.progressLoading = false,
     this.createStatus = CreateStatus.idle,
     this.createdTeam,
     this.joinStatus = JoinStatus.idle,
@@ -39,6 +41,14 @@ class TeamsState {
   final TeamMembersModel? members;
   final TeamProgressModel? progress;
   final TeamProgressSummaryModel? summary;
+
+  /// Currently displayed leaderboard scope: `null` = all categories, otherwise
+  /// the selected category id (drives [TeamProgressModel.category]).
+  final int? progressCategoryId;
+
+  /// True while a (re)fetch of [progress] is in flight, e.g. after the user
+  /// switches the category filter.
+  final bool progressLoading;
 
   final CreateStatus createStatus;
   final TeamModel? createdTeam;
@@ -56,6 +66,8 @@ class TeamsState {
     TeamMembersModel? Function()? members,
     TeamProgressModel? Function()? progress,
     TeamProgressSummaryModel? Function()? summary,
+    int? Function()? progressCategoryId,
+    bool? progressLoading,
     CreateStatus? createStatus,
     TeamModel? Function()? createdTeam,
     JoinStatus? joinStatus,
@@ -68,6 +80,10 @@ class TeamsState {
     members: members != null ? members() : this.members,
     progress: progress != null ? progress() : this.progress,
     summary: summary != null ? summary() : this.summary,
+    progressCategoryId: progressCategoryId != null
+        ? progressCategoryId()
+        : this.progressCategoryId,
+    progressLoading: progressLoading ?? this.progressLoading,
     createStatus: createStatus ?? this.createStatus,
     createdTeam: createdTeam != null ? createdTeam() : this.createdTeam,
     joinStatus: joinStatus ?? this.joinStatus,
@@ -85,6 +101,8 @@ class TeamsState {
         other.members == members &&
         other.progress == progress &&
         other.summary == summary &&
+        other.progressCategoryId == progressCategoryId &&
+        other.progressLoading == progressLoading &&
         other.createStatus == createStatus &&
         other.createdTeam == createdTeam &&
         other.joinStatus == joinStatus &&
@@ -100,6 +118,8 @@ class TeamsState {
     members,
     progress,
     summary,
+    progressCategoryId,
+    progressLoading,
     createStatus,
     createdTeam,
     joinStatus,

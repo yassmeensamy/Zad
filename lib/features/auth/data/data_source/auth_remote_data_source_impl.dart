@@ -49,7 +49,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _endpoints.guestLogin,
       skipAuth: true,
     );
-    response.validated();
+    response.validated(const [200, 201]);
     return AuthResponse.fromMap(response.data);
   }
 

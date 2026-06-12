@@ -10,10 +10,13 @@ class GuardRoutes {
     required this.onboarding,
     String? offlineHome,
     String? guestHome,
+    String? childHome,
     this.guestBlocked = const {},
+    this.childBlocked = const {},
     this.publicRoutes = const {},
   }) : offlineHome = offlineHome ?? home,
-       guestHome = guestHome ?? home;
+       guestHome = guestHome ?? home,
+       childHome = childHome ?? home;
 
   final String splash;
   final String signIn;
@@ -27,6 +30,14 @@ class GuardRoutes {
   /// Routes a guest may not open (e.g. children management). Hitting one
   /// redirects the guest back to [guestHome].
   final Set<String> guestBlocked;
+
+  /// Where a child-role user lands instead of [home]; children skip the
+  /// parent/child selection flow and go straight here.
+  final String childHome;
+
+  /// Routes a child may not open (e.g. the profile-selection flow). Hitting
+  /// one redirects the child back to [childHome].
+  final Set<String> childBlocked;
   final String onboarding;
 
   final Set<String> publicRoutes;
@@ -42,6 +53,7 @@ GoRouterRedirect authGuard({
   required AuthPhase Function() phase,
   bool Function() isOnline = _alwaysOnline,
   bool Function() isGuest = _notGuest,
+  bool Function() isChild = _notChild,
   String fromParam = 'from',
 }) {
   return (context, state) {
@@ -80,6 +92,20 @@ GoRouterRedirect authGuard({
           }
           return null;
         }
+        if (isChild()) {
+          // Children skip the parent/child selection flow and land on their
+          // own home instead of the profile-selection screen.
+          if (routes.childBlocked.contains(loc)) return routes.childHome;
+          if (loc == routes.splash || loc == routes.signIn) {
+            final wantsBlocked =
+                intended != null &&
+                routes.childBlocked.contains(Uri.parse(intended).path);
+            return (intended == null || wantsBlocked)
+                ? routes.childHome
+                : intended;
+          }
+          return null;
+        }
         if (loc == routes.splash || loc == routes.signIn) {
           final home = isOnline() ? routes.home : routes.offlineHome;
           return intended ?? home;
@@ -92,3 +118,5 @@ GoRouterRedirect authGuard({
 bool _alwaysOnline() => true;
 
 bool _notGuest() => false;
+
+bool _notChild() => false;

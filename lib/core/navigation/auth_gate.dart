@@ -58,6 +58,10 @@ class AuthGate {
   /// [UserModel.isAnonymous] from /me, not auth state.
   bool get isGuest => _user.state.user?.isAnonymous ?? false;
 
+  /// Whether the signed-in user has the child role. Source of truth is
+  /// [UserModel.role] from /me. Children skip the profile-selection flow.
+  bool get isChild => _user.state.user?.isChild ?? false;
+
   void dispose() {
     for (final source in _sources) {
       source.dispose();

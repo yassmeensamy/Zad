@@ -60,7 +60,14 @@ class AppRouter {
     home: AppRoutes.profileSelect,
     offlineHome: AppRoutes.home,
     guestHome: AppRoutes.home,
+    childHome: AppRoutes.home,
     guestBlocked: {
+      AppRoutes.profileSelect,
+      AppRoutes.roleSelect,
+      AppRoutes.createProfiles,
+      AppRoutes.myChildren,
+    },
+    childBlocked: {
       AppRoutes.profileSelect,
       AppRoutes.roleSelect,
       AppRoutes.createProfiles,
@@ -84,6 +91,7 @@ class AppRouter {
         phase: () => gate.phase,
         isOnline: isOnline,
         isGuest: () => gate.isGuest,
+        isChild: () => gate.isChild,
       ),
       routes: [
         GoRoute(

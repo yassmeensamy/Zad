@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../../language/presentation/modals/language_dialog.dart';
+import '../../notification/presentation/widgets/notification_preferences_switch.dart';
 import '../../theme/presentation/cubit/theme_cubit.dart';
 import '../presentation/widgets/change_password_dialog.dart';
 import 'profile_section.dart';
@@ -20,6 +21,15 @@ List<ProfileSection> profileSections(
   BuildContext context, {
   bool isGuest = false,
 }) => isGuest ? _guestSections(context) : _userSections(context);
+
+/// Master push-notifications toggle. The trailing [NotificationPreferencesSwitch]
+/// owns its own cubit, so this item carries no `onTap` — interaction lives in
+/// the switch itself.
+ProfileMenuItem _notificationsToggleItem() => const ProfileMenuItem(
+  icon: Icons.notifications_active_outlined,
+  titleKey: 'profile.notifications',
+  trailing: NotificationPreferencesSwitch(),
+);
 
 ProfileMenuItem _languageItem(BuildContext context) => ProfileMenuItem(
   icon: Icons.translate_rounded,
@@ -78,6 +88,7 @@ List<ProfileSection> _userSections(BuildContext context) => [
         titleKey: 'profile.reminders',
         onTap: () => context.pushNamed(AppRoutes.notificationsName),
       ),
+      _notificationsToggleItem(),
       _languageItem(context),
       _themeItem(context),
     ],

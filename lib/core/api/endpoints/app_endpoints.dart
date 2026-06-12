@@ -78,5 +78,7 @@ class AppEndpoint {
   String get notificationsUnreadCount =>
       '${baseUrl}api/notifications/unread-count';
   String get notificationsReadAll => '${baseUrl}api/notifications/read-all';
+  String get notificationsPreferences =>
+      '${baseUrl}api/notifications/preferences';
   String notificationById(int id) => '${baseUrl}api/notifications/$id';
 }

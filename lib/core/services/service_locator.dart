@@ -58,10 +58,13 @@ import '../../features/quiz_stats/data/remote/quiz_stats_remote_data_source.dart
 import '../../features/quiz_stats/data/repositories/quiz_stats_repository.dart';
 import '../../features/quiz_stats/presentation/cubit/quiz_stats_cubit.dart';
 import '../../features/profile/presentation/cubit/progress_reset_cubit.dart';
+import '../../features/notification/data/remote/notification_preferences_remote_data_source.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
+import '../../features/notification/data/repositories/notification_preferences_repository.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
 import '../../features/notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
+import '../../features/notification/presentation/cubit/notification_preferences_cubit.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import '../bootstrap/app_startup_cubit.dart';
@@ -204,6 +207,21 @@ class ServiceLocator {
     );
     sl.registerFactory<NotificationCubit>(
       () => NotificationCubit(notificationRepository: sl()),
+    );
+    sl.registerLazySingleton<NotificationPreferencesRemoteDataSource>(
+      () => NotificationPreferencesRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<NotificationPreferencesRepository>(
+      () => NotificationPreferencesRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<NotificationPreferencesCubit>(
+      () => NotificationPreferencesCubit(
+        repository: sl(),
+        permissionService: sl(),
+      ),
     );
     sl.registerFactory<NotificationBadgeCubit>(
       () => NotificationBadgeCubit(notificationRepository: sl()),

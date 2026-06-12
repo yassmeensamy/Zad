@@ -399,6 +399,11 @@
       "other": "إشعار"
     },
     "clear_all": "مسح الكل",
+    "preferences_load_failed": "تعذّر تحميل إعدادات الإشعارات",
+    "preferences_update_failed": "تعذّر تحديث إعدادات الإشعارات",
+    "permission_required_title": "الإشعارات متوقّفة",
+    "permission_required_subtitle": "إشعارات التنبيه معطّلة لتطبيق زاد في إعدادات جهازك. افتح الإعدادات لتفعيلها.",
+    "open_settings": "فتح الإعدادات",
     "time": {
       "just_now": "الآن",
       "minutes_ago": "قبل {} دقيقة",
@@ -448,6 +453,7 @@
     "drafts": "المحفوظات",
     "my_children": "أبنائي",
     "reminders": "التذكيرات",
+    "notifications": "إشعارات التنبيه",
     "language": "اللغة",
     "theme": "المظهر",
     "theme_system": "النظام",

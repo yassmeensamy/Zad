@@ -399,6 +399,11 @@
       "other": "Notification"
     },
     "clear_all": "CLEAR ALL",
+    "preferences_load_failed": "Couldn't load your notification settings",
+    "preferences_update_failed": "Couldn't update your notification settings",
+    "permission_required_title": "Notifications are off",
+    "permission_required_subtitle": "Push notifications are disabled for Zaad in your device settings. Open settings to turn them on.",
+    "open_settings": "Open settings",
     "time": {
       "just_now": "Just now",
       "minutes_ago": "{} min ago",
@@ -448,6 +453,7 @@
     "drafts": "Drafts",
     "my_children": "My children",
     "reminders": "Reminders",
+    "notifications": "Push notifications",
     "language": "Language",
     "theme": "Appearance",
     "theme_system": "System",

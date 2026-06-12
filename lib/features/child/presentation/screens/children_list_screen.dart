@@ -61,6 +61,11 @@ class _ChildrenListView extends StatelessWidget {
             ),
         ]),
     ]);
+
+    // Re-sync drafts from the now-updated server children so pending
+    // deletes/new drafts clear and the Save button hides.
+    if (!context.mounted) return;
+    draftCubit.loadFromServer(cubit.state.children);
   }
 
   Future<void> _updateOne(

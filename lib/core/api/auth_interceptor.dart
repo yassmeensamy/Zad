@@ -164,7 +164,7 @@ class AuthInterceptor extends Interceptor {
 
       final res = await _dio.post<dynamic>(
         _endpoints.refresh,
-        data: {'refresh': refreshToken},
+        data: {'refreshToken': refreshToken},
         cancelToken: cancelToken,
       );
 

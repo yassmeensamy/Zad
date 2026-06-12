@@ -49,7 +49,7 @@ class ChildRemoteDataSourceImpl implements ChildRemoteDataSource {
           'birthDate': child.birthDate!.toIso8601String(),
       },
     );
-    response.validated();
+    response.validated([201]);
     logger.debug('createChild response: ${response.data}');
     return ChildModel.fromMap(response.data as Map<String, dynamic>);
   }

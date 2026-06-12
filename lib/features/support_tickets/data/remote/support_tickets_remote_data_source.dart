@@ -54,7 +54,7 @@ class SupportTicketsRemoteDataSourceImpl
       _endpoints.supportTickets,
       data: request.toMap(),
     );
-    response.validated();
+    response.validated([201]);
     return TicketModel.fromMap(response.data as Map<String, dynamic>);
   }
 }

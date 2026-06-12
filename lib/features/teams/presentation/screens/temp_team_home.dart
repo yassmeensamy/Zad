@@ -101,7 +101,11 @@ class _AppBar extends StatelessWidget {
             onTap: () async {
               final left = await showTeamLeaveSheet(context);
               if (left && context.mounted) {
-                context.goNamed(AppRoutes.homeName);
+                // Pop (rather than go) so the home section's awaited
+                // pushNamed resolves and refreshTeam() re-syncs to noTeam.
+                context.canPop()
+                    ? context.pop()
+                    : context.goNamed(AppRoutes.homeName);
               }
             },
           ),
@@ -190,7 +194,6 @@ class _LeaderboardSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const _Leaderboard(),
-            if (selectedId == null) const _RivalHint(),
           ],
         );
       },
@@ -1643,33 +1646,6 @@ class _Tag extends StatelessWidget {
   }
 }
 
-class _RivalHint extends StatelessWidget {
-  const _RivalHint();
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 9, 4, 0),
-      child: Row(
-        children: [
-          Icon(Icons.schedule, size: 13, color: p.emberLight),
-          const SizedBox(width: 7),
-          Expanded(
-            child: ResponsiveText(
-              'Just 140 points behind Maryam — your closest competitor.',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 10.5,
-                color: p.emberLight,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _Sparkle extends StatelessWidget {
   const _Sparkle({required this.size, required this.color});

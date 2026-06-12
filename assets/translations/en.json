@@ -67,7 +67,7 @@
     "password_set": "Password set",
     "password_set_cta": "Set password",
     "password_label": "Password",
-    "password_hint": "At least 4 characters",
+    "password_hint": "At least 6 characters",
     "password_sheet_title": "Set a password",
     "password_sheet_sub": "Used by {} to sign in",
     "password_sheet_fallback_name": "this child",

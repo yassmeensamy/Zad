@@ -67,7 +67,7 @@
     "password_set": "تم حفظ كلمة المرور",
     "password_set_cta": "اضبط كلمة المرور",
     "password_label": "كلمة المرور",
-    "password_hint": "٤ أحرف على الأقل",
+    "password_hint": "٦ أحرف على الأقل",
     "password_sheet_title": "اضبط كلمة المرور",
     "password_sheet_sub": "يستخدمها {} لتسجيل الدخول",
     "password_sheet_fallback_name": "هذا الطفل",

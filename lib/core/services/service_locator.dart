@@ -54,6 +54,9 @@ import '../../features/quiz/core/quiz_event_service.dart';
 import '../../features/quiz/data/remote/quiz_remote_data_source.dart';
 import '../../features/quiz/data/repositories/quiz_repository.dart';
 import '../../features/quiz/presentation/cubit/quiz_cubit.dart';
+import '../../features/quiz_stats/data/remote/quiz_stats_remote_data_source.dart';
+import '../../features/quiz_stats/data/repositories/quiz_stats_repository.dart';
+import '../../features/quiz_stats/presentation/cubit/quiz_stats_cubit.dart';
 import '../../features/profile/presentation/cubit/progress_reset_cubit.dart';
 import '../../features/notification/data/remote/notification_remote_data_source.dart';
 import '../../features/notification/data/repositories/notification_repository.dart';
@@ -353,6 +356,16 @@ class ServiceLocator {
       () => RankingsRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerFactory<RankingsCubit>(() => RankingsCubit(repository: sl()));
+
+    sl.registerLazySingleton<QuizStatsRemoteDataSource>(
+      () => QuizStatsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
+    );
+    sl.registerLazySingleton<QuizStatsRepository>(
+      () => QuizStatsRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<QuizStatsCubit>(
+      () => QuizStatsCubit(repository: sl(), rankingsRepository: sl()),
+    );
 
     sl.registerLazySingleton<StreakRemoteDataSource>(
       () => StreakRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),

@@ -12,6 +12,7 @@ import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
+import '../../../quiz_stats/presentation/cubit/quiz_stats_cubit.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
@@ -43,6 +44,9 @@ class HomeScreen extends StatelessWidget {
         ),
         BlocProvider<TeamsCubit>(
           create: (_) => sl<TeamsCubit>()..loadTeamStatus(),
+        ),
+        BlocProvider<QuizStatsCubit>(
+          create: (_) => sl<QuizStatsCubit>()..load(),
         ),
         BlocProvider<NotificationBadgeCubit>(
           create: (_) => sl<NotificationBadgeCubit>()..refresh(),
@@ -80,6 +84,7 @@ class _HomeView extends StatelessWidget {
               await Future.wait([
                 context.read<QuranSignCubit>().load(refresh: true),
                 context.read<StreakCubit>().load(refresh: true),
+                context.read<QuizStatsCubit>().refresh(),
               ]);
             },
             child: Skeletonizer(
@@ -166,18 +171,8 @@ class HomeLoadedContent extends StatelessWidget {
           const SizedBox(height: 26),
           QuranSignCard(sign: sign),
           const SizedBox(height: 14),
-          ElevatedButton(
-            onPressed: () => context.pushNamed(
-              AppRoutes.teamHomeName,
-              extra: context.read<TeamsCubit>(),
-            ),
-            child: const ResponsiveText('Team Home (preview)'),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () => _debugGetDeviceToken(context),
-            child: const ResponsiveText('Get device token (debug)'),
-          ),
+          
+          
           const SizedBox(height: 8),
         ];
 
@@ -203,20 +198,7 @@ class HomeLoadedContent extends StatelessWidget {
     );
   }
 
-  Future<void> _debugGetDeviceToken(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
-    try {
-      final token = await sl<NotificationService>().getDeviceToken();
-      messenger.showSnackBar(
-        SnackBar(content: Text('Token: $token')),
-      );
-    } catch (e) {
-      messenger.showSnackBar(
-        SnackBar(content: Text('Token failed: $e')),
-      );
-    }
-  }
-
+  
   static String _firstName(String? fullName, {required String fallback}) {
     final trimmed = fullName?.trim() ?? '';
     if (trimmed.isEmpty) return fallback;

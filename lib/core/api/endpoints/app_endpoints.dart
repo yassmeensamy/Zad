@@ -43,6 +43,9 @@ class AppEndpoint {
       '${baseUrl}api/quiz/levels/$levelId/submit';
   String get syncQuiz => '${baseUrl}api/quiz/sync';
 
+  String get quizStatsWeekly => '${baseUrl}api/quiz/stats/weekly';
+  String get quizStatsTotalSolved => '${baseUrl}api/quiz/stats/total-solved';
+
   String get resetQuiz => '${baseUrl}api/quiz/reset';
   String resetCategory(int categoryId) =>
       '${baseUrl}api/quiz/categories/$categoryId/reset';

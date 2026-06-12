@@ -11,6 +11,7 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/navigation/deep_links.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/rank_crown.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -31,34 +32,15 @@ class TempTeamHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = _Pal(context);
-
     return BlocProvider<CategoriesCubit>.value(
       value: sl<CategoriesCubit>()..ensureLoaded(),
-      child: _build(context, p),
-    );
-  }
-
-  Widget _build(BuildContext context, _Pal p) {
-    return Scaffold(
-      backgroundColor: p.bgBottom,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: const Alignment(0, -1.16),
-            radius: 1.3,
-            colors: [p.bgTop, p.bgMid, p.bgBottom],
-            stops: const [0.0, 0.42, 1.0],
-          ),
-        ),
-        child: const SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              _AppBar(),
-              Expanded(child: _Stage()),
-            ],
-          ),
+      child: const AppScaffold(
+        safeArea: true,
+        body: Column(
+          children: [
+            _AppBar(),
+            Expanded(child: _Stage()),
+          ],
         ),
       ),
     );

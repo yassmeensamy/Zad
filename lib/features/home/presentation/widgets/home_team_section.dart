@@ -31,11 +31,14 @@ class HomeTeamSection extends StatelessWidget {
           a.members != b.members ||
           a.summary != b.summary,
       builder: (context, state) {
-        void openTeam() => context.pushNamed(AppRoutes.teamsName);
+        Future<void> openTeam() async {
+          await context.pushNamed(AppRoutes.teamsName);
+          if (!context.mounted) return;
+          context.read<TeamsCubit>().refreshTeam();
+        }
+
         final team = state.team;
         if (!state.hasTeam || team == null) {
-          // One shared card for both themes; colors come from the semantic
-          // tokens so light reads as warm cream and dark as roasted brown.
           return _JoinTeamCard(onTap: openTeam);
         }
 
@@ -74,7 +77,6 @@ class _JoinTeamCard extends StatelessWidget {
       child: TeamCardShell(
         radius: 22,
         padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
-        // Centre the halo above the crest rather than the corner.
         haloCenter: const Alignment(0, -1.15),
         haloRadius: 1.15,
         child: Column(
@@ -137,8 +139,6 @@ class _JoinTeamCard extends StatelessWidget {
   }
 }
 
-/// Halo + gilded glass disc holding the companions glyph. Tokens keep it warm
-/// gold on cream in light and a glowing amber medallion on brown in dark.
 class _JoinCrest extends StatelessWidget {
   const _JoinCrest({required this.colors});
 
@@ -258,7 +258,6 @@ class _TeamSectionHeader extends StatelessWidget {
         const SizedBox(width: 8),
         ResponsiveText(
           'home.team.joined_eyebrow',
-          // tracking 0.306 == the prior 3.06 over the default size 10.
           style: AppTextStyles.eyebrow(tracking: 0.306, color: colors.accent),
         ),
         const Spacer(),
@@ -267,7 +266,6 @@ class _TeamSectionHeader extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           child: ResponsiveText(
             'home.team.open'.tr().toUpperCase(),
-            // tracking 0.152 == the prior 1.52 over the default size 10.
             style: AppTextStyles.eyebrow(
               tracking: 0.152,
               weight: FontWeight.w600,

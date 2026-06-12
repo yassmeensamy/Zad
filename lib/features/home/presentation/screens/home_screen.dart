@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
-import '../../../../core/services/notification_service.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../teams/data/models/team_progress_model.dart';
+import '../../../teams/presentation/widgets/team_number_one_dialog.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
 import '../../../quiz_stats/presentation/cubit/quiz_stats_cubit.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
+import '../../../streak/presentation/cubit/streak_state.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
@@ -43,7 +46,9 @@ class HomeScreen extends StatelessWidget {
           create: (_) => sl<StreakCubit>()..load(),
         ),
         BlocProvider<TeamsCubit>(
-          create: (_) => sl<TeamsCubit>()..loadTeamStatus(),
+          create: (_) => sl<TeamsCubit>()
+            ..loadTeamStatus()
+            ..loadTeamProgress(),
         ),
         BlocProvider<QuizStatsCubit>(
           create: (_) => sl<QuizStatsCubit>()..load(),
@@ -85,6 +90,7 @@ class _HomeView extends StatelessWidget {
                 context.read<QuranSignCubit>().load(refresh: true),
                 context.read<StreakCubit>().load(refresh: true),
                 context.read<QuizStatsCubit>().refresh(),
+                context.read<TeamsCubit>().loadTeamProgress(),
               ]);
             },
             child: Skeletonizer(
@@ -96,9 +102,6 @@ class _HomeView extends StatelessWidget {
       ),
     );
 
-    // Dark mode relies on the global Date & Ember backdrop (injected in the
-    // shell's AppScaffold); light keeps its own cream backdrop + pattern.
-    // The optional update prompt is owned by the home shell, not this screen.
     return LightModeBackdrop(
       backdrop: const HomeBackdropPattern(),
       child: content,
@@ -118,27 +121,33 @@ class HomeLoadedContent extends StatelessWidget {
     return BlocSelector<UserCubit, UserState, bool>(
       selector: (state) => state.user?.isAnonymous ?? false,
       builder: (context, isGuest) {
-        // Flatten the rows once, then hand them to a builder delegate so only
-        // on-screen children are built (a plain ListView(children:) builds the
-        // whole list eagerly via SliverChildListDelegate).
         final rows = <Widget>[
-          BlocSelector<UserCubit, UserState, String?>(
-            selector: (state) => state.user?.fullName,
-            builder: (context, fullName) {
+          BlocBuilder<UserCubit, UserState>(
+            buildWhen: (a, b) => a.user != b.user,
+            builder: (context, userState) {
+              final user = userState.user;
               return BlocBuilder<NotificationBadgeCubit, int>(
                 builder: (context, unreadCount) {
+                  final progress = context.watch<TeamsCubit>().state.progress;
+                  final streakDays =
+                      context.watch<StreakCubit>().state.streakDays;
                   return HomeHeader(
                     firstName: _firstName(
-                      fullName,
+                      user?.fullName,
                       fallback: 'home.fallback_name'.tr(),
                     ),
                     unreadCount: unreadCount,
                     onBellTap: () async {
                       await context.pushNamed(AppRoutes.notificationsName);
                       if (!context.mounted) return;
-                      // Reads/deletes may have happened in the inbox; resync.
                       context.read<NotificationBadgeCubit>().refresh();
                     },
+                    onCelebrateTap: _celebrationTrigger(
+                      context,
+                      user: user,
+                      progress: progress,
+                      streakDays: streakDays,
+                    ),
                   );
                 },
               );
@@ -182,8 +191,6 @@ class HomeLoadedContent extends StatelessWidget {
           ),
           slivers: [
             SliverPadding(
-              // Horizontal gutter lives here so every child shares it; only a
-              // full-bleed child would need to opt out via a negative margin.
               padding: const EdgeInsets.fromLTRB(_kGutter, 0, _kGutter, 120),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -204,10 +211,30 @@ class HomeLoadedContent extends StatelessWidget {
     if (trimmed.isEmpty) return fallback;
     return trimmed.split(RegExp(r'\s+')).first;
   }
+
+  static VoidCallback? _celebrationTrigger(
+    BuildContext context, {
+    required UserModel? user,
+    required TeamProgressModel? progress,
+    required int streakDays,
+  }) {
+    if (user == null || progress == null || !progress.isUserFirst(user.id)) {
+      return null;
+    }
+    final companions = progress.members.length > 1
+        ? progress.members.length - 1
+        : 0;
+    return () => TeamNumberOneCelebrationDialog.show(
+      context: context,
+      teamName: progress.teamName,
+      companions: companions,
+      leaderName: user.fullName,
+      points: user.totalPoints,
+      streak: streakDays,
+    );
+  }
 }
 
-/// Lookalike payload used while the real sign loads, so [Skeletonizer]
-/// has shapes of the right size to mask.
 const _placeholderSign = QuranSignModel(
   id: 0,
   text: '──────────────────────────────────────────────────────────────',

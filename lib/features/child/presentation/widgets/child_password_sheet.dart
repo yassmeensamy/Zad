@@ -7,9 +7,6 @@ import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../../core/widgets/custom_modal.dart';
 
-/// Bottom sheet that captures (or edits) the password for a single child
-/// draft. Returns the entered password to the caller via [Navigator.pop],
-/// or `null` if the user dismisses the sheet.
 class ChildPasswordSheet extends StatefulWidget {
   const ChildPasswordSheet({
     super.key,
@@ -80,7 +77,7 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
         textAlign: TextAlign.center,
         style: AppTextStyles.bodySmall.copyWith(
           fontSize: 11,
-          color: AppColors.dateSoft,
+          color: colors.dateSoft,
         ),
       ),
       child: Column(
@@ -103,7 +100,7 @@ class _ChildPasswordSheetState extends State<ChildPasswordSheet> {
               _error!,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: 11.5,
-                color: AppColors.date,
+                color: colors.errStroke,
               ),
             ),
           ],
@@ -138,11 +135,11 @@ class _PasswordField extends StatelessWidget {
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(14, 6, 6, 6),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.6),
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(ZaadRadii.md),
         border: Border.all(
           color: hasError
-              ? AppColors.date.withValues(alpha: 0.6)
+              ? colors.errStroke.withValues(alpha: 0.6)
               : colors.oliveSoft.withValues(alpha: 0.3),
         ),
       ),

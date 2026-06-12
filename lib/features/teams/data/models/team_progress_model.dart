@@ -20,12 +20,8 @@ class TeamProgressModel {
   final int teamRank;
   final int totalTeams;
 
-  /// Leaderboard-style summary: total progress per member across all
-  /// categories. Present in both modes.
   final List<TeamMemberProgressModel> members;
 
-  /// Per-category breakdown, only populated when the request was scoped to a
-  /// specific category id via [TeamsRemoteDataSource.getMyTeamProgress].
   final TeamCategoryProgressModel? category;
 
   int get totalLevels => members.fold(0, (sum, m) => sum + m.totalLevels);
@@ -102,4 +98,17 @@ class TeamProgressModel {
   String toString() =>
       'TeamProgressModel(teamId: $teamId, teamName: $teamName, '
       'teamRank: $teamRank/$totalTeams)';
+}
+
+extension TeamProgressLeaderX on TeamProgressModel {
+  TeamMemberProgressModel? get topMember {
+    TeamMemberProgressModel? best;
+    for (final m in members) {
+      if (best == null || m.completedLevels > best.completedLevels) best = m;
+    }
+    if (best == null || best.completedLevels <= 0) return null;
+    return best;
+  }
+
+  bool isUserFirst(String userId) => topMember?.userId == userId;
 }

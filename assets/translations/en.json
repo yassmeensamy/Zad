@@ -84,7 +84,7 @@
     "greeting_morning": "Good morning,",
     "greeting_afternoon": "Good afternoon,",
     "greeting_evening": "Good evening,",
-    "salam_arabic": "السلام عليكم",
+    "salam_arabic": "السلام عليكم ورحمة الله وبركاته",
     "fallback_name": "friend",
     "load_failed": "Couldn't load your home — please try again",
     "streak": {
@@ -150,6 +150,12 @@
       "cta": "Create free account",
       "have_account": "Already have one? ",
       "sign_in": "Sign in"
+    },
+    "hadith": {
+      "section_title": "Hadith of the day",
+      "view_all": "VIEW ALL",
+      "narrator_prefix": "Narrated by ",
+      "hadith_no": "Hadith №{}"
     }
   },
   "categories": {
@@ -270,6 +276,12 @@
       "finish_1": "The journey of knowledge continues 🌿",
       "finish_2": "Knowledge is light — keep going 💡",
       "finish_3": "May Allah grant you understanding and knowledge"
+    },
+    "exit_confirm": {
+      "title": "Leave the quiz?",
+      "subtitle": "Your progress so far will be saved. You can resume this level later.",
+      "confirm": "Yes, leave",
+      "cancel": "Keep going"
     }
   },
   "profile_select": {
@@ -304,8 +316,8 @@
       "success": "Your account is ready. Welcome aboard!"
     },
     "login_screen": {
-      "welcome_prefix": "Welcome ",
-      "welcome_accent": "home",
+      "welcome_prefix": "Welcome — ",
+      "welcome_accent": "Hayyak Allah",
       "subtitle": "Sign in to continue your daily practice.",
       "sign_in": "SIGN IN",
       "new_prompt": "New to Zaad?  ",
@@ -385,6 +397,27 @@
       "child_activity": "Child activity",
       "announcement": "Announcement",
       "other": "Notification"
+    },
+    "clear_all": "CLEAR ALL",
+    "time": {
+      "just_now": "Just now",
+      "minutes_ago": "{} min ago",
+      "hours_ago": "{} h ago",
+      "days_ago": "{} d ago"
+    },
+    "mock": {
+      "reminder_title": "Time for your evening dhikr",
+      "reminder_body": "A few quiet minutes go a long way. Open Zaad to begin.",
+      "achievement_title": "Streak unlocked: 7 days",
+      "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
+      "reading_title": "New chapter in your library",
+      "reading_body": "A short reflection on patience has been added for you.",
+      "child_activity_title": "Yusuf finished today's lesson",
+      "child_activity_body": "He completed his reading goal and earned a star.",
+      "announcement_title": "Welcome to Zaad",
+      "announcement_body": "Thank you for joining. We're glad you're here.",
+      "evening_reminder_title": "Don't forget tomorrow's plan",
+      "evening_reminder_body": "Your weekly review is scheduled for the morning."
     }
   },
   "drafts": {
@@ -755,5 +788,11 @@
     "error": "Download failed. Check your connection and try again.",
     "levels_count": "{} levels",
     "unsynced_on_logout": "You have unsynced answers. Sync before logging out?"
+  },
+  "children_list": {
+    "saved": "Changes saved",
+    "load_failed": "Couldn't load your children",
+    "empty_hint": "Add your first child to get started",
+    "password_required": "Please set a password for every child"
   }
 }

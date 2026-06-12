@@ -33,8 +33,8 @@
     "next": "التالي",
     "done": "تم",
     "continue": "متابعة",
-    "loading": "جارٍ التحميل...",
-    "retry": "إعادة المحاولة",
+    "loading": "لحظة...",
+    "retry": "حاول مجدداً",
     "yes": "نعم",
     "no": "لا",
     "reset": "إعادة الضبط"
@@ -42,9 +42,9 @@
   "role_select": {
     "eyebrow": "الخطوة 1 من 2",
     "title_prefix": "لمن ",
-    "title_accent": "هذا التطبيق",
+    "title_accent": "سيكون زاد؟",
     "subtitle": "أخبرنا كيف ستستخدم زاد لنُهيّئ التجربة لك.",
-    "individual_label": "لي شخصياً",
+    "individual_label": "لي وحدي",
     "individual_desc": "رفيق شخصي للتأمل اليومي والذكر والقراءة.",
     "family_label": "لعائلتي",
     "family_desc": "أنشئ ملفات للأبناء بأهداف لطيفة ومحتوى موجَّه ومتابعة تقدّم خاصة بكلٍ منهم.",
@@ -61,18 +61,18 @@
     "name_hint": "مثال: يوسف",
     "age_label": "العمر",
     "add_child": "إضافة طفل آخر",
-    "skip": "سأفعل ذلك لاحقاً",
+    "skip": "ربما لاحقاً",
     "sheet_title": "اختر صورة شخصية",
     "sheet_sub": "اختر شخصية تشبهك",
-    "password_set": "تم تعيين كلمة المرور",
-    "password_set_cta": "تعيين كلمة المرور",
+    "password_set": "تم حفظ كلمة المرور",
+    "password_set_cta": "اضبط كلمة المرور",
     "password_label": "كلمة المرور",
     "password_hint": "٤ أحرف على الأقل",
-    "password_sheet_title": "تعيين كلمة مرور",
-    "password_sheet_sub": "تُستخدم لتسجيل دخول {}",
+    "password_sheet_title": "اضبط كلمة المرور",
+    "password_sheet_sub": "يستخدمها {} لتسجيل الدخول",
     "password_sheet_fallback_name": "هذا الطفل",
-    "password_too_short": "يجب أن تتكوّن كلمة المرور من {} أحرف على الأقل.",
-    "password_required_for_all": "يرجى تعيين كلمة مرور لكل طفل قبل المتابعة."
+    "password_too_short": "كلمة المرور قصيرة — اجعلها {} أحرف على الأقل.",
+    "password_required_for_all": "اضبط كلمة مرور لكل طفل قبل المتابعة."
   },
   "home_nav": {
     "home": "الرئيسية",
@@ -81,12 +81,12 @@
     "profile": "حسابي"
   },
   "home": {
-    "greeting_morning": "صباح الخير،",
-    "greeting_afternoon": "مساء الخير،",
-    "greeting_evening": "مساء الخير،",
-    "salam_arabic": "السلام عليكم",
-    "fallback_name": "صديقي",
-    "load_failed": "تعذّر تحميل الصفحة — حاول مرة أخرى",
+    "greeting_morning": "أسعد الله صباحك،",
+    "greeting_afternoon": "طاب يومك،",
+    "greeting_evening": "أسعد الله مساءك،",
+    "salam_arabic": "السلام عليكم ورحمة الله وبركاته",
+    "fallback_name": "يا صديقي",
+    "load_failed": "لم نتمكن من تحميل الصفحة — حاول مجدداً",
     "streak": {
       "eyebrow_prefix": "تتابعك ",
       "eyebrow_accent": "اليومي",
@@ -94,7 +94,7 @@
       "in_a_row": "متتالية",
       "motto_en": "أحبّ الأعمال إلى الله أدومها وإن قلّ.",
       "motto_ar": "أحب الأعمال إلى الله أدومها",
-      "personal_best": "أفضل رقم لك",
+      "personal_best": "أعلى تتابع لك",
       "personal_best_value": "{} يومًا",
       "next_milestone": "الهدف القادم",
       "next_milestone_value": "{} · أسبوعان"
@@ -150,6 +150,12 @@
       "cta": "أنشئ حسابًا مجانيًا",
       "have_account": "لديك حساب بالفعل؟ ",
       "sign_in": "تسجيل الدخول"
+    },
+    "hadith": {
+      "section_title": "حديث اليوم",
+      "view_all": "عرض الكل",
+      "narrator_prefix": "رواه ",
+      "hadith_no": "حديث رقم {}"
     }
   },
   "categories": {
@@ -165,9 +171,9 @@
       "not_started": "لم يبدأ بعد"
     },
     "state": {
-      "completed": "مكتمل",
-      "in_progress": "قيد التقدّم",
-      "locked": "مغلق"
+      "completed": "أتممته",
+      "in_progress": "في الطريق",
+      "locked": "قريباً"
     },
     "levels_screen": {
       "eyebrow": "المستويات",
@@ -186,12 +192,12 @@
     "percent": "{}٪ مكتمل",
     "count": "{} / {} مستويات",
     "questions": "{} / {} أسئلة",
-    "pass": "النجاح: {}٪",
+    "pass": "للاجتياز: {}٪",
     "state": {
-      "completed": "مكتمل",
-      "in_progress": "قيد التقدّم",
-      "unlocked": "متاح",
-      "locked": "مغلق"
+      "completed": "أتممته",
+      "in_progress": "في الطريق",
+      "unlocked": "ابدأ",
+      "locked": "قريباً"
     },
     "reset": {
       "action": "إعادة ضبط المستوى",
@@ -213,15 +219,15 @@
       "correct_title_3": "ممتاز",
       "correct_title_4": "بارك الله فيك",
       "wrong_title_1": "حاول مجدداً",
-      "wrong_title_2": "لا تستسلم",
+      "wrong_title_2": "لا تيأس",
       "wrong_title_3": "اقتربت",
-      "wrong_title_4": "واصل المسير"
+      "wrong_title_4": "اصبر وواصل"
     },
     "actions": {
       "save": "احفظ السؤال",
-      "saved": "تم الحفظ للمراجعة",
-      "report": "الإبلاغ عن سؤال",
-      "report_sent": "شكراً لك، تم استلام إبلاغك",
+      "saved": "محفوظ للمراجعة لاحقاً",
+      "report": "الإبلاغ عن هذا السؤال",
+      "report_sent": "شكراً لك، وصلنا إبلاغك",
       "next": "التالي",
       "finish": "إنهاء",
       "previous": "السؤال السابق"
@@ -248,7 +254,7 @@
       "continue": "متابعة",
       "score": "النتيجة",
       "points_label": "نقطة",
-      "questions_completed": "{} سؤال مكتمل",
+      "questions_completed": "أتممت {} سؤال",
       "revisited": "راجعت {} أسئلة حتى أتقنتها",
       "closing": "زادك الله فهماً وعلماً 🌿",
       "blessing": "ما شاء الله",
@@ -264,25 +270,31 @@
       "correct_1": "ما شاء الله! إجابة موفقة 🌿",
       "correct_2": "بارك الله فيك، استمر 💚",
       "correct_3": "أحسنت، زادك الله علماً 📖",
-      "wrong_1": "لا بأس، حاول مجدداً 🌱",
+      "wrong_1": "لا بأس، استعن بالله وحاول مجدداً 🌱",
       "wrong_2": "كل طالب علم بدأ من هنا 📖",
       "wrong_3": "اقتربت كثيراً، استمر 💚",
       "finish_1": "رحلة طلب العلم مستمرة 🌿",
       "finish_2": "العلم نور، فاستمر 💡",
       "finish_3": "زادك الله فهماً وعلماً"
+    },
+    "exit_confirm": {
+      "title": "هل تريد الخروج من الاختبار؟",
+      "subtitle": "سيُحفظ تقدّمك حتى الآن، ويمكنك متابعة هذا المستوى لاحقاً.",
+      "confirm": "نعم، أخرج الآن",
+      "cancel": "أكمل الاختبار"
     }
   },
   "profile_select": {
-    "eyebrow": "الملفات الشخصية",
+    "eyebrow": "من معنا اليوم",
     "title_prefix": "من ",
     "title_accent": "يقرأ",
-    "subtitle": "اختر ملفًا شخصيًا لمواصلة رحلتك.",
+    "subtitle": "اختر ملفك الشخصي لمواصلة الرحلة.",
     "role_parent": "ولي الأمر",
     "age_label": "العمر {}",
     "days": "أيام",
     "add_child": "إضافة طفل",
     "manage": "إدارة الملفات",
-    "continue_current_account": "المتابعة بالحساب الحالي",
+    "continue_current_account": "تابع بحسابك الحالي",
     "current_account": "الحساب الحالي"
   },
   "auth": {
@@ -293,9 +305,9 @@
     "password": "كلمة المرور",
     "forgot_password": "هل نسيت كلمة المرور؟",
     "email_hint": "you@example.com",
-    "password_hint": "كلمة المرور",
+    "password_hint": "كلمة مرورك",
     "or_continue": "أو تابع باستخدام",
-    "continue_google": "المتابعة باستخدام Google",
+    "continue_google": "تابع باستخدام Google",
     "continue_guest": "المتابعة كضيف",
     "upgrade_screen": {
       "title": "أنشئ حسابك",
@@ -304,11 +316,11 @@
       "success": "تم إنشاء حسابك. أهلًا بك!"
     },
     "login_screen": {
-      "welcome_prefix": "مرحبا بعودتك",
+      "welcome_prefix": "حياك الله",
       "welcome_accent": "",
-      "subtitle": "سجّل الدخول لمواصلة ممارستك اليومية.",
+      "subtitle": "سجّل الدخول لمواصلة رحلتك اليومية.",
       "sign_in": "تسجيل الدخول",
-      "new_prompt": "جديد في زاد؟ ",
+      "new_prompt": "أول مرة في زاد؟ ",
       "create_account": "أنشئ حسابًا"
     },
     "signup_screen": {
@@ -320,9 +332,9 @@
       "sign_in": "تسجيل الدخول"
     },
     "signup_success": {
-      "title_prefix": "أهلًا بك في ",
+      "title_prefix": "حياك الله في ",
       "title_accent": "زاد",
-      "subtitle": "تم إنشاء حسابك. لنُهيّئ مساحتك ونبدأ الرحلة.",
+      "subtitle": "حسابك جاهز. لنبدأ رحلتك معاً.",
       "cta": "متابعة"
     },
     "forgot_password_screen": {
@@ -354,14 +366,14 @@
   },
   "errors": {
     "generic": "حدث خطأ ما",
-    "no_internet": "لا يوجد اتصال بالإنترنت",
-    "required_field": "هذا الحقل مطلوب"
+    "no_internet": "يبدو أنك بدون إنترنت",
+    "required_field": "لا تنسَ تعبئة هذا الحقل"
   },
-  "please_enter_email": "يرجى إدخال البريد الإلكتروني",
-  "please_enter_valid_email": "يرجى إدخال بريد إلكتروني صحيح",
-  "please_enter_password": "يرجى إدخال كلمة المرور",
-  "password_min_length": "يجب ألا تقل كلمة المرور عن {} أحرف",
-  "please_enter_your_name": "يرجى إدخال اسمك",
+  "please_enter_email": "أدخل بريدك الإلكتروني",
+  "please_enter_valid_email": "أدخل بريدًا إلكترونيًا صحيحًا",
+  "please_enter_password": "أدخل كلمة مرورك",
+  "password_min_length": "كلمة المرور قصيرة — اجعلها {} أحرف على الأقل",
+  "please_enter_your_name": "أدخل اسمك",
   "full_name_max_length": "الاسم طويل جدًا",
   "cancel": "إلغاء",
   "language": "اللغة",
@@ -371,13 +383,13 @@
   "language_subtitle": "يمكنك تغيير لغة التطبيق في أي وقت.",
   "language_save_cta": "حفظ التغييرات",
   "change_language": "تغيير اللغة",
-  "failed_to_update_language": "تعذّر تحديث اللغة",
+  "failed_to_update_language": "لم نتمكن من تحديث اللغة",
   "notifications": {
     "title": "الإشعارات",
-    "empty_title": "لا توجد إشعارات",
+    "empty_title": "لا جديد لديك",
     "empty_subtitle": "ستظهر هنا التذكيرات والإنجازات والمستجدّات.",
-    "load_failed": "تعذّر تحميل الإشعارات",
-    "delete_failed": "تعذّر حذف الإشعار",
+    "load_failed": "لم نتمكن من تحميل الإشعارات",
+    "delete_failed": "لم نتمكن من حذف الإشعار",
     "types": {
       "reminder": "تذكير",
       "reading": "قراءة",
@@ -385,23 +397,44 @@
       "child_activity": "نشاط الطفل",
       "announcement": "إعلان",
       "other": "إشعار"
+    },
+    "clear_all": "مسح الكل",
+    "time": {
+      "just_now": "الآن",
+      "minutes_ago": "قبل {} دقيقة",
+      "hours_ago": "قبل {} ساعة",
+      "days_ago": "قبل {} يوم"
+    },
+    "mock": {
+      "reminder_title": "حان وقت ذكرك المسائي",
+      "reminder_body": "دقائق هادئة تصنع الفرق. افتح زاد لتبدأ.",
+      "achievement_title": "حصدت تتابع 7 أيام",
+      "achievement_body": "حافظت على رحلتك اليومية أسبوعًا كاملًا. ما شاء الله.",
+      "reading_title": "فصلٌ جديد في مكتبتك",
+      "reading_body": "أُضيفت لك تأمّلات قصيرة عن الصبر.",
+      "child_activity_title": "أنهى يوسف درس اليوم",
+      "child_activity_body": "أكمل هدف القراءة وحصل على نجمة.",
+      "announcement_title": "أهلًا بك في زاد",
+      "announcement_body": "شكرًا لانضمامك. نحن سعداء بوجودك معنا.",
+      "evening_reminder_title": "لا تنسَ خطة الغد",
+      "evening_reminder_body": "مراجعتك الأسبوعية مجدولة في الصباح."
     }
   },
   "drafts": {
-    "title": "المسودات",
+    "title": "المحفوظات",
     "empty_title": "لا توجد أسئلة محفوظة بعد",
     "empty_subtitle": "انقر على إشارة الحفظ في أي سؤال لمراجعته لاحقًا.",
-    "load_failed": "تعذّر تحميل المسودات",
-    "delete_failed": "تعذّر حذف المسودة",
-    "delete_confirm_title": "إزالة هذه المسودة؟",
+    "load_failed": "لم نتمكن من تحميل المحفوظات",
+    "delete_failed": "لم نتمكن من حذف المحفوظ",
+    "delete_confirm_title": "إزالة هذا المحفوظ؟",
     "delete_confirm_subtitle": "لن تظهر بعد ذلك في قائمتك المحفوظة.",
     "delete_confirm_cta": "إزالة",
     "note_label": "ملاحظة",
     "note_hint": "أضف ملاحظة شخصية…",
     "note_subtitle": "اكتب ملاحظة خاصة لتتذكر هذا السؤال.",
     "note_save": "حفظ الملاحظة",
-    "note_saved": "تم حفظ الملاحظة",
-    "no_note": "لا توجد ملاحظة",
+    "note_saved": "الملاحظة محفوظة",
+    "no_note": "لم تُضف ملاحظة بعد",
     "edit_note": "تعديل الملاحظة",
     "view_details": "اضغط لعرض التفاصيل",
     "correct_answer": "الإجابة الصحيحة",
@@ -409,10 +442,10 @@
     "remove_note": "حذف الملاحظة"
   },
   "profile": {
-    "practice": "الممارسة",
-    "library": "المحتوى",
+    "practice": "تمرين",
+    "library": "المكتبة",
     "account": "الحساب",
-    "drafts": "المسودات",
+    "drafts": "المحفوظات",
     "my_children": "أبنائي",
     "reminders": "التذكيرات",
     "language": "اللغة",
@@ -425,7 +458,7 @@
     "view_profile": "عرض الملف الشخصي",
     "privacy": "الخصوصية",
     "help_support": "المساعدة والدعم",
-    "support_tickets": "تذاكر الدعم",
+    "support_tickets": "محادثاتي مع الدعم",
     "sign_out": "تسجيل الخروج",
     "sign_out_confirm_title": "تسجيل الخروج؟",
     "sign_out_confirm_subtitle": "ستحتاج إلى تسجيل الدخول مجدّدًا للوصول إلى حسابك.",
@@ -444,8 +477,8 @@
     "email_locked": "لا يمكن تغيير البريد الإلكتروني.",
     "birthday_label": "تاريخ الميلاد",
     "birthday_hint": "اختر تاريخ ميلادك",
-    "update_success": "تم تحديث الملف الشخصي",
-    "update_failed": "تعذّر تحديث الملف الشخصي",
+    "update_success": "تم تحديث ملفك الشخصي",
+    "update_failed": "لم نتمكن من تحديث ملفك الشخصي",
     "delete_account": "حذف الحساب",
     "delete_account_description": "سيؤدي هذا إلى حذف ملفك الشخصي وتقدّمك وإشاراتك المحفوظة بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
     "delete_account_cta": "حذف حسابي",
@@ -479,7 +512,7 @@
     "password_min_length": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
     "password_mismatch": "كلمتا المرور غير متطابقتين",
     "change_password_cta": "تحديث كلمة المرور",
-    "change_password_success": "تم تحديث كلمة المرور"
+    "change_password_success": "كلمة المرور محدّثة"
   },
   "help_center": {
     "title": "المساعدة والدعم",
@@ -497,7 +530,7 @@
     "ready_to_send": "جاهزة للإرسال",
     "send_cta": "إرسال الرسالة",
     "sending": "جارٍ الإرسال…",
-    "send_failed": "تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى.",
+    "send_failed": "لم نتمكن من إرسال رسالتك. حاول مجدداً.",
     "reply_window": "نردّ عادةً خلال 24 ساعة",
     "topics": {
       "feedback": {
@@ -527,13 +560,13 @@
     }
   },
   "support_tickets": {
-    "title": "تذاكر الدعم",
-    "new_ticket": "تذكرة جديدة",
-    "empty_title": "لا توجد تذاكر بعد",
+    "title": "محادثاتي مع الدعم",
+    "new_ticket": "محادثة جديدة",
+    "empty_title": "لا توجد محادثات بعد",
     "empty_subtitle": "أرسل لنا رسالة وسنتابع المحادثة هنا.",
-    "load_failed": "تعذّر تحميل تذاكرك",
+    "load_failed": "لم نتمكن من تحميل محادثاتك",
     "reply_count": {
-      "zero": "لا توجد ردود",
+      "zero": "لا ردود بعد",
       "one": "ردّ واحد",
       "two": "ردّان",
       "few": "{} ردود",
@@ -549,20 +582,20 @@
       "closed_by_user": "أغلقتها أنت"
     },
     "detail": {
-      "title": "تفاصيل التذكرة",
+      "title": "تفاصيل المحادثة",
       "ref_label": "رقم",
       "replies_section": "المحادثة",
       "original_message": "الرسالة الأصلية",
       "no_replies": "استلمنا رسالتك وسيتواصل معك أحد أعضاء الفريق قريبًا.",
       "from_admin": "فريق الدعم",
       "from_you": "أنت",
-      "close_ticket": "إغلاق التذكرة",
+      "close_ticket": "إغلاق المحادثة",
       "close_card_lead": "ما زالت مفتوحة",
       "close_card_body": "أغلقها متى شعرت بأنّ المشكلة قد حُلّت.",
-      "close_confirm_title": "إغلاق هذه التذكرة؟",
-      "close_confirm_body": "إغلاق التذكرة يعني اعتبار المحادثة منتهية. يمكنك دومًا فتح تذكرة جديدة لاحقًا.",
-      "close_success": "تمّ إغلاق التذكرة",
-      "close_failed": "تعذّر إغلاق التذكرة. يرجى المحاولة مرة أخرى."
+      "close_confirm_title": "إغلاق هذه المحادثة؟",
+      "close_confirm_body": "إغلاق المحادثة يعني اعتبارها منتهية. يمكنك دومًا بدء محادثة جديدة لاحقًا.",
+      "close_success": "تمّ إغلاق المحادثة",
+      "close_failed": "لم نتمكن من إغلاق المحادثة. حاول مجدداً."
     }
   },
   "teams": {
@@ -755,5 +788,11 @@
     "error": "فشل التنزيل. تحقق من اتصالك وحاول مرة أخرى.",
     "levels_count": "{} مستوى",
     "unsynced_on_logout": "لديك إجابات غير متزامنة. المزامنة قبل تسجيل الخروج؟"
+  },
+  "children_list": {
+    "saved": "التغييرات محفوظة",
+    "load_failed": "لم نتمكن من تحميل أبنائك",
+    "empty_hint": "أضف أول طفل للبدء",
+    "password_required": "اضبط كلمة مرور لكل طفل"
   }
 }

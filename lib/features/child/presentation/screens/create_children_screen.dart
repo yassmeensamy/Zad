@@ -22,6 +22,8 @@ class CreateChildrenScreen extends StatelessWidget {
 
   void _onContinue(BuildContext context) => context.go(AppRoutes.profileSelect);
 
+  void _onBack(BuildContext context) => context.go(AppRoutes.roleSelect);
+
   Future<void> _onSubmit(BuildContext context) async {
     final draftCubit = context.read<ChildDraftCubit>();
     final childCubit = context.read<ChildCubit>();
@@ -60,83 +62,88 @@ class CreateChildrenScreen extends StatelessWidget {
           create: (_) => sl<ChildDraftCubit>()..init(),
         ),
       ],
-      // Builder pushes a context that sits below the providers so
-      // [context.read<...>()] resolves inside the same widget.
       child: Builder(builder: _buildScaffold),
     );
   }
 
   Widget _buildScaffold(BuildContext context) {
     final colors = context.appColors;
-    return AppScaffold(
-      body: SafeArea(
-        child: BlocListener<ChildCubit, ChildState>(
-          listenWhen: (a, b) => a.actionStatus != b.actionStatus,
-          listener: (context, state) {
-            if (state.isActionLoaded) {
-              context.read<ChildCubit>().resetActionStatus();
-              context.read<ChildDraftCubit>().clear();
-              _onContinue(context);
-            } else if (state.isActionError &&
-                state.actionErrorMessage != null) {
-              SnackBarHelper.showError(
-                context,
-                message: state.actionErrorMessage!,
-              );
-            }
-          },
-          child: Column(
-            children: [
-              OnboardingTopNav(
-                onBack: () => context.go(AppRoutes.roleSelect),
-                stepLabel: 'create_profiles.step'.tr(),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
-                  child: Column(
-                    children: [
-                      _Heading(colors: colors),
-                      const SizedBox(height: 18),
-                      const Expanded(child: _DraftList()),
-                      const SizedBox(height: 12),
-                      BlocBuilder<ChildCubit, ChildState>(
-                        buildWhen: (a, b) => a.actionStatus != b.actionStatus,
-                        builder: (context, state) {
-                          final loading = state.isActionLoading;
-                          return AbsorbPointer(
-                            absorbing: loading,
-                            child: Opacity(
-                              opacity: loading ? 0.6 : 1,
-                              child: AuthPrimaryButton(
-                                label: loading
-                                    ? 'common.loading'
-                                    : 'common.continue',
-                                onTap: () => _onSubmit(context),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _onBack(context);
+      },
+      child: AppScaffold(
+        body: SafeArea(
+          child: BlocListener<ChildCubit, ChildState>(
+            listenWhen: (a, b) => a.actionStatus != b.actionStatus,
+            listener: (context, state) {
+              if (state.isActionLoaded) {
+                context.read<ChildCubit>().resetActionStatus();
+                context.read<ChildDraftCubit>().clear();
+                _onContinue(context);
+              } else if (state.isActionError &&
+                  state.actionErrorMessage != null) {
+                SnackBarHelper.showError(
+                  context,
+                  message: state.actionErrorMessage!,
+                );
+              }
+            },
+            child: Column(
+              children: [
+                OnboardingTopNav(
+                  onBack: () => _onBack(context),
+                  stepLabel: 'create_profiles.step'.tr(),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
+                    child: Column(
+                      children: [
+                        _Heading(colors: colors),
+                        const SizedBox(height: 18),
+                        const Expanded(child: _DraftList()),
+                        const SizedBox(height: 12),
+                        BlocBuilder<ChildCubit, ChildState>(
+                          buildWhen: (a, b) => a.actionStatus != b.actionStatus,
+                          builder: (context, state) {
+                            final loading = state.isActionLoading;
+                            return AbsorbPointer(
+                              absorbing: loading,
+                              child: Opacity(
+                                opacity: loading ? 0.6 : 1,
+                                child: AuthPrimaryButton(
+                                  label: loading
+                                      ? 'common.loading'
+                                      : 'common.continue',
+                                  onTap: () => _onSubmit(context),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      InkWell(
-                        onTap: () => _onContinue(context),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: ResponsiveText(
-                            'create_profiles.skip',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: colors.dateSoft,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () => _onContinue(context),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: ResponsiveText(
+                              'create_profiles.skip',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: colors.dateSoft,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -150,9 +157,6 @@ class _DraftList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChildDraftCubit, ChildDraftState>(
-      // Rebuild only on structural changes (add/remove/avatar/password
-      // presence). Text edits emit too, but they never reach this widget
-      // so the keyboard caret and focus stay intact.
       buildWhen: _structuralChange,
       builder: (context, state) {
         final drafts = state.drafts;
@@ -185,8 +189,6 @@ class _DraftList extends StatelessWidget {
       final pb = b.drafts[i];
       if (pa.id != pb.id) return true;
       if (pa.avatar != pb.avatar) return true;
-      // Password is set via a sheet (no inline cursor), so rebuilding the
-      // row on password change is safe and required to flip the pill.
       if (pa.password.isEmpty != pb.password.isEmpty) return true;
     }
     return false;

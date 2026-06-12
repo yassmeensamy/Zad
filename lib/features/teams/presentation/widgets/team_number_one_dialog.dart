@@ -10,16 +10,6 @@ import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import 'teams_painters.dart';
 
-/// Zad — **Team Number One Celebration** dialog.
-///
-/// A "#1 in the team" moment: a crowned gold medallion pops above a glass card,
-/// a sunburst spins behind it, the crown drops, twinkles and orbiting sparkles
-/// shimmer, confetti rains, then the title, an Arabic blessing, a stat trio and
-/// the actions rise in — all over a blurred leaderboard.
-///
-/// Recreated from the `Zad Team Number One Celebration.html` design handoff.
-/// Colours derive from the semantic theme ([context.appColors]) so the card
-/// adapts to both brightnesses while the gilded medallion stays gold.
 class TeamNumberOneCelebrationDialog extends StatelessWidget {
   const TeamNumberOneCelebrationDialog({
     super.key,
@@ -27,27 +17,22 @@ class TeamNumberOneCelebrationDialog extends StatelessWidget {
     required this.companions,
     required this.leaderName,
     required this.points,
-    required this.accuracy,
     required this.streak,
     this.rank = 1,
     this.onShare,
     this.onBack,
   });
 
-  /// Team the leader topped, e.g. `Companions of Sabr`.
   final String teamName;
 
-  /// Companions led this week — folded into the subtitle.
   final int companions;
 
-  /// Leader's display name — its first glyph is stamped on the medallion coin.
   final String leaderName;
 
   final int points;
-  final int accuracy;
+
   final int streak;
 
-  /// Rank reached (the ribbon badge under the coin). Defaults to 1.
   final int rank;
 
   final VoidCallback? onShare;
@@ -55,12 +40,11 @@ class TeamNumberOneCelebrationDialog extends StatelessWidget {
 
   static Future<T?> show<T>({
     required BuildContext context,
-    String teamName = 'Companions of Sabr',
-    int companions = 11,
-    String leaderName = 'Zayd N.',
-    int points = 3480,
-    int accuracy = 96,
-    int streak = 38,
+    required String teamName,
+    required int companions,
+    required String leaderName,
+    required int points,
+    required int streak,
     int rank = 1,
     VoidCallback? onShare,
     VoidCallback? onBack,
@@ -74,7 +58,6 @@ class TeamNumberOneCelebrationDialog extends StatelessWidget {
         companions: companions,
         leaderName: leaderName,
         points: points,
-        accuracy: accuracy,
         streak: streak,
         rank: rank,
         onShare: onShare,
@@ -90,9 +73,7 @@ class TeamNumberOneCelebrationDialog extends StatelessWidget {
   }
 }
 
-// ─── Theme-derived palette ──────────────────────────────────────────────────
 
-/// Every colour the celebration paints with, resolved once from the theme.
 class _CelPalette {
   const _CelPalette({
     required this.isDark,
@@ -168,11 +149,9 @@ class _CelPalette {
   }
 }
 
-// Shared entrance curve, mirroring the prototype's ease-out reveals.
 const _ease = Curves.easeOutCubic;
 const _pop = Curves.easeOutBack;
 
-// ─── Full-screen stage (blur + scrim + confetti + dialog) ────────────────────
 
 class _CelebrationStage extends StatefulWidget {
   const _CelebrationStage({required this.data, required this.palette});
@@ -200,7 +179,6 @@ class _CelebrationStageState extends State<_CelebrationStage>
     super.initState();
     _fx = _Fx(widget.palette.confetti);
     _ticker = createTicker(_onTick)..start();
-    // Two soft confetti volleys, mirroring the prototype.
     _schedule(420, () => _fx.burst(_screen));
     _schedule(1150, () => _fx.burst(_screen));
   }
@@ -239,7 +217,6 @@ class _CelebrationStageState extends State<_CelebrationStage>
       type: MaterialType.transparency,
       child: Stack(
         children: [
-          // Blurred + dimmed leaderboard behind, dismiss on tap.
           Positioned.fill(
             child: GestureDetector(
               onTap: () => Navigator.of(context).maybePop(),
@@ -261,7 +238,6 @@ class _CelebrationStageState extends State<_CelebrationStage>
               ),
             ),
           ),
-          // Confetti — behind the dialog card (z36 in the prototype).
           Positioned.fill(
             child: IgnorePointer(
               child: RepaintBoundary(
@@ -271,7 +247,6 @@ class _CelebrationStageState extends State<_CelebrationStage>
               ),
             ),
           ),
-          // The celebration dialog.
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(26, 80, 26, 40),
@@ -284,7 +259,6 @@ class _CelebrationStageState extends State<_CelebrationStage>
   }
 }
 
-// ─── Dialog card ──────────────────────────────────────────────────────────────
 
 class _Dialog extends StatelessWidget {
   const _Dialog({required this.data, required this.palette});
@@ -323,7 +297,6 @@ class _Dialog extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
-          // Clipped decoration: top amber glow, faint pattern, rising motes.
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(radius),
@@ -358,13 +331,11 @@ class _Dialog extends StatelessWidget {
               ),
             ),
           ),
-          // Content.
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 0, 22, 22),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Reserve the lower half of the lifted medallion.
                 const SizedBox(height: 78),
                 _ribbon(p),
                 const SizedBox(height: 11),
@@ -380,7 +351,6 @@ class _Dialog extends StatelessWidget {
               ],
             ),
           ),
-          // Medallion lifted above the card top.
           Positioned(
             top: -58,
             child: _Medallion(palette: p, initial: _initial),
@@ -389,7 +359,6 @@ class _Dialog extends StatelessWidget {
       ),
     );
 
-    // Card entrance: scale-up with a soft elastic settle.
     return card
         .animate()
         .fadeIn(delay: 150.ms, duration: 400.ms, curve: _ease)
@@ -519,13 +488,6 @@ class _Dialog extends StatelessWidget {
         delayMs: 1740,
       ),
       _StatCell(
-        value: '${data.accuracy}',
-        suffix: '%',
-        label: 'teams.number_one.stat_accuracy'.tr(),
-        palette: p,
-        delayMs: 1840,
-      ),
-      _StatCell(
         value: '${data.streak}',
         label: 'teams.number_one.stat_streak'.tr(),
         palette: p,
@@ -579,7 +541,6 @@ class _Dialog extends StatelessWidget {
   }
 }
 
-// ─── Medallion (coin + crown + rays + halo + orbits + twinkles + badge) ───────
 
 class _Medallion extends StatelessWidget {
   const _Medallion({required this.palette, required this.initial});
@@ -597,7 +558,6 @@ class _Medallion extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // Spinning sunburst.
           Positioned.fill(
             child: OverflowBox(
               maxWidth: 198,
@@ -605,16 +565,11 @@ class _Medallion extends StatelessWidget {
               child: _Rays(palette: p),
             ),
           ),
-          // Counter-rotating orbiting sparkle dots.
           _OrbitDot(palette: p, period: 5000, reverse: false, dot: 6),
           _OrbitDot(palette: p, period: 6500, reverse: true, dot: 4),
-          // Pulsing halo.
           _Halo(palette: p),
-          // Coin.
           _Coin(palette: p, initial: initial),
-          // Twinkles.
           ..._twinkles(p),
-          // Crown dropping on the coin.
           Positioned(
             top: -12,
             child: _Crown(color: p.crown, width: 40)
@@ -624,7 +579,6 @@ class _Medallion extends StatelessWidget {
                 .moveY(begin: -20, end: 0, delay: 950.ms, duration: 750.ms, curve: _pop)
                 .rotate(begin: -0.08, end: 0, delay: 950.ms, duration: 750.ms, curve: _pop),
           ),
-          // #1 ribbon badge under the coin.
           Positioned(
             bottom: -6,
             child: _RankBadge(palette: p)
@@ -657,7 +611,6 @@ class _Medallion extends StatelessWidget {
   }
 }
 
-// ─── Coin ─────────────────────────────────────────────────────────────────────
 
 class _Coin extends StatefulWidget {
   const _Coin({required this.palette, required this.initial});
@@ -745,7 +698,6 @@ class _CoinState extends State<_Coin> with TickerProviderStateMixin {
                   height: 1,
                 ),
               ),
-              // One-shot diagonal shine sweep.
               AnimatedBuilder(
                 animation: _shine,
                 builder: (context, _) {
@@ -788,7 +740,6 @@ class _CoinState extends State<_Coin> with TickerProviderStateMixin {
   }
 }
 
-// ─── Rays (spinning sunburst) ─────────────────────────────────────────────────
 
 class _Rays extends StatefulWidget {
   const _Rays({required this.palette});
@@ -867,7 +818,6 @@ class _RaysPainter extends CustomPainter {
       Paint()
         ..shader = SweepGradient(colors: colors, stops: stops).createShader(rect),
     );
-    // Ring mask: transparent core, solid mid band, transparent rim.
     canvas.drawRect(
       rect,
       Paint()
@@ -890,7 +840,6 @@ class _RaysPainter extends CustomPainter {
   bool shouldRepaint(_RaysPainter oldDelegate) => oldDelegate.color != color;
 }
 
-// ─── Halo (pulsing glow) ──────────────────────────────────────────────────────
 
 class _Halo extends StatefulWidget {
   const _Halo({required this.palette});
@@ -951,7 +900,6 @@ class _HaloState extends State<_Halo> with SingleTickerProviderStateMixin {
   }
 }
 
-// ─── Orbiting sparkle dot ─────────────────────────────────────────────────────
 
 class _OrbitDot extends StatefulWidget {
   const _OrbitDot({
@@ -1030,7 +978,6 @@ class _OrbitDotState extends State<_OrbitDot>
   }
 }
 
-// ─── Twinkling star ───────────────────────────────────────────────────────────
 
 class _Twinkle extends StatefulWidget {
   const _Twinkle({
@@ -1074,7 +1021,6 @@ class _TwinkleState extends State<_Twinkle>
     return AnimatedBuilder(
       animation: _c,
       builder: (context, _) {
-        // Triangle peak at 45% of the cycle, per the prototype keyframe.
         final v = _c.value;
         final t = v < 0.45 ? v / 0.45 : (1 - v) / 0.55;
         final e = Curves.easeInOut.transform(t.clamp(0.0, 1.0));
@@ -1096,7 +1042,6 @@ class _TwinkleState extends State<_Twinkle>
   }
 }
 
-// ─── #1 ribbon badge ──────────────────────────────────────────────────────────
 
 class _RankBadge extends StatelessWidget {
   const _RankBadge({required this.palette});
@@ -1140,7 +1085,6 @@ class _RankBadge extends StatelessWidget {
   }
 }
 
-// ─── Rising light motes ───────────────────────────────────────────────────────
 
 class _Motes extends StatefulWidget {
   const _Motes({required this.palette});
@@ -1214,7 +1158,6 @@ class _MotesPainter extends CustomPainter {
     for (final m in motes) {
       final t = (anim.value * m.speed + m.phase) % 1.0;
       final y = size.height - t * (size.height + 40);
-      // Opacity: ramp up, hold, fade — peaks in the middle of the rise.
       final a = (t < 0.15 ? t / 0.15 : (t > 0.85 ? (1 - t) / 0.15 : 0.7))
           .clamp(0.0, 0.7);
       paint.color = color.withValues(alpha: a);
@@ -1226,9 +1169,7 @@ class _MotesPainter extends CustomPainter {
   bool shouldRepaint(_MotesPainter oldDelegate) => false;
 }
 
-// ─── Crown glyph ──────────────────────────────────────────────────────────────
 
-/// The eight-point crown from the design, painted from the prototype's path.
 class _Crown extends StatelessWidget {
   const _Crown({required this.color, required this.width});
 
@@ -1278,7 +1219,6 @@ class _CrownPainter extends CustomPainter {
   bool shouldRepaint(_CrownPainter oldDelegate) => oldDelegate.color != color;
 }
 
-// ─── Stat cell ────────────────────────────────────────────────────────────────
 
 class _StatCell extends StatelessWidget {
   const _StatCell({
@@ -1286,12 +1226,10 @@ class _StatCell extends StatelessWidget {
     required this.label,
     required this.palette,
     required this.delayMs,
-    this.suffix,
     this.fire = false,
   });
 
   final String value;
-  final String? suffix;
   final String label;
   final _CelPalette palette;
   final int delayMs;
@@ -1312,30 +1250,15 @@ class _StatCell extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RichText(
+          Text(
+            value,
             textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: value,
-                  style: TextStyle(
-                    fontSize: 21,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w400,
-                    height: 1,
-                    color: figure,
-                  ),
-                ),
-                if (suffix != null)
-                  TextSpan(
-                    text: suffix,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontStyle: FontStyle.italic,
-                      color: figure,
-                    ),
-                  ),
-              ],
+            style: TextStyle(
+              fontSize: 21,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w400,
+              height: 1,
+              color: figure,
             ),
           ),
           const SizedBox(height: 5),
@@ -1360,7 +1283,6 @@ class _StatCell extends StatelessWidget {
   }
 }
 
-// ─── Buttons ──────────────────────────────────────────────────────────────────
 
 class _GoldButton extends StatefulWidget {
   const _GoldButton({
@@ -1529,7 +1451,6 @@ class _GhostButton extends StatelessWidget {
   }
 }
 
-// ─── Confetti particle engine ────────────────────────────────────────────────
 
 class _Confetto {
   _Confetto({
@@ -1553,8 +1474,6 @@ class _Confetto {
   final bool ribbon;
 }
 
-/// Holds and advances the confetti particles. Stepped in fixed 1/60 substeps so
-/// the tuned per-frame constants behave the same on any refresh rate.
 class _Fx {
   _Fx(this.colors);
 
@@ -1608,7 +1527,6 @@ class _Fx {
     }
   }
 
-  /// Advances the simulation; returns true when anything is still alive.
   bool step(double dt, Size size) {
     _acc += dt;
     var stepped = false;

@@ -14,10 +14,6 @@ import 'avatar_picker_sheet.dart';
 import 'child_password_sheet.dart';
 import 'password_pill.dart';
 
-/// Card representing a single in-progress child draft inside the
-/// create-profiles form. Shows the avatar, name + age fields, and a
-/// password pill, plus a remove affordance when there's more than one
-/// draft. All edits are pushed straight to [ChildDraftCubit].
 class KidCard extends StatelessWidget {
   const KidCard({super.key, required this.draft, required this.showRemove});
 
@@ -80,10 +76,6 @@ class KidCard extends StatelessWidget {
                         ),
                       ),
                       child: ClipOval(
-                        // Empty name → InitialAvatar renders '?' on the
-                        // neutral gradient. Used until the parent picks an
-                        // avatar from the remote list, regardless of
-                        // whether the draft has a typed name.
                         child: InitialAvatar(
                           name: draft.avatar == null ? '' : draft.name,
                           imageUrl: draft.avatar?.imageUrl,
@@ -100,12 +92,12 @@ class KidCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: colors.olive,
-                          border: Border.all(color: AppColors.ivory, width: 2),
+                          border: Border.all(color: colors.canvas, width: 2),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.edit_rounded,
                           size: 11,
-                          color: AppColors.ivory,
+                          color: colors.onCta,
                         ),
                       ),
                     ),
@@ -157,17 +149,17 @@ class KidCard extends StatelessWidget {
               top: -4,
               right: -4,
               child: Material(
-                color: AppColors.date.withValues(alpha: 0.10),
+                color: colors.textTertiary.withValues(alpha: 0.12),
                 shape: const CircleBorder(),
                 child: InkWell(
                   customBorder: const CircleBorder(),
                   onTap: () => cubit.remove(draft.id),
-                  child: const Padding(
-                    padding: EdgeInsets.all(6),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
                     child: Icon(
                       Icons.close_rounded,
                       size: 12,
-                      color: AppColors.dateSoft,
+                      color: colors.textTertiary,
                     ),
                   ),
                 ),
@@ -200,7 +192,7 @@ class _MiniField extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(11, 6, 11, 6),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.6),
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(ZaadRadii.sm),
         border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.2)),
       ),

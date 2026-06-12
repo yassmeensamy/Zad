@@ -127,7 +127,14 @@ class _NoteSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final note = draft.note;
+    final note = context.select<DraftsCubit, String?>(
+      (cubit) =>
+          (cubit.state.drafts
+                  .cast<DraftModel?>()
+                  .firstWhere((d) => d?.id == draft.id, orElse: () => null) ??
+              draft)
+              .note,
+    );
     final hasNote = note != null && note.trim().isNotEmpty;
 
     return Container(
@@ -214,15 +221,23 @@ class _NoteSection extends StatelessWidget {
 
   Future<void> _editNote(BuildContext context) async {
     final cubit = context.read<DraftsCubit>();
+    final currentNote = _liveDraft(cubit).note;
     await DraftNoteSheet.show(
       context,
-      initialNote: draft.note,
+      initialNote: currentNote,
       onSubmit: (note) async {
-        if (note == draft.note) return true;
+        if (note == currentNote) return true;
         await cubit.updateNote(id: draft.id, note: note);
         return cubit.state.crudStatus == CrudStatus.updated;
       },
     );
+  }
+
+  DraftModel _liveDraft(DraftsCubit cubit) {
+    for (final d in cubit.state.drafts) {
+      if (d.id == draft.id) return d;
+    }
+    return draft;
   }
 
   Future<void> _removeNote(BuildContext context) async {

@@ -83,7 +83,9 @@
       "Bash(sed -n '150,185p' lib/features/home/presentation/screens/home_screen.dart)",
       "Bash(sed -n '270,290p' lib/core/navigation/app_router.dart)",
       "Bash(echo \"exit:$?\")",
-      "Bash(perl -0pi -e 's/const _overallBoard = <_LbEntry>\\\\[.*?\\\\n\\\\];\\\\n\\\\nconst _categoryBoards = <List<_LbEntry>>\\\\[.*?\\\\n\\\\];\\\\n\\\\n//s' lib/features/teams/presentation/screens/temp_team_home.dart)"
+      "Bash(perl -0pi -e 's/const _overallBoard = <_LbEntry>\\\\[.*?\\\\n\\\\];\\\\n\\\\nconst _categoryBoards = <List<_LbEntry>>\\\\[.*?\\\\n\\\\];\\\\n\\\\n//s' lib/features/teams/presentation/screens/temp_team_home.dart)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('assets/translations/ar.json'\\)\\); print\\('valid JSON'\\); print\\('update section kept:', 'update' in d\\); print\\('verify_email_dialog kept:', 'verify_email_dialog' in d.get\\('auth',{}\\)\\)\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('assets/translations/en.json'\\)\\); print\\('valid JSON'\\); print\\('keys:', len\\(d\\)\\)\")"
     ]
   }
 }

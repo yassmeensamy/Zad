@@ -13,6 +13,7 @@ import '../expections/server_exception.dart';
 import '../utils/logger.dart';
 import 'app_info_interceptor.dart';
 import 'app_type_interceptor.dart';
+import 'timezone_interceptor.dart';
 
 enum HttpMethod { get, post, put, patch, delete }
 
@@ -101,7 +102,6 @@ abstract class NetworkService {
   });
 }
 
-/// Implementation of NetworkService
 class NetworkServiceImpl implements NetworkService {
   final void Function()? onLogout;
   final String? appType;
@@ -157,6 +157,7 @@ class NetworkServiceImpl implements NetworkService {
           ),
           LanguageInterceptor(cacheService: sl()),
           AppTypeInterceptor(appType: appType),
+          TimezoneInterceptor(),
           RequestsInspectorInterceptor(),
         ]);
 
@@ -411,15 +412,11 @@ class NetworkServiceImpl implements NetworkService {
     }
   }
 
-  /// Default headers for every request
   Map<String, dynamic> getDefaultHeaders() => {
     'Content-Type': 'application/json',
   };
 }
 
-/// Shared response validation for remote data sources. Throws a
-/// [ServerException] when the status code is outside [validCodes]; returns the
-/// response otherwise so calls can be chained.
 extension ResponseValidation on Response {
   Response validated([List<int> validCodes = const [200]]) {
     if (!validCodes.contains(statusCode)) {

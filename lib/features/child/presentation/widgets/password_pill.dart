@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-/// Small inline pill placed inside the kid row that shows whether a
-/// password has been set, and opens the password sheet when tapped.
 class PasswordPill extends StatelessWidget {
   const PasswordPill({
     super.key,
@@ -30,7 +28,7 @@ class PasswordPill extends StatelessWidget {
           decoration: BoxDecoration(
             color: hasPassword
                 ? colors.olive.withValues(alpha: 0.10)
-                : AppColors.white.withValues(alpha: 0.55),
+                : colors.cardSurface,
             borderRadius: BorderRadius.circular(ZaadRadii.sm),
             border: Border.all(color: accent.withValues(alpha: 0.35)),
           ),

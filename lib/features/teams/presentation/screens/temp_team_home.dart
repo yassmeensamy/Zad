@@ -188,8 +188,11 @@ class _LeaderboardSection extends StatelessWidget {
             _CategoryFilter(
               selectedId: selectedId,
               onSelect: (id) {
-                if (id == selectedId) return;
-                context.read<TeamsCubit>().loadTeamProgress(categoryId: id);
+                final cubit = context.read<TeamsCubit>();
+                // Re-tapping the active filter normally no-ops, but allow it to
+                // retry when the board still has no data (first load failed).
+                if (id == selectedId && cubit.state.progress != null) return;
+                cubit.loadTeamProgress(categoryId: id);
               },
             ),
             const SizedBox(height: 12),

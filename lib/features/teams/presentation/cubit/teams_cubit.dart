@@ -92,34 +92,58 @@ class TeamsCubit extends BaseCubit<TeamsState> {
   }
 
   Future<void> loadTeamProgress({int? categoryId}) async {
+    // Dedupe: the team-home route builder and the home view can both request
+    // the initial board in the same frame — don't fire two fetches for the
+    // same scope.
+    if (state.progressLoading && state.progressCategoryId == categoryId) return;
+
     emit(
       state.copyWith(
         progressCategoryId: () => categoryId,
         progressLoading: true,
       ),
     );
-    try {
-      final progress = await _repository.getMyTeamProgress(
-        categoryId: categoryId,
-      );
-      emit(
-        state.copyWith(
-          progress: () => progress,
-          summary: categoryId == null
-              ? () => TeamProgressSummaryModel.fromProgress(progress)
-              : null,
-          progressLoading: false,
-        ),
-      );
-    } on ServerException catch (e) {
-      if (e.statusCode == 404) {
-        _emitNoTeam();
+
+    // A just-created team's leaderboard can lag a beat on the backend, so the
+    // first fetch may fail. Retry a few times with a short backoff so the
+    // "All" board fills in on first entry instead of being stuck on the
+    // skeleton until the user toggles a category. A failing progress fetch is
+    // never treated as "no team" — only loadTeamStatus/refreshTeam own that, so
+    // a transient progress error can't wipe a team we already have.
+    const maxAttempts = 4;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      // A newer request (e.g. the user switched category) supersedes this one.
+      if (isClosed || state.progressCategoryId != categoryId) return;
+      try {
+        final progress = await _repository.getMyTeamProgress(
+          categoryId: categoryId,
+        );
+        if (isClosed || state.progressCategoryId != categoryId) return;
+        emit(
+          state.copyWith(
+            progress: () => progress,
+            summary: categoryId == null
+                ? () => TeamProgressSummaryModel.fromProgress(progress)
+                : null,
+            progressLoading: false,
+          ),
+        );
         return;
+      } on ServerException catch (e) {
+        if (attempt < maxAttempts) {
+          await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
+          continue;
+        }
+        logger.error('TeamsCubit.loadTeamProgress server: ${e.message}');
+      } catch (e) {
+        if (attempt < maxAttempts) {
+          await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
+          continue;
+        }
+        logger.error('TeamsCubit.loadTeamProgress failed: $e');
       }
-      logger.error('TeamsCubit.loadTeamProgress server: ${e.message}');
-      emit(state.copyWith(progressLoading: false));
-    } catch (e) {
-      logger.error('TeamsCubit.loadTeamProgress failed: $e');
+    }
+    if (!isClosed && state.progressCategoryId == categoryId) {
       emit(state.copyWith(progressLoading: false));
     }
   }

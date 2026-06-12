@@ -33,14 +33,18 @@ class ProfileCard extends StatelessWidget {
             children: [
               _Avatar(entry: entry, colors: colors),
               const SizedBox(height: 10),
-              ResponsiveText(
-                entry.name,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: -0.2,
-                  color: colors.oliveDeep,
+              Flexible(
+                child: ResponsiveText(
+                  entry.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -0.2,
+                    color: colors.oliveDeep,
+                  ),
                 ),
               ),
               const SizedBox(height: 4),

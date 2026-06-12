@@ -13,7 +13,7 @@ class AppDatabase {
   AppDatabase();
 
   static const String _dbName = 'zaad_offline.db';
-  static const int _version = 1;
+  static const int _version = 2;
 
   Database? _db;
 
@@ -39,11 +39,20 @@ class AppDatabase {
     batch.execute(_createDownloadedQuestionsIndex);
     batch.execute(_createPendingAnswers);
     batch.execute(_createPendingAnswersIndex);
+    batch.execute(_createPendingDrafts);
+    batch.execute(_createPendingDraftsIndex);
     await batch.commit(noResult: true);
   }
 
-  // Reserved for future additive migrations. v1 has none.
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {}
+  // Additive migrations only — never drop offline content the user already has.
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      final batch = db.batch();
+      batch.execute(_createPendingDrafts);
+      batch.execute(_createPendingDraftsIndex);
+      await batch.commit(noResult: true);
+    }
+  }
 
   Future<void> close() async {
     await _db?.close();
@@ -61,6 +70,7 @@ class AppDatabase {
   static const String tableLevels = 'downloaded_levels';
   static const String tableQuestions = 'downloaded_questions';
   static const String tablePendingAnswers = 'pending_answers';
+  static const String tablePendingDrafts = 'pending_drafts';
 
   static const String _createDownloadedCategories =
       '''
@@ -125,4 +135,22 @@ class AppDatabase {
   static const String _createPendingAnswersIndex =
       'CREATE INDEX idx_pending_unsynced '
       'ON $tablePendingAnswers (user_id, synced, level_id, attempt_id)';
+
+  // Drafts a user marked while offline. Each row is one `{questionId, note}`
+  // bookmark waiting to be flushed via `POST /api/drafts/bulk` once back online.
+  static const String _createPendingDrafts =
+      '''
+    CREATE TABLE $tablePendingDrafts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL,
+      question_id INTEGER NOT NULL,
+      note TEXT,
+      created_at INTEGER NOT NULL,
+      synced INTEGER NOT NULL DEFAULT 0
+    )
+  ''';
+
+  static const String _createPendingDraftsIndex =
+      'CREATE INDEX idx_pending_drafts_unsynced '
+      'ON $tablePendingDrafts (user_id, synced, created_at)';
 }

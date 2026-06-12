@@ -221,17 +221,29 @@ class AuthCubit extends BaseCubit<AuthState> {
   }
 
   Future<void> logout() async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    // Use a dedicated logout sub-status so a failed logout never flips the main
+    // auth status to error/notLoggedIn — that would make the router treat the
+    // user as signed-out and navigate to login. On failure we keep the session
+    // (status stays loggedIn, tokens untouched) and only surface a snackbar.
+    emit(state.copyWith(logoutStatus: LogoutStatus.loading));
     try {
       await _authEventService.runPreLogoutCallbacks();
       await _repository.logout();
       _emitAndNotify(const AuthState(status: AuthStatus.notLoggedIn));
     } on ServerException catch (e) {
       logger.debug('Error during logout: ${e.message}');
-      _emitError(_errorMessage(e));
+      emit(state.copyWith(
+        status: AuthStatus.loggedIn,
+        logoutStatus: LogoutStatus.error,
+        errorMessage: _errorMessage(e),
+      ));
     } catch (e) {
       logger.debug('Unexpected error in logout: $e');
-      _emitError('general_error');
+      emit(state.copyWith(
+        status: AuthStatus.loggedIn,
+        logoutStatus: LogoutStatus.error,
+        errorMessage: 'general_error',
+      ));
     }
   }
 

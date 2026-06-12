@@ -30,6 +30,8 @@ import '../../features/child/data/remote/child_remote_data_source.dart';
 import '../../features/child/data/repositories/child_repository.dart';
 import '../../features/child/presentation/cubit/child_cubit.dart';
 import '../../features/child/presentation/cubit/child_draft_cubit.dart';
+import '../../features/drafts/core/drafts_sync_service.dart';
+import '../../features/drafts/data/local/pending_drafts_dao.dart';
 import '../../features/drafts/data/remote/drafts_remote_data_source.dart';
 import '../../features/drafts/data/repositories/drafts_repository.dart';
 import '../../features/drafts/presentation/cubit/drafts_cubit.dart';
@@ -141,6 +143,7 @@ class ServiceLocator {
         localService: sl(),
         strategyFactory: sl(),
         notificationService: sl(),
+        currentUserProvider: sl(),
       ),
     );
     sl.registerFactory<AuthCubit>(
@@ -331,8 +334,19 @@ class ServiceLocator {
     sl.registerLazySingleton<DraftsRemoteDataSource>(
       () => DraftsRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
     );
+    sl.registerLazySingleton<PendingDraftsDao>(
+      () => PendingDraftsDaoImpl(database: sl(), userProvider: sl()),
+    );
     sl.registerLazySingleton<DraftsRepository>(
-      () => DraftsRepositoryImpl(remoteDataSource: sl()),
+      () => DraftsRepositoryImpl(remoteDataSource: sl(), pendingDao: sl()),
+    );
+    sl.registerLazySingleton<DraftsSyncService>(
+      () => DraftsSyncService(
+        pendingDao: sl(),
+        draftsRemote: sl(),
+        connectivityService: sl(),
+        authEventService: sl(),
+      ),
     );
     sl.registerFactory<DraftsCubit>(() => DraftsCubit(repository: sl()));
 
@@ -401,5 +415,6 @@ class ServiceLocator {
     await sl<AppDatabase>().database;
     await sl<ConnectivityService>().init();
     unawaited(sl<OfflineSyncService>().start());
+    unawaited(sl<DraftsSyncService>().start());
   }
 }

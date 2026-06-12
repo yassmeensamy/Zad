@@ -36,7 +36,7 @@ class DraftsRemoteDataSourceImpl implements DraftsRemoteDataSource {
       _endpoints.drafts,
       data: request.toMap(),
     );
-    response.validated();
+    response.validated([201]);
     return DraftModel.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -67,6 +67,6 @@ class DraftsRemoteDataSourceImpl implements DraftsRemoteDataSource {
   @override
   Future<void> deleteDraft(int id) async {
     final response = await _networkService.delete(_endpoints.draftById(id));
-    response.validated();
+    response.validated([204]);
   }
 }

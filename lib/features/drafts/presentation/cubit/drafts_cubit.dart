@@ -68,6 +68,32 @@ class DraftsCubit extends BaseCubit<DraftsState> {
     }
   }
 
+  Future<void> createBulk(List<CreateDraftRequest> requests) async {
+    if (requests.isEmpty) return;
+
+    emit(state.copyWith(
+      crudStatus: CrudStatus.loading,
+      crudErrorMessage: () => null,
+    ));
+
+    try {
+      final created = await _repository.createDraftsBulk(requests);
+      emit(state.copyWith(
+        drafts: [...created, ...state.drafts],
+        crudStatus: CrudStatus.created,
+      ));
+    } on ServerException catch (e) {
+      logger.error('Failed to create ${requests.length} drafts: ${e.message}');
+      emit(state.copyWith(
+        crudStatus: CrudStatus.error,
+        crudErrorMessage: () => e.message,
+      ));
+    } catch (e) {
+      logger.error('Failed to create ${requests.length} drafts: $e');
+      emit(state.copyWith(crudStatus: CrudStatus.error));
+    }
+  }
+
   Future<void> updateNote({required int id, String? note}) async {
     final previousDrafts = List<DraftModel>.from(state.drafts);
 

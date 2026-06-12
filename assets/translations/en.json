@@ -46,8 +46,8 @@
     "subtitle": "Tell us how you'll use Zaad so we can shape the experience around you.",
     "individual_label": "For myself",
     "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
-    "family_label": "For my family",
-    "family_desc": "Set up child profiles with their own progress, gentle goals, and guided content.",
+    "family_label": "For another one",
+    "family_desc": "Set up a profile for another person with their own progress, gentle goals, and guided content.",
     "footer_prefix": "You can change this later in ",
     "footer_settings": "Settings"
   },

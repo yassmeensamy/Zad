@@ -137,26 +137,30 @@ class _VerifyEmailDialogState extends State<VerifyEmailDialog> {
             ),
           ),
           const SizedBox(height: 24),
-          Pinput(
-            length: _codeLength,
-            controller: _pinController,
-            focusNode: _pinFocusNode,
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            defaultPinTheme: defaultPinTheme,
-            focusedPinTheme: defaultPinTheme.copyWith(
-              decoration: defaultPinTheme.decoration!.copyWith(
-                border: Border.all(color: colors.olive, width: 1.6),
+          // Codes are entered left-to-right even in RTL layouts.
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Pinput(
+              length: _codeLength,
+              controller: _pinController,
+              focusNode: _pinFocusNode,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              defaultPinTheme: defaultPinTheme,
+              focusedPinTheme: defaultPinTheme.copyWith(
+                decoration: defaultPinTheme.decoration!.copyWith(
+                  border: Border.all(color: colors.olive, width: 1.6),
+                ),
               ),
-            ),
-            submittedPinTheme: defaultPinTheme.copyWith(
-              decoration: defaultPinTheme.decoration!.copyWith(
-                color: colors.olive.withValues(alpha: 0.08),
-                border: Border.all(color: colors.olive),
+              submittedPinTheme: defaultPinTheme.copyWith(
+                decoration: defaultPinTheme.decoration!.copyWith(
+                  color: colors.olive.withValues(alpha: 0.08),
+                  border: Border.all(color: colors.olive),
+                ),
               ),
+              onCompleted: (_) => _onVerify(),
             ),
-            onCompleted: (_) => _onVerify(),
           ),
           const SizedBox(height: 24),
           ListenableBuilder(

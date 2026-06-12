@@ -37,8 +37,21 @@ class ProfileScreen extends StatelessWidget {
     );
 
     return BlocListener<AuthCubit, AuthState>(
-      listenWhen: (a, b) => a.status != b.status && b.isNotLoggedIn,
-      listener: (context, _) => context.goNamed(AppRoutes.loginName),
+      listenWhen: (a, b) =>
+          (a.status != b.status && b.isNotLoggedIn) ||
+          (!a.isLogoutError && b.isLogoutError),
+      listener: (context, state) {
+        // A failed logout keeps the session: don't navigate, just surface the
+        // error so the user stays put and can retry.
+        if (state.isLogoutError) {
+          SnackBarHelper.showError(
+            context,
+            message: state.errorMessage ?? 'general_error',
+          );
+          return;
+        }
+        context.goNamed(AppRoutes.loginName);
+      },
       child: SafeArea(
         bottom: false,
         child: ListView(

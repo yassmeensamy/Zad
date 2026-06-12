@@ -27,8 +27,15 @@ class HomeStreakSection extends StatelessWidget {
       builder: (context, state) {
         final showSkeleton =
             state.isInitial || state.isLoading || !state.hasStreak;
+        final colors = context.appColors;
         return Skeletonizer(
           enabled: showSkeleton,
+          // Keep the hero's own palette while loading instead of the default
+          // grey bones, so the skeleton shimmer matches the loaded state.
+          effect: ShimmerEffect(
+            baseColor: colors.heroSurfaceTop.withValues(alpha: 0.55),
+            highlightColor: colors.heroSurfaceMid.withValues(alpha: 0.85),
+          ),
           child: StreakHero(
             streakDays: state.streakDays,
             weekProgress: state.weekProgress,

@@ -39,6 +39,14 @@ extension UpgradeStatusX on UpgradeStatus {
   bool get isError => this == UpgradeStatus.error;
 }
 
+enum LogoutStatus { initial, loading, success, error }
+
+extension LogoutStatusX on LogoutStatus {
+  bool get isLoading => this == LogoutStatus.loading;
+  bool get isSuccess => this == LogoutStatus.success;
+  bool get isError => this == LogoutStatus.error;
+}
+
 class AuthState {
   const AuthState({
     this.status = AuthStatus.initial,
@@ -50,6 +58,7 @@ class AuthState {
     this.pendingEmail,
     this.upgradeStatus,
     this.guestAuthStatus,
+    this.logoutStatus,
   });
 
   final AuthStatus status;
@@ -66,6 +75,8 @@ class AuthState {
 
   final UpgradeStatus? upgradeStatus;
 
+  final LogoutStatus? logoutStatus;
+
   AuthState copyWith({
     AuthStatus? status,
     String? email,
@@ -76,6 +87,7 @@ class AuthState {
     String? pendingEmail,
     UpgradeStatus? upgradeStatus,
     GuestAuthStatus? guestAuthStatus,
+    LogoutStatus? logoutStatus,
   }) => AuthState(
     status: status ?? this.status,
     email: email ?? this.email,
@@ -86,6 +98,7 @@ class AuthState {
     pendingEmail: pendingEmail ?? this.pendingEmail,
     upgradeStatus: upgradeStatus,
     guestAuthStatus: guestAuthStatus,
+    logoutStatus: logoutStatus,
   );
 
   bool get isInitial => status.isInitial;
@@ -106,6 +119,8 @@ class AuthState {
   bool get isGuestLoading => guestAuthStatus?.isLoading ?? false;
   bool get isGuestSuccess => guestAuthStatus?.isSuccess ?? false;
   bool get isGuestError => guestAuthStatus?.isError ?? false;
+  bool get isLoggingOut => logoutStatus?.isLoading ?? false;
+  bool get isLogoutError => logoutStatus?.isError ?? false;
 
   @override
   bool operator ==(Object other) {
@@ -120,7 +135,8 @@ class AuthState {
         other.verificationStatus == verificationStatus &&
         other.pendingEmail == pendingEmail &&
         other.upgradeStatus == upgradeStatus &&
-        other.guestAuthStatus == guestAuthStatus;
+        other.guestAuthStatus == guestAuthStatus &&
+        other.logoutStatus == logoutStatus;
   }
 
   @override
@@ -134,5 +150,6 @@ class AuthState {
     pendingEmail,
     upgradeStatus,
     guestAuthStatus,
+    logoutStatus,
   );
 }

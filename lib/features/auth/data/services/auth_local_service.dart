@@ -47,6 +47,9 @@ class AuthLocalService {
     await _cache.remove(StorageKeys.kRefreshTokenKey, isSecure: true);
   }
 
+  Future<void> clearUserModel() async =>
+      await _cache.remove(StorageKeys.kUserKey);
+
   Future<void> clearAllAuthData(
     Future<void> Function(SocialProvider) signOutProvider,
   ) async {
@@ -57,5 +60,6 @@ class AuthLocalService {
       await clearLoginMethod();
     }
     await clearTokens();
+    await clearUserModel();
   }
 }

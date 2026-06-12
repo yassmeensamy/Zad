@@ -85,7 +85,15 @@
       "Bash(echo \"exit:$?\")",
       "Bash(perl -0pi -e 's/const _overallBoard = <_LbEntry>\\\\[.*?\\\\n\\\\];\\\\n\\\\nconst _categoryBoards = <List<_LbEntry>>\\\\[.*?\\\\n\\\\];\\\\n\\\\n//s' lib/features/teams/presentation/screens/temp_team_home.dart)",
       "Bash(python3 -c \"import json; d=json.load\\(open\\('assets/translations/ar.json'\\)\\); print\\('valid JSON'\\); print\\('update section kept:', 'update' in d\\); print\\('verify_email_dialog kept:', 'verify_email_dialog' in d.get\\('auth',{}\\)\\)\")",
-      "Bash(python3 -c \"import json; d=json.load\\(open\\('assets/translations/en.json'\\)\\); print\\('valid JSON'\\); print\\('keys:', len\\(d\\)\\)\")"
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('assets/translations/en.json'\\)\\); print\\('valid JSON'\\); print\\('keys:', len\\(d\\)\\)\")",
+      "Bash(sed -n '90,135p' lib/features/teams/presentation/screens/temp_team_home.dart)",
+      "Bash(sed -n '25,60p' lib/features/teams/presentation/widgets/teams_app_bar.dart)",
+      "Bash(perl -ni -e 'print unless /^\\\\s*\\\\/\\\\//' lib/core/api/network_service.dart lib/core/expections/server_exception.dart lib/core/navigation/app_router.dart lib/features/child/presentation/screens/create_children_screen.dart lib/features/child/presentation/widgets/child_password_sheet.dart lib/features/child/presentation/widgets/kid_card.dart lib/features/child/presentation/widgets/password_pill.dart lib/features/drafts/presentation/screens/draft_detail_screen.dart lib/features/home/presentation/screens/home_screen.dart lib/features/home/presentation/widgets/home_header.dart lib/features/home/presentation/widgets/home_team_section.dart lib/features/teams/data/models/team_progress_model.dart lib/features/teams/presentation/cubit/teams_cubit.dart lib/features/teams/presentation/widgets/team_number_one_dialog.dart)",
+      "Bash(sed -n '/\"notifications\": {/,/}/p' assets/translations/en.json)",
+      "Bash(sed -n '/\"notifications\": {/,/}/p' assets/translations/ar.json)",
+      "Bash(awk 'NR>=387 && NR<=410' assets/translations/en.json)",
+      "Bash(sed -n '15,30p')",
+      "Bash(awk 'NR>=400 && NR<=412{print NR\": \"$0}' assets/translations/en.json)"
     ]
   }
 }

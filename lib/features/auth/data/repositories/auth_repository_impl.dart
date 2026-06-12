@@ -1,3 +1,4 @@
+import '../../../../core/services/current_user_provider.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/utils/logger.dart';
 import '../data_source/auth_remote_data_source.dart';
@@ -13,15 +14,18 @@ class AuthRepositoryImpl implements AuthRepository {
     required AuthLocalService localService,
     required OAuthStrategyFactory strategyFactory,
     required NotificationService notificationService,
+    required CurrentUserProvider currentUserProvider,
   }) : _remoteDataSource = remoteDataSource,
        _localService = localService,
        _strategyFactory = strategyFactory,
-       _notificationService = notificationService;
+       _notificationService = notificationService,
+       _currentUserProvider = currentUserProvider;
 
   final AuthRemoteDataSource _remoteDataSource;
   final AuthLocalService _localService;
   final OAuthStrategyFactory _strategyFactory;
   final NotificationService _notificationService;
+  final CurrentUserProvider _currentUserProvider;
 
   /// Resolves the device FCM token, returning null if it can't be obtained
   /// (e.g. unsupported platform or denied permission) so auth never fails
@@ -155,6 +159,7 @@ class AuthRepositoryImpl implements AuthRepository {
     await _localService.clearAllAuthData(
       (provider) => _strategyFactory.getStrategy(provider).signOut(),
     );
+    _currentUserProvider.clear();
   }
 
   @override
@@ -163,6 +168,7 @@ class AuthRepositoryImpl implements AuthRepository {
     await _localService.clearAllAuthData(
       (provider) => _strategyFactory.getStrategy(provider).signOut(),
     );
+    _currentUserProvider.clear();
   }
 
   @override

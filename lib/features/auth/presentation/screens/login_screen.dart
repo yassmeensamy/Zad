@@ -13,6 +13,7 @@ import '../../../user/presentation/cubit/user_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_google_button.dart';
+import '../widgets/auth_language_button.dart';
 import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_prompt_link.dart';
@@ -119,7 +120,11 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
               child: Column(
                 children: [
-                  const SizedBox(height: 24),
+                  const Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: AuthLanguageButton(),
+                  ),
+                  const SizedBox(height: 12),
                   const ZaadBrand.compact(),
                   const SizedBox(height: 24),
                   const _Headline(),

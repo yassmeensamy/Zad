@@ -204,17 +204,6 @@ class _FlutterLocalNotificationHelper {
   }
 }
 
-Future<void> navigateToNotificationPage([int? notificationId]) async {
-  if (notificationId == null) return Future.value();
-  // return navigatorKey.currentState!.push(
-  //   MaterialPageRoute(
-  //     builder: (context) =>
-  //         NotificationDetailsView(notificationId: notificationId),
-  //     settings: const RouteSettings(name: NotificationDetailsView.routeName),
-  //   ),
-  // );
-}
-
 class _NotificationIdGenerator {
   const _NotificationIdGenerator();
 

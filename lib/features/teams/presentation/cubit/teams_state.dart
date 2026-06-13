@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../data/models/team_members_model.dart';
 import '../../data/models/team_model.dart';
 import '../../data/models/team_progress_model.dart';
@@ -134,19 +132,4 @@ extension TeamsStateX on TeamsState {
   bool get isError => status == TeamsStatus.error;
   bool get hasTeam => status == TeamsStatus.hasTeam && team != null;
   bool get hasNoTeam => status == TeamsStatus.noTeam;
-}
-
-@immutable
-class JoinPreview {
-  const JoinPreview({
-    required this.code,
-    required this.teamName,
-    required this.memberCount,
-    required this.hostName,
-  });
-
-  final String code;
-  final String teamName;
-  final int memberCount;
-  final String hostName;
 }

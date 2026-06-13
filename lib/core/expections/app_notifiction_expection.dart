@@ -15,8 +15,3 @@ class NotificationDeniedException extends AppNotificationException {
 class NotificationDeniedForeverException extends AppNotificationException {
   NotificationDeniedForeverException(super.message);
 }
-
-/// Notification permission is restricted (iOS specific)
-class NotificationRestrictedException extends AppNotificationException {
-  NotificationRestrictedException(super.message);
-}

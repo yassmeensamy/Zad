@@ -25,7 +25,34 @@ class DraftsRepositoryImpl implements DraftsRepository {
   final PendingDraftsDao _pendingDao;
 
   @override
-  Future<List<DraftModel>> getDrafts() => _remoteDataSource.getDrafts();
+  Future<List<DraftModel>> getDrafts() async {
+    try {
+      return await _remoteDataSource.getDrafts();
+    } catch (e) {
+      if (isConnectivityError(e)) {
+        // Offline: fall back to the on-device drafts queue so the screen shows
+        // what's saved locally instead of hanging. An empty queue returns an
+        // empty list, which lets the UI surface its empty-state rather than an
+        // error.
+        return _localDrafts();
+      }
+      rethrow;
+    }
+  }
+
+  /// The locally-queued (offline-created, not-yet-synced) drafts mapped to
+  /// [DraftModel]s for display while offline.
+  Future<List<DraftModel>> _localDrafts() async {
+    final pending = await _pendingDao.getUnsynced();
+    return [
+      for (final p in pending)
+        _offlineDraft(
+          questionId: p.questionId,
+          note: p.note,
+          createdAt: p.createdAt,
+        ),
+    ];
+  }
 
   @override
   Future<DraftModel> createDraft(CreateDraftRequest request) async {
@@ -40,7 +67,10 @@ class DraftsRepositoryImpl implements DraftsRepository {
           questionId: request.questionId,
           note: request.note,
         );
-        return _offlineDraft(request);
+        return _offlineDraft(
+          questionId: request.questionId,
+          note: request.note,
+        );
       }
       rethrow;
     }
@@ -68,15 +98,21 @@ class DraftsRepositoryImpl implements DraftsRepository {
     await _remoteDataSource.deleteDraft(id);
   }
 
-  /// Builds the optimistic draft returned for an offline create. The id is a
-  /// negative sentinel derived from the question id so it never collides with a
-  /// real server id and the offline toggle-off can recover the question id.
-  DraftModel _offlineDraft(CreateDraftRequest request) => DraftModel(
-        id: offlineDraftId(request.questionId),
-        note: request.note,
-        createdAt: DateTime.now(),
+  /// Builds the optimistic draft used for an offline create and for rendering
+  /// queued drafts while offline. The id is a negative sentinel derived from the
+  /// question id so it never collides with a real server id and the offline
+  /// toggle-off can recover the question id.
+  DraftModel _offlineDraft({
+    required int questionId,
+    String? note,
+    DateTime? createdAt,
+  }) =>
+      DraftModel(
+        id: offlineDraftId(questionId),
+        note: note,
+        createdAt: createdAt ?? DateTime.now(),
         question: QuestionModel(
-          id: request.questionId,
+          id: questionId,
           text: '',
           choices: const <ChoiceModel>[],
           correctIndex: -1,

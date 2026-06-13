@@ -36,7 +36,16 @@ class DraftsCubit extends BaseCubit<DraftsState> {
         ),
       );
     } catch (e) {
+      // Connectivity failures are absorbed by the repository (it falls back to
+      // local drafts), so anything reaching here is unexpected — surface it
+      // instead of leaving the screen stuck on the loading skeleton.
       logger.error('Failed to load drafts: $e');
+      emit(
+        state.copyWith(
+          status: DraftsStatus.error,
+          errorMessage: () => 'errors.generic',
+        ),
+      );
     }
   }
 

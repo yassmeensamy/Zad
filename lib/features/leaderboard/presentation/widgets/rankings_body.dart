@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/error_state.dart';
 import '../cubit/rankings_cubit.dart';
 import '../cubit/rankings_state.dart';
 import 'leaderboard_loading.dart';
@@ -31,7 +32,9 @@ class RankingsBody extends StatelessWidget {
       return const LeaderboardLoading();
     }
     if (state.activeStatus == RankingsStatus.error && state.activeIsEmpty) {
-      return LeaderboardErrorRetry(
+      return ErrorState(
+        title: 'errors.generic_title',
+        message: 'leaderboard.error',
         onRetry: () => context.read<RankingsCubit>().refresh(),
       );
     }

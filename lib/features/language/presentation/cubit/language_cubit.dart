@@ -1,5 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 
+import '../../../../core/api/network_failure.dart';
 import '../../../../core/constants/storage_keys.dart';
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/events/app_events.dart';
@@ -33,7 +34,16 @@ class LanguageCubit extends BaseCubit<LanguageState> {
     try {
       emit(state.copyWith(status: LanguageStatus.loading));
       if (!shouldSkipBackend) {
-        await _repository.updateLanguage(language);
+        try {
+          await _repository.updateLanguage(language);
+        } catch (e) {
+          // Offline: the backend couldn't be reached. Still apply the language
+          // locally so the UI switches; the choice is cached and will sync to
+          // the server on the next successful request. Genuine server errors
+          // (4xx/5xx) are real failures and rethrow to surface to the user.
+          if (!isConnectivityError(e)) rethrow;
+          logger.debug('🌐 [lang] offline — applying "$language" locally only');
+        }
       }
       await _cacheService.set<String>(StorageKeys.kLocaleKey, language);
       emit(

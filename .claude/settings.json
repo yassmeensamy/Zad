@@ -93,7 +93,12 @@
       "Bash(sed -n '/\"notifications\": {/,/}/p' assets/translations/ar.json)",
       "Bash(awk 'NR>=387 && NR<=410' assets/translations/en.json)",
       "Bash(sed -n '15,30p')",
-      "Bash(awk 'NR>=400 && NR<=412{print NR\": \"$0}' assets/translations/en.json)"
+      "Bash(awk 'NR>=400 && NR<=412{print NR\": \"$0}' assets/translations/en.json)",
+      "Bash(sed -n '1,40p' lib/theme/zaad_shadows.dart)",
+      "Bash(sed -n '1,40p' lib/theme/zaad_radii.dart)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('assets/translations/en.json'\\)\\);print\\('top-level retry:', d.get\\('retry'\\)\\)\")",
+      "Bash(python3 -c \"import json;json.load\\(open\\('assets/translations/en.json'\\)\\);json.load\\(open\\('assets/translations/ar.json'\\)\\);print\\('en + ar JSON valid ✓'\\)\")",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('assets/translations/en.json'\\)\\).get\\('leaderboard',{}\\);print\\('error:',d.get\\('error'\\)\\);print\\('error_title:',d.get\\('error_title'\\)\\)\")"
     ]
   }
 }

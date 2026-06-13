@@ -366,7 +366,11 @@
   },
   "errors": {
     "generic": "Something went wrong",
+    "generic_title": "Something went wrong",
+    "generic_message": "We hit a snag loading this. Please try again.",
     "no_internet": "No internet connection",
+    "connection_title": "Connection lost",
+    "connection_message": "We couldn't reach the server. Check your internet connection and try again.",
     "required_field": "This field is required"
   },
   "please_enter_email": "Please enter your email",

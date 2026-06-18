@@ -85,7 +85,8 @@ class _RoleSelectViewState extends State<_RoleSelectView> {
     if (option == null || _resolving) return;
 
     if (option.kind == _RoleKind.individual) {
-      context.go(AppRoutes.home);
+      // Complete-profile collects the user's own details, then continues home.
+      context.go(AppRoutes.completeProfile, extra: AppRoutes.home);
       return;
     }
 
@@ -100,7 +101,7 @@ class _RoleSelectViewState extends State<_RoleSelectView> {
     final destination = cubit.state.children.isEmpty
         ? AppRoutes.createProfiles
         : AppRoutes.profileSelect;
-    context.go(destination);
+    context.go(AppRoutes.completeProfile, extra: destination);
   }
 
   @override

@@ -9,6 +9,8 @@ abstract class UserRemoteDataSource {
     required String fullName,
     DateTime? birthDate,
     String? avatarId,
+    String? username,
+    Gender? gender,
   });
   Future<void> changePassword({
     required String currentPassword,
@@ -41,6 +43,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     required String fullName,
     DateTime? birthDate,
     String? avatarId,
+    String? username,
+    Gender? gender,
   }) async {
     final response = await _networkService.put(
       _endpoints.me,
@@ -48,6 +52,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         'fullName': fullName,
         'birthDate': birthDate?.toIso8601String(),
         'avatarId': ?avatarId,
+        'username': ?username,
+        'gender': ?gender?.wire,
       },
     );
     if (response.statusCode != 200) {

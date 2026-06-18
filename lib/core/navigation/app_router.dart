@@ -24,6 +24,7 @@ import '../../features/drafts/presentation/screens/drafts_screen.dart';
 import '../../features/help_center/presentation/screens/help_center_screen.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/offline/presentation/screens/downloads_screen.dart';
+import '../../features/onboarding_flow/presentation/screens/complete_profile_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/profile_select_screen.dart';
 import '../../features/onboarding_flow/presentation/screens/role_select_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
@@ -125,6 +126,13 @@ class AppRouter {
           path: AppRoutes.roleSelect,
           name: AppRoutes.roleSelectName,
           builder: (context, state) => const RoleSelectScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.completeProfile,
+          name: AppRoutes.completeProfileName,
+          builder: (context, state) => CompleteProfileScreen(
+            nextDestination: state.extra as String? ?? AppRoutes.home,
+          ),
         ),
         GoRoute(
           path: AppRoutes.createProfiles,

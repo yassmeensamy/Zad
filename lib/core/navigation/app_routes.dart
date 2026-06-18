@@ -7,6 +7,7 @@ class AppRoutes {
   static const String signup = '/signup';
   static const String forgotPassword = '/forgot-password';
   static const String roleSelect = '/role-select';
+  static const String completeProfile = '/complete-profile';
   static const String createProfiles = '/create-profiles';
   static const String profileSelect = '/profile-select';
 
@@ -39,6 +40,7 @@ class AppRoutes {
   static const String signupName = 'signup';
   static const String forgotPasswordName = 'forgot-password';
   static const String roleSelectName = 'role-select';
+  static const String completeProfileName = 'complete-profile';
   static const String createProfilesName = 'create-profiles';
   static const String profileSelectName = 'profile-select';
   static const String homeName = 'home';

@@ -9,6 +9,8 @@ abstract class UserRepository {
     required String fullName,
     DateTime? birthDate,
     String? avatarId,
+    String? username,
+    Gender? gender,
   });
   Future<void> changePassword({
     required String currentPassword,
@@ -42,11 +44,15 @@ class UserRepositoryImpl implements UserRepository {
     required String fullName,
     DateTime? birthDate,
     String? avatarId,
+    String? username,
+    Gender? gender,
   }) async {
     final user = await _remoteDataSource.updateProfile(
       fullName: fullName,
       birthDate: birthDate,
       avatarId: avatarId,
+      username: username,
+      gender: gender,
     );
     await saveProfileToCache(user);
     return user;

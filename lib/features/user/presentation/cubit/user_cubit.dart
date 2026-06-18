@@ -1,5 +1,6 @@
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../auth/core/auth_event_service.dart';
 import '../../../auth/core/auth_state_listener_mixin.dart';
@@ -57,6 +58,8 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     required String fullName,
     DateTime? birthDate,
     AvatarModel? avatar,
+    String? username,
+    Gender? gender,
   }) async {
     final current = state.user;
     // Only send avatarId when it actually changed, so unrelated saves
@@ -69,11 +72,15 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
         fullName: fullName,
         birthDate: birthDate,
         avatarId: avatarId,
+        username: username,
+        gender: gender,
       );
 
       final merged = (current ?? state.user)?.copyWith(
         fullName: updated.fullName,
         birthDate: updated.birthDate,
+        username: updated.username,
+        gender: updated.gender,
         avatar: avatarChanged ? avatar : null,
       );
       emit(

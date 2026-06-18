@@ -14,6 +14,23 @@ enum UserRole {
       UserRole.values.firstWhere((r) => r.wire == value);
 }
 
+enum Gender {
+  male('MALE'),
+  female('FEMALE');
+
+  const Gender(this.wire);
+
+  final String wire;
+
+  static Gender? fromWire(String? value) {
+    if (value == null) return null;
+    for (final g in Gender.values) {
+      if (g.wire == value) return g;
+    }
+    return null;
+  }
+}
+
 class UserModel {
   final String id;
   final String? email;
@@ -22,6 +39,7 @@ class UserModel {
   final UserRole role;
   final bool googleLinked;
   final DateTime? birthDate;
+  final Gender? gender;
   final String? parentId;
   final DateTime createdAt;
   final AvatarModel? avatar;
@@ -40,6 +58,7 @@ class UserModel {
     this.username,
     this.googleLinked = false,
     this.birthDate,
+    this.gender,
     this.parentId,
     this.avatar,
     this.childrenCount = 0,
@@ -58,6 +77,7 @@ class UserModel {
     birthDate: map['birthDate'] == null
         ? null
         : DateTime.parse(map['birthDate'] as String).toLocal(),
+    gender: Gender.fromWire(map['gender'] as String?),
     parentId: map['parentId'] as String?,
     createdAt: DateTime.parse(map['createdAt'] as String).toLocal(),
     avatar: map['avatar'] == null
@@ -80,6 +100,7 @@ class UserModel {
     UserRole? role,
     bool? googleLinked,
     DateTime? birthDate,
+    Gender? gender,
     String? parentId,
     DateTime? createdAt,
     AvatarModel? avatar,
@@ -95,6 +116,7 @@ class UserModel {
     role: role ?? this.role,
     googleLinked: googleLinked ?? this.googleLinked,
     birthDate: birthDate ?? this.birthDate,
+    gender: gender ?? this.gender,
     parentId: parentId ?? this.parentId,
     createdAt: createdAt ?? this.createdAt,
     avatar: avatar ?? this.avatar,
@@ -112,6 +134,7 @@ class UserModel {
     'role': role.wire,
     'googleLinked': googleLinked,
     'birthDate': birthDate?.toIso8601String(),
+    'gender': gender?.wire,
     'parentId': parentId,
     'createdAt': createdAt.toIso8601String(),
     'avatar': avatar?.toMap(),
@@ -141,7 +164,8 @@ class UserModel {
   String toString() =>
       'UserModel(id: $id, email: $email, username: $username, '
       'fullName: $fullName, role: $role, googleLinked: $googleLinked, '
-      'birthDate: $birthDate, parentId: $parentId, createdAt: $createdAt, '
+      'birthDate: $birthDate, gender: $gender, parentId: $parentId, '
+      'createdAt: $createdAt, '
       'childrenCount: $childrenCount, totalPoints: $totalPoints, '
       'language: $language, isAnonymous: $isAnonymous)';
 
@@ -156,6 +180,7 @@ class UserModel {
         other.role == role &&
         other.googleLinked == googleLinked &&
         other.birthDate == birthDate &&
+        other.gender == gender &&
         other.parentId == parentId &&
         other.createdAt == createdAt &&
         other.avatar == avatar &&
@@ -174,6 +199,7 @@ class UserModel {
     role,
     googleLinked,
     birthDate,
+    gender,
     parentId,
     createdAt,
     avatar,

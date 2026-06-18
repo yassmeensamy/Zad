@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
@@ -283,21 +283,9 @@ class _Headline extends StatelessWidget {
     final colors = context.appColors;
     return Column(
       children: [
-        Text.rich(
-          TextSpan(
-            style: ZaadType.titleHero.copyWith(color: colors.oliveDeep),
-            children: [
-              TextSpan(text: 'auth.login_screen.welcome_prefix'.tr()),
-              TextSpan(
-                text: 'auth.login_screen.welcome_accent'.tr(),
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: colors.textArabic,
-                ),
-              ),
-            ],
-          ),
-          textAlign: TextAlign.center,
+        const AccentRichTitle(
+          prefixKey: 'auth.login_screen.welcome_prefix',
+          accentKey: 'auth.login_screen.welcome_accent',
         ),
         const SizedBox(height: 12),
         ConstrainedBox(

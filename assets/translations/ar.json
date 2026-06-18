@@ -39,6 +39,10 @@
     "no": "لا",
     "reset": "إعادة الضبط"
   },
+  "onboarding": {
+    "get_started": "ابدأ الآن",
+    "load_failed": "تعذّر تحميل المقدمة — يرجى المحاولة مرة أخرى"
+  },
   "role_select": {
     "eyebrow": "الخطوة 1 من 2",
     "title_prefix": "لمن ",

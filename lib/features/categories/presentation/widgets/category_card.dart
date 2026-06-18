@@ -6,6 +6,7 @@ import '../../../../core/constants/app_images.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/gradient_progress_bar.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/star_medallion.dart';
 import '../../../../theme/theme.dart';
@@ -210,13 +211,9 @@ class _CategoryResetButton extends StatelessWidget {
       borderRadius: const BorderRadius.all(Radius.circular(999)),
       clipBehavior: Clip.antiAlias,
       child: isResetting
-          ? const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              child: SizedBox(
-                width: 14,
-                height: 14,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: ZaadLoader(size: 14, color: context.colorScheme.primary),
             )
           : InkWell(
               onTap: () => _confirmReset(context),

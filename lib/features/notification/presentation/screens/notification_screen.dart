@@ -9,6 +9,8 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
+import '../../../../core/widgets/zaad_loader.dart';
+import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/notification_model.dart';
@@ -115,16 +117,9 @@ class _PaginationLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 18),
-      child: Center(
-        child: SizedBox(
-          width: 22,
-          height: 22,
-          child: CircularProgressIndicator(strokeWidth: 2, color: colors.olive),
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 18),
+      child: Center(child: ZaadLoader()),
     );
   }
 }
@@ -149,10 +144,7 @@ class _LoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Skeletonizer(
-      effect: ShimmerEffect(
-        baseColor: colors.olive.withValues(alpha: 0.10),
-        highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-      ),
+      effect: appShimmerEffect(colors),
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),

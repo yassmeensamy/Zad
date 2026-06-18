@@ -7,6 +7,7 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/empty_state.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
@@ -42,7 +43,7 @@ class _DownloadsView extends StatelessWidget {
         builder: (context, state) {
           if (state.status == DownloadsStatus.initial ||
               state.status == DownloadsStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return const ZaadLoader.fill();
           }
           if (state.status == DownloadsStatus.error &&
               state.downloadedCategories.isEmpty) {

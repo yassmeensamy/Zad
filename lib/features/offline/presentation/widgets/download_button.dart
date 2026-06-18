@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../theme/theme.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../cubit/downloads_cubit.dart';
 import '../cubit/downloads_state.dart';
@@ -30,14 +31,10 @@ class DownloadButton extends StatelessWidget {
         VoidCallback? onTap;
         if (isDownloading) {
           final value = state.progress[category.id] ?? 0;
-          child = SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              value: value == 0 ? null : value,
-              valueColor: AlwaysStoppedAnimation(colors.accentDeep),
-            ),
+          child = ZaadLoader(
+            size: 16,
+            color: colors.accentDeep,
+            value: value == 0 ? null : value,
           );
         } else if (isDownloaded) {
           child = Icon(

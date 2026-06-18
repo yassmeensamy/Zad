@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/draft_model.dart';
 
@@ -155,11 +156,7 @@ class _Trailing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isMutating) {
-      return SizedBox(
-        width: 16,
-        height: 16,
-        child: CircularProgressIndicator(strokeWidth: 2, color: color),
-      );
+      return ZaadLoader(size: 16, color: color);
     }
     return Icon(Icons.bookmark_rounded, size: 18, color: color);
   }

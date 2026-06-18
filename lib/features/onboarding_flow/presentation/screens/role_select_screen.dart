@@ -7,6 +7,7 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../child/presentation/cubit/child_cubit.dart';
@@ -200,22 +201,14 @@ class _Heading extends StatelessWidget {
           style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
         ),
         const SizedBox(height: 14),
-        Text.rich(
-          TextSpan(
-            style: ZaadType.titleHero.copyWith(color: colors.oliveDeep),
-            children: [
-              TextSpan(text: 'role_select.title_prefix'.tr()),
-              TextSpan(
-                text: 'role_select.title_accent'.tr(),
-                style: AppTextStyles.headlineMedium.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: colors.textArabic,
-                ),
-              ),
-              const TextSpan(text: '?'),
-            ],
+        AccentRichTitle(
+          prefixKey: 'role_select.title_prefix',
+          accentKey: 'role_select.title_accent',
+          accentStyle: AppTextStyles.headlineMedium.copyWith(
+            fontStyle: FontStyle.italic,
+            color: colors.textArabic,
           ),
-          textAlign: TextAlign.center,
+          suffix: '?',
         ),
         const SizedBox(height: 10),
         ResponsiveText(

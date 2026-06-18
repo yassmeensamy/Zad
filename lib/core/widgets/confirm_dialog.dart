@@ -16,6 +16,10 @@ class ConfirmDialog extends StatelessWidget {
     required this.messageKey,
     required this.confirmKey,
     this.cancelKey = 'common.cancel',
+    this.confirmColor,
+    this.confirmTextColor,
+    this.iconColor,
+    this.iconTint,
   });
 
   final IconData icon;
@@ -24,6 +28,20 @@ class ConfirmDialog extends StatelessWidget {
   final String confirmKey;
   final String cancelKey;
 
+  /// Confirm CTA fill (and the default for [iconColor]). Defaults to the theme
+  /// error color — the destructive treatment.
+  final Color? confirmColor;
+
+  /// Confirm CTA label color. Defaults to the canvas color.
+  final Color? confirmTextColor;
+
+  /// Icon glyph color. Defaults to [confirmColor] / error.
+  final Color? iconColor;
+
+  /// Base color of the round icon medallion (rendered at 10% alpha). Defaults
+  /// to [iconColor].
+  final Color? iconTint;
+
   static Future<bool?> show({
     required BuildContext context,
     required IconData icon,
@@ -31,6 +49,10 @@ class ConfirmDialog extends StatelessWidget {
     required String messageKey,
     required String confirmKey,
     String cancelKey = 'common.cancel',
+    Color? confirmColor,
+    Color? confirmTextColor,
+    Color? iconColor,
+    Color? iconTint,
   }) {
     return CustomDialog.show<bool>(
       context: context,
@@ -40,6 +62,10 @@ class ConfirmDialog extends StatelessWidget {
         messageKey: messageKey,
         confirmKey: confirmKey,
         cancelKey: cancelKey,
+        confirmColor: confirmColor,
+        confirmTextColor: confirmTextColor,
+        iconColor: iconColor,
+        iconTint: iconTint,
       ),
     );
   }
@@ -48,6 +74,10 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final errorColor = context.colorScheme.error;
+    final ctaColor = confirmColor ?? errorColor;
+    final glyphColor = iconColor ?? ctaColor;
+    final medallionTint = iconTint ?? glyphColor;
+    final ctaTextColor = confirmTextColor ?? colors.canvas;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,9 +88,9 @@ class ConfirmDialog extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: errorColor.withValues(alpha: 0.10),
+            color: medallionTint.withValues(alpha: 0.10),
           ),
-          child: Icon(icon, color: errorColor, size: 26),
+          child: Icon(icon, color: glyphColor, size: 26),
         ),
         const SizedBox(height: 14),
         ResponsiveText(
@@ -86,8 +116,8 @@ class ConfirmDialog extends StatelessWidget {
           onTap: () => Navigator.of(context).pop(true),
           theme: CustomButtonTheme(
             height: 48,
-            backgroundColor: errorColor,
-            textColor: colors.canvas,
+            backgroundColor: ctaColor,
+            textColor: ctaTextColor,
             borderRadius: 14,
           ),
           child: ResponsiveText(
@@ -95,7 +125,7 @@ class ConfirmDialog extends StatelessWidget {
             style: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 0,
-              color: colors.canvas,
+              color: ctaTextColor,
             ),
           ),
         ),

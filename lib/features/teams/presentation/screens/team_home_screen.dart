@@ -27,8 +27,8 @@ import '../widgets/teams_painters.dart';
 
 typedef _Pal = DateEmberRoles;
 
-class TempTeamHomeScreen extends StatelessWidget {
-  const TempTeamHomeScreen({super.key});
+class TeamHomeScreen extends StatelessWidget {
+  const TeamHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/bootstrap/app_startup_cubit.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/onboarding_model.dart';
 import '../cubit/onboarding_cubit.dart';
@@ -45,9 +47,14 @@ class _OnboardingViewState extends State<_OnboardingView> {
         buildWhen: (a, b) => a.status != b.status,
         builder: (context, state) {
           if (state.isLoading || state.isInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const ZaadLoader.fill();
           }
-          if (state.isError) return _ErrorView(onRetry: context.read<OnboardingCubit>().load);
+          if (state.isError) {
+            return ErrorState(
+              message: 'onboarding.load_failed',
+              onRetry: context.read<OnboardingCubit>().load,
+            );
+          }
           return _PagesView(controller: _pageController, pages: state.pages);
         },
       ),
@@ -185,7 +192,9 @@ class _BottomBar extends StatelessWidget {
               width: double.infinity,
               child: FilledButton(
                 onPressed: onNext,
-                child: ResponsiveText(isLast ? 'Get started' : 'Next'),
+                child: ResponsiveText(
+                  isLast ? 'onboarding.get_started' : 'common.next',
+                ),
               ),
             ),
           ],
@@ -223,22 +232,3 @@ class _Indicators extends StatelessWidget {
   }
 }
 
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const ResponsiveText('Failed to load onboarding'),
-          const SizedBox(height: 12),
-          FilledButton(onPressed: onRetry, child: const ResponsiveText('Retry')),
-        ],
-      ),
-    );
-  }
-}

@@ -7,6 +7,7 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_circle_button.dart';
+import '../../../../core/widgets/zaad_dialog_header.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -96,7 +97,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const _DialogHeader(
+                    const ZaadDialogHeader(
                       eyebrowKey: 'edit_profile.delete_password_eyebrow',
                       titleLeadKey: 'edit_profile.delete_password_title_lead',
                       titleAccentKey:
@@ -182,63 +183,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _DialogHeader extends StatelessWidget {
-  const _DialogHeader({
-    required this.eyebrowKey,
-    required this.titleLeadKey,
-    required this.titleAccentKey,
-    this.danger = false,
-  });
-
-  final String eyebrowKey;
-  final String titleLeadKey;
-  final String titleAccentKey;
-  final bool danger;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final errorColor = context.colorScheme.error;
-    final eyebrowColor =
-        danger ? errorColor.withValues(alpha: 0.85) : colors.oliveSoft;
-    final accentColor = danger ? errorColor : colors.textArabic;
-    final ruleColor = danger ? errorColor : colors.accent;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Column(
-        children: [
-          ResponsiveText(
-            eyebrowKey,
-            textAlign: TextAlign.center,
-            style: ZaadType.eyebrowSm.copyWith(color: eyebrowColor),
-          ),
-          const SizedBox(height: 8),
-          DefaultTextStyle.merge(
-            style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: '${titleLeadKey.tr()} '),
-                  TextSpan(
-                    text: titleAccentKey.tr(),
-                    style: AppTextStyles.titleLarge.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: accentColor,
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(width: 28, height: 1, color: ruleColor),
-        ],
       ),
     );
   }

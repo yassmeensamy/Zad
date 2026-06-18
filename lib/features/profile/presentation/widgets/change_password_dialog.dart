@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_dialog_header.dart';
 import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
@@ -142,7 +143,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _DialogHeader(
+                    const ZaadDialogHeader(
                       eyebrowKey: 'edit_profile.change_password_eyebrow',
                       titleLeadKey: 'edit_profile.change_password_title_lead',
                       titleAccentKey:
@@ -251,60 +252,6 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _DialogHeader extends StatelessWidget {
-  const _DialogHeader({
-    required this.eyebrowKey,
-    required this.titleLeadKey,
-    required this.titleAccentKey,
-  });
-
-  final String eyebrowKey;
-  final String titleLeadKey;
-  final String titleAccentKey;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Column(
-        children: [
-          ResponsiveText(
-            eyebrowKey,
-            textAlign: TextAlign.center,
-            style: ZaadType.eyebrowSm.copyWith(color: colors.oliveSoft),
-          ),
-          const SizedBox(height: 8),
-          DefaultTextStyle.merge(
-            style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: '${titleLeadKey.tr()} '),
-                  TextSpan(
-                    text: titleAccentKey.tr(),
-                    style: AppTextStyles.titleLarge.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: colors.textArabic,
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            width: 28,
-            height: 1,
-            color: colors.accent,
-          ),
-        ],
       ),
     );
   }

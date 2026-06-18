@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
@@ -288,26 +288,19 @@ class _Headline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Text.rich(
-      TextSpan(
-        style: ZaadType.titleHero.copyWith(
-          fontSize: 28,
-          color: colors.oliveDeep,
-        ),
-        children: [
-          TextSpan(text: 'auth.signup_screen.headline_prefix'.tr()),
-          TextSpan(
-            text: 'auth.signup_screen.headline_accent'.tr(),
-            style: AppTextStyles.displayMedium.copyWith(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0,
-              color: colors.textArabic,
-            ),
-          ),
-        ],
+    return AccentRichTitle(
+      prefixKey: 'auth.signup_screen.headline_prefix',
+      accentKey: 'auth.signup_screen.headline_accent',
+      baseStyle: ZaadType.titleHero.copyWith(
+        fontSize: 28,
+        color: colors.oliveDeep,
       ),
-      textAlign: TextAlign.center,
+      accentStyle: AppTextStyles.displayMedium.copyWith(
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0,
+        color: colors.textArabic,
+      ),
     );
   }
 }

@@ -8,7 +8,7 @@ import '../../../../core/utils/relative_time.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/custom_dialog.dart';
+import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
@@ -545,87 +545,20 @@ class _CloseFooter extends StatelessWidget {
 
 Future<void> _confirmAndClose(BuildContext context, String id) async {
   final cubit = context.read<SupportTicketsCubit>();
-  final confirmed = await CustomDialog.show<bool>(
+  final colors = context.appColors;
+  final confirmed = await ConfirmDialog.show(
     context: context,
-    child: const _CloseConfirmDialog(),
+    icon: Icons.lock_outline_rounded,
+    titleKey: 'support_tickets.detail.close_confirm_title',
+    messageKey: 'support_tickets.detail.close_confirm_body',
+    confirmKey: 'support_tickets.detail.close_ticket',
+    confirmColor: colors.ctaBottom,
+    confirmTextColor: colors.onCta,
+    iconColor: colors.oliveDeep,
+    iconTint: colors.olive,
   );
   if (confirmed != true || !context.mounted) return;
   await cubit.closeTicket(id);
-}
-
-class _CloseConfirmDialog extends StatelessWidget {
-  const _CloseConfirmDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          width: 56,
-          height: 56,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.olive.withValues(alpha: 0.10),
-          ),
-          child: Icon(
-            Icons.lock_outline_rounded,
-            color: colors.oliveDeep,
-            size: 26,
-          ),
-        ),
-        const SizedBox(height: 14),
-        ResponsiveText(
-          'support_tickets.detail.close_confirm_title',
-          textAlign: TextAlign.center,
-          style: AppTextStyles.titleLarge.copyWith(
-            fontWeight: FontWeight.w800,
-            color: colors.oliveDeep,
-          ),
-        ),
-        const SizedBox(height: 8),
-        ResponsiveText(
-          'support_tickets.detail.close_confirm_body',
-          textAlign: TextAlign.center,
-          style: AppTextStyles.bodyMedium.copyWith(
-            fontSize: 13,
-            height: 1.5,
-            color: colors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 24),
-        CustomButton.full(
-          onTap: () => Navigator.of(context).pop(true),
-          text: 'support_tickets.detail.close_ticket',
-          theme: CustomButtonTheme(
-            height: 48,
-            backgroundColor: colors.ctaBottom,
-            textColor: colors.onCta,
-            borderRadius: ZaadRadii.lg,
-            textStyle: AppTextStyles.labelLarge.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: ResponsiveText(
-            'common.cancel',
-            style: AppTextStyles.labelLarge.copyWith(
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0,
-              color: colors.textSecondary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 final _placeholderTicket = TicketModel(

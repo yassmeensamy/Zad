@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
@@ -169,23 +169,9 @@ class _Headline extends StatelessWidget {
     final colors = context.appColors;
     return Column(
       children: [
-        Text.rich(
-          TextSpan(
-            style: ZaadType.titleHero.copyWith(color: colors.oliveDeep),
-            children: [
-              TextSpan(
-                text: 'auth.forgot_password_screen.headline_prefix'.tr(),
-              ),
-              TextSpan(
-                text: 'auth.forgot_password_screen.headline_accent'.tr(),
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: colors.textArabic,
-                ),
-              ),
-            ],
-          ),
-          textAlign: TextAlign.center,
+        const AccentRichTitle(
+          prefixKey: 'auth.forgot_password_screen.headline_prefix',
+          accentKey: 'auth.forgot_password_screen.headline_accent',
         ),
         const SizedBox(height: 12),
         ConstrainedBox(

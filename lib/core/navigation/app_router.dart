@@ -13,7 +13,6 @@ import '../../features/categories/presentation/screens/categories_screen.dart';
 import '../../features/levels/data/models/level_model.dart';
 import '../../features/levels/presentation/screens/levels_screen.dart';
 import '../../features/quiz/presentation/screens/quiz_screen.dart';
-import '../../features/leaderboard/presentation/screens/date_ember_leaderboard_screen.dart';
 import '../../features/leaderboard/presentation/screens/leaderboard_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/child/presentation/screens/children_list_screen.dart';
@@ -36,7 +35,7 @@ import '../../features/support_tickets/presentation/screens/support_tickets_scre
 import '../../features/support_tickets/presentation/screens/ticket_detail_screen.dart';
 import '../../features/teams/presentation/cubit/teams_cubit.dart';
 import '../../features/teams/presentation/screens/team_create_success_screen.dart';
-import '../../features/teams/presentation/screens/temp_team_home.dart';
+import '../../features/teams/presentation/screens/team_home_screen.dart';
 import '../../features/teams/presentation/screens/team_join_screen.dart';
 import '../../features/teams/presentation/screens/team_join_success_screen.dart';
 import '../../features/teams/presentation/screens/team_loader_screen.dart';
@@ -227,11 +226,6 @@ class AppRouter {
           ),
         ),
         GoRoute(
-          path: AppRoutes.dateEmberLeaderboard,
-          name: AppRoutes.dateEmberLeaderboardName,
-          builder: (context, state) => const DateEmberLeaderboardScreen(),
-        ),
-        GoRoute(
           path: AppRoutes.teams,
           name: AppRoutes.teamsName,
           builder: (context, state) => BlocProvider<TeamsCubit>(
@@ -273,7 +267,7 @@ class AppRouter {
             if (passed is TeamsCubit) {
               return BlocProvider<TeamsCubit>.value(
                 value: passed,
-                child: const TempTeamHomeScreen(),
+                child: const TeamHomeScreen(),
               );
             }
             return BlocProvider<TeamsCubit>(
@@ -281,7 +275,7 @@ class AppRouter {
                 ..loadTeamStatus()
                 ..loadTeamMembers()
                 ..loadTeamProgress(),
-              child: const TempTeamHomeScreen(),
+              child: const TeamHomeScreen(),
             );
           },
         ),

@@ -701,7 +701,11 @@
       "success_arabic": "أَهْلًا وَسَهْلًا",
       "success_youre_in": "You're in",
       "success_lede": "{count} companions reading together — your first chapter is waiting.",
-      "success_cta": "See the team"
+      "success_cta": "See the team",
+      "already_eyebrow": "Already a companion",
+      "already_title": "You're already in a team.",
+      "already_lede": "You can only belong to one circle at a time. Leave your current team first if you'd like to join another.",
+      "already_cta": "Go to my team"
     },
     "home": {
       "eyebrow": "My team",

@@ -17,6 +17,7 @@ import '../cubit/teams_state.dart';
 import '../widgets/corner_flourishes.dart';
 import '../widgets/gilded_cta.dart';
 import '../widgets/gold_rule.dart';
+import '../widgets/loader_ring.dart';
 import '../widgets/team_scaffold.dart';
 import '../widgets/teams_painters.dart';
 
@@ -38,6 +39,10 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
   void initState() {
     super.initState();
     _codeController = TextEditingController(text: _normalizedInitialCode());
+    // Resolve current membership before showing the join form: a user who is
+    // already in a team (incl. those landing here from an invite deep link)
+    // sees the "already in a team" notice instead of being able to re-join.
+    context.read<TeamsCubit>().loadTeamStatus();
   }
 
   String _normalizedInitialCode() {
@@ -79,6 +84,19 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
     }
   }
 
+  void _goToTeam() => context.goNamed(AppRoutes.teamHomeName);
+
+  /// Pop when there is a route to return to; otherwise (e.g. arriving here via
+  /// an invite deep link, where this is the only page on the stack) fall back
+  /// to a safe destination so the user is never stranded.
+  void _handleBack() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(AppRoutes.leaderboardName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TeamsCubit, TeamsState>(
@@ -92,16 +110,24 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
         final submitting = state.joinStatus == JoinStatus.submitting;
         final hasError = state.joinStatus == JoinStatus.error;
 
+        // Still resolving membership (idle/loading). `joinStatus == idle` keeps
+        // the loader from flashing back over an in-flight join.
+        final checkingMembership =
+            state.joinStatus == JoinStatus.idle &&
+            (state.status == TeamsStatus.idle ||
+                state.status == TeamsStatus.loading);
+
+        // Pre-existing membership — not the team we just joined (that path emits
+        // joinStatus.success and is handled by the success listener above).
+        final alreadyInTeam = state.status == TeamsStatus.hasTeam &&
+            state.joinStatus == JoinStatus.idle;
+
         return TeamScaffold(
           appBar: ZaadAppBar(
             title: 'teams.join.title',
             subtitle: 'teams.join.eyebrow',
             backgroundColor: Colors.transparent,
-            onBack: submitting
-                ? null
-                : context.canPop()
-                ? () => context.pop()
-                : null,
+            onBack: submitting ? null : _handleBack,
           ),
           child: Column(
             children: [
@@ -109,36 +135,45 @@ class _TeamJoinScreenState extends State<TeamJoinScreen> {
                 child: Stack(
                   children: [
                     const _AmberWash(),
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 110),
-                      child: hasError
-                          ? _ErrorContent(
-                              enteredCode: _codeController.text,
-                              onTryAgain: _handleTryAgain,
-                            )
-                          : _IdleContent(
-                              controller: _codeController,
-                              onChanged: _handleCodeChanged,
-                              onCompleted: _handleSubmit,
-                            ),
-                    ),
+                    if (checkingMembership)
+                      const _MembershipLoader()
+                    else
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 4, 20, 110),
+                        child: alreadyInTeam
+                            ? _AlreadyInTeamContent(
+                                teamName: state.team?.name,
+                                onGoToTeam: _goToTeam,
+                              )
+                            : hasError
+                            ? _ErrorContent(
+                                enteredCode: _codeController.text,
+                                onTryAgain: _handleTryAgain,
+                              )
+                            : _IdleContent(
+                                controller: _codeController,
+                                onChanged: _handleCodeChanged,
+                                onCompleted: _handleSubmit,
+                              ),
+                      ),
                   ],
                 ),
               ),
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
-                  child: GildedCta(
-                    label: submitting
-                        ? 'teams.join.submitting'.tr()
-                        : 'teams.join.cta'.tr(),
-                    enabled: _isComplete && !submitting && !hasError,
-                    loading: submitting,
-                    onTap: _handleSubmit,
+              if (!checkingMembership && !alreadyInTeam)
+                SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+                    child: GildedCta(
+                      label: submitting
+                          ? 'teams.join.submitting'.tr()
+                          : 'teams.join.cta'.tr(),
+                      enabled: _isComplete && !submitting && !hasError,
+                      loading: submitting,
+                      onTap: _handleSubmit,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         );
@@ -248,6 +283,90 @@ class _IdleContent extends StatelessWidget {
               height: 1.5,
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+
+class _MembershipLoader extends StatelessWidget {
+  const _MembershipLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: LoaderRing());
+  }
+}
+
+
+class _AlreadyInTeamContent extends StatelessWidget {
+  const _AlreadyInTeamContent({
+    required this.teamName,
+    required this.onGoToTeam,
+  });
+
+  final String? teamName;
+  final VoidCallback onGoToTeam;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final name = teamName?.trim();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 24),
+        const _OrnamentEyebrow(text: 'teams.join.already_eyebrow'),
+        const SizedBox(height: 20),
+        const Center(child: _CompanionsEmblem(size: 132)),
+        const SizedBox(height: 18),
+        Center(
+          child: ResponsiveText(
+            'teams.join.already_title',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.displaySmall.copyWith(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              color: colors.oliveDeep,
+            ),
+          ),
+        ),
+        if (name != null && name.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Center(
+            child: ResponsiveText(
+              name,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyLarge.copyWith(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: colors.goldDeep,
+              ),
+            ),
+          ),
+        ],
+        const SizedBox(height: 10),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: ResponsiveText(
+              'teams.join.already_lede',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontSize: 12,
+                color: colors.oliveSoft,
+                height: 1.55,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        const DotRule(),
+        const SizedBox(height: 24),
+        GildedCta(
+          label: 'teams.join.already_cta'.tr(),
+          onTap: onGoToTeam,
         ),
       ],
     );
@@ -648,43 +767,46 @@ class _PremiumInviteField extends StatelessWidget {
             ),
           ),
         ),
-        Pinput(
-          length: _kInviteCodeLength,
-          controller: controller,
-          defaultPinTheme: defaultTheme,
-          focusedPinTheme: focusedTheme,
-          submittedPinTheme: submittedTheme,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-            _UpperCaseTextFormatter(),
-          ],
-          keyboardType: TextInputType.visiblePassword,
-          autofocus: false,
-          showCursor: true,
-          cursor: Container(
-            width: 1.6,
-            height: 20,
-            margin: const EdgeInsets.only(bottom: 2),
-            decoration: BoxDecoration(
-              color: colors.goldDeep,
-              borderRadius: BorderRadius.circular(1),
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Pinput(
+            length: _kInviteCodeLength,
+            controller: controller,
+            defaultPinTheme: defaultTheme,
+            focusedPinTheme: focusedTheme,
+            submittedPinTheme: submittedTheme,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+              _UpperCaseTextFormatter(),
+            ],
+            keyboardType: TextInputType.visiblePassword,
+            autofocus: false,
+            showCursor: true,
+            cursor: Container(
+              width: 1.6,
+              height: 20,
+              margin: const EdgeInsets.only(bottom: 2),
+              decoration: BoxDecoration(
+                color: colors.goldDeep,
+                borderRadius: BorderRadius.circular(1),
+              ),
             ),
-          ),
-          separatorBuilder: (index) => index == (_kInviteCodeLength ~/ 2) - 1
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    width: 10,
-                    height: 1.8,
-                    decoration: BoxDecoration(
-                      color: colors.goldDeep.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(2),
+            separatorBuilder: (index) => index == (_kInviteCodeLength ~/ 2) - 1
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Container(
+                      width: 10,
+                      height: 1.8,
+                      decoration: BoxDecoration(
+                        color: colors.goldDeep.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
-                  ),
-                )
-              : const SizedBox(width: 6),
-          onChanged: (_) => onChanged(),
-          onCompleted: (_) => onCompleted(),
+                  )
+                : const SizedBox(width: 6),
+            onChanged: (_) => onChanged(),
+            onCompleted: (_) => onCompleted(),
+          ),
         ),
       ],
     );

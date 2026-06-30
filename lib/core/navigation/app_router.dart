@@ -59,7 +59,11 @@ class AppRouter {
     signIn: AppRoutes.login,
     home: AppRoutes.profileSelect,
     profileSetup: AppRoutes.roleSelect,
-    setupFlow: {AppRoutes.roleSelect, AppRoutes.completeProfile},
+    // signup is included so a just-registered (or just-upgraded) user with an
+    // incomplete profile isn't redirected off /signup the instant /me resolves —
+    // that would tear down the success dialog before it can be seen. The dialog's
+    // Continue button navigates on to role-select explicitly.
+    setupFlow: {AppRoutes.signup, AppRoutes.roleSelect, AppRoutes.completeProfile},
     offlineHome: AppRoutes.home,
     guestHome: AppRoutes.home,
     childHome: AppRoutes.home,

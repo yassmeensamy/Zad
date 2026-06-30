@@ -56,7 +56,7 @@ class RankingsBody extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8),
           sliver: SliverList.list(
             children: [
-              const PodiumEyebrow(label: 'PODIUM'),
+              const PodiumEyebrow(label: 'leaderboard.podium'),
               const SizedBox(height: 11),
               Podium(seeds: _podium(state)),
               const SizedBox(height: 14),

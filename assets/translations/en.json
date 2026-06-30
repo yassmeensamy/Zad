@@ -51,7 +51,7 @@
     "individual_label": "For myself",
     "individual_desc": "A personal companion for daily reflection, dhikr, and reading.",
     "family_label": "For another one",
-    "family_desc": "Set up a profile for another person with their own progress, gentle goals, and guided content.",
+    "family_desc": "Set up a profile for another person with their own progress and gentle goals.",
     "footer_prefix": "You can change this later in ",
     "footer_settings": "Settings"
   },
@@ -80,14 +80,14 @@
   },
   "create_profiles": {
     "step": "STEP 2 OF 2",
-    "eyebrow": "Family setup",
-    "title_prefix": "Add your ",
-    "title_accent": "children",
-    "subtitle": "Each child gets their own avatar and progress.",
+    "eyebrow": "Other people",
+    "title_prefix": "Add another ",
+    "title_accent": "person",
+    "subtitle": "Each person gets their own avatar and progress.",
     "name_label": "Name",
     "name_hint": "e.g. Yusuf",
     "age_label": "Age",
-    "add_child": "ADD ANOTHER CHILD",
+    "add_child": "ADD ANOTHER PERSON",
     "skip": "I'll do this later",
     "sheet_title": "Choose an avatar",
     "sheet_sub": "Pick a character that feels like home",
@@ -97,9 +97,11 @@
     "password_hint": "At least 6 characters",
     "password_sheet_title": "Set a password",
     "password_sheet_sub": "Used by {} to sign in",
-    "password_sheet_fallback_name": "this child",
+    "password_sheet_fallback_name": "this person",
     "password_too_short": "Password must be at least {} characters.",
-    "password_required_for_all": "Please set a password for every child before continuing."
+    "password_required_for_all": "Please set a password for every person before continuing.",
+    "no_avatars": "No avatars available yet.",
+    "avatars_load_failed": "Couldn't load avatars. Please try again."
   },
   "home_nav": {
     "home": "Home",
@@ -316,11 +318,11 @@
     "title_prefix": "Who's ",
     "title_accent": "reading",
     "subtitle": "Choose a profile to continue your journey.",
-    "role_parent": "Parent",
+    "role_parent": "You",
     "age_label": "Age {}",
     "days": "days",
-    "add_child": "Add a child",
-    "manage": "Manage profiles",
+    "add_child": "Add a person",
+    "manage": "Manage people",
     "continue_current_account": "Continue with current account",
     "current_account": "Current account"
   },
@@ -425,7 +427,7 @@
       "reminder": "Reminder",
       "reading": "Reading",
       "achievement": "Achievement",
-      "child_activity": "Child activity",
+      "child_activity": "Activity",
       "announcement": "Announcement",
       "other": "Notification"
     },
@@ -448,8 +450,8 @@
       "achievement_body": "You've kept your daily practice for a week. Beautiful work.",
       "reading_title": "New chapter in your library",
       "reading_body": "A short reflection on patience has been added for you.",
-      "child_activity_title": "Yusuf finished today's lesson",
-      "child_activity_body": "He completed his reading goal and earned a star.",
+      "child_activity_title": "Someone finished today's lesson",
+      "child_activity_body": "Today's reading goal was completed and a star was earned.",
       "announcement_title": "Welcome to Zaad",
       "announcement_body": "Thank you for joining. We're glad you're here.",
       "evening_reminder_title": "Don't forget tomorrow's plan",
@@ -482,7 +484,7 @@
     "library": "Library",
     "account": "Account",
     "drafts": "Drafts",
-    "my_children": "My children",
+    "my_children": "My people",
     "reminders": "Reminders",
     "notifications": "Push notifications",
     "language": "Language",
@@ -645,7 +647,7 @@
       "title": "Your team",
       "title_lede": "No team yet — begin together.",
       "hadith_ar": "المؤمن للمؤمن كالبنيان",
-      "lede": "Form a circle of companions to study, recite, and grow together — or join one with an invite code.",
+      "lede": "Form a circle of companions to answer questions, compete, and grow together — or join one with an invite code.",
       "cta_create": "Create a team",
       "cta_join": "Join with code"
     },
@@ -725,6 +727,18 @@
         "streak": "{name} kept his {days}-day streak",
         "goal": "{name} set this week's goal"
       }
+    },
+    "stats": {
+      "rank_label": "Your rank",
+      "rank_levels": "{completed}/{total} levels",
+      "not_ranked": "not ranked yet",
+      "questions_label": "Questions last week",
+      "this_week": "this week",
+      "peak_label": "Peak activity day",
+      "peak_questions": "{count} questions",
+      "total_label": "Total solved",
+      "all_time": "all time",
+      "level_progress": "Level progress"
     },
     "tabs": {
       "home": "Home",
@@ -809,6 +823,7 @@
     "name_you": "{name} · You",
     "your_rank": "Your rank",
     "your_team": "Your team",
+    "podium": "PODIUM",
     "podium_empty": "No team progress yet.",
     "no_team": {
       "title": "Join the team race",
@@ -847,8 +862,8 @@
   },
   "children_list": {
     "saved": "Changes saved",
-    "load_failed": "Couldn't load your children",
-    "empty_hint": "Add your first child to get started",
-    "password_required": "Please set a password for every child"
+    "load_failed": "Couldn't load your people",
+    "empty_hint": "Add your first person to get started",
+    "password_required": "Please set a password for every person"
   }
 }

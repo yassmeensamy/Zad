@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -82,12 +83,17 @@ class TeamWeekStats extends StatelessWidget {
     return _StatCard(
       icon: Icons.emoji_events_rounded,
       accent: p.gold,
-      label: 'Your rank',
+      label: 'teams.stats.rank_label'.tr(),
       value: rank != null ? '#${rank.rank}' : '—',
       valueColor: isPodium ? p.gold : null,
       note: rank != null
-          ? '${rank.completedLevels}/${rank.totalLevels} levels'
-          : 'not ranked yet',
+          ? 'teams.stats.rank_levels'.tr(
+              namedArgs: {
+                'completed': '${rank.completedLevels}',
+                'total': '${rank.totalLevels}',
+              },
+            )
+          : 'teams.stats.not_ranked'.tr(),
       ring: rank?.progress,
     );
   }
@@ -97,9 +103,9 @@ class TeamWeekStats extends StatelessWidget {
     return _StatCard(
       icon: Icons.insights_rounded,
       accent: p.amber,
-      label: 'Questions last week',
+      label: 'teams.stats.questions_label'.tr(),
       value: _grouped(weekly?.solvedLastWeek ?? 0),
-      note: 'this week',
+      note: 'teams.stats.this_week'.tr(),
       spark: true,
       sparkBars: _sparkBars(weekly),
       sparkLabels: _sparkLabels(weekly),
@@ -112,10 +118,12 @@ class TeamWeekStats extends StatelessWidget {
     return _StatCard(
       icon: Icons.local_fire_department_rounded,
       accent: p.ember,
-      label: 'Peak activity day',
+      label: 'teams.stats.peak_label'.tr(),
       value: (weekly?.peakDay.isNotEmpty ?? false) ? weekly!.peakDay : '—',
       valueSize: 22,
-      note: '${_grouped(weekly?.peakDayCount ?? 0)} questions',
+      note: 'teams.stats.peak_questions'.tr(
+        namedArgs: {'count': _grouped(weekly?.peakDayCount ?? 0)},
+      ),
     );
   }
 
@@ -124,9 +132,9 @@ class TeamWeekStats extends StatelessWidget {
     return _StatCard(
       icon: Icons.task_alt_rounded,
       accent: p.green,
-      label: 'Total solved',
+      label: 'teams.stats.total_label'.tr(),
       value: _grouped(state.totalSolvedQuestions),
-      note: 'all time',
+      note: 'teams.stats.all_time'.tr(),
     );
   }
 
@@ -420,7 +428,7 @@ class _LevelProgressBar extends StatelessWidget {
               const SizedBox(width: 7),
               Expanded(
                 child: ResponsiveText(
-                  'LEVEL PROGRESS',
+                  'teams.stats.level_progress'.tr().toUpperCase(),
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w700,

@@ -51,7 +51,7 @@
     "individual_label": "لي وحدي",
     "individual_desc": "رفيق شخصي للتأمل اليومي والذكر والقراءة.",
     "family_label": "لشخص آخر",
-    "family_desc": "أنشئ ملفًا لشخص آخر بأهداف لطيفة ومحتوى موجَّه ومتابعة تقدّم خاصة به.",
+    "family_desc": "أنشئ ملفًا لشخص آخر بتقدّمه الخاص وأهدافه.",
     "footer_prefix": "يمكنك تغيير ذلك لاحقاً من ",
     "footer_settings": "الإعدادات"
   },
@@ -80,14 +80,14 @@
   },
   "create_profiles": {
     "step": "الخطوة 2 من 2",
-    "eyebrow": "إعداد العائلة",
+    "eyebrow": "أشخاص آخرون",
     "title_prefix": "أضف ",
-    "title_accent": "أبناءك",
-    "subtitle": "لكل طفل صورة شخصية وتقدّمه الخاص.",
+    "title_accent": "شخصًا آخر",
+    "subtitle": "لكل شخص صورة شخصية وتقدّمه الخاص.",
     "name_label": "الاسم",
     "name_hint": "مثال: يوسف",
     "age_label": "العمر",
-    "add_child": "إضافة طفل آخر",
+    "add_child": "إضافة شخص آخر",
     "skip": "ربما لاحقاً",
     "sheet_title": "اختر صورة شخصية",
     "sheet_sub": "اختر شخصية تشبهك",
@@ -97,9 +97,11 @@
     "password_hint": "٦ أحرف على الأقل",
     "password_sheet_title": "اضبط كلمة المرور",
     "password_sheet_sub": "يستخدمها {} لتسجيل الدخول",
-    "password_sheet_fallback_name": "هذا الطفل",
+    "password_sheet_fallback_name": "هذا الشخص",
     "password_too_short": "كلمة المرور قصيرة — اجعلها {} أحرف على الأقل.",
-    "password_required_for_all": "اضبط كلمة مرور لكل طفل قبل المتابعة."
+    "password_required_for_all": "اضبط كلمة مرور لكل شخص قبل المتابعة.",
+    "no_avatars": "لا توجد صور رمزية متاحة بعد.",
+    "avatars_load_failed": "تعذّر تحميل الصور الرمزية. حاول مرة أخرى."
   },
   "home_nav": {
     "home": "الرئيسية",
@@ -156,7 +158,7 @@
       "week_stats_title": "هذا الأسبوع · إحصائيات الفريق"
     },
     "quran_sign": {
-      "section_title": "علامة قرآنية اليوم",
+      "section_title": "آية قرآنية اليوم",
       "view_all": "عرض الكل",
       "reference_no": "المرجع رقم {}"
     },
@@ -316,11 +318,11 @@
     "title_prefix": "من ",
     "title_accent": "يقرأ",
     "subtitle": "اختر ملفك الشخصي لمواصلة الرحلة.",
-    "role_parent": "ولي الأمر",
+    "role_parent": "أنت",
     "age_label": "العمر {}",
     "days": "أيام",
-    "add_child": "إضافة طفل",
-    "manage": "إدارة الملفات",
+    "add_child": "إضافة شخص",
+    "manage": "إدارة الأشخاص",
     "continue_current_account": "تابع بحسابك الحالي",
     "current_account": "الحساب الحالي"
   },
@@ -359,7 +361,7 @@
       "sign_in": "تسجيل الدخول"
     },
     "signup_success": {
-      "title_prefix": "حياك الله في ",
+      "title_prefix": "حياك الله\n",
       "title_accent": "زاد",
       "subtitle": "حسابك جاهز. لنبدأ رحلتك معاً.",
       "cta": "متابعة"
@@ -425,7 +427,7 @@
       "reminder": "تذكير",
       "reading": "قراءة",
       "achievement": "إنجاز",
-      "child_activity": "نشاط الطفل",
+      "child_activity": "نشاط الأشخاص",
       "announcement": "إعلان",
       "other": "إشعار"
     },
@@ -448,8 +450,8 @@
       "achievement_body": "حافظت على رحلتك اليومية أسبوعًا كاملًا. ما شاء الله.",
       "reading_title": "فصلٌ جديد في مكتبتك",
       "reading_body": "أُضيفت لك تأمّلات قصيرة عن الصبر.",
-      "child_activity_title": "أنهى يوسف درس اليوم",
-      "child_activity_body": "أكمل هدف القراءة وحصل على نجمة.",
+      "child_activity_title": "أنهى أحد الأشخاص درس اليوم",
+      "child_activity_body": "تم إكمال هدف القراءة والحصول على نجمة.",
       "announcement_title": "أهلًا بك في زاد",
       "announcement_body": "شكرًا لانضمامك. نحن سعداء بوجودك معنا.",
       "evening_reminder_title": "لا تنسَ خطة الغد",
@@ -482,7 +484,7 @@
     "library": "المكتبة",
     "account": "الحساب",
     "drafts": "المحفوظات",
-    "my_children": "أبنائي",
+    "my_children": "الأشخاص الآخرون",
     "reminders": "التذكيرات",
     "notifications": "إشعارات التنبيه",
     "language": "اللغة",
@@ -645,7 +647,7 @@
       "title": "فريقك",
       "title_lede": "لا فريق بعد — ابدؤوا معًا.",
       "hadith_ar": "المؤمن للمؤمن كالبنيان",
-      "lede": "كوّن دائرة من الرفاق لتدرسوا وتقرأوا وتنموا معًا — أو انضم إلى إحداها برمز دعوة.",
+      "lede": "كوّن دائرة من الرفاق لتجيبوا عن الأسئلة وتتنافسوا وتتقدموا معًا — أو انضم إلى إحداها برمز دعوة.",
       "cta_create": "إنشاء فريق",
       "cta_join": "الانضمام برمز"
     },
@@ -655,8 +657,8 @@
       "sheet_eyebrow": "الرفاق",
       "sheet_title_lead": "سمِّ",
       "sheet_title_accent": "فريقك",
-      "sheet_title": "سمِّ فريقك",
-      "sheet_lede": "أعطِ دائرتك اسمًا — يمكنك تغييره لاحقًا.",
+      "sheet_title": "اختار اسم فريقك",
+      "sheet_lede": "أعطِ فريقك اسمًا — يمكنك تغييره لاحقًا.",
       "name_label": "اسم الفريق",
       "name_hint": "مثال: رفاق المدينة",
       "name_error": "يجب أن يحوي الاسم ٣ أحرف على الأقل.",
@@ -725,6 +727,18 @@
         "streak": "حافظ {name} على عَدّ {days} يومًا",
         "goal": "حدّد {name} هدف هذا الأسبوع"
       }
+    },
+    "stats": {
+      "rank_label": "ترتيبك",
+      "rank_levels": "{completed}/{total} مستوى",
+      "not_ranked": "لم يتم ترتيبك بعد",
+      "questions_label": "أسئلة الأسبوع الماضي",
+      "this_week": "هذا الأسبوع",
+      "peak_label": "يوم الذروة",
+      "peak_questions": "{count} سؤال",
+      "total_label": "إجمالي ما حُلّ",
+      "all_time": "كل الأوقات",
+      "level_progress": "تقدم المستويات"
     },
     "tabs": {
       "home": "الرئيسية",
@@ -809,6 +823,7 @@
     "name_you": "{name} · أنت",
     "your_rank": "ترتيبك",
     "your_team": "فريقك",
+    "podium": "المنصة",
     "podium_empty": "لا يوجد تقدم للفريق بعد.",
     "no_team": {
       "title": "انضم إلى سباق الفِرق",
@@ -847,8 +862,8 @@
   },
   "children_list": {
     "saved": "التغييرات محفوظة",
-    "load_failed": "لم نتمكن من تحميل أبنائك",
-    "empty_hint": "أضف أول طفل للبدء",
-    "password_required": "اضبط كلمة مرور لكل طفل"
+    "load_failed": "لم نتمكن من تحميل الأشخاص",
+    "empty_hint": "أضف أول شخص للبدء",
+    "password_required": "اضبط كلمة مرور لكل شخص"
   }
 }

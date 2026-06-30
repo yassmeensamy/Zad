@@ -78,7 +78,7 @@ class CategoryCard extends StatelessWidget {
                       const Spacer(),
                       ResponsiveText(
                         category.name,
-                        maxLines: 1,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.titleMedium.copyWith(
                           fontWeight: FontWeight.w700,

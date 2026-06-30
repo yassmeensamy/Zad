@@ -70,6 +70,8 @@ class AppEndpoint {
   String get myTeam => '${baseUrl}api/teams/my-team';
   String get myTeamMembers => '${baseUrl}api/teams/my-team/members';
   String get myTeamProgress => '${baseUrl}api/teams/my-team/progress';
+  String transferOwnership(String newOwnerId) =>
+      '${baseUrl}api/teams/transfer-ownership/$newOwnerId';
 
   String get rankingTeams => '${baseUrl}api/rankings/teams';
   String get rankingIndividuals => '${baseUrl}api/rankings/individuals';

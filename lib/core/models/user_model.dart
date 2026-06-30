@@ -149,6 +149,13 @@ class UserModel {
   bool get isParent => role == UserRole.parent;
   bool get isChild => role == UserRole.child;
 
+  /// Whether the user has filled the required onboarding fields (name, birth
+  /// date, gender). New accounts start incomplete and are routed through the
+  /// role-select → complete-profile flow until these are set; returning users
+  /// with a complete profile skip straight to home.
+  bool get isProfileComplete =>
+      fullName.trim().isNotEmpty && birthDate != null && gender != null;
+
   int? get age {
     if (birthDate == null) return null;
     final now = DateTime.now();

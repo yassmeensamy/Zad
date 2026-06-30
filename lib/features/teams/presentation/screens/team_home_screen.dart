@@ -23,6 +23,8 @@ import '../cubit/teams_cubit.dart';
 import '../cubit/teams_state.dart';
 import '../widgets/date_ember_roles.dart';
 import '../widgets/team_leave_sheet.dart';
+import '../widgets/team_owner_menu_sheet.dart';
+import '../widgets/team_transfer_ownership_sheet.dart';
 import '../widgets/teams_painters.dart';
 
 typedef _Pal = DateEmberRoles;
@@ -98,20 +100,52 @@ class _AppBar extends StatelessWidget {
           _IconButton(
             icon: Icons.more_horiz,
             size: 18,
-            onTap: () async {
-              final left = await showTeamLeaveSheet(context);
-              if (left && context.mounted) {
-                // Pop (rather than go) so the home section's awaited
-                // pushNamed resolves and refreshTeam() re-syncs to noTeam.
-                context.canPop()
-                    ? context.pop()
-                    : context.goNamed(AppRoutes.homeName);
-              }
-            },
+            onTap: () => _onMenuTap(context),
           ),
         ],
       ),
     );
+  }
+
+  /// Owners get an actions menu (transfer ownership / leave); everyone else
+  /// goes straight to the leave flow.
+  Future<void> _onMenuTap(BuildContext context) async {
+    final isOwner = context.read<TeamsCubit>().state.team?.isOwner ?? false;
+    if (!isOwner) {
+      await _leaveFlow(context);
+      return;
+    }
+
+    final action = await showTeamOwnerMenu(context);
+    if (!context.mounted) return;
+    switch (action) {
+      case TeamOwnerAction.transfer:
+        final newOwner = await showTransferOwnershipSheet(context);
+        if (newOwner != null && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'teams.transfer.success'.tr(namedArgs: {'name': newOwner}),
+              ),
+            ),
+          );
+        }
+      case TeamOwnerAction.leave:
+        await _leaveFlow(context);
+      case null:
+        break;
+    }
+  }
+
+  Future<void> _leaveFlow(BuildContext context) async {
+    final left = await showTeamLeaveSheet(context);
+    if (left && context.mounted) {
+      // Pop (rather than go) so the home section's awaited pushNamed resolves
+      // and refreshTeam() re-syncs to noTeam.
+      context.canPop()
+          ? context.pop()
+          : context.goNamed(AppRoutes.homeName);
+    }
   }
 }
 

@@ -12,12 +12,21 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBack,
     this.action,
     this.backgroundColor,
+    this.titleStyle,
+    this.titleMaxLines = 1,
   });
 
   final String title;
   final String? subtitle;
   final VoidCallback? onBack;
   final Widget? action;
+
+  /// Overrides the default [ZaadType.appBarTitle] style. The olive color is
+  /// still applied unless the passed style specifies its own.
+  final TextStyle? titleStyle;
+
+  /// How many lines the title may wrap to before it ellipsizes. Defaults to 1.
+  final int titleMaxLines;
 
   /// Fill behind the app bar. Defaults to `Colors.transparent` so a parent
   /// backdrop (e.g. the cream gradient inside `TeamScaffold`) flows through
@@ -55,9 +64,9 @@ class ZaadAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ResponsiveText(
                         title,
                         textAlign: TextAlign.center,
-                        maxLines: 1,
+                        maxLines: titleMaxLines,
                         overflow: TextOverflow.ellipsis,
-                        style: ZaadType.appBarTitle.copyWith(
+                        style: (titleStyle ?? ZaadType.appBarTitle).copyWith(
                           color: colors.oliveDeep,
                         ),
                       ),

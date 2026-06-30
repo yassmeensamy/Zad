@@ -11,17 +11,29 @@ class GuardRoutes {
     String? offlineHome,
     String? guestHome,
     String? childHome,
+    String? profileSetup,
+    this.setupFlow = const {},
     this.guestBlocked = const {},
     this.childBlocked = const {},
     this.publicRoutes = const {},
   }) : offlineHome = offlineHome ?? home,
        guestHome = guestHome ?? home,
-       childHome = childHome ?? home;
+       childHome = childHome ?? home,
+       profileSetup = profileSetup ?? home;
 
   final String splash;
   final String signIn;
   final String home;
   final String offlineHome;
+
+  /// Entry of the onboarding profile flow (role-select). A signed-in user with
+  /// an incomplete profile is redirected here until they finish setup.
+  final String profileSetup;
+
+  /// Onboarding-only routes (role-select, complete-profile). A user whose
+  /// profile is already complete is redirected out of these to [home]; a user
+  /// whose profile is incomplete may stay here while finishing setup.
+  final Set<String> setupFlow;
 
   /// Where a guest (anonymous) user lands instead of [home]; guests skip the
   /// parent/child selection flow and go straight here.
@@ -54,6 +66,7 @@ GoRouterRedirect authGuard({
   bool Function() isOnline = _alwaysOnline,
   bool Function() isGuest = _notGuest,
   bool Function() isChild = _notChild,
+  bool Function() needsProfileSetup = _profileComplete,
   String fromParam = 'from',
 }) {
   return (context, state) {
@@ -106,7 +119,15 @@ GoRouterRedirect authGuard({
           }
           return null;
         }
-        if (loc == routes.splash || loc == routes.signIn) {
+        if (needsProfileSetup()) {
+          // New / unfinished accounts must complete the profile flow first.
+          return routes.setupFlow.contains(loc) ? null : routes.profileSetup;
+        }
+        // Profile complete: never strand a returning user in the onboarding
+        // flow — bounce them out of the entry/setup routes to home.
+        if (loc == routes.splash ||
+            loc == routes.signIn ||
+            routes.setupFlow.contains(loc)) {
           final home = isOnline() ? routes.home : routes.offlineHome;
           return intended ?? home;
         }
@@ -120,3 +141,5 @@ bool _alwaysOnline() => true;
 bool _notGuest() => false;
 
 bool _notChild() => false;
+
+bool _profileComplete() => false;

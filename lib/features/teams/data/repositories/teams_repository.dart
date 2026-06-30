@@ -14,6 +14,7 @@ abstract class TeamsRepository {
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
   Future<void> leaveTeam();
+  Future<void> transferOwnership(String newOwnerId);
 }
 
 class TeamsRepositoryImpl implements TeamsRepository {
@@ -43,4 +44,8 @@ class TeamsRepositoryImpl implements TeamsRepository {
 
   @override
   Future<void> leaveTeam() => _remoteDataSource.leaveTeam();
+
+  @override
+  Future<void> transferOwnership(String newOwnerId) =>
+      _remoteDataSource.transferOwnership(newOwnerId);
 }

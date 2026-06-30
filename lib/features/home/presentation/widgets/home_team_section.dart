@@ -2,10 +2,13 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
+import '../../../teams/data/models/team_model.dart';
+import '../../../teams/data/models/team_role_enum.dart';
 import '../../../teams/presentation/widgets/team_card.dart';
 import '../../../../theme/theme.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
@@ -37,6 +40,14 @@ class HomeTeamSection extends StatelessWidget {
           context.read<TeamsCubit>().refreshTeam();
         }
 
+        // Until loadTeamStatus resolves we don't yet know whether the user has
+        // a team. Show a skeletonised placeholder rather than defaulting to the
+        // join card, otherwise the "no team" UI flashes for the ~400ms+ load
+        // window before the real team card swaps in.
+        if (state.status == TeamsStatus.idle || state.isLoading) {
+          return const _TeamSectionSkeleton();
+        }
+
         final team = state.team;
         if (!state.hasTeam || team == null) {
           return _JoinTeamCard(onTap: openTeam);
@@ -59,6 +70,37 @@ class HomeTeamSection extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Shimmered stand-in shown while [TeamsCubit.loadTeamStatus] is still in
+/// flight, so the home tab never flashes the "no team" join card before the
+/// real team card resolves. Mirrors the loaded layout (header + [TeamCard])
+/// with placeholder data under a [Skeletonizer].
+class _TeamSectionSkeleton extends StatelessWidget {
+  const _TeamSectionSkeleton();
+
+  static const _placeholderTeam = TeamModel(
+    id: '',
+    name: 'Team name',
+    joinCode: '',
+    memberCount: 3,
+    yourRole: TeamRoleEnum.member,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Skeletonizer(
+      enabled: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _TeamSectionHeader(onOpen: () {}),
+          const SizedBox(height: 11),
+          const TeamCard(team: _placeholderTeam),
+        ],
+      ),
     );
   }
 }

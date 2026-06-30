@@ -17,6 +17,8 @@ enum JoinStatus { idle, validating, preview, submitting, success, error }
 
 enum LeaveStatus { idle, submitting, success, error }
 
+enum TransferStatus { idle, submitting, success, error }
+
 class TeamsState {
   const TeamsState({
     this.status = TeamsStatus.idle,
@@ -31,6 +33,7 @@ class TeamsState {
     this.joinStatus = JoinStatus.idle,
     this.joinedTeam,
     this.leaveStatus = LeaveStatus.idle,
+    this.transferStatus = TransferStatus.idle,
     this.errorMessage,
   });
 
@@ -56,6 +59,8 @@ class TeamsState {
 
   final LeaveStatus leaveStatus;
 
+  final TransferStatus transferStatus;
+
   final String? errorMessage;
 
   TeamsState copyWith({
@@ -71,6 +76,7 @@ class TeamsState {
     JoinStatus? joinStatus,
     TeamModel? Function()? joinedTeam,
     LeaveStatus? leaveStatus,
+    TransferStatus? transferStatus,
     String? errorMessage,
   }) => TeamsState(
     status: status ?? this.status,
@@ -87,6 +93,7 @@ class TeamsState {
     joinStatus: joinStatus ?? this.joinStatus,
     joinedTeam: joinedTeam != null ? joinedTeam() : this.joinedTeam,
     leaveStatus: leaveStatus ?? this.leaveStatus,
+    transferStatus: transferStatus ?? this.transferStatus,
     errorMessage: errorMessage ?? this.errorMessage,
   );
 
@@ -106,6 +113,7 @@ class TeamsState {
         other.joinStatus == joinStatus &&
         other.joinedTeam == joinedTeam &&
         other.leaveStatus == leaveStatus &&
+        other.transferStatus == transferStatus &&
         other.errorMessage == errorMessage;
   }
 
@@ -123,6 +131,7 @@ class TeamsState {
     joinStatus,
     joinedTeam,
     leaveStatus,
+    transferStatus,
     errorMessage,
   ]);
 }

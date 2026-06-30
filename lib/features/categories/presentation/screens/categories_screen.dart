@@ -176,12 +176,17 @@ class _CategoriesView extends StatelessWidget {
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
                           sliver: SliverGrid.builder(
                             itemCount: categories.length,
+                            // Cap each card's width so wide screens add columns
+                            // (2 on phones, 4-6 on tablets) instead of stretching
+                            // two giant cards across the row. A fixed mainAxisExtent
+                            // keeps the height constant regardless of width, so the
+                            // card's Spacer no longer balloons into empty space.
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
+                                const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 240,
                                   mainAxisSpacing: 16,
                                   crossAxisSpacing: 16,
-                                  childAspectRatio: 0.82,
+                                  mainAxisExtent: 220,
                                 ),
                             itemBuilder: (context, index) {
                               final category = categories[index];

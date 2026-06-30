@@ -766,6 +766,21 @@
       "warning_cta": "Continue to leave",
       "warning_stay": "Stay with the team"
     },
+    "transfer": {
+      "menu_title": "Owner options",
+      "menu_transfer": "Transfer ownership",
+      "menu_leave": "Leave team",
+      "picker_title": "Transfer ownership",
+      "picker_lede": "Choose a member to become the new owner. You'll become a regular member.",
+      "picker_empty": "There's no one else in the team to transfer ownership to yet.",
+      "make_owner": "Make owner",
+      "owner_badge": "Owner",
+      "confirm_title": "Transfer ownership?",
+      "confirm_lede": "{name} will become the team owner and you'll become a regular member.",
+      "confirm_cta": "Yes, transfer",
+      "cancel": "Cancel",
+      "success": "{name} is now the team owner."
+    },
     "number_one": {
       "eyebrow": "New team leader",
       "title": "You're #1!",

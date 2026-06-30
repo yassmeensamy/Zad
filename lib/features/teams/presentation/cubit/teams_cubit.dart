@@ -269,4 +269,41 @@ class TeamsCubit extends BaseCubit<TeamsState> {
   void resetLeaveState() {
     emit(state.copyWith(leaveStatus: LeaveStatus.idle));
   }
+
+  /// Hands team ownership to [newOwnerId]; the current owner (this user) is
+  /// demoted to a regular member. On success the team + member list are
+  /// re-synced so the demoted owner's UI loses its owner-only affordances.
+  Future<void> transferOwnership(String newOwnerId) async {
+    emit(state.copyWith(transferStatus: TransferStatus.submitting));
+    try {
+      await _repository.transferOwnership(newOwnerId);
+      final team = await _repository.getMyTeam();
+      emit(
+        state.copyWith(
+          transferStatus: TransferStatus.success,
+          team: () => team,
+        ),
+      );
+      await loadTeamMembers();
+    } on ServerException catch (e) {
+      emit(
+        state.copyWith(
+          transferStatus: TransferStatus.error,
+          errorMessage: e.message,
+        ),
+      );
+    } catch (e) {
+      logger.error('TeamsCubit.transferOwnership failed: $e');
+      emit(
+        state.copyWith(
+          transferStatus: TransferStatus.error,
+          errorMessage: 'errors.generic',
+        ),
+      );
+    }
+  }
+
+  void resetTransferState() {
+    emit(state.copyWith(transferStatus: TransferStatus.idle));
+  }
 }

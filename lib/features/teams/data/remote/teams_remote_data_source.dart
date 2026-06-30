@@ -19,6 +19,10 @@ abstract class TeamsRemoteDataSource {
   Future<CreatedTeamModel> createTeam(CreateTeamRequest request);
   Future<JoinedTeamModel> joinTeam(JoinTeamRequest request);
   Future<void> leaveTeam();
+
+  /// Transfers team ownership to [newOwnerId]; the current owner becomes a
+  /// regular member.
+  Future<void> transferOwnership(String newOwnerId);
 }
 
 class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
@@ -79,5 +83,13 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   Future<void> leaveTeam() async {
     final response = await _networkService.delete(_endpoints.leaveTeam);
     response.validated([204]);
+  }
+
+  @override
+  Future<void> transferOwnership(String newOwnerId) async {
+    final response = await _networkService.post(
+      _endpoints.transferOwnership(newOwnerId),
+    );
+    response.validated([200]);
   }
 }

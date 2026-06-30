@@ -31,6 +31,15 @@ import '../widgets/quiz_progress_bar.dart';
 import '../widgets/report_question_sheet.dart';
 import '../widgets/result_view.dart';
 
+/// Quiz app-bar title: smaller than the default and allowed to wrap to two
+/// lines so long level titles stay readable instead of truncating early.
+const TextStyle _quizAppBarTitleStyle = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w500,
+  letterSpacing: -0.3,
+  height: 1.15,
+);
+
 class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key, required this.levelId, this.level});
 
@@ -133,6 +142,8 @@ class _QuizView extends StatelessWidget {
               children: [
                 ZaadAppBar(
                   title: level?.title ?? 'quiz.eyebrow',
+                  titleStyle: _quizAppBarTitleStyle,
+                  titleMaxLines: 2,
                   onBack: context.canPop() ? () => context.pop() : null,
                 ),
                 Expanded(
@@ -159,6 +170,8 @@ class _QuizView extends StatelessWidget {
                 children: [
                   ZaadAppBar(
                     title: level?.title ?? 'quiz.eyebrow',
+                    titleStyle: _quizAppBarTitleStyle,
+                    titleMaxLines: 2,
                     onBack: context.canPop() ? () => context.pop() : null,
                   ),
                   Expanded(
@@ -221,6 +234,8 @@ class _LoadingView extends StatelessWidget {
       children: [
         ZaadAppBar(
           title: level?.title ?? 'quiz.eyebrow',
+          titleStyle: _quizAppBarTitleStyle,
+          titleMaxLines: 2,
           onBack: context.canPop() ? () => context.pop() : null,
         ),
         Expanded(
@@ -317,6 +332,8 @@ class _ActiveView extends StatelessWidget {
           children: [
             ZaadAppBar(
               title: level?.title ?? 'quiz.eyebrow',
+              titleStyle: _quizAppBarTitleStyle,
+              titleMaxLines: 2,
               onBack: () => _confirmExit(context),
             ),
             Expanded(

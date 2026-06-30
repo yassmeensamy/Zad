@@ -58,6 +58,8 @@ class AppRouter {
     splash: AppRoutes.splash,
     signIn: AppRoutes.login,
     home: AppRoutes.profileSelect,
+    profileSetup: AppRoutes.roleSelect,
+    setupFlow: {AppRoutes.roleSelect, AppRoutes.completeProfile},
     offlineHome: AppRoutes.home,
     guestHome: AppRoutes.home,
     childHome: AppRoutes.home,
@@ -92,6 +94,7 @@ class AppRouter {
         isOnline: isOnline,
         isGuest: () => gate.isGuest,
         isChild: () => gate.isChild,
+        needsProfileSetup: () => gate.needsProfileSetup,
       ),
       routes: [
         GoRoute(

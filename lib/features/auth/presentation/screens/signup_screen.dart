@@ -116,9 +116,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (_awaitingSignupResult && !_successShown) {
         _awaitingSignupResult = false;
         _showSuccess(context);
-        return;
       }
-      context.go(AppRoutes.roleSelect);
+      // Otherwise the auth guard routes once /me resolves: incomplete profiles
+      // go to role-select, complete ones straight to home.
       return;
     }
     if (state.isError) {

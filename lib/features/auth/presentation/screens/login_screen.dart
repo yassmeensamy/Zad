@@ -96,7 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     if (state.isLoggedIn) {
-      context.go(AppRoutes.roleSelect);
+      // Routing is owned by the auth guard, which waits for /me to resolve:
+      // incomplete profiles go to role-select, complete ones straight to home.
       return;
     }
     if ((state.isError || state.isGuestError) && state.errorMessage != null) {

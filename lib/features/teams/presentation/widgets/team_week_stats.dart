@@ -215,6 +215,7 @@ class _StatCard extends StatelessWidget {
             Container(
               width: 20,
               height: 20,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: accent.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(7),
@@ -278,8 +279,12 @@ class _StatCard extends StatelessWidget {
           ? column
           : Stack(
               children: [
-                Positioned(
-                  right: 0,
+                // Pinned to the trailing corner via PositionedDirectional so it
+                // sits opposite the start-aligned trophy badge in both LTR and
+                // RTL — in Arabic `end` resolves to the left, clearing the icon
+                // instead of overlapping it.
+                PositionedDirectional(
+                  end: 0,
                   top: 0,
                   child: CustomPaint(
                     size: const Size(38, 38),

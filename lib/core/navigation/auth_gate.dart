@@ -62,6 +62,15 @@ class AuthGate {
   /// [UserModel.role] from /me. Children skip the profile-selection flow.
   bool get isChild => _user.state.user?.isChild ?? false;
 
+  /// Whether the signed-in (non-guest, non-child) user still needs to finish
+  /// the onboarding profile flow. Returning users with a complete profile go
+  /// straight home; only new / unfinished accounts are sent to role-select.
+  bool get needsProfileSetup {
+    final user = _user.state.user;
+    if (user == null || user.isAnonymous || user.isChild) return false;
+    return !user.isProfileComplete;
+  }
+
   void dispose() {
     for (final source in _sources) {
       source.dispose();

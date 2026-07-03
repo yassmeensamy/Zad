@@ -26,6 +26,11 @@ class NotificationPreferencesCubit
   final NotificationPreferencesRepository _repository;
   final PermissionService _permissionService;
 
+  /// Set when we hand the user off to the OS settings page to grant a blocked
+  /// permission. On the next app resume ([syncAfterResume]) it tells the cubit
+  /// to finish the enable the user originally asked for.
+  bool _enablePendingSettingsReturn = false;
+
   /// Resolves the OS notification permission to a bool. [PermissionService]
   /// throws when the permission is denied/blocked, so we translate that into
   /// `false` rather than letting it bubble up.
@@ -124,8 +129,52 @@ class NotificationPreferencesCubit
     }
   }
 
-  /// Opens the OS settings page when push is blocked at the system level.
-  Future<void> openSystemSettings() => _permissionService.openSettings();
+  /// Opens the OS settings page when push is blocked at the system level. Marks
+  /// the enable as pending so [syncAfterResume] can complete it once the user
+  /// comes back with the permission granted.
+  Future<void> openSystemSettings() {
+    _enablePendingSettingsReturn = true;
+    return _permissionService.openSettings();
+  }
+
+  /// Re-reconciles the toggle with the live OS permission when the app returns
+  /// to the foreground. Called on app resume by the widget.
+  ///
+  /// - If the user was sent to settings to enable push and the grant is now
+  ///   present, the enable is finished automatically (no second tap needed).
+  /// - Otherwise the toggle simply mirrors the current permission, so revoking
+  ///   it from settings flips the switch off on return too.
+  Future<void> syncAfterResume() async {
+    logger.debug(
+      'syncAfterResume start: updating=${state.updating}, '
+      'pending=$_enablePendingSettingsReturn, '
+      'permissionGranted=${state.permissionGranted}',
+    );
+    if (state.updating) return;
+
+    final granted = await _isPermissionGranted();
+    logger.debug('syncAfterResume: live permission granted=$granted');
+
+    if (_enablePendingSettingsReturn) {
+      _enablePendingSettingsReturn = false;
+      if (granted) {
+        logger.debug('syncAfterResume: finishing pending enable');
+        emit(state.copyWith(permissionGranted: true));
+        await setEnabled(true);
+        return;
+      }
+      logger.debug('syncAfterResume: pending enable but still not granted');
+    }
+
+    if (granted == state.permissionGranted) {
+      logger.debug('syncAfterResume: no change, skipping');
+      return;
+    }
+    emit(state.copyWith(
+      permissionGranted: granted,
+      enabled: granted && state.preferences.anyEnabled,
+    ));
+  }
 
   void clearActionError() {
     if (state.actionError == null) return;

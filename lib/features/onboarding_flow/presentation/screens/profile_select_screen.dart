@@ -293,7 +293,10 @@ class _Heading extends StatelessWidget {
       children: [
         ResponsiveText(
           'profile_select.eyebrow'.tr().toUpperCase(),
-          style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
+          style: ZaadType.eyebrow.copyWith(
+            fontSize: 13,
+            color: colors.oliveSoft,
+          ),
         ),
         const SizedBox(height: 12),
         ConstrainedBox(

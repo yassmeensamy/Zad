@@ -63,6 +63,7 @@ class HomeHeader extends StatelessWidget {
               ResponsiveText(
                 'home.salam_arabic'.tr(),
                 style: AppTextStyles.bodySmall.copyWith(
+                  fontSize: 16,
                   height: 1.2,
                   color: colors.textSecondary,
                 ),

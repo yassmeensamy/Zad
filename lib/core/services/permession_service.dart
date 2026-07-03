@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
@@ -149,9 +150,12 @@ class PermissionServiceImpl implements PermissionService {
 
   @override
   Future<void> openSettings() async {
-    logger.debug('Opening app settings...');
+    logger.debug('Opening notification settings...');
 
-    await openAppSettings();
+    // Deep-link straight to the notification settings page. On Android this
+    // lands on the app's notifications screen; iOS has no public notifications
+    // sub-page, so it opens the app's settings page (the closest it allows).
+    await AppSettings.openAppSettings(type: AppSettingsType.notification);
   }
 
   @override

@@ -56,11 +56,11 @@ Future<void> main() async {
   );
 
   final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
-final initialLink = await deepLinks.initialLocation();
+  final initialLink = await deepLinks.initialLocation();
 
   runApp(
     RequestsInspector(
-      enabled: true,
+      enabled: false,
       showInspectorOn: ShowInspectorOn.Both,
       child: EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

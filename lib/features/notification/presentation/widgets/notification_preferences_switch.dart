@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../theme/theme.dart';
@@ -24,8 +25,39 @@ class NotificationPreferencesSwitch extends StatelessWidget {
   }
 }
 
-class _NotificationPreferencesSwitchView extends StatelessWidget {
+class _NotificationPreferencesSwitchView extends StatefulWidget {
   const _NotificationPreferencesSwitchView();
+
+  @override
+  State<_NotificationPreferencesSwitchView> createState() =>
+      _NotificationPreferencesSwitchViewState();
+}
+
+class _NotificationPreferencesSwitchViewState
+    extends State<_NotificationPreferencesSwitchView>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// When the user returns from the OS settings page (or any other resume),
+  /// re-reconcile the toggle with the live permission so a just-granted
+  /// permission finishes the enable the user asked for.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    logger.debug('NotificationPreferencesSwitch lifecycle: $state');
+    if (state == AppLifecycleState.resumed && mounted) {
+      context.read<NotificationPreferencesCubit>().syncAfterResume();
+    }
+  }
 
   Future<void> _promptOpenSettings(BuildContext context) async {
     final cubit = context.read<NotificationPreferencesCubit>();

@@ -235,7 +235,7 @@ class _StatCard extends StatelessWidget {
               child: ResponsiveText(
                 label.toUpperCase(),
                 style: TextStyle(
-                  fontSize: 8,
+                  fontSize: 11,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.2,
                   color: p.inkMute,
@@ -430,7 +430,7 @@ class _LevelProgressBar extends StatelessWidget {
                 child: ResponsiveText(
                   'teams.stats.level_progress'.tr().toUpperCase(),
                   style: TextStyle(
-                    fontSize: 8,
+                    fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                     color: p.inkMute,

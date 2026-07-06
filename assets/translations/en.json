@@ -337,6 +337,7 @@
     "password_hint": "Your password",
     "or_continue": "OR CONTINUE WITH",
     "continue_google": "Continue with Google",
+    "continue_apple": "Continue with Apple",
     "continue_guest": "Continue as guest",
     "upgrade_screen": {
       "title": "Create your account",

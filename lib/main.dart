@@ -45,6 +45,10 @@ Future<void> main() async {
       googleAndroidClientId: dotenv.env['GOOGLE_ANDROID_CLIENT_ID'] ?? '',
       googleIosClientId: dotenv.env['GOOGLE_IOS_CLIENT_ID'] ?? '',
       googleServerClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID'] ?? '',
+      // Optional — only needed for Apple sign-in on Android/web. iOS works
+      // without these.
+      appleServiceId: dotenv.env['APPLE_SERVICE_ID'] ?? '',
+      appleRedirectUri: dotenv.env['APPLE_REDIRECT_URI'],
     ),
   );
   await serviceLocator.startOffline();
@@ -60,7 +64,7 @@ Future<void> main() async {
 
   runApp(
     RequestsInspector(
-      enabled: false,
+      enabled: true,
       showInspectorOn: ShowInspectorOn.Both,
       child: EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

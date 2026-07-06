@@ -10,6 +10,7 @@ class AppEndpoint {
   String get logout => '${baseUrl}api/auth/logout';
   String get refresh => '${baseUrl}api/auth/refresh';
   String get google => '${baseUrl}api/auth/google';
+  String get apple => '${baseUrl}api/auth/apple';
   String get switchAccount => '${baseUrl}api/auth/switch';
   String get forgotPassword => '${baseUrl}api/auth/forgot-password';
   String get resetPassword => '${baseUrl}api/auth/reset-password';

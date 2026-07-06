@@ -1,1 +1,1 @@
-enum SocialProvider { google }
+enum SocialProvider { google, apple }

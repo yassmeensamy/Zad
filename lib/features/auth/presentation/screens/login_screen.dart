@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +14,7 @@ import '../../../splash/widgets/zaad_brand.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../widgets/auth_apple_button.dart';
 import '../widgets/auth_google_button.dart';
 import '../widgets/auth_language_button.dart';
 import '../widgets/auth_or_divider.dart';
@@ -64,6 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onGoogle() {
     context.read<AuthCubit>().loginWithGoogle();
+  }
+
+  void _onApple() {
+    context.read<AuthCubit>().loginWithApple();
   }
 
   void _onContinueAsGuest() {
@@ -201,6 +208,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: _onGoogle,
                     ),
                   ),
+                  if (Platform.isIOS) ...[
+                    const SizedBox(height: 12),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      buildWhen: (previous, current) =>
+                          previous.isSocialLoading != current.isSocialLoading,
+                      builder: (context, state) => AuthAppleButton(
+                        label: 'auth.continue_apple',
+                        loading: state.isSocialLoading,
+                        onTap: _onApple,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (previous, current) =>

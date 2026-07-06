@@ -112,6 +112,34 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthResponse> loginWithApple() async {
+    final strategy = _strategyFactory.getStrategy(SocialProvider.apple);
+    final tokens = await strategy.getTokens();
+    final idToken = tokens['idToken'];
+
+    logger.debug(
+      'Apple sign-in tokens → idToken: ${tokens['idToken']}, '
+      'accessToken: ${tokens['accessToken']}, '
+      'givenName: ${strategy.lastGivenName}, '
+      'familyName: ${strategy.lastFamilyName}',
+    );
+
+    if (idToken == null) {
+      throw StateError('Apple sign-in did not return an idToken');
+    }
+
+    final response = await _remoteDataSource.appleAuth(
+      idToken,
+      firstName: strategy.lastGivenName,
+      lastName: strategy.lastFamilyName,
+      fcmToken: await _fcmToken(),
+    );
+    await _localService.onLoginSuccess(response);
+    await _localService.setLoginMethod(SocialProvider.apple);
+    return response;
+  }
+
+  @override
   Future<void> forgotPassword({required String email}) =>
       _remoteDataSource.forgotPassword(email: email);
 

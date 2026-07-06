@@ -1,4 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
@@ -207,6 +208,28 @@ class AuthCubit extends BaseCubit<AuthState> {
     }
   }
 
+  Future<void> loginWithApple() async {
+    emit(state.copyWith(socialAuthStatus: SocialAuthStatus.loading));
+
+    try {
+      await _repository.loginWithApple();
+      _emitAndNotify(
+        state.copyWith(
+          status: AuthStatus.loggedIn,
+          socialAuthStatus: SocialAuthStatus.success,
+          userType: UserType.user,
+        ),
+      );
+    } on ServerException catch (e) {
+      _emitSocialError(_errorMessage(e));
+    } on SignInWithAppleAuthorizationException catch (e) {
+      _handleAppleException(e);
+    } catch (e) {
+      logger.debug('Unexpected error in loginWithApple: $e');
+      _emitSocialError('general_error');
+    }
+  }
+
   Future<void> switchAccount(String childId) async {
     emit(state.copyWith(status: AuthStatus.loading));
     try {
@@ -316,6 +339,14 @@ class AuthCubit extends BaseCubit<AuthState> {
 
   void _handleGoogleException(GoogleSignInException e) {
     if (e.code == GoogleSignInExceptionCode.canceled) {
+      emit(state.copyWith(socialAuthStatus: SocialAuthStatus.initial));
+      return;
+    }
+    _emitSocialError(e.toString());
+  }
+
+  void _handleAppleException(SignInWithAppleAuthorizationException e) {
+    if (e.code == AuthorizationErrorCode.canceled) {
       emit(state.copyWith(socialAuthStatus: SocialAuthStatus.initial));
       return;
     }

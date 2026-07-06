@@ -97,4 +97,10 @@ class GoogleOAuthStrategy implements OAuthStrategy {
       rethrow;
     }
   }
+
+  @override
+  String? get lastGivenName => null;
+
+  @override
+  String? get lastFamilyName => null;
 }

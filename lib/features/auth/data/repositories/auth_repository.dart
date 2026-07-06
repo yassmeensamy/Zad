@@ -22,6 +22,8 @@ abstract class AuthRepository {
 
   Future<AuthResponse> loginWithGoogle();
 
+  Future<AuthResponse> loginWithApple();
+
   Future<void> forgotPassword({required String email});
 
   Future<void> resetPassword({

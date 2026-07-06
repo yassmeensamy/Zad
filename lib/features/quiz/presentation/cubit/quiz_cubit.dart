@@ -136,7 +136,7 @@ class QuizCubit extends BaseCubit<QuizState> {
         for (final q in state.allQuestions)
           QuizAnswerSubmission(
             questionId: q.id,
-            isCorrect: state.firstTryCorrectIds.contains(q.id),
+            isCorrect: state.answeredCorrectIds.contains(q.id),
           ),
       ],
     );
@@ -155,7 +155,7 @@ class QuizCubit extends BaseCubit<QuizState> {
         PendingAnswerInput(
           questionId: q.id,
           selectedAnswer: firstRoundChoice[q.id] ?? -1,
-          isCorrect: state.firstTryCorrectIds.contains(q.id),
+          isCorrect: state.answeredCorrectIds.contains(q.id),
         ),
     ];
 
@@ -192,9 +192,9 @@ class QuizCubit extends BaseCubit<QuizState> {
       selectedChoiceId: () => choiceId,
       firstTryCorrect:
           isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect,
-      firstTryCorrectIds: isFirstTry
-          ? {...state.firstTryCorrectIds, question.id}
-          : state.firstTryCorrectIds,
+      // Marks the question correct for submission regardless of the round it
+      // was solved in — a retry that lands right still counts as correct.
+      answeredCorrectIds: {...state.answeredCorrectIds, question.id},
       points: state.points + pointsEarned,
       motivationalMessageKey: () => _messages.randomCorrect(),
       history: _appendHistory(question, choiceId),

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/app_dropdown_field.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -14,6 +15,9 @@ import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../auth/presentation/widgets/zaad_text_field.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
+import '../../data/country_model.dart';
+import '../cubit/countries_cubit.dart';
+import '../cubit/countries_state.dart';
 import '../widgets/gender_radio.dart';
 import '../widgets/onboarding_topnav.dart';
 
@@ -36,6 +40,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   DateTime? _birthDate;
   Gender? _gender;
+  int? _countryId;
   bool _saving = false;
 
   @override
@@ -45,6 +50,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     _fullNameController = TextEditingController(text: user?.fullName ?? '');
     _birthDate = user?.birthDate;
     _gender = user?.gender;
+    _countryId = user?.countryId;
     _fullNameController.addListener(_onChanged);
   }
 
@@ -60,18 +66,30 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       _fullNameController.text.trim().isNotEmpty &&
       _birthDate != null &&
       _gender != null &&
+      _countryId != null &&
       !_saving;
+
+  /// Resolves the currently-selected [CountryModel] from the loaded list so the
+  /// dropdown can render its localized name. Null until the list loads or while
+  /// no country is chosen.
+  CountryModel? _selectedCountry(List<CountryModel> countries) {
+    for (final c in countries) {
+      if (c.id == _countryId) return c;
+    }
+    return null;
+  }
 
   void _onSave() {
     if (_saving) return;
     if (!_formKey.currentState!.validate()) return;
-    if (_birthDate == null || _gender == null) return;
+    if (_birthDate == null || _gender == null || _countryId == null) return;
 
     setState(() => _saving = true);
     context.read<UserCubit>().updateProfile(
       fullName: _fullNameController.text.trim(),
       birthDate: _birthDate,
       gender: _gender,
+      countryId: _countryId,
     );
   }
 
@@ -95,8 +113,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     final picked = await showCupertinoModalPopup<DateTime>(
       context: context,
       builder: (_) => _BirthDatePickerSheet(
-        initialDate:
-            _birthDate ?? DateTime(now.year - 25, now.month, now.day),
+        initialDate: _birthDate ?? now,
         minDate: DateTime(1900),
         maxDate: now,
       ),
@@ -191,6 +208,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           maleLabel: 'complete_profile.gender_male'.tr(),
                           femaleLabel: 'complete_profile.gender_female'.tr(),
                           onChanged: (g) => setState(() => _gender = g),
+                        ),
+                        const SizedBox(height: 16),
+                        _FieldLabel(label: 'complete_profile.country_label'),
+                        const SizedBox(height: 8),
+                        _CountryField(
+                          selectedCountry: _selectedCountry,
+                          onSelected: (c) =>
+                              setState(() => _countryId = c.id),
                         ),
                         const SizedBox(height: 28),
                         AuthPrimaryButton(
@@ -364,6 +389,61 @@ class _BirthDateField extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Country dropdown backed by [CountriesCubit]. Shows a loading state while the
+/// list is fetched and an inline retry when the fetch fails.
+class _CountryField extends StatelessWidget {
+  const _CountryField({
+    required this.selectedCountry,
+    required this.onSelected,
+  });
+
+  final CountryModel? Function(List<CountryModel> countries) selectedCountry;
+  final ValueChanged<CountryModel> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CountriesCubit, CountriesState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppDropdownField<CountryModel>(
+              items: state.countries,
+              value: selectedCountry(state.countries),
+              loading: state.isLoading,
+              enabled: state.isLoaded,
+              prefixIcon: Icons.public_rounded,
+              hintText: 'complete_profile.country_hint'.tr(),
+              loadingLabel: 'complete_profile.country_loading'.tr(),
+              sheetTitle: 'complete_profile.country_label'.tr(),
+              searchHint: 'complete_profile.country_search_hint'.tr(),
+              emptyLabel: 'complete_profile.country_empty'.tr(),
+              itemLabel: (c) => c.name,
+              onChanged: onSelected,
+            ),
+            if (state.isError) ...[
+              const SizedBox(height: 6),
+              GestureDetector(
+                onTap: () => context.read<CountriesCubit>().fetchCountries(),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 4),
+                  child: ResponsiveText(
+                    'complete_profile.country_retry',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: 11,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

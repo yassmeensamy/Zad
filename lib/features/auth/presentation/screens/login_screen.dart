@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
@@ -303,11 +302,6 @@ class _Headline extends StatelessWidget {
     final colors = context.appColors;
     return Column(
       children: [
-        const AccentRichTitle(
-          prefixKey: 'auth.login_screen.welcome_prefix',
-          accentKey: 'auth.login_screen.welcome_accent',
-        ),
-        const SizedBox(height: 12),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 280),
           child: ResponsiveText(

@@ -115,23 +115,33 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthResponse> loginWithApple() async {
     final strategy = _strategyFactory.getStrategy(SocialProvider.apple);
     final tokens = await strategy.getTokens();
-    final idToken = tokens['idToken'];
+    final identityToken = tokens['idToken'];
 
     logger.debug(
-      'Apple sign-in tokens → idToken: ${tokens['idToken']}, '
-      'accessToken: ${tokens['accessToken']}, '
+      'Apple sign-in tokens → identityToken: ${tokens['idToken']}, '
+      'authorizationCode: ${tokens['accessToken']}, '
       'givenName: ${strategy.lastGivenName}, '
-      'familyName: ${strategy.lastFamilyName}',
+      'familyName: ${strategy.lastFamilyName}, '
+      'email: ${strategy.lastEmail}',
     );
 
-    if (idToken == null) {
-      throw StateError('Apple sign-in did not return an idToken');
+    if (identityToken == null) {
+      throw StateError('Apple sign-in did not return an identity token');
     }
 
+    // Apple only returns the name on first authorization; combine the given and
+    // family parts into the single fullName the backend expects.
+    final fullName = [strategy.lastGivenName, strategy.lastFamilyName]
+        .whereType<String>()
+        .map((part) => part.trim())
+        .where((part) => part.isNotEmpty)
+        .join(' ');
+
     final response = await _remoteDataSource.appleAuth(
-      idToken,
-      firstName: strategy.lastGivenName,
-      lastName: strategy.lastFamilyName,
+      identityToken,
+      authorizationCode: tokens['accessToken'],
+      email: strategy.lastEmail,
+      fullName: fullName.isEmpty ? null : fullName,
       fcmToken: await _fcmToken(),
     );
     await _localService.onLoginSuccess(response);

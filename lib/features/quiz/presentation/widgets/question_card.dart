@@ -44,21 +44,8 @@ class QuestionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: colors.olive,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ResponsiveText(
-                      'quiz.question_eyebrow',
-                      style: ZaadType.eyebrowSm.copyWith(color: colors.olive),
-                    ),
-                    const Spacer(),
                     Container(
                       width: 36,
                       height: 36,
@@ -87,20 +74,6 @@ class QuestionCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Container(
-                  width: 28,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    gradient: LinearGradient(
-                      colors: [
-                        colors.olive.withValues(alpha: 0.55),
-                        colors.olive.withValues(alpha: 0.0),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
                 ResponsiveText(
                   question.text,
                   style: AppTextStyles.titleLarge.copyWith(

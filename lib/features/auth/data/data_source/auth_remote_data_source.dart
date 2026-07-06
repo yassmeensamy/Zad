@@ -25,9 +25,10 @@ abstract class AuthRemoteDataSource {
   Future<AuthResponse> googleAuth(String idToken, {String? fcmToken});
 
   Future<AuthResponse> appleAuth(
-    String idToken, {
-    String? firstName,
-    String? lastName,
+    String identityToken, {
+    String? authorizationCode,
+    String? email,
+    String? fullName,
     String? fcmToken,
   });
 

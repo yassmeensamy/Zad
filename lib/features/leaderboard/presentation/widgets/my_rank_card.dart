@@ -97,7 +97,7 @@ class MyRankCard extends StatelessWidget {
             child: ResponsiveText(
               '#$rank',
               style: AppTextStyles.labelLarge.copyWith(
-                fontSize: 12.5,
+                fontSize: 14.5,
                 fontWeight: FontWeight.w700,
                 color: colors.onCta,
               ),
@@ -112,7 +112,7 @@ class MyRankCard extends StatelessWidget {
                 ResponsiveText(
                   label.toUpperCase(),
                   style: AppTextStyles.labelSmall.copyWith(
-                    fontSize: 8,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.2,
                     color: accentInk,
@@ -127,7 +127,7 @@ class MyRankCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.labelMedium.copyWith(
-                          fontSize: 12.5,
+                          fontSize: 14.5,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.1,
                           color: colors.textPrimary,
@@ -144,7 +144,7 @@ class MyRankCard extends StatelessWidget {
                       ),
                       maxLines: 1,
                       style: AppTextStyles.labelSmall.copyWith(
-                        fontSize: 9.5,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                         color: colors.textSecondary,
                       ),

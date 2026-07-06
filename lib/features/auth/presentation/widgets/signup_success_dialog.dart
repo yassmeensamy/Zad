@@ -69,9 +69,13 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
     parent: _ctrl,
     curve: const Interval(0.60, 0.80, curve: Curves.easeOutCubic),
   );
+  late final Animation<double> _tanbih = CurvedAnimation(
+    parent: _ctrl,
+    curve: const Interval(0.66, 0.88, curve: Curves.easeOutCubic),
+  );
   late final Animation<double> _cta = CurvedAnimation(
     parent: _ctrl,
-    curve: const Interval(0.66, 0.92, curve: Curves.easeOutCubic),
+    curve: const Interval(0.74, 0.98, curve: Curves.easeOutCubic),
   );
 
   // Fades the ambient layer in once the badge is on-screen.
@@ -157,7 +161,21 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
         ),
         const SizedBox(height: 22),
         _FadeUp(animation: _ornament, child: const _Ornament()),
-        const SizedBox(height: 22),
+        const SizedBox(height: 18),
+        _FadeUp(
+          animation: _tanbih,
+          child: ResponsiveText(
+            'about.tanbih',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: 11.5,
+              height: 1.85,
+              letterSpacing: 0.1,
+              color: colors.textSecondary.withValues(alpha: 0.78),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
         _FadeUp(
           animation: _cta,
           child: CustomButton.full(

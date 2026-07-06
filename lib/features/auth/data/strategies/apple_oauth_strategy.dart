@@ -30,6 +30,9 @@ class AppleOAuthStrategy implements OAuthStrategy {
   String? get lastFamilyName => _lastCredential?.familyName;
 
   @override
+  String? get lastEmail => _lastCredential?.email;
+
+  @override
   Future<Map<String, String?>> getTokens() async {
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: const [

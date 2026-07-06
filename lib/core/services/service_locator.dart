@@ -16,7 +16,10 @@ import '../../features/offline/presentation/cubit/connectivity_cubit.dart';
 import '../../features/offline/presentation/cubit/downloads_cubit.dart';
 import '../../features/onboarding_flow/data/avatars_remote_data_source.dart';
 import '../../features/onboarding_flow/data/avatars_repository.dart';
+import '../../features/onboarding_flow/data/countries_remote_data_source.dart';
+import '../../features/onboarding_flow/data/countries_repository.dart';
 import '../../features/onboarding_flow/presentation/cubit/avatars_cubit.dart';
+import '../../features/onboarding_flow/presentation/cubit/countries_cubit.dart';
 import '../../features/auth/core/auth_status.dart';
 import '../../features/auth/data/data_source/auth_remote_data_source.dart';
 import '../../features/auth/data/data_source/auth_remote_data_source_impl.dart';
@@ -371,6 +374,16 @@ class ServiceLocator {
     );
     sl.registerFactory<AvatarsCubit>(
       () => AvatarsCubit(avatarsRepository: sl()),
+    );
+
+    sl.registerLazySingleton<CountriesRemoteDataSource>(
+      () => CountriesRemoteDataSourceImpl(networkService: sl(), endpoints: sl()),
+    );
+    sl.registerLazySingleton<CountriesRepository>(
+      () => CountriesRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<CountriesCubit>(
+      () => CountriesCubit(countriesRepository: sl()),
     );
 
     sl.registerLazySingleton<TeamsRemoteDataSource>(

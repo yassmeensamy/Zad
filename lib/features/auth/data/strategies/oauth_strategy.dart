@@ -11,4 +11,8 @@ abstract class OAuthStrategy {
   /// the backend. Non-name providers (e.g. Google) leave these null.
   String? get lastGivenName => null;
   String? get lastFamilyName => null;
+
+  /// Apple also returns the email only on the first authorization. Providers
+  /// that surface it expose it here; others leave it null.
+  String? get lastEmail => null;
 }

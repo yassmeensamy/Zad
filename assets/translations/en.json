@@ -1,5 +1,8 @@
 {
   "app_name": "Zaad",
+  "about": {
+    "tanbih": "We ask Allah to grant us success and sound guidance. If you notice any mistakes, we kindly ask you to let us know. Whatever is correct is from Allah alone, and whatever is incorrect is from us and Shaytan. Allah and His Messenger ﷺ are free from it. May Allah reward you abundantly."
+  },
   "update": {
     "title": "Update available",
     "description": "A new version of Zaad is available with improvements and fixes. Update now for the best experience.",
@@ -75,6 +78,12 @@
     "gender_label": "GENDER",
     "gender_male": "Male",
     "gender_female": "Female",
+    "country_label": "COUNTRY",
+    "country_hint": "Choose your country",
+    "country_loading": "Loading countries…",
+    "country_search_hint": "Search countries",
+    "country_empty": "No countries found",
+    "country_retry": "Couldn't load countries. Tap to retry.",
     "continue": "CONTINUE",
     "save_failed": "Couldn't save your profile"
   },
@@ -129,7 +138,6 @@
       "next_milestone_value": "{} · two weeks"
     },
     "play": {
-      "eyebrow": "Test your knowledge",
       "title_prefix": "Start ",
       "title_accent": "playing",
       "subtitle": "Pick a category and climb the levels"
@@ -148,8 +156,8 @@
         "submit": "Join team"
       },
       "joined_eyebrow": "My team",
-      "join_title": "Walk the path together.",
-      "join_subtitle": "Join a team of companions to compete and rise together — or start your own.",
+      "join_title": "Join a team to compete together",
+      "join_subtitle": "Walk the path together.",
       "create": "Create",
       "join_with_code": "Join with code",
       "open": "Open →",
@@ -160,7 +168,8 @@
     "quran_sign": {
       "section_title": "Quran sign of the day",
       "view_all": "VIEW ALL",
-      "reference_no": "Reference №{}"
+      "reference_no": "Reference №{}",
+      "surah_ayah": "Surah {} · Ayah {}"
     },
     "date_ember_cta": "View the Date & Ember leaderboard",
     "why_login": {
@@ -188,8 +197,6 @@
     }
   },
   "categories": {
-    "eyebrow": "YOUR JOURNEY",
-    "title": "Categories",
     "subtitle": "Walk the path at your own pace. Each step opens the next.",
     "overall": {
       "label": "OVERALL PROGRESS"
@@ -314,7 +321,6 @@
     }
   },
   "profile_select": {
-    "eyebrow": "Profiles",
     "title_prefix": "Who's ",
     "title_accent": "reading",
     "subtitle": "Choose a profile to continue your journey.",
@@ -346,8 +352,6 @@
       "success": "Your account is ready. Welcome aboard!"
     },
     "login_screen": {
-      "welcome_prefix": "Welcome — ",
-      "welcome_accent": "Hayyak Allah",
       "subtitle": "Sign in to continue your daily practice.",
       "sign_in": "SIGN IN",
       "new_prompt": "New to Zaad?  ",
@@ -355,8 +359,6 @@
     },
     "signup_screen": {
       "username_hint": "username",
-      "headline_prefix": "Begin your ",
-      "headline_accent": "journey",
       "create_account": "CREATE ACCOUNT",
       "have_account_prompt": "Already have an account?  ",
       "sign_in": "Sign in"
@@ -484,9 +486,12 @@
     "practice": "Practice",
     "library": "Library",
     "account": "Account",
+    "section_preferences": "Preferences",
+    "section_library": "Your library",
+    "section_account": "Account & support",
     "drafts": "Drafts",
     "my_children": "My people",
-    "reminders": "Reminders",
+    "reminders": "Notifications",
     "notifications": "Push notifications",
     "language": "Language",
     "theme": "Appearance",
@@ -644,7 +649,6 @@
       "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
     },
     "empty": {
-      "eyebrow": "Companions",
       "title": "Your team",
       "title_lede": "No team yet — begin together.",
       "hadith_ar": "المؤمن للمؤمن كالبنيان",
@@ -655,7 +659,6 @@
     "create": {
       "title": "Create a team",
       "step": "Step 1 of 1",
-      "sheet_eyebrow": "Companions",
       "sheet_title_lead": "Name your",
       "sheet_title_accent": "team",
       "sheet_title": "Name your team",
@@ -688,7 +691,7 @@
       "eyebrow": "Companions",
       "find_circle": "Find your circle",
       "lede_title": "Have an invite?",
-      "lede": "Enter the eight-character code your team leader shared with you.",
+      "lede": "Enter the eight-character code",
       "code_label": "Invite code",
       "code_hint": "XXXX-XXXX",
       "code_helper": "Or open a Zad invite link from any chat — it lands here.",
@@ -723,11 +726,41 @@
       "week_title": "This week's path",
       "week_chip": "Mon · 3 ahead",
       "recent": "Recent",
+      "leaderboard_title": "Team leaderboard",
+      "top_ten": "Top 10 →",
+      "live_activity": "Live activity",
+      "member_count": "{count} members",
+      "global_rank": "Global\nrank",
+      "of_teams": "of {count}",
+      "teams_label": "Teams",
+      "active": "Active",
+      "copied": "Copied ✓",
+      "member_fallback": "Member",
+      "you": "You",
+      "feed": {
+        "streak_name": "Faisal",
+        "streak_rest": " reached a 50-day streak 🔥",
+        "streak_meta": "Milestone · 18m ago",
+        "level_name": "Aisha",
+        "level_rest": " completed Level 7",
+        "level_meta": "Level · 1h ago",
+        "quiz_name": "Maryam",
+        "quiz_rest": " answered 20 questions today",
+        "quiz_meta": "Quiz · 2h ago",
+        "join_name": "Hamza",
+        "join_rest": " joined the team",
+        "join_meta": "New member · 5h ago"
+      },
       "activity": {
         "completed": "{name} finished Chapter {chapter}",
         "streak": "{name} kept his {days}-day streak",
         "goal": "{name} set this week's goal"
       }
+    },
+    "activity_status": {
+      "active": "Active",
+      "consistent": "Consistent",
+      "idle": "Idle"
     },
     "stats": {
       "rank_label": "Your rank",
@@ -811,7 +844,6 @@
     }
   },
   "leaderboard": {
-    "eyebrow": "Global League",
     "title": "Leaderboard",
     "empty": "No rankings yet.",
     "error": "Couldn't load the leaderboard.",

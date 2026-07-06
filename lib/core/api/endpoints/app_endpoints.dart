@@ -21,6 +21,8 @@ class AppEndpoint {
   String get createChild => '${baseUrl}api/children';
   String childById(String childId) => '${baseUrl}api/children/$childId';
 
+  String get countries => '${baseUrl}api/countries';
+
   String get me => '${baseUrl}api/users/me';
   String get changePassword => '${baseUrl}api/users/me/password';
   String get userLanguage => '${baseUrl}api/users/me/language';

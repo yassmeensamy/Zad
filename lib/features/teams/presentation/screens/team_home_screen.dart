@@ -75,7 +75,7 @@ class _AppBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ResponsiveText(
-                  'MY TEAM',
+                  'teams.home.eyebrow'.tr().toUpperCase(),
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
@@ -112,13 +112,18 @@ class _AppBar extends StatelessWidget {
   /// Owners get an actions menu (transfer ownership / leave); everyone else
   /// goes straight to the leave flow.
   Future<void> _onMenuTap(BuildContext context) async {
-    final isOwner = context.read<TeamsCubit>().state.team?.isOwner ?? false;
+    final team = context.read<TeamsCubit>().state.team;
+    final isOwner = team?.isOwner ?? false;
     if (!isOwner) {
       await _leaveFlow(context);
       return;
     }
 
-    final action = await showTeamOwnerMenu(context);
+    // A solo owner has no one to hand ownership to — hide the transfer option.
+    final action = await showTeamOwnerMenu(
+      context,
+      canTransfer: (team?.memberCount ?? 0) > 1,
+    );
     if (!context.mounted) return;
     switch (action) {
       case TeamOwnerAction.transfer:
@@ -189,21 +194,23 @@ class _Stage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 0, 18, 28),
       physics: const BouncingScrollPhysics(),
-      children: const [
-        _IdentityCard(),
-        SizedBox(height: 11),
-        _TeamCodeCard(),
+      children: [
+        const _IdentityCard(),
+        const SizedBox(height: 11),
+        const _TeamCodeCard(),
 
         _SectionLabel(
-          'Team leaderboard',
-          more: 'Top 10 →',
+          'teams.home.leaderboard_title'.tr(),
+          more: 'teams.home.top_ten'.tr(),
           emphasis: _LabelEmphasis.primary,
         ),
 
-        _LeaderboardSection(),
+        const _LeaderboardSection(),
 
-        _SectionLabel('Live activity', more: 'See all →'),
-        _ActivityFeed(),
+        // Live activity feed is placeholder/demo data — hidden until wired to a
+        // real backend endpoint.
+        // _SectionLabel('teams.home.live_activity'.tr(), more: 'teams.home.view_all'.tr()),
+        // const _ActivityFeed(),
       ],
     );
   }
@@ -262,7 +269,7 @@ class _CategoryFilter extends StatelessWidget {
             child: Row(
               children: [
                 _CategoryChip(
-                  label: 'All',
+                  label: 'leaderboard.category_all'.tr(),
                   active: selectedId == null,
                   onTap: () => onSelect(null),
                 ),
@@ -503,7 +510,9 @@ class _IdentityCard extends StatelessWidget {
                     Row(
                       children: [
                         ResponsiveText(
-                          '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
+                          'teams.home.member_count'.tr(
+                            namedArgs: {'count': '$memberCount'},
+                          ),
                           style: TextStyle(fontSize: 11, color: p.inkMute),
                         ),
                         const SizedBox(width: 8),
@@ -559,7 +568,7 @@ class _IdentityCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 ResponsiveText(
-                  'GLOBAL\nRANK',
+                  'teams.home.global_rank'.tr().toUpperCase(),
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
@@ -573,7 +582,11 @@ class _IdentityCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     ResponsiveText(
-                      totalTeams != null ? 'of $totalTeams' : 'of —',
+                      'teams.home.of_teams'.tr(
+                        namedArgs: {
+                          'count': totalTeams != null ? '$totalTeams' : '—',
+                        },
+                      ),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -582,7 +595,7 @@ class _IdentityCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     ResponsiveText(
-                      'TEAMS',
+                      'teams.home.teams_label'.tr().toUpperCase(),
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w700,
@@ -648,7 +661,7 @@ class _ActiveBadgeState extends State<_ActiveBadge>
           ),
           const SizedBox(width: 5),
           ResponsiveText(
-            'Active',
+            'teams.home.active'.tr(),
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w700,
@@ -712,7 +725,7 @@ class _TeamCodeCardState extends State<_TeamCodeCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ResponsiveText(
-                'INVITE CODE',
+                'teams.create.success_invite_label'.tr().toUpperCase(),
                 style: TextStyle(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w700,
@@ -844,7 +857,7 @@ class _CopiedToast extends StatelessWidget {
         ],
       ),
       child: ResponsiveText(
-        'Copied ✓',
+        'teams.home.copied'.tr(),
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w700,
@@ -855,6 +868,7 @@ class _CopiedToast extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _ActivityFeed extends StatelessWidget {
   const _ActivityFeed();
 
@@ -867,9 +881,9 @@ class _ActivityFeed extends StatelessWidget {
           kind: _IconKind.streak,
           child: _Flame(size: 18, color: p.emberInk),
         ),
-        name: 'Faisal',
-        rest: ' reached a 50-day streak 🔥',
-        meta: 'Milestone · 18m ago',
+        name: 'teams.home.feed.streak_name'.tr(),
+        rest: 'teams.home.feed.streak_rest'.tr(),
+        meta: 'teams.home.feed.streak_meta'.tr(),
         trailing: _Sparkle(size: 14, color: p.gold),
         gold: true,
       ),
@@ -880,9 +894,9 @@ class _ActivityFeed extends StatelessWidget {
           lo: AppColors.discOliveLo,
           ink: AppColors.discOliveInk,
         ),
-        name: 'Aisha',
-        rest: ' completed Level 7',
-        meta: 'Level · 1h ago',
+        name: 'teams.home.feed.level_name'.tr(),
+        rest: 'teams.home.feed.level_rest'.tr(),
+        meta: 'teams.home.feed.level_meta'.tr(),
         trailing: const _MiniCheck(),
       ),
       _ActivityEntry(
@@ -890,18 +904,18 @@ class _ActivityFeed extends StatelessWidget {
           kind: _IconKind.quiz,
           child: Icon(Icons.help_outline, size: 17, color: p.gold),
         ),
-        name: 'Maryam',
-        rest: ' answered 20 questions today',
-        meta: 'Quiz · 2h ago',
+        name: 'teams.home.feed.quiz_name'.tr(),
+        rest: 'teams.home.feed.quiz_rest'.tr(),
+        meta: 'teams.home.feed.quiz_meta'.tr(),
       ),
       _ActivityEntry(
         node: _ActivityIcon(
           kind: _IconKind.join,
           child: Icon(Icons.person_add_alt, size: 16, color: p.ink),
         ),
-        name: 'Hamza',
-        rest: ' joined the team',
-        meta: 'New member · 5h ago',
+        name: 'teams.home.feed.join_name'.tr(),
+        rest: 'teams.home.feed.join_rest'.tr(),
+        meta: 'teams.home.feed.join_meta'.tr(),
       ),
     ];
 
@@ -1457,8 +1471,8 @@ class _LbEntry {
     return _LbEntry(
       pos: '$rank',
       letter: name.isEmpty ? '—' : name.substring(0, 1).toUpperCase(),
-      name: name.isEmpty ? 'Member' : name,
-      meta: member.activityStatus.label,
+      name: name.isEmpty ? 'teams.home.member_fallback'.tr() : name,
+      meta: member.activityStatus.labelKey.tr(),
       points: '${member.completedLevels}/${member.totalLevels}',
       percent: member.progressPercent,
       medal: rank <= 3,
@@ -1673,7 +1687,7 @@ class _Tag extends StatelessWidget {
         border: Border.all(color: p.washAmber.withValues(alpha: 0.4)),
       ),
       child: ResponsiveText(
-        'YOU',
+        'teams.home.you'.tr().toUpperCase(),
         style: TextStyle(
           fontSize: 7.5,
           fontWeight: FontWeight.w700,

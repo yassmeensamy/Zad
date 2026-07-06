@@ -152,12 +152,6 @@ class _DialogHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Column(
         children: [
-          ResponsiveText(
-            'teams.create.sheet_eyebrow',
-            textAlign: TextAlign.center,
-            style: ZaadType.eyebrowSm.copyWith(color: colors.oliveSoft),
-          ),
-          const SizedBox(height: 8),
           DefaultTextStyle.merge(
             style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
             child: Text.rich(

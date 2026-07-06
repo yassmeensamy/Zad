@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/utils/snackbar_helper.dart';
-import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../theme/theme.dart';
 import '../../../splash/widgets/desert_background.dart';
 import '../../../splash/widgets/zaad_brand.dart';
@@ -208,8 +207,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 12),
                   const ZaadBrand.compact(),
                   const SizedBox(height: 24),
-                  const _Headline(),
-                  const SizedBox(height: 22),
                   ZaadTextField(
                     hintText: 'auth.signup_screen.username_hint',
                     controller: _usernameController,
@@ -296,29 +293,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _Headline extends StatelessWidget {
-  const _Headline();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return AccentRichTitle(
-      prefixKey: 'auth.signup_screen.headline_prefix',
-      accentKey: 'auth.signup_screen.headline_accent',
-      baseStyle: ZaadType.titleHero.copyWith(
-        fontSize: 28,
-        color: colors.oliveDeep,
-      ),
-      accentStyle: AppTextStyles.displayMedium.copyWith(
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        color: colors.textArabic,
       ),
     );
   }

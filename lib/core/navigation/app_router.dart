@@ -40,6 +40,7 @@ import '../../features/teams/presentation/screens/team_home_screen.dart';
 import '../../features/teams/presentation/screens/team_join_screen.dart';
 import '../../features/teams/presentation/screens/team_join_success_screen.dart';
 import '../../features/teams/presentation/screens/team_loader_screen.dart';
+import '../../features/onboarding_flow/presentation/cubit/countries_cubit.dart';
 import '../services/core_service_locator.dart';
 import 'app_routes.dart';
 import 'auth_gate.dart';
@@ -137,8 +138,11 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.completeProfile,
           name: AppRoutes.completeProfileName,
-          builder: (context, state) => CompleteProfileScreen(
-            nextDestination: state.extra as String? ?? AppRoutes.home,
+          builder: (context, state) => BlocProvider<CountriesCubit>(
+            create: (_) => sl<CountriesCubit>()..fetchCountries(),
+            child: CompleteProfileScreen(
+              nextDestination: state.extra as String? ?? AppRoutes.home,
+            ),
           ),
         ),
         GoRoute(

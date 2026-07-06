@@ -18,4 +18,11 @@ enum MemberActivityStatus {
         MemberActivityStatus.consistent => 'Consistent',
         MemberActivityStatus.idle => 'Idle',
       };
+
+  /// Translation key for the localized status label; resolve with `.tr()`.
+  String get labelKey => switch (this) {
+        MemberActivityStatus.active => 'teams.activity_status.active',
+        MemberActivityStatus.consistent => 'teams.activity_status.consistent',
+        MemberActivityStatus.idle => 'teams.activity_status.idle',
+      };
 }

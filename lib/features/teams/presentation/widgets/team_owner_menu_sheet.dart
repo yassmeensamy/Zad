@@ -9,18 +9,24 @@ import '../../../../theme/theme.dart';
 enum TeamOwnerAction { transfer, leave }
 
 /// Small action sheet shown to the team owner. Resolves with the chosen
-/// [TeamOwnerAction], or `null` if dismissed.
-Future<TeamOwnerAction?> showTeamOwnerMenu(BuildContext context) {
+/// [TeamOwnerAction], or `null` if dismissed. [canTransfer] hides the
+/// transfer-ownership row when the team has no other member to hand it to.
+Future<TeamOwnerAction?> showTeamOwnerMenu(
+  BuildContext context, {
+  bool canTransfer = true,
+}) {
   return showModalBottomSheet<TeamOwnerAction>(
     context: context,
     backgroundColor: Colors.transparent,
     barrierColor: AppColors.shadowDeep.withValues(alpha: 0.55),
-    builder: (_) => const _OwnerMenuSheet(),
+    builder: (_) => _OwnerMenuSheet(canTransfer: canTransfer),
   );
 }
 
 class _OwnerMenuSheet extends StatelessWidget {
-  const _OwnerMenuSheet();
+  const _OwnerMenuSheet({required this.canTransfer});
+
+  final bool canTransfer;
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +74,15 @@ class _OwnerMenuSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              _MenuRow(
-                icon: Icons.workspace_premium_rounded,
-                label: 'teams.transfer.menu_transfer'.tr(),
-                color: colors.goldDeep,
-                onTap: () => context.pop(TeamOwnerAction.transfer),
-              ),
-              const SizedBox(height: 8),
+              if (canTransfer) ...[
+                _MenuRow(
+                  icon: Icons.workspace_premium_rounded,
+                  label: 'teams.transfer.menu_transfer'.tr(),
+                  color: colors.goldDeep,
+                  onTap: () => context.pop(TeamOwnerAction.transfer),
+                ),
+                const SizedBox(height: 8),
+              ],
               _MenuRow(
                 icon: Icons.logout_rounded,
                 label: 'teams.transfer.menu_leave'.tr(),

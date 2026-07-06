@@ -40,6 +40,12 @@ class HomeTeamSection extends StatelessWidget {
           context.read<TeamsCubit>().refreshTeam();
         }
 
+        Future<void> openJoin() async {
+          await context.pushNamed(AppRoutes.teamJoinName);
+          if (!context.mounted) return;
+          context.read<TeamsCubit>().refreshTeam();
+        }
+
         // Until loadTeamStatus resolves we don't yet know whether the user has
         // a team. Show a skeletonised placeholder rather than defaulting to the
         // join card, otherwise the "no team" UI flashes for the ~400ms+ load
@@ -50,7 +56,7 @@ class HomeTeamSection extends StatelessWidget {
 
         final team = state.team;
         if (!state.hasTeam || team == null) {
-          return _JoinTeamCard(onTap: openTeam);
+          return _JoinTeamCard(onTap: openTeam, onJoin: openJoin);
         }
 
         return Column(
@@ -106,9 +112,13 @@ class _TeamSectionSkeleton extends StatelessWidget {
 }
 
 class _JoinTeamCard extends StatelessWidget {
-  const _JoinTeamCard({required this.onTap});
+  const _JoinTeamCard({required this.onTap, required this.onJoin});
 
+  /// Opens the teams screen (create flow / card body tap).
   final VoidCallback onTap;
+
+  /// Opens the join-by-code screen directly.
+  final VoidCallback onJoin;
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +179,7 @@ class _JoinTeamCard extends StatelessWidget {
                 Expanded(
                   child: _JoinGhostButton(
                     label: 'home.team.join_with_code'.tr(),
-                    onTap: onTap,
+                    onTap: onJoin,
                   ),
                 ),
               ],

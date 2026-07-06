@@ -99,7 +99,7 @@ class _CategoryChip extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.labelSmall.copyWith(
-              fontSize: 11,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: selected ? colors.accent : colors.textSecondary,
             ),

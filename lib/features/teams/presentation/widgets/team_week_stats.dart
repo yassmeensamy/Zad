@@ -259,7 +259,7 @@ class _StatCard extends StatelessWidget {
         if (note != null)
           ResponsiveText(
             note!,
-            style: TextStyle(fontSize: 9, color: p.inkMute),
+            style: TextStyle(fontSize: 12, color: p.inkMute),
           ),
         if (spark) ...[
           const SizedBox(height: 9),
@@ -440,7 +440,7 @@ class _LevelProgressBar extends StatelessWidget {
               ResponsiveText(
                 '$completed / $total',
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: p.inkMute,
                 ),

@@ -259,7 +259,7 @@ class _StreakHeader extends StatelessWidget {
         RichText(
           text: TextSpan(
             style: AppTextStyles.eyebrow(
-              fontSize: 12,
+              fontSize: 14,
               tracking: 0.4,
               color: colors.heroInk.withValues(alpha: 0.55),
             ),
@@ -268,7 +268,7 @@ class _StreakHeader extends StatelessWidget {
               TextSpan(
                 text: 'home.streak.eyebrow_accent'.tr().toUpperCase(),
                 style: AppTextStyles.eyebrow(
-                  fontSize: 12,
+                  fontSize: 14,
                   tracking: 0.4,
                   color: colors.heroGold,
                 ),

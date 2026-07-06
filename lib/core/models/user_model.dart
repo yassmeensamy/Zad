@@ -41,6 +41,7 @@ class UserModel {
   final DateTime? birthDate;
   final Gender? gender;
   final String? parentId;
+  final int? countryId;
   final DateTime createdAt;
   final AvatarModel? avatar;
   final int childrenCount;
@@ -60,6 +61,7 @@ class UserModel {
     this.birthDate,
     this.gender,
     this.parentId,
+    this.countryId,
     this.avatar,
     this.childrenCount = 0,
     this.totalPoints = 0,
@@ -79,6 +81,7 @@ class UserModel {
         : DateTime.parse(map['birthDate'] as String).toLocal(),
     gender: Gender.fromWire(map['gender'] as String?),
     parentId: map['parentId'] as String?,
+    countryId: (map['countryId'] as num?)?.toInt(),
     createdAt: DateTime.parse(map['createdAt'] as String).toLocal(),
     avatar: map['avatar'] == null
         ? null
@@ -102,6 +105,7 @@ class UserModel {
     DateTime? birthDate,
     Gender? gender,
     String? parentId,
+    int? countryId,
     DateTime? createdAt,
     AvatarModel? avatar,
     int? childrenCount,
@@ -118,6 +122,7 @@ class UserModel {
     birthDate: birthDate ?? this.birthDate,
     gender: gender ?? this.gender,
     parentId: parentId ?? this.parentId,
+    countryId: countryId ?? this.countryId,
     createdAt: createdAt ?? this.createdAt,
     avatar: avatar ?? this.avatar,
     childrenCount: childrenCount ?? this.childrenCount,
@@ -136,6 +141,7 @@ class UserModel {
     'birthDate': birthDate?.toIso8601String(),
     'gender': gender?.wire,
     'parentId': parentId,
+    'countryId': countryId,
     'createdAt': createdAt.toIso8601String(),
     'avatar': avatar?.toMap(),
     'childrenCount': childrenCount,
@@ -172,6 +178,7 @@ class UserModel {
       'UserModel(id: $id, email: $email, username: $username, '
       'fullName: $fullName, role: $role, googleLinked: $googleLinked, '
       'birthDate: $birthDate, gender: $gender, parentId: $parentId, '
+      'countryId: $countryId, '
       'createdAt: $createdAt, '
       'childrenCount: $childrenCount, totalPoints: $totalPoints, '
       'language: $language, isAnonymous: $isAnonymous)';
@@ -189,6 +196,7 @@ class UserModel {
         other.birthDate == birthDate &&
         other.gender == gender &&
         other.parentId == parentId &&
+        other.countryId == countryId &&
         other.createdAt == createdAt &&
         other.avatar == avatar &&
         other.childrenCount == childrenCount &&
@@ -208,6 +216,7 @@ class UserModel {
     birthDate,
     gender,
     parentId,
+    countryId,
     createdAt,
     avatar,
     childrenCount,

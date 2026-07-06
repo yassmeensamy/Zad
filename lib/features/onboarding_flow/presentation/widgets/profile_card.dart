@@ -176,6 +176,7 @@ class _RoleLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = AppTextStyles.labelSmall.copyWith(
+      fontSize: 14,
       fontWeight: FontWeight.w600,
       letterSpacing: 1.8,
       color: entry.isParent ? AppColors.date : colors.oliveSoft,

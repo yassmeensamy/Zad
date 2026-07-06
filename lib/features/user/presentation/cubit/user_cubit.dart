@@ -60,6 +60,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     AvatarModel? avatar,
     String? username,
     Gender? gender,
+    int? countryId,
   }) async {
     final current = state.user;
     // Only send avatarId when it actually changed, so unrelated saves
@@ -74,6 +75,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
         avatarId: avatarId,
         username: username,
         gender: gender,
+        countryId: countryId,
       );
 
       final merged = (current ?? state.user)?.copyWith(
@@ -81,6 +83,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
         birthDate: updated.birthDate,
         username: updated.username,
         gender: updated.gender,
+        countryId: updated.countryId,
         avatar: avatarChanged ? avatar : null,
       );
       emit(

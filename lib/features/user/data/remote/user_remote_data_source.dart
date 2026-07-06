@@ -11,6 +11,7 @@ abstract class UserRemoteDataSource {
     String? avatarId,
     String? username,
     Gender? gender,
+    int? countryId,
   });
   Future<void> changePassword({
     required String currentPassword,
@@ -45,6 +46,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     String? avatarId,
     String? username,
     Gender? gender,
+    int? countryId,
   }) async {
     final response = await _networkService.put(
       _endpoints.me,
@@ -54,6 +56,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         'avatarId': ?avatarId,
         'username': ?username,
         'gender': ?gender?.wire,
+        'countryId': ?countryId,
       },
     );
     if (response.statusCode != 200) {

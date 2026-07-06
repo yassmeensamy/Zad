@@ -87,7 +87,7 @@ class _CardBody extends StatelessWidget {
   }
 }
 
-/// Footer line: the sign's reference number on the trailing edge.
+/// Footer line: a surah · ayah pill on the leading edge.
 class _Reference extends StatelessWidget {
   const _Reference({required this.sign});
 
@@ -95,21 +95,49 @@ class _Reference extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasSurah = sign.surahName != null && sign.madaniNumber != null;
+    if (!hasSurah) return const SizedBox.shrink();
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: _SurahPill(surahName: sign.surahName!, ayah: sign.madaniNumber!),
+    );
+  }
+}
+
+/// Rounded pill showing the surah name and ayah number with a small book glyph.
+class _SurahPill extends StatelessWidget {
+  const _SurahPill({required this.surahName, required this.ayah});
+
+  final String surahName;
+  final int ayah;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.appColors;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        ResponsiveText(
-          'home.quran_sign.reference_no',
-          args: [sign.referenceNumber.toString()],
-          maxLines: 1,
-          style: AppTextStyles.eyebrow(
-            fontSize: 8.5,
-            tracking: 0.2,
-            color: colors.oliveSoft,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        color: colors.olive.withValues(alpha: 0.10),
+        border: Border.all(color: colors.olive.withValues(alpha: 0.24)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.menu_book_rounded, size: 12, color: colors.oliveDeep),
+          const SizedBox(width: 6),
+          ResponsiveText(
+            'home.quran_sign.surah_ayah',
+            args: [surahName, ayah.toString()],
+            maxLines: 1,
+            style: AppTextStyles.labelSmall.copyWith(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: colors.oliveDeep,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

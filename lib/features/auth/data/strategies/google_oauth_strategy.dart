@@ -103,4 +103,7 @@ class GoogleOAuthStrategy implements OAuthStrategy {
 
   @override
   String? get lastFamilyName => null;
+
+  @override
+  String? get lastEmail => null;
 }

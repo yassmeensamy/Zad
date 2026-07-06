@@ -91,19 +91,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<AuthResponse> appleAuth(
-    String idToken, {
-    String? firstName,
-    String? lastName,
+    String identityToken, {
+    String? authorizationCode,
+    String? email,
+    String? fullName,
     String? fcmToken,
   }) async {
     final response = await _networkService.post(
       _endpoints.apple,
       data: {
-        'idToken': idToken,
-        // Apple only returns the name on first authorization; forward it when
-        // present so the backend can persist it, omit it otherwise.
-        'firstName': ?firstName,
-        'lastName': ?lastName,
+        'identityToken': identityToken,
+        'authorizationCode': ?authorizationCode,
+        // Apple only returns the email and name on first authorization; forward
+        // them when present so the backend can create the account, omit
+        // otherwise.
+        'email': ?email,
+        'fullName': ?fullName,
         'fcmToken': ?fcmToken,
       },
       skipAuth: true,

@@ -54,7 +54,7 @@ ProfileMenuItem _themeItem(BuildContext context) => ProfileMenuItem(
 
 List<ProfileSection> _guestSections(BuildContext context) => [
   ProfileSection(
-    titleKey: 'profile.account',
+    titleKey: 'profile.section_account',
     items: [
       ProfileMenuItem(
         icon: Icons.workspace_premium_outlined,
@@ -74,14 +74,14 @@ List<ProfileSection> _guestSections(BuildContext context) => [
     ],
   ),
   ProfileSection(
-    titleKey: 'profile.practice',
+    titleKey: 'profile.section_preferences',
     items: [_languageItem(context), _themeItem(context)],
   ),
 ];
 
 List<ProfileSection> _userSections(BuildContext context) => [
   ProfileSection(
-    titleKey: 'profile.practice',
+    titleKey: 'profile.section_preferences',
     items: [
       ProfileMenuItem(
         icon: Icons.notifications_none_rounded,
@@ -94,7 +94,7 @@ List<ProfileSection> _userSections(BuildContext context) => [
     ],
   ),
   ProfileSection(
-    titleKey: 'profile.library',
+    titleKey: 'profile.section_library',
     items: [
       ProfileMenuItem(
         icon: Icons.drafts_outlined,
@@ -117,7 +117,7 @@ List<ProfileSection> _userSections(BuildContext context) => [
     ],
   ),
   ProfileSection(
-    titleKey: 'profile.account',
+    titleKey: 'profile.section_account',
     items: [
       ProfileMenuItem(
         icon: Icons.person_outline_rounded,

@@ -341,10 +341,12 @@ class _ActiveView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  _PreviousQuestionButton(
-                    onTap: canGoPrevious ? onPrevious : null,
-                  ),
-                  const SizedBox(height: 6),
+                  // Only surfaces once there's an earlier question to return
+                  // to — hidden entirely on the first question.
+                  if (canGoPrevious) ...[
+                    _PreviousQuestionButton(onTap: onPrevious),
+                    const SizedBox(height: 6),
+                  ],
                   QuizProgressBar(
                     total: state.roundLength,
                     current: state.positionInRound,
@@ -521,13 +523,12 @@ class _ActiveView extends StatelessWidget {
 class _PreviousQuestionButton extends StatelessWidget {
   const _PreviousQuestionButton({required this.onTap});
 
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final disabled = onTap == null;
-    final fg = disabled ? colors.textPlaceholder : colors.oliveDeep;
+    final fg = colors.oliveDeep;
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Material(

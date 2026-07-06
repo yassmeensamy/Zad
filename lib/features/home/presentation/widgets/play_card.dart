@@ -99,18 +99,6 @@ class _PlayMeta extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ResponsiveText(
-          'home.play.eyebrow',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          // tracking 0.288 == the prior 9 * 0.32 over the default size 10.
-          style: AppTextStyles.eyebrow(
-            tracking: 0.288,
-            weight: FontWeight.w600,
-            color: colors.accent,
-          ),
-        ),
-        const SizedBox(height: 3),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [

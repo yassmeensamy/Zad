@@ -1,4 +1,3 @@
-import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,6 @@ import '../widgets/profile_card.dart';
 
 /// Quranic opening phrase. Rendered identically in every locale, so it lives
 /// in source rather than the translation files.
-const String _basmala = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
 
 class ProfileSelectScreen extends StatelessWidget {
   const ProfileSelectScreen({super.key});
@@ -144,17 +142,6 @@ class ProfileSelectScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                         _ContinueWithCurrentButton(
                           onTap: () => _onContinueWithCurrent(context),
-                        ),
-                        const SizedBox(height: 6),
-                        Directionality(
-                          textDirection: ui.TextDirection.rtl,
-                          child: ResponsiveText(
-                            _basmala,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              fontSize: 13,
-                              color: colors.oliveDeep.withValues(alpha: 0.55),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -291,14 +278,6 @@ class _Heading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ResponsiveText(
-          'profile_select.eyebrow'.tr().toUpperCase(),
-          style: ZaadType.eyebrow.copyWith(
-            fontSize: 13,
-            color: colors.oliveSoft,
-          ),
-        ),
-        const SizedBox(height: 12),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
           child: ResponsiveText(

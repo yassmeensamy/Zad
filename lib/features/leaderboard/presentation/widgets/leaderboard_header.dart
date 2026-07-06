@@ -14,16 +14,6 @@ class LeaderboardHeader extends StatelessWidget {
     return Column(
       children: [
         ResponsiveText(
-          'leaderboard.eyebrow'.tr().toUpperCase(),
-          style: AppTextStyles.labelSmall.copyWith(
-            fontSize: 9.5,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 3.2,
-            color: colors.accent,
-          ),
-        ),
-        const SizedBox(height: 4),
-        ResponsiveText(
           'leaderboard.title'.tr(),
           style: AppTextStyles.displaySmall.copyWith(
             fontWeight: FontWeight.w300,

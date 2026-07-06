@@ -21,7 +21,7 @@ class PodiumEyebrow extends StatelessWidget {
         ResponsiveText(
           label,
           style: AppTextStyles.labelSmall.copyWith(
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.2,
             color: colors.accent,
@@ -67,7 +67,7 @@ class AllMembersRule extends StatelessWidget {
               .tr(namedArgs: {'count': '$count'})
               .toUpperCase(),
           style: AppTextStyles.labelSmall.copyWith(
-            fontSize: 8.5,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
             letterSpacing: 3.0,
             color: colors.textSecondary,

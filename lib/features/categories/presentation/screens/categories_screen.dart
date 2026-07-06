@@ -231,18 +231,6 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ResponsiveText(
-          'categories.eyebrow',
-          style: ZaadType.eyebrow.copyWith(
-            color: colors.accentDeep.withValues(alpha: 0.85),
-          ),
-        ),
-        const SizedBox(height: 8),
-        ResponsiveText(
-          'categories.title',
-          style: ZaadType.titleHero.copyWith(color: colors.textPrimary),
-        ),
-        const SizedBox(height: 6),
-        ResponsiveText(
           'categories.subtitle',
           style: ZaadType.bodySmall.copyWith(color: colors.textSecondary),
         ),

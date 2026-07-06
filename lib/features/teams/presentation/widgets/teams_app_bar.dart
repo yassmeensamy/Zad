@@ -25,7 +25,7 @@ class TeamsAppBar extends StatelessWidget {
       // ResponsiveText runs `.tr()`; `team.name` is raw and passes through,
       // the others are translation keys.
       title: hasTeam ? team.name : 'teams.empty.title',
-      subtitle: hasTeam ? 'teams.home.eyebrow' : 'teams.empty.eyebrow',
+      subtitle: hasTeam ? 'teams.home.eyebrow' : null,
       onBack: () => context.canPop()
           ? context.pop()
           : context.goNamed(AppRoutes.homeName),

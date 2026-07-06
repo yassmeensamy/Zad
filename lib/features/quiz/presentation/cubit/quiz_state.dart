@@ -53,7 +53,7 @@ class QuizState {
     this.selectedChoiceId,
     this.round = 1,
     this.firstTryCorrect = 0,
-    this.firstTryCorrectIds = const {},
+    this.answeredCorrectIds = const {},
     this.totalRetries = 0,
     this.points = 0,
     this.motivationalMessageKey,
@@ -78,9 +78,12 @@ class QuizState {
   final int round;
   final int firstTryCorrect;
 
-  /// Question ids the user answered correctly on their first attempt
-  /// (round 1). Used to mark `isCorrect` per question on submission.
-  final Set<int> firstTryCorrectIds;
+  /// Question ids the user has answered correctly in any round. Because the
+  /// quiz makes the user retry every wrong question until it's right, a
+  /// finished quiz has every question here — this is what marks `isCorrect`
+  /// per question on submission. First-try accuracy is tracked separately by
+  /// [firstTryCorrect] for the result screen.
+  final Set<int> answeredCorrectIds;
   final int totalRetries;
 
   /// Accumulated score. 2 points if a question is answered correctly within
@@ -129,7 +132,7 @@ class QuizState {
     int? Function()? selectedChoiceId,
     int? round,
     int? firstTryCorrect,
-    Set<int>? firstTryCorrectIds,
+    Set<int>? answeredCorrectIds,
     int? totalRetries,
     int? points,
     String? Function()? motivationalMessageKey,
@@ -155,7 +158,7 @@ class QuizState {
             : this.selectedChoiceId,
         round: round ?? this.round,
         firstTryCorrect: firstTryCorrect ?? this.firstTryCorrect,
-        firstTryCorrectIds: firstTryCorrectIds ?? this.firstTryCorrectIds,
+        answeredCorrectIds: answeredCorrectIds ?? this.answeredCorrectIds,
         totalRetries: totalRetries ?? this.totalRetries,
         points: points ?? this.points,
         motivationalMessageKey: motivationalMessageKey != null
@@ -189,7 +192,7 @@ class QuizState {
         other.selectedChoiceId == selectedChoiceId &&
         other.round == round &&
         other.firstTryCorrect == firstTryCorrect &&
-        setEquals(other.firstTryCorrectIds, firstTryCorrectIds) &&
+        setEquals(other.answeredCorrectIds, answeredCorrectIds) &&
         other.totalRetries == totalRetries &&
         other.points == points &&
         other.motivationalMessageKey == motivationalMessageKey &&
@@ -215,7 +218,7 @@ class QuizState {
         selectedChoiceId,
         round,
         firstTryCorrect,
-        Object.hashAllUnordered(firstTryCorrectIds),
+        Object.hashAllUnordered(answeredCorrectIds),
         totalRetries,
         points,
         motivationalMessageKey,

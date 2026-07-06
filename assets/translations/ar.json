@@ -1,5 +1,8 @@
 {
   "app_name": "زاد",
+  "about": {
+    "tanbih": "نسأل الله التوفيق والسداد. فإن وجدتم خطأً، فنرجو تنبيهنا وتصحيحه. فما كان من صوابٍ فمن الله وحده، وما كان من خطأٍ فمنَّا ومن الشيطان، والله ورسوله ﷺ بريئان منه. جزاكم الله خيرًا."
+  },
   "update": {
     "title": "يتوفر تحديث",
     "description": "يتوفر إصدار جديد من زاد بتحسينات وإصلاحات. حدّث الآن للحصول على أفضل تجربة.",
@@ -75,6 +78,12 @@
     "gender_label": "الجنس",
     "gender_male": "ذكر",
     "gender_female": "أنثى",
+    "country_label": "الدولة",
+    "country_hint": "اختر دولتك",
+    "country_loading": "جاري تحميل الدول…",
+    "country_search_hint": "ابحث عن دولة",
+    "country_empty": "لا توجد دول",
+    "country_retry": "تعذّر تحميل الدول. اضغط لإعادة المحاولة.",
     "continue": "متابعة",
     "save_failed": "تعذّر حفظ ملفك الشخصي"
   },
@@ -129,7 +138,6 @@
       "next_milestone_value": "{} · أسبوعان"
     },
     "play": {
-      "eyebrow": "اختبر معلوماتك",
       "title_prefix": "ابدأ ",
       "title_accent": "اللعب",
       "subtitle": "اختر فئة وتدرّج في المستويات"
@@ -148,8 +156,8 @@
         "submit": "انضمّ للفريق"
       },
       "joined_eyebrow": "فريقي",
-      "join_title": "امشوا الطريق معًا.",
-      "join_subtitle": "انضمّ إلى فريق لتتنافسوا وترتقوا معًا — أو ابدأ فريقك الخاص.",
+      "join_title": "انضم إلى الفريق لتتنافسوا",
+      "join_subtitle": "امشوا الطريق معًا.",
       "create": "إنشاء",
       "join_with_code": "الانضمام برمز",
       "open": "→ افتح",
@@ -160,7 +168,8 @@
     "quran_sign": {
       "section_title": "آية قرآنية اليوم",
       "view_all": "عرض الكل",
-      "reference_no": "المرجع رقم {}"
+      "reference_no": "المرجع رقم {}",
+      "surah_ayah": "سورة {} · الآية {}"
     },
     "date_ember_cta": "عرض لوحة صدارة التمر والجمر",
     "why_login": {
@@ -188,8 +197,6 @@
     }
   },
   "categories": {
-    "eyebrow": "رحلتك",
-    "title": "الفئات",
     "subtitle": "امضِ على المسار بهدوء — كل خطوة تفتح ما بعدها.",
     "overall": {
       "label": "التقدّم الإجمالي"
@@ -314,7 +321,6 @@
     }
   },
   "profile_select": {
-    "eyebrow": "من معنا اليوم",
     "title_prefix": "من ",
     "title_accent": "يقرأ",
     "subtitle": "اختر ملفك الشخصي لمواصلة الرحلة.",
@@ -346,8 +352,6 @@
       "success": "تم إنشاء حسابك. أهلًا بك!"
     },
     "login_screen": {
-      "welcome_prefix": "حياك الله",
-      "welcome_accent": "",
       "subtitle": "سجّل الدخول لمواصلة رحلتك اليومية.",
       "sign_in": "تسجيل الدخول",
       "new_prompt": "أول مرة في زاد؟ ",
@@ -355,8 +359,6 @@
     },
     "signup_screen": {
       "username_hint": "اسم المستخدم",
-      "headline_prefix": "ابدأ ",
-      "headline_accent": "رحلتك",
       "create_account": "أنشئ حسابًا",
       "have_account_prompt": "لديك حساب؟ ",
       "sign_in": "تسجيل الدخول"
@@ -484,9 +486,12 @@
     "practice": "تمرين",
     "library": "المكتبة",
     "account": "الحساب",
+    "section_preferences": "التفضيلات",
+    "section_library": "مكتبتك",
+    "section_account": "الحساب والدعم",
     "drafts": "المحفوظات",
     "my_children": "الآخرون",
-    "reminders": "التذكيرات",
+    "reminders": "الإشعارات",
     "notifications": "إشعارات التنبيه",
     "language": "اللغة",
     "theme": "المظهر",
@@ -644,7 +649,6 @@
       "subtitle": "جَارٍ تَجْمِيعُ رِفَاقِك"
     },
     "empty": {
-      "eyebrow": "الرفاق",
       "title": "فريقك",
       "title_lede": "لا فريق بعد — ابدؤوا معًا.",
       "hadith_ar": "المؤمن للمؤمن كالبنيان",
@@ -655,7 +659,6 @@
     "create": {
       "title": "إنشاء فريق",
       "step": "الخطوة ١ من ١",
-      "sheet_eyebrow": "الرفاق",
       "sheet_title_lead": "اختار اسم",
       "sheet_title_accent": "فريقك",
       "sheet_title": "اختار اسم فريقك",
@@ -688,7 +691,7 @@
       "eyebrow": "الرفاق",
       "find_circle": "ابحث عن حلقتك",
       "lede_title": "لديك دعوة؟",
-      "lede": "أدخل الرمز المكوّن من ثمانية أحرف الذي شاركه معك قائد الفريق.",
+      "lede": "أدخل الرمز المكوّن من ثمانية أحرف",
       "code_label": "رمز الدعوة",
       "code_hint": "XXXX-XXXX",
       "code_helper": "أو افتح رابط دعوة Zad من أي محادثة — سيُدرج هنا تلقائيًا.",
@@ -723,11 +726,41 @@
       "week_title": "مسار هذا الأسبوع",
       "week_chip": "الإثنين · ٣ متقدّمون",
       "recent": "الأحدث",
+      "leaderboard_title": "متصدرو الفريق",
+      "top_ten": "أفضل ١٠ →",
+      "live_activity": "النشاط المباشر",
+      "member_count": "{count} أعضاء",
+      "global_rank": "الترتيب\nالعالمي",
+      "of_teams": "من {count}",
+      "teams_label": "فريق",
+      "active": "نشط",
+      "copied": "تم النسخ ✓",
+      "member_fallback": "عضو",
+      "you": "أنت",
+      "feed": {
+        "streak_name": "فيصل",
+        "streak_rest": " حقّق سلسلة ٥٠ يومًا 🔥",
+        "streak_meta": "إنجاز · قبل ١٨ دقيقة",
+        "level_name": "عائشة",
+        "level_rest": " أكملت المستوى ٧",
+        "level_meta": "مستوى · قبل ساعة",
+        "quiz_name": "مريم",
+        "quiz_rest": " أجابت عن ٢٠ سؤالًا اليوم",
+        "quiz_meta": "اختبار · قبل ساعتين",
+        "join_name": "حمزة",
+        "join_rest": " انضم إلى الفريق",
+        "join_meta": "عضو جديد · قبل ٥ ساعات"
+      },
       "activity": {
         "completed": "أنهى {name} الفصل {chapter}",
         "streak": "حافظ {name} على عَدّ {days} يومًا",
         "goal": "حدّد {name} هدف هذا الأسبوع"
       }
+    },
+    "activity_status": {
+      "active": "نشط",
+      "consistent": "منتظم",
+      "idle": "خامل"
     },
     "stats": {
       "rank_label": "ترتيبك",
@@ -811,7 +844,6 @@
     }
   },
   "leaderboard": {
-    "eyebrow": "الدوري العالمي",
     "title": "لوحة المتصدرين",
     "empty": "لا توجد تصنيفات بعد.",
     "error": "تعذّر تحميل لوحة المتصدرين.",
@@ -824,7 +856,7 @@
     "name_you": "{name} · أنت",
     "your_rank": "ترتيبك",
     "your_team": "فريقك",
-    "podium": "المنصة",
+    "podium": "منصة المتصدرين",
     "podium_empty": "لا يوجد تقدم للفريق بعد.",
     "no_team": {
       "title": "انضم إلى سباق الفِرق",

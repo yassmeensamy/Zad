@@ -180,8 +180,6 @@ class HomeLoadedContent extends StatelessWidget {
           const SizedBox(height: 26),
           QuranSignCard(sign: sign),
           const SizedBox(height: 14),
-          
-          
           const SizedBox(height: 8),
         ];
 
@@ -239,4 +237,6 @@ const _placeholderSign = QuranSignModel(
   id: 0,
   text: '──────────────────────────────────────────────────────────────',
   referenceNumber: 0,
+  surahName: '────',
+  madaniNumber: 0,
 );

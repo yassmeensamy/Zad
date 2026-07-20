@@ -64,7 +64,7 @@ Future<void> main() async {
 
   runApp(
     RequestsInspector(
-      enabled: true,
+      enabled: false,
       showInspectorOn: ShowInspectorOn.Both,
       child: EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

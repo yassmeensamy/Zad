@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/quiz_scoring.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_submission_response.dart';
 
@@ -14,9 +15,6 @@ enum QuizPhase {
 
 enum SubmissionStatus { idle, submitting, success, error }
 
-/// One past-tense answer the user has already made. Captured as the user
-/// answers each question so they can scroll back through prior questions
-/// (across rounds) in read-only mode.
 class QuizHistoryEntry {
   const QuizHistoryEntry({
     required this.question,
@@ -56,6 +54,8 @@ class QuizState {
     this.answeredCorrectIds = const {},
     this.totalRetries = 0,
     this.points = 0,
+    this.isPerfectRun = true,
+    this.perfectBonusAwarded = false,
     this.motivationalMessageKey,
     this.errorMessage,
     this.startedAt,
@@ -78,48 +78,30 @@ class QuizState {
   final int round;
   final int firstTryCorrect;
 
-  /// Question ids the user has answered correctly in any round. Because the
-  /// quiz makes the user retry every wrong question until it's right, a
-  /// finished quiz has every question here — this is what marks `isCorrect`
-  /// per question on submission. First-try accuracy is tracked separately by
-  /// [firstTryCorrect] for the result screen.
   final Set<int> answeredCorrectIds;
   final int totalRetries;
 
-  /// Accumulated score. 2 points if a question is answered correctly within
-  /// 10 seconds on the first try, 1 point otherwise on the first try, 0 if
-  /// the first attempt is wrong (no points on retries).
-  final int points;
+  final double points;
+
+  final bool isPerfectRun;
+
+  final bool perfectBonusAwarded;
   final String? motivationalMessageKey;
   final String? errorMessage;
 
-  /// Timestamp captured the moment the quiz becomes loaded with the first
-  /// question — i.e. when the user can start answering.
   final DateTime? startedAt;
 
-  /// Timestamp captured every time a new question becomes visible. Used to
-  /// score the answer based on how fast the user reacted.
   final DateTime? questionShownAt;
 
-  /// Total time from [startedAt] to the moment the user reaches the
-  /// finished phase. Set once on transition to [QuizPhase.finished].
   final Duration? elapsed;
 
   final SubmissionStatus submissionStatus;
   final QuizSubmissionResponse? submissionResult;
 
-  /// When true, the quiz is shown read-only with the correct answer revealed
-  /// for every question. Used when revisiting a level the user has already
-  /// completed.
   final bool isReview;
 
-  /// The level being attempted. Captured on load so [QuizCubit.submit] can
-  /// post results back to the right level.
   final int? levelId;
 
-  /// Append-only log of every answer the user has made, in chronological
-  /// order across all rounds. Read by [QuizHistoryCubit] to drive the
-  /// read-only "back" navigation.
   final List<QuizHistoryEntry> history;
 
   QuizState copyWith({
@@ -134,7 +116,9 @@ class QuizState {
     int? firstTryCorrect,
     Set<int>? answeredCorrectIds,
     int? totalRetries,
-    int? points,
+    double? points,
+    bool? isPerfectRun,
+    bool? perfectBonusAwarded,
     String? Function()? motivationalMessageKey,
     String? errorMessage,
     DateTime? Function()? startedAt,
@@ -161,6 +145,8 @@ class QuizState {
         answeredCorrectIds: answeredCorrectIds ?? this.answeredCorrectIds,
         totalRetries: totalRetries ?? this.totalRetries,
         points: points ?? this.points,
+        isPerfectRun: isPerfectRun ?? this.isPerfectRun,
+        perfectBonusAwarded: perfectBonusAwarded ?? this.perfectBonusAwarded,
         motivationalMessageKey: motivationalMessageKey != null
             ? motivationalMessageKey()
             : this.motivationalMessageKey,
@@ -195,6 +181,8 @@ class QuizState {
         setEquals(other.answeredCorrectIds, answeredCorrectIds) &&
         other.totalRetries == totalRetries &&
         other.points == points &&
+        other.isPerfectRun == isPerfectRun &&
+        other.perfectBonusAwarded == perfectBonusAwarded &&
         other.motivationalMessageKey == motivationalMessageKey &&
         other.errorMessage == errorMessage &&
         other.startedAt == startedAt &&
@@ -220,7 +208,7 @@ class QuizState {
         firstTryCorrect,
         Object.hashAllUnordered(answeredCorrectIds),
         totalRetries,
-        points,
+        Object.hash(points, isPerfectRun, perfectBonusAwarded),
         motivationalMessageKey,
         errorMessage,
         Object.hash(startedAt, questionShownAt, elapsed),
@@ -255,13 +243,12 @@ extension QuizStateX on QuizState {
 
   int get totalQuestions => allQuestions.length;
 
-  /// Position within the current round (1-indexed) for the segmented progress.
   int get positionInRound => currentQueue.isEmpty ? 0 : currentIndex + 1;
   int get roundLength => currentQueue.length;
 
-  /// Maximum possible score: 2 points per question (achieved if every
-  /// question is answered correctly within 10 seconds on the first try).
-  int get maxPoints => totalQuestions * 2;
+  double get maxPoints => QuizScoring.maxFor(totalQuestions);
+
+  int get pointsRounded => points.round();
 
   bool get isLastInCurrentRound =>
       currentQueue.isNotEmpty && currentIndex + 1 >= currentQueue.length;

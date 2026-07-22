@@ -6,13 +6,8 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-/// The composed report a user submits about a question: the chosen reason key
-/// plus an optional free-text description.
 typedef QuestionReport = ({String reasonKey, String message});
 
-/// Bottom sheet to report a problem with a question. Collects a reason and an
-/// optional description, then returns them so the caller can open a support
-/// ticket. Returns `null` if dismissed.
 class ReportQuestionSheet extends StatefulWidget {
   const ReportQuestionSheet({super.key});
 

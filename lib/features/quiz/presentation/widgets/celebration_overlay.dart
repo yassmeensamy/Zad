@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
-// Variant implementations and shared particle/painter primitives live in
-// part files to keep this entry point readable.
 part 'celebration/celebration_bloom.dart';
 part 'celebration/celebration_stardust.dart';
 part 'celebration/celebration_crescent.dart';
@@ -15,9 +13,6 @@ part 'celebration/celebration_shooting_star.dart';
 double _interval(double t, double start, double end) =>
     ((t - start) / (end - start)).clamp(0.0, 1.0);
 
-/// Draws a filled five-pointed star centered at [center]. [innerRatio] controls
-/// how deep the valleys cut between points. Shared by the crescent and
-/// shooting-star painters.
 void _drawStar(
   Canvas canvas,
   Offset center,
@@ -58,9 +53,6 @@ class CelebrationOverlay extends StatefulWidget {
   final bool isCorrect;
   final String? messageKey;
 
-  /// When [CelebrationStyle.random], one of bloom/stardust is picked
-  /// deterministically from [trigger] so the same question always shows
-  /// the same variant.
   final CelebrationStyle style;
 
   @override
@@ -143,7 +135,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
 
     _ornamentSpin = (rng.nextDouble() - 0.5) * 0.6;
 
-    // Bloom-only particles.
     if (_effectiveStyle == CelebrationStyle.bloom && widget.isCorrect) {
       _particles = List<_Particle>.generate(8, (i) {
         final angleStep = (2 * pi) / 8;
@@ -160,7 +151,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
       _particles = const [];
     }
 
-    // Stardust sparkles + confetti — only when correct.
     if (_effectiveStyle == CelebrationStyle.stardust && widget.isCorrect) {
       _sparkles = List<_Sparkle>.generate(14, (i) {
         final ringIndex = i % 2;
@@ -193,7 +183,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
       _confetti = const [];
     }
 
-    // Crescent twinkling-star backdrop — only when correct.
     final needsTwinkles = widget.isCorrect &&
         (_effectiveStyle == CelebrationStyle.crescent ||
             _effectiveStyle == CelebrationStyle.shootingStar);
@@ -248,8 +237,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     );
   }
 
-  // ----- Bloom (original) -------------------------------------------------
-
   Widget _buildBloom(
     AppColorsTheme colors,
     Color accent,
@@ -293,15 +280,13 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     );
   }
 
-  // ----- Stardust (new creative) ------------------------------------------
-
   Widget _buildStardust(
     AppColorsTheme colors,
     Color accent,
     Color accentSoft,
   ) {
-    final warmAccent = colors.accent; // amber
-    final warmSoft = colors.accentSoft; // amber soft
+    final warmAccent = colors.accent;
+    final warmSoft = colors.accentSoft;
 
     return Stack(
       alignment: Alignment.center,
@@ -364,20 +349,15 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     );
   }
 
-  // ----- Crescent (moon + star, no checkmark) -----------------------------
-
   Widget _buildCrescent(
     AppColorsTheme colors,
     Color accent,
     Color accentSoft,
   ) {
-    final warmAccent = colors.accent; // amber
+    final warmAccent = colors.accent;
     final warmDeep = colors.accentDeep;
     final warmSoft = colors.accentSoft;
 
-    // For correct, lead with warm amber (the "moon" is gold). Olive
-    // becomes the supporting accent. For wrong, fall back to the
-    // error-tinted accent passed in.
     final primary = widget.isCorrect ? warmAccent : accent;
     final secondary = widget.isCorrect ? warmDeep : accentSoft;
 
@@ -448,8 +428,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     );
   }
 
-  // ----- Shooting Star (diagonal streak + landing flash) ------------------
-
   Widget _buildShootingStar(
     AppColorsTheme colors,
     Color accent,
@@ -461,9 +439,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
     final primary = widget.isCorrect ? warmAccent : accent;
     final secondary = widget.isCorrect ? warmDeep : accentSoft;
 
-    // Deterministic streak direction — pulled from the trigger seed so the
-    // same question always comes in from the same diagonal.
-    final fromAngle = -pi * 3 / 4 + _ornamentSpin * 0.6; // upper-left-ish
+    final fromAngle = -pi * 3 / 4 + _ornamentSpin * 0.6;
 
     return Stack(
       alignment: Alignment.center,
@@ -473,7 +449,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           inner: primary,
           outer: widget.isCorrect ? warmAccent : accentSoft,
         ),
-        // Faint background twinkles set the night-sky stage.
         for (final tw in _twinkles)
           _TwinkleView(
             animation: _ctrl,
@@ -481,10 +456,8 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             warm: warmAccent,
             cool: accent,
           ),
-        // Flash burst on impact.
         if (widget.isCorrect)
           _FlashBurst(animation: _ctrl, color: warmAccent),
-        // Two pulse rings rippling outward from the landing point.
         _PulseRing(
           animation: _ctrl,
           startDelay: 0.32,
@@ -495,7 +468,6 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
           startDelay: 0.44,
           accent: warmAccent,
         ),
-        // Sharp radiating sparks at the moment of impact.
         if (widget.isCorrect)
           _ImpactSparks(animation: _ctrl, color: warmAccent),
         _ShootingStarBadge(

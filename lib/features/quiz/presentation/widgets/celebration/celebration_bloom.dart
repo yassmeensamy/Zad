@@ -1,9 +1,5 @@
 part of '../celebration_overlay.dart';
 
-// ===========================================================================
-// Shared data
-// ===========================================================================
-
 class _Particle {
   const _Particle({
     required this.angle,
@@ -65,10 +61,6 @@ class _Confetti {
   final double delay;
   final int tone;
 }
-
-// ===========================================================================
-// Bloom variant pieces (kept intact)
-// ===========================================================================
 
 class _ParticleView extends StatelessWidget {
   const _ParticleView({
@@ -428,9 +420,6 @@ class _FadeSlideUp extends StatelessWidget {
   }
 }
 
-/// Soft radial "glow plate" that fades in behind celebration text to lift it
-/// off the busy backdrop. Shared by the bloom and stardust message blocks.
-/// Returns an empty box until [progress] crosses the visibility threshold.
 class _TextGlowPlate extends StatelessWidget {
   const _TextGlowPlate({
     required this.progress,

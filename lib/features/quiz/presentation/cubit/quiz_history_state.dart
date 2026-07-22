@@ -1,8 +1,6 @@
 class QuizHistoryState {
   const QuizHistoryState({this.viewingIndex});
 
-  /// When non-null, the user is viewing a past entry from
-  /// [QuizState.history] in read-only mode.
   final int? viewingIndex;
 
   bool get isViewing => viewingIndex != null;

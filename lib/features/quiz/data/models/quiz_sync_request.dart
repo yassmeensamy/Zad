@@ -2,9 +2,6 @@ import 'dart:convert';
 
 import 'quiz_submission_request.dart';
 
-/// One finished level attempt inside a batch [QuizSyncRequest]. Unlike the
-/// per-level submit endpoint, the level id travels in the body here because the
-/// whole queue is flushed in a single call.
 class QuizLevelSubmission {
   const QuizLevelSubmission({
     required this.levelId,
@@ -23,8 +20,6 @@ class QuizLevelSubmission {
       };
 }
 
-/// Request body for `POST /api/quiz/sync` — replays every offline-played level
-/// attempt in one batch when connectivity is regained.
 class QuizSyncRequest {
   const QuizSyncRequest({required this.submissions});
 

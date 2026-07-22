@@ -11,17 +11,12 @@ import '../remote/quiz_remote_data_source.dart';
 abstract class QuizRepository {
   Future<QuizQuestionsResponse> getQuestions(int levelId);
 
-  /// Submits a finished level attempt. [selectedAnswers] carries the user's
-  /// chosen choice per question so an offline attempt can be persisted with the
-  /// full `{questionId, selectedAnswer}` record (the batch [request] only knows
-  /// correctness). Online behaviour is unchanged.
   Future<QuizSubmissionResponse> submitQuiz(
     int levelId,
     QuizSubmissionRequest request, {
     List<PendingAnswerInput>? selectedAnswers,
   });
 
-  /// Resets all of the current user's quiz progress.
   Future<void> resetAll();
 }
 
@@ -50,8 +45,6 @@ class QuizRepositoryImpl implements QuizRepository {
         final local = await _contentDao.getDownloadedQuestions(levelId);
         if (local != null) return local;
       }
-      // Not downloaded (or a real server error): surface the original failure
-      // so the quiz screen shows its normal load-error with retry.
       rethrow;
     }
   }
@@ -94,11 +87,6 @@ class QuizRepositoryImpl implements QuizRepository {
     );
   }
 
-  /// Builds the result the finish screen needs from data already computed
-  /// client-side, so an offline attempt flows through the UI identically.
-  /// `passed` uses the downloaded level's passing grade; `nextLevelUnlocked`
-  /// and `totalPoints` are honest "unknown offline" defaults that the real
-  /// values replace once the attempt syncs.
   Future<QuizSubmissionResponse> _syntheticResponse(
     int levelId,
     QuizSubmissionRequest request,

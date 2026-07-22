@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/theme.dart';
 
-/// Slim segmented progress dots showing position within the current round.
-/// Shows no round number, no point counter — keeps the screen calm.
 class QuizProgressBar extends StatelessWidget {
   const QuizProgressBar({
     super.key,

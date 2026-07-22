@@ -1,9 +1,5 @@
 part of '../celebration_overlay.dart';
 
-// ===========================================================================
-// Crescent variant pieces
-// ===========================================================================
-
 class _Twinkle {
   const _Twinkle({
     required this.angle,
@@ -45,7 +41,6 @@ class _TwinkleView extends StatelessWidget {
             ((t - twinkle.delay) / (1 - twinkle.delay)).clamp(0.0, 1.0);
         if (adjusted <= 0) return const SizedBox.shrink();
 
-        // Two slow twinkle cycles over the visible window.
         final twinkleWave =
             0.5 + 0.5 * sin(twinkle.phase + adjusted * pi * 3.2);
         final fadeIn = (adjusted / 0.18).clamp(0.0, 1.0);
@@ -157,7 +152,6 @@ class _OrbitDotsPainter extends CustomPainter {
       final a = (i / dotCount) * 2 * pi;
       final x = cx + cos(a) * radius;
       final y = cy + sin(a) * radius;
-      // Every 4th dot is larger — gives rotation a visible cadence.
       final s = (i % 4 == 0 ? dotSize * 1.7 : dotSize * 0.75) * appear;
       canvas.drawCircle(Offset(x, y), s, paint);
     }
@@ -192,7 +186,6 @@ class _MoonBadge extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         final t = animation.value;
-        // Moonrise: enter from below, then settle.
         final rise = Curves.easeOutCubic.transform(_interval(t, 0.0, 0.40));
         final pop = Curves.easeOutBack.transform(_interval(t, 0.10, 0.50));
         final fadeIn = _interval(t, 0.0, 0.30);
@@ -296,7 +289,6 @@ class _CrescentPainter extends CustomPainter {
     final cy = size.height / 2;
     final r = size.width * 0.36;
 
-    // Build the crescent by subtracting an offset inner disk from the outer.
     final outer = Path()
       ..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
     final inner = Path()
@@ -316,7 +308,6 @@ class _CrescentPainter extends CustomPainter {
     final paint = Paint()..shader = shader;
     canvas.drawPath(crescent, paint);
 
-    // Small companion star next to the crescent opening.
     final starCenter = Offset(cx + r * 0.92, cy - r * 0.50);
     final starR = r * 0.22;
     _drawStar(canvas, starCenter, starR, paint, innerRatio: 0.46);

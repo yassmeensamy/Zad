@@ -25,8 +25,6 @@ class QuestionModel {
 
   bool isCorrect(int choiceIndex) => choiceIndex == correctIndex;
 
-  /// True when the question carries either an explanation paragraph or a
-  /// source citation worth surfacing to the user.
   bool get hasFeedback =>
       (explanation != null && explanation!.isNotEmpty) ||
       (source != null && source!.isNotEmpty);

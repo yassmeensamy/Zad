@@ -1,3 +1,4 @@
+import '../../../../core/constants/quiz_points.dart';
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
@@ -6,6 +7,7 @@ import '../../../support_tickets/data/models/support_topic_enum.dart';
 import '../../../support_tickets/data/repositories/support_tickets_repository.dart';
 import '../../../offline/data/models/pending_answer_input.dart';
 import '../../core/quiz_event_service.dart';
+import '../../core/quiz_scoring.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/quiz_submission_request.dart';
 import '../../data/repositories/quiz_repository.dart';
@@ -25,10 +27,6 @@ class QuizCubit extends BaseCubit<QuizState> {
         _now = now,
         _messages = messages ?? MotivationalMessages(),
         super(const QuizState());
-
-  /// Answer faster than this on the first try and the question scores 2 pts;
-  /// slower (still on the first try) scores 1 pt.
-  static const _fastAnswerThreshold = Duration(seconds: 10);
 
   final QuizRepository _quizRepository;
   final QuizEventService _events;
@@ -81,8 +79,6 @@ class QuizCubit extends BaseCubit<QuizState> {
     }
   }
 
-  /// Step backward through the review-mode question list. No-op for active
-  /// play; that path goes through [QuizHistoryCubit].
   void reviewBack() {
     if (!state.isReview) return;
     if (state.currentIndex > 0) {
@@ -95,10 +91,6 @@ class QuizCubit extends BaseCubit<QuizState> {
     emit(_buildLoadedState(state.allQuestions, review: false));
   }
 
-  /// Reports a problem with [questionId] by opening a support ticket under the
-  /// TECHNICAL topic (there is no dedicated report endpoint). [title]/[body]
-  /// come from the report form. Returns `true` on success so the screen can
-  /// show the matching confirmation or error.
   Future<bool> reportQuestion({
     required int questionId,
     required String title,
@@ -123,15 +115,12 @@ class QuizCubit extends BaseCubit<QuizState> {
     }
   }
 
-  /// Submits the quiz attempt to the server. Triggered automatically when
-  /// the user reaches [QuizPhase.finished], and can be re-invoked from the
-  /// UI to retry on failure.
   Future<void> submit() async {
     final levelId = state.levelId;
     if (levelId == null || state.isSubmitting) return;
 
     final request = QuizSubmissionRequest(
-      pointsEarned: state.points,
+      pointsEarned: state.pointsRounded,
       answers: [
         for (final q in state.allQuestions)
           QuizAnswerSubmission(
@@ -141,9 +130,6 @@ class QuizCubit extends BaseCubit<QuizState> {
       ],
     );
 
-    // The chosen choice per question (first-round answer), used only when the
-    // submission has to be persisted offline so the stored record keeps the
-    // actual selected answer alongside its correctness.
     final firstRoundChoice = <int, int>{};
     for (final entry in state.history) {
       if (entry.round == 1) {
@@ -185,22 +171,37 @@ class QuizCubit extends BaseCubit<QuizState> {
 
   void _emitCorrect(int choiceId, QuestionModel question) {
     final isFirstTry = state.round == 1;
-    final pointsEarned = isFirstTry ? _scoreFor(_elapsedSinceShown()) : 0;
+    final elapsed = _elapsedSinceShown();
+    final earned = QuizScoring.correct(round: state.round, elapsed: elapsed);
+    final firstTryCorrect =
+        isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect;
+
+    final stillPerfect =
+        state.isPerfectRun && isFirstTry && QuizScoring.isFast(elapsed);
+
+    final isAttemptComplete =
+        state.isLastInCurrentRound && state.retryQueue.isEmpty;
+    final earnsBonus = isAttemptComplete &&
+        stillPerfect &&
+        firstTryCorrect == state.totalQuestions;
 
     emit(state.copyWith(
       phase: QuizPhase.answeredCorrect,
       selectedChoiceId: () => choiceId,
-      firstTryCorrect:
-          isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect,
-      // Marks the question correct for submission regardless of the round it
-      // was solved in — a retry that lands right still counts as correct.
+      firstTryCorrect: firstTryCorrect,
       answeredCorrectIds: {...state.answeredCorrectIds, question.id},
-      points: state.points + pointsEarned,
+      points: QuizScoring.floor(
+        state.points +
+            earned +
+            (earnsBonus ? QuizPoints.perfectRunBonus : QuizPoints.none),
+      ),
+      isPerfectRun: stillPerfect,
+      perfectBonusAwarded: earnsBonus,
       motivationalMessageKey: () => _messages.randomCorrect(),
       history: _appendHistory(question, choiceId),
     ));
 
-    if (state.isLastInCurrentRound && state.retryQueue.isEmpty) {
+    if (isAttemptComplete) {
       submit();
     }
   }
@@ -211,6 +212,8 @@ class QuizCubit extends BaseCubit<QuizState> {
       selectedChoiceId: () => choiceId,
       retryQueue: [...state.retryQueue, question],
       totalRetries: state.totalRetries + 1,
+      points: QuizScoring.floor(state.points - QuizPoints.wrongPenalty),
+      isPerfectRun: false,
       motivationalMessageKey: () => _messages.randomWrong(),
       history: _appendHistory(question, choiceId),
     ));
@@ -274,12 +277,6 @@ class QuizCubit extends BaseCubit<QuizState> {
     return shownAt == null ? Duration.zero : _now().difference(shownAt);
   }
 
-  int _scoreFor(Duration elapsed) =>
-      elapsed < _fastAnswerThreshold ? 2 : 1;
-
-  /// Builds the loaded state for both fresh and review runs. Review mode
-  /// skips the timer/scoring fields since the user is just walking through
-  /// previously-completed questions.
   QuizState _buildLoadedState(
     List<QuestionModel> questions, {
     required bool review,

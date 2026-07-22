@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import '../../../../theme/theme.dart';
 import '../../../levels/data/models/level_model.dart';
 import '../../../levels/presentation/screens/celebration.dart';
+import '../../../../core/constants/quiz_points.dart';
 
-/// Quiz result — the **Level Complete** celebration, driven entirely by the
-/// finished [QuizState] values forwarded from `QuizScreen`. No mock data: the
-/// eyebrow, stats, accuracy and XP are all derived from the real attempt.
 class ResultView extends StatelessWidget {
   const ResultView({
     super.key,
@@ -19,32 +17,26 @@ class ResultView extends StatelessWidget {
     this.elapsed,
     this.motivationalKey,
     this.level,
+    this.perfectBonusAwarded = false,
   });
 
-  /// XP earned this attempt.
-  final int points;
+  final double points;
 
-  /// Total questions in the level.
   final int questionsCompleted;
 
-  /// Number of retries across the attempt.
   final int totalRetries;
 
-  /// Primary action — leaves the result.
   final VoidCallback onDone;
 
-  /// Questions answered correctly on the first try. Falls back to
-  /// `questionsCompleted - totalRetries` when not provided.
   final int? firstTryCorrect;
 
-  /// Total attempt time. Hidden (shown as `—`) when null.
   final Duration? elapsed;
 
-  /// Localisation key for the closing line under the title.
   final String? motivationalKey;
 
-  /// The completed level — drives the eyebrow ("Level N · Complete").
   final LevelModel? level;
+
+  final bool perfectBonusAwarded;
 
   int get _correct {
     final c = firstTryCorrect ?? (questionsCompleted - totalRetries);
@@ -79,6 +71,7 @@ class ResultView extends StatelessWidget {
         correct: correct,
         total: total,
         closing: (motivationalKey ?? 'quiz.result.closing').tr(),
+        perfectBonusAwarded: perfectBonusAwarded,
       ),
       stats: [
         CelebrationStat(
@@ -97,36 +90,37 @@ class ResultView extends StatelessWidget {
           fire: accuracy >= 100,
         ),
       ],
-      xp: points,
+      xp: points.round(),
       continueLabel: 'quiz.result.continue'.tr(),
       onContinue: onDone,
     );
   }
 }
 
-/// The supporting line: "You answered **C / T** — closing". The score is
-/// emphasised in bright ivory against the muted subtitle ink.
 class _Subtitle extends StatelessWidget {
   const _Subtitle({
     required this.correct,
     required this.total,
     required this.closing,
+    required this.perfectBonusAwarded,
   });
 
   final int correct;
   final int total;
   final String closing;
+  final bool perfectBonusAwarded;
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
+    final colors = context.appColors;
+    final line = Text.rich(
       TextSpan(
         children: [
           TextSpan(text: '${'quiz.result.answered_prefix'.tr()} '),
           TextSpan(
             text: '$correct / $total',
             style: TextStyle(
-              color: context.appColors.textPrimary,
+              color: colors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -134,6 +128,26 @@ class _Subtitle extends StatelessWidget {
         ],
       ),
       textAlign: TextAlign.center,
+    );
+
+    if (!perfectBonusAwarded) return line;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        line,
+        const SizedBox(height: 6),
+        Text(
+          'quiz.result.perfect_bonus'.tr(
+            args: ['${QuizPoints.perfectRunBonus.round()}'],
+          ),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: colors.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }

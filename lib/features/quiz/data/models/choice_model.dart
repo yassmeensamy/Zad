@@ -3,7 +3,6 @@ import 'dart:convert';
 class ChoiceModel {
   const ChoiceModel({required this.index, required this.text});
 
-  /// Server-assigned position of this choice within the question.
   final int index;
   final String text;
 

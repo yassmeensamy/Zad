@@ -12,8 +12,6 @@ import 'package:my_app/features/support_tickets/data/models/create_ticket_reques
 import 'package:my_app/features/support_tickets/data/models/ticket_model.dart';
 import 'package:my_app/features/support_tickets/data/repositories/support_tickets_repository.dart';
 
-/// Captures the submission so the test can assert the exact per-question
-/// correctness that reaches the backend.
 class _CapturingQuizRepository implements QuizRepository {
   _CapturingQuizRepository(this._questions);
 
@@ -88,16 +86,14 @@ void main() {
 
       await cubit.loadQuiz(1);
 
-      // Round 1: Q101 correct, Q102 wrong, Q103 correct.
-      cubit.selectAnswer(0); // Q101 correct
+      cubit.selectAnswer(0);
       cubit.next();
-      cubit.selectAnswer(1); // Q102 wrong -> retry queue
+      cubit.selectAnswer(1);
       cubit.next();
-      cubit.selectAnswer(0); // Q103 correct (last, but retry pending)
+      cubit.selectAnswer(0);
       cubit.next();
 
-      // Retry round: Q102 answered correctly now (round 2).
-      cubit.selectAnswer(0); // fixes Q102 -> auto-submit fires
+      cubit.selectAnswer(0);
       await Future<void>.delayed(Duration.zero);
 
       final answers = {

@@ -41,7 +41,7 @@ A focused, satisfying learning loop designed to keep users coming back.
 - Play a quiz by answering questions **one at a time**, each with four answer choices.
 - Get **instant feedback** on every answer, including a clear **explanation and source**.
 - **Smart retry:** any question you get wrong comes back around until you answer it correctly — so learning actually sticks.
-- **Earn points** as you go: the faster you answer correctly, the more points you earn.
+- **Earn points** as you go — right the first time, the faster the better: under 10s scores 3 points, under 20s scores 2, slower scores 1. Fixing it on the 2nd try is worth 1 point and the 3rd try half a point; every wrong answer costs a point. Answer every question right the first time, all under 10 seconds, for a **5-point perfect-run bonus**.
 - **Celebrations** appear when you do well — rewarding moments that make progress feel great.
 - **Review mode:** revisit any completed level with all the correct answers revealed.
 - **Save a question** to your personal collection with your own note.

@@ -1,10 +1,5 @@
 part of '../celebration_overlay.dart';
 
-// ===========================================================================
-// Shooting Star variant pieces
-// ===========================================================================
-
-/// Bright circular flash that pops on the star's impact at center.
 class _FlashBurst extends StatelessWidget {
   const _FlashBurst({required this.animation, required this.color});
 
@@ -17,12 +12,10 @@ class _FlashBurst extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         final t = animation.value;
-        // Flash centered on the moment the star lands (~0.34).
         final progress = _interval(t, 0.26, 0.64);
         if (progress <= 0 || progress >= 1) return const SizedBox.shrink();
         final eased = Curves.easeOutCubic.transform(progress);
         final size = 70 + eased * 210;
-        // Bright at start, fades fast.
         final opacity = ((1 - progress) * (1 - progress) * 1.15).clamp(0.0, 1.0);
         return Container(
           width: size,
@@ -67,9 +60,7 @@ class _ShootingStarBadge extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         final t = animation.value;
-        // Flight from off-screen toward the center, decelerating.
         final flight = Curves.easeOutCubic.transform(_interval(t, 0.0, 0.36));
-        // Pop on landing.
         final pop = Curves.easeOutBack.transform(_interval(t, 0.30, 0.58));
         final settle = isCorrect
             ? sin(_interval(t, 0.55, 0.95) * pi) * 0.06
@@ -77,7 +68,6 @@ class _ShootingStarBadge extends StatelessWidget {
         final shakeT = isCorrect ? 0.0 : _interval(t, 0.36, 0.70);
         final shake = sin(shakeT * pi * 4) * (1 - shakeT) * 6;
 
-        // Position: starts ~180px away along fromAngle, lands at 0,0.
         const flightDistance = 180.0;
         final remaining = 1 - flight;
         final dx = cos(fromAngle) * flightDistance * remaining;
@@ -137,7 +127,6 @@ class _ShootingStarPainter extends CustomPainter {
     final cy = size.height / 2;
     final center = Offset(cx, cy);
 
-    // Trail: a tapered streak pointing back along fromAngle.
     if (trailOpacity > 0.02 && trailLength > 2) {
       final tailEnd = Offset(
         cx + cos(fromAngle) * trailLength,
@@ -145,7 +134,6 @@ class _ShootingStarPainter extends CustomPainter {
       );
       final trailRect = Rect.fromPoints(tailEnd, center);
 
-      // Outer wide glow stripe.
       final glowPaint = Paint()
         ..shader = LinearGradient(
           begin: Alignment.centerLeft,
@@ -161,7 +149,6 @@ class _ShootingStarPainter extends CustomPainter {
         ..strokeWidth = 20;
       canvas.drawLine(tailEnd, center, glowPaint);
 
-      // Bright core stripe.
       final corePaint = Paint()
         ..shader = LinearGradient(
           begin: Alignment.centerLeft,
@@ -178,7 +165,6 @@ class _ShootingStarPainter extends CustomPainter {
       canvas.drawLine(tailEnd, center, corePaint);
     }
 
-    // Soft halo behind the star (grows once landed).
     if (glowOpacity > 0.02) {
       final haloPaint = Paint()
         ..shader = RadialGradient(
@@ -190,7 +176,6 @@ class _ShootingStarPainter extends CustomPainter {
       canvas.drawCircle(center, 60, haloPaint);
     }
 
-    // The star itself — gradient gold with a bright inner highlight.
     const outerR = 32.0;
     final starShader = RadialGradient(
       colors: [highlight, primary, secondary],
@@ -199,7 +184,6 @@ class _ShootingStarPainter extends CustomPainter {
     _drawStar(canvas, center, outerR, Paint()..shader = starShader,
         innerRatio: 0.42);
 
-    // Small specular highlight near the upper-left of the star.
     final highlightPaint = Paint()
       ..color = highlight.withValues(alpha: 0.9);
     canvas.drawCircle(
@@ -219,9 +203,6 @@ class _ShootingStarPainter extends CustomPainter {
       old.glowOpacity != glowOpacity;
 }
 
-/// A single centered radial flare that pops at the moment the star lands.
-/// Uses a positioned-absolute layout so it is rigidly anchored to the
-/// exact center of the overlay, never offset by sibling layout flow.
 class _ImpactSparks extends StatelessWidget {
   const _ImpactSparks({required this.animation, required this.color});
 
@@ -244,7 +225,7 @@ class _ImpactSparks extends StatelessWidget {
               }
               final eased = Curves.easeOutCubic.transform(progress);
               final fade = (1 - progress).clamp(0.0, 1.0);
-              final size = 38 + eased * 32; // 38 → 70 px, tight
+              final size = 38 + eased * 32;
               return Opacity(
                 opacity: fade,
                 child: Icon(

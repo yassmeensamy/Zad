@@ -50,8 +50,6 @@ class QuizActionBar extends StatelessWidget {
               onTap: canAct ? onSave : null,
             ),
             const SizedBox(width: 8),
-            // Reporting is always available — a question can be flagged
-            // even before it's answered.
             _IconAction(
               icon: Icons.flag_outlined,
               tooltipKey: 'quiz.actions.report',

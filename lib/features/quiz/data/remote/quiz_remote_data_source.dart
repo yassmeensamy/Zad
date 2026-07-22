@@ -13,10 +13,8 @@ abstract class QuizRemoteDataSource {
     QuizSubmissionRequest request,
   );
 
-  /// Flushes the whole offline answer queue in one batch call.
   Future<QuizSyncResponse> syncQuiz(QuizSyncRequest request);
 
-  /// Resets all of the current user's quiz progress.
   Future<void> resetAll();
 }
 

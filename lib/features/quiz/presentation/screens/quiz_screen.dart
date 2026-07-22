@@ -31,8 +31,6 @@ import '../widgets/quiz_progress_bar.dart';
 import '../widgets/report_question_sheet.dart';
 import '../widgets/result_view.dart';
 
-/// Quiz app-bar title: smaller than the default and allowed to wrap to two
-/// lines so long level titles stay readable instead of truncating early.
 const TextStyle _quizAppBarTitleStyle = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w500,
@@ -69,9 +67,6 @@ class QuizScreen extends StatelessWidget {
   }
 }
 
-/// Loads the quiz, then loads the user's drafts when at least one question
-/// is already drafted server-side. The drafts list is read directly off
-/// [DraftsCubit] from the screen — no manual sync into [QuizCubit].
 class _QuizBootstrap extends StatefulWidget {
   const _QuizBootstrap({
     required this.levelId,
@@ -163,8 +158,6 @@ class _QuizView extends StatelessWidget {
               });
               return _LoadingView(level: level);
             }
-            // The attempt couldn't be saved — surface it and let the user
-            // retry instead of silently showing a "passed" result.
             if (state.isSubmissionError) {
               return Column(
                 children: [
@@ -191,6 +184,7 @@ class _QuizView extends StatelessWidget {
               elapsed: state.elapsed,
               motivationalKey: state.motivationalMessageKey,
               level: level,
+              perfectBonusAwarded: state.perfectBonusAwarded,
               onDone: () => _exit(context),
             );
           }
@@ -341,8 +335,6 @@ class _ActiveView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  // Only surfaces once there's an earlier question to return
-                  // to — hidden entirely on the first question.
                   if (canGoPrevious) ...[
                     _PreviousQuestionButton(onTap: onPrevious),
                     const SizedBox(height: 6),
@@ -460,7 +452,6 @@ class _ActiveView extends StatelessWidget {
     return AnswerChoiceVisualState.revealedMuted;
   }
 
-
   Future<void> _onSave(BuildContext context, int questionId) async {
     final draftsCubit = context.read<DraftsCubit>();
     if (draftsCubit.state.isCrudLoading) return;
@@ -486,7 +477,6 @@ class _ActiveView extends StatelessWidget {
   Future<void> _onReport(BuildContext context, int questionId) async {
     final report = await ReportQuestionSheet.show(context);
     if (report == null || !context.mounted) return;
-    // Reports become TECHNICAL support tickets — there is no report endpoint.
     final reasonLabel = report.reasonKey.tr();
     final ok = await context.read<QuizCubit>().reportQuestion(
           questionId: questionId,
@@ -502,7 +492,6 @@ class _ActiveView extends StatelessWidget {
   }
 
   Future<void> _confirmExit(BuildContext context) async {
-    // Review mode has no in-progress attempt to lose — exit immediately.
     if (state.isReview) {
       if (context.canPop()) context.pop();
       return;

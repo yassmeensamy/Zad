@@ -1,9 +1,5 @@
 part of '../celebration_overlay.dart';
 
-// ===========================================================================
-// Stardust variant pieces
-// ===========================================================================
-
 class _AuroraHalo extends StatelessWidget {
   const _AuroraHalo({
     required this.animation,
@@ -104,7 +100,6 @@ class _OrnamentPainter extends CustomPainter {
     final cy = size.height / 2;
     final r = size.width / 2 - 4;
 
-    // 8-point star: two squares rotated 45° from each other.
     for (var sq = 0; sq < 2; sq++) {
       final baseAngle = sq * pi / 4 - pi / 4;
       final path = Path();
@@ -122,10 +117,8 @@ class _OrnamentPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    // Inner circle.
     canvas.drawCircle(Offset(cx, cy), r * 0.46, paint);
 
-    // Tiny corner dots between the star tips.
     final dotPaint = Paint()
       ..color = color.withValues(alpha: opacity * 1.4)
       ..style = PaintingStyle.fill;
@@ -348,7 +341,6 @@ class _ConfettiView extends StatelessWidget {
             ((progress - confetti.delay) / (1 - confetti.delay)).clamp(0.0, 1.0);
         if (adjusted <= 0) return const SizedBox.shrink();
 
-        // Burst out first, then drift down.
         final burstEased = Curves.easeOutCubic.transform(
           (adjusted / 0.35).clamp(0.0, 1.0),
         );
@@ -502,14 +494,12 @@ class _StardustMessage extends StatelessWidget {
         final subEased =
             Curves.easeOutCubic.transform(_interval(t, 0.42, 0.66));
 
-        // Text glow plate gently fades in to lift letters off the busy backdrop.
         final plateProgress =
             Curves.easeOutCubic.transform(_interval(t, 0.14, 0.40));
 
         return Stack(
           alignment: Alignment.topCenter,
           children: [
-            // Soft luminous plate behind the text.
             _TextGlowPlate(progress: plateProgress, canvas: canvas),
             Column(
               mainAxisSize: MainAxisSize.min,

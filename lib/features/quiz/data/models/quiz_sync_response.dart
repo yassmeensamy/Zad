@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-/// Per-level outcome inside a [QuizSyncResponse]. `skippedLocked` flags an
-/// attempt the server ignored because the level was not unlocked for the user.
 class QuizSyncLevelResult {
   const QuizSyncLevelResult({
     required this.levelId,
@@ -39,7 +37,6 @@ class QuizSyncLevelResult {
       );
 }
 
-/// Response body for `POST /api/quiz/sync`.
 class QuizSyncResponse {
   const QuizSyncResponse({
     required this.userId,

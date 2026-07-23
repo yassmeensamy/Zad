@@ -2,12 +2,11 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
-import '../../../../core/widgets/error_state.dart';
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -21,14 +20,12 @@ import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
-import '../../data/models/quran_sign_model.dart';
-import '../cubit/quran_sign_cubit.dart';
-import '../cubit/quran_sign_state.dart';
+import '../../../quran_sign/presentation/cubit/quran_sign_cubit.dart';
+import '../../../quran_sign/presentation/widgets/quran_sign_card.dart';
 import '../widgets/home_backdrop_pattern.dart';
 import '../widgets/home_header.dart';
 import '../widgets/home_streak_section.dart';
 import '../widgets/home_team_section.dart';
-import '../widgets/quran_sign_card.dart';
 import '../widgets/home_why_login_section.dart';
 import '../widgets/play_card.dart';
 
@@ -65,46 +62,27 @@ class HomeScreen extends StatelessWidget {
 class _HomeView extends StatelessWidget {
   const _HomeView();
 
+  Future<void> _refreshAll(BuildContext context) async {
+    await Future.wait([
+      context.read<QuranSignCubit>().load(refresh: true),
+      context.read<StreakCubit>().load(refresh: true),
+      context.read<QuizStatsCubit>().refresh(),
+      context.read<TeamsCubit>().loadTeamProgress(),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-
-    final content = SafeArea(
-      bottom: false,
-      child: BlocBuilder<QuranSignCubit, QuranSignState>(
-        buildWhen: (a, b) => a.status != b.status || a.sign != b.sign,
-        builder: (context, state) {
-          if (state.isError && !state.hasSign) {
-            return ErrorState(
-              message: state.errorMessage ?? 'home.load_failed'.tr(),
-              onRetry: () => context.read<QuranSignCubit>().load(),
-            );
-          }
-          final showSkeleton =
-              state.isInitial || state.isLoading || !state.hasSign;
-          final sign = state.sign ?? _placeholderSign;
-          return RefreshIndicator(
-            color: colors.olive,
-            onRefresh: () async {
-              await Future.wait([
-                context.read<QuranSignCubit>().load(refresh: true),
-                context.read<StreakCubit>().load(refresh: true),
-                context.read<QuizStatsCubit>().refresh(),
-                context.read<TeamsCubit>().loadTeamProgress(),
-              ]);
-            },
-            child: Skeletonizer(
-              enabled: showSkeleton,
-              child: HomeLoadedContent(sign: sign),
-            ),
-          );
-        },
-      ),
-    );
-
     return LightModeBackdrop(
       backdrop: const HomeBackdropPattern(),
-      child: content,
+      child: SafeArea(
+        bottom: false,
+        child: RefreshIndicator(
+          color: context.appColors.olive,
+          onRefresh: () => _refreshAll(context),
+          child: const HomeLoadedContent(),
+        ),
+      ),
     );
   }
 }
@@ -112,9 +90,7 @@ class _HomeView extends StatelessWidget {
 const double _kGutter = 24;
 
 class HomeLoadedContent extends StatelessWidget {
-  const HomeLoadedContent({required this.sign, super.key});
-
-  final QuranSignModel sign;
+  const HomeLoadedContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +108,7 @@ class HomeLoadedContent extends StatelessWidget {
                   final streakDays =
                       context.watch<StreakCubit>().state.streakDays;
                   return HomeHeader(
-                    firstName: _firstName(
+                    firstName: firstNameOf(
                       user?.fullName,
                       fallback: 'home.fallback_name'.tr(),
                     ),
@@ -168,7 +144,7 @@ class HomeLoadedContent extends StatelessWidget {
             const HomeTeamSection(),
             const SizedBox(height: 26),
             ResponsiveText(
-              'home.team.week_stats_title'.tr(),
+              'home.team.week_stats_title',
               style: context.textTheme.titleMedium?.copyWith(
                 color: context.appColors.textPrimary,
                 fontWeight: FontWeight.w700,
@@ -178,7 +154,7 @@ class HomeLoadedContent extends StatelessWidget {
             const TeamWeekStats(),
           ],
           const SizedBox(height: 26),
-          QuranSignCard(sign: sign),
+          const QuranSignCard(),
           const SizedBox(height: 14),
           const SizedBox(height: 8),
         ];
@@ -203,13 +179,6 @@ class HomeLoadedContent extends StatelessWidget {
     );
   }
 
-  
-  static String _firstName(String? fullName, {required String fallback}) {
-    final trimmed = fullName?.trim() ?? '';
-    if (trimmed.isEmpty) return fallback;
-    return trimmed.split(RegExp(r'\s+')).first;
-  }
-
   static VoidCallback? _celebrationTrigger(
     BuildContext context, {
     required UserModel? user,
@@ -232,11 +201,3 @@ class HomeLoadedContent extends StatelessWidget {
     );
   }
 }
-
-const _placeholderSign = QuranSignModel(
-  id: 0,
-  text: '──────────────────────────────────────────────────────────────',
-  referenceNumber: 0,
-  surahName: '────',
-  madaniNumber: 0,
-);

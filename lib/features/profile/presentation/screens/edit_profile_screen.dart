@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
+import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -11,6 +12,7 @@ import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
+import '../../../onboarding_flow/presentation/cubit/countries_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../cubit/edit_profile_form_cubit.dart';
@@ -24,13 +26,20 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<UserCubit>().state.user;
-    return BlocProvider<EditProfileFormCubit>(
-      lazy: false,
-      create: (_) {
-        final cubit = EditProfileFormCubit();
-        if (user != null) cubit.init(user);
-        return cubit;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<EditProfileFormCubit>(
+          lazy: false,
+          create: (_) {
+            final cubit = EditProfileFormCubit();
+            if (user != null) cubit.init(user);
+            return cubit;
+          },
+        ),
+        BlocProvider<CountriesCubit>(
+          create: (_) => sl<CountriesCubit>()..fetchCountries(),
+        ),
+      ],
       child: const _EditProfileView(),
     );
   }
@@ -55,6 +64,7 @@ class _EditProfileViewState extends State<_EditProfileView> {
       fullName: updated.fullName.trim(),
       birthDate: updated.birthDate,
       avatar: updated.avatar,
+      countryId: updated.countryId,
     );
   }
 

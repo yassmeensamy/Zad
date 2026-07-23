@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -164,7 +163,7 @@ class _JoinTeamCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ZaadPrimaryButton(
-                    label: 'home.team.create'.tr().toUpperCase(),
+                    label: 'home.team.create',
                     onTap: onTap,
                     trailingIcon: Icons.add_rounded,
                     height: 44,
@@ -178,7 +177,7 @@ class _JoinTeamCard extends StatelessWidget {
                 const SizedBox(width: 9),
                 Expanded(
                   child: _JoinGhostButton(
-                    label: 'home.team.join_with_code'.tr(),
+                    labelKey: 'home.team.join_with_code',
                     onTap: onJoin,
                   ),
                 ),
@@ -254,9 +253,9 @@ class _JoinCrest extends StatelessWidget {
 }
 
 class _JoinGhostButton extends StatelessWidget {
-  const _JoinGhostButton({required this.label, required this.onTap});
+  const _JoinGhostButton({required this.labelKey, required this.onTap});
 
-  final String label;
+  final String labelKey;
   final VoidCallback onTap;
 
   @override
@@ -276,7 +275,7 @@ class _JoinGhostButton extends StatelessWidget {
           ),
         ),
         child: ResponsiveText(
-          label.toUpperCase(),
+          labelKey,
           style: AppTextStyles.labelSmall.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 10.5,
@@ -317,7 +316,7 @@ class _TeamSectionHeader extends StatelessWidget {
           onTap: onOpen,
           behavior: HitTestBehavior.opaque,
           child: ResponsiveText(
-            'home.team.open'.tr().toUpperCase(),
+            'home.team.open',
             style: AppTextStyles.eyebrow(
               tracking: 0.152,
               weight: FontWeight.w600,

@@ -27,4 +27,10 @@ class EditProfileFormCubit extends BaseCubit<EditProfileFormState> {
     if (updated == null || updated == state.updatedUser) return;
     emit(state.copyWith(updatedUser: updated));
   }
+
+  void setCountry(int countryId) {
+    final updated = state.updatedUser?.copyWith(countryId: countryId);
+    if (updated == null || updated == state.updatedUser) return;
+    emit(state.copyWith(updatedUser: updated));
+  }
 }

@@ -11,7 +11,8 @@ class EditProfileFormState {
     if (savedUser == null || edited == null) return false;
     return savedUser.fullName.trim() != edited.fullName.trim() ||
         savedUser.birthDate != edited.birthDate ||
-        savedUser.avatar != edited.avatar;
+        savedUser.avatar != edited.avatar ||
+        savedUser.countryId != edited.countryId;
   }
 
   EditProfileFormState copyWith({UserModel? updatedUser}) =>

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
+import '../utils/name_display.dart';
 import 'responsive_text.dart';
 
 /// Circular avatar that prefers a remote image and falls back to a tinted
@@ -89,7 +90,7 @@ class _Initial extends StatelessWidget {
       ),
       child: Center(
         child: ResponsiveText(
-          _initialOf(name),
+          initialOf(name),
           style: TextStyle(
             fontFamily: AppTextStyles.headlineMedium.fontFamily,
             fontSize: fontSize,
@@ -102,12 +103,6 @@ class _Initial extends StatelessWidget {
       ),
     );
   }
-}
-
-String _initialOf(String name) {
-  final trimmed = name.trim();
-  if (trimmed.isEmpty) return '?';
-  return trimmed.characters.first.toUpperCase();
 }
 
 /// Picks a stable gradient for [name] from the desert/olive palette.

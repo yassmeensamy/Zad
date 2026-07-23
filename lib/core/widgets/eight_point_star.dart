@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../theme/app_colors.dart';
+import '../../theme/app_colors.dart';
 
 /// Decorative 8-point star formed by two overlapping squares rotated 45°.
 /// Renders as an outline only — used as a faint ornament behind hero cards.

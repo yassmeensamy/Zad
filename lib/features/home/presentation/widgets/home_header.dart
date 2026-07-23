@@ -1,18 +1,18 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
-    this.firstName,
+    required this.firstName,
     this.onBellTap,
     this.onCelebrateTap,
     this.unreadCount = 0,
   });
 
-  final String? firstName;
+  final String firstName;
   final VoidCallback? onBellTap;
 
   final VoidCallback? onCelebrateTap;
@@ -21,8 +21,6 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final name =
-        (firstName?.trim().isNotEmpty ?? false) ? firstName!.trim() : 'Zayd';
     final hour = DateTime.now().hour;
     final greetingKey = hour < 12
         ? 'home.greeting_morning'
@@ -48,7 +46,7 @@ class HomeHeader extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: ResponsiveText(
-            name[0].toUpperCase(),
+            initialOf(firstName),
             style: AppTextStyles.headlineMedium.copyWith(
               height: 1,
               color: colors.goldInk,
@@ -61,7 +59,7 @@ class HomeHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ResponsiveText(
-                'home.salam_arabic'.tr(),
+                'home.salam_arabic',
                 style: AppTextStyles.bodySmall.copyWith(
                   fontSize: 16,
                   height: 1.2,
@@ -70,7 +68,8 @@ class HomeHeader extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               ResponsiveText(
-                '${greetingKey.tr()} $name',
+                greetingKey,
+                namedArgs: {'name': firstName},
                 style: AppTextStyles.displaySmall.copyWith(
                   fontSize: 20,
                   height: 1.1,

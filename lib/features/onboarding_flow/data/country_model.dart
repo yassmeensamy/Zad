@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../../core/utils/country_flag.dart';
+
 /// A selectable country returned by `GET /api/countries`. The backend sends a
 /// single English [name] plus an ISO [code] (e.g. "EG"); there is no localized
 /// name, so [name] is used as-is in the picker.
@@ -13,6 +15,13 @@ class CountryModel {
   final int id;
   final String name;
   final String code;
+
+  String? get flag => countryFlagEmoji(code);
+
+  String get displayName {
+    final emoji = flag;
+    return emoji == null ? name : '$emoji  $name';
+  }
 
   factory CountryModel.fromMap(Map<String, dynamic> map) => CountryModel(
     id: (map['id'] as num).toInt(),

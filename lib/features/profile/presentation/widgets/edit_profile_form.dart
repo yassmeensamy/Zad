@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/textforms/main_text_form.dart';
+import '../../../../core/widgets/app_dropdown_field.dart';
 import '../../../../core/widgets/initial_avatar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../child/presentation/widgets/avatar_picker_sheet.dart';
 import '../../../onboarding_flow/data/avatar_model.dart';
+import '../../../onboarding_flow/data/country_model.dart';
+import '../../../onboarding_flow/presentation/cubit/countries_cubit.dart';
+import '../../../onboarding_flow/presentation/cubit/countries_state.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../cubit/edit_profile_form_cubit.dart';
@@ -53,6 +57,11 @@ class EditProfileForm extends StatelessWidget {
               onTap: () => _pickBirthDate(context),
             ),
           ),
+        ),
+        const SizedBox(height: 14),
+        _FieldGroup(
+          label: 'edit_profile.country_label',
+          child: const _CountryField(),
         ),
       ],
     );
@@ -401,6 +410,68 @@ class _BirthDateField extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CountryField extends StatelessWidget {
+  const _CountryField();
+
+  CountryModel? _selected(List<CountryModel> countries, int? countryId) {
+    if (countryId == null) return null;
+    for (final c in countries) {
+      if (c.id == countryId) return c;
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<EditProfileFormCubit, EditProfileFormState, int?>(
+      selector: (state) => state.updatedUser?.countryId,
+      builder: (context, countryId) {
+        return BlocBuilder<CountriesCubit, CountriesState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppDropdownField<CountryModel>(
+                  items: state.countries,
+                  value: _selected(state.countries, countryId),
+                  loading: state.isLoading,
+                  enabled: state.isLoaded,
+                  prefixIcon: Icons.public_rounded,
+                  hintText: 'edit_profile.country_hint'.tr(),
+                  loadingLabel: 'edit_profile.country_loading'.tr(),
+                  sheetTitle: 'edit_profile.country_label'.tr(),
+                  searchHint: 'edit_profile.country_search_hint'.tr(),
+                  emptyLabel: 'edit_profile.country_empty'.tr(),
+                  itemLabel: (c) => c.displayName,
+                  onChanged: (c) =>
+                      context.read<EditProfileFormCubit>().setCountry(c.id),
+                ),
+                if (state.isError) ...[
+                  const SizedBox(height: 6),
+                  GestureDetector(
+                    onTap: () =>
+                        context.read<CountriesCubit>().fetchCountries(),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 4),
+                      child: ResponsiveText(
+                        'edit_profile.country_retry',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontSize: 11,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

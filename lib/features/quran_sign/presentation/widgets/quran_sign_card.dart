@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/quran_sign_model.dart';
+import '../cubit/quran_sign_cubit.dart';
+import '../cubit/quran_sign_state.dart';
 
-/// "Quran sign of the day" section: a titled header above a single sign card.
-/// Renders [sign] from the home overview; while it is still loading the caller
-/// wraps this in a [Skeletonizer] with a dash-filled placeholder so the shapes
-/// below have the right size to mask.
 class QuranSignCard extends StatelessWidget {
-  const QuranSignCard({required this.sign, super.key});
-
-  final QuranSignModel sign;
+  const QuranSignCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,19 @@ class QuranSignCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const _SectionHeader(),
-        _CardBody(sign: sign),
+        BlocBuilder<QuranSignCubit, QuranSignState>(
+          buildWhen: (a, b) => a.status != b.status || a.sign != b.sign,
+          builder: (context, state) {
+            final sign = state.sign;
+            if (sign != null) return _CardBody(sign: sign);
+            if (state.isError) {
+              return _CardError(
+                onRetry: () => context.read<QuranSignCubit>().load(),
+              );
+            }
+            return const _CardSkeleton();
+          },
+        ),
       ],
     );
   }
@@ -44,10 +54,10 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _CardBody extends StatelessWidget {
-  const _CardBody({required this.sign});
+class _CardShell extends StatelessWidget {
+  const _CardShell({required this.child});
 
-  final QuranSignModel sign;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +76,26 @@ class _CardBody extends StatelessWidget {
         ),
         border: Border.all(color: colors.olive.withValues(alpha: 0.28)),
       ),
+      child: child,
+    );
+  }
+}
+
+class _CardBody extends StatelessWidget {
+  const _CardBody({required this.sign});
+
+  final QuranSignModel sign;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return _CardShell(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ResponsiveText(
             sign.text,
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.end,
             textDirection: TextDirection.rtl,
             style: AppTextStyles.bodyLarge.copyWith(
               fontSize: 17,
@@ -87,7 +111,71 @@ class _CardBody extends StatelessWidget {
   }
 }
 
-/// Footer line: a surah · ayah pill on the leading edge.
+class _CardSkeleton extends StatelessWidget {
+  const _CardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Skeletonizer.zone(
+      child: _CardShell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Bone.multiText(lines: 3, fontSize: 17),
+            SizedBox(height: 11),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Bone.text(width: 130),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CardError extends StatelessWidget {
+  const _CardError({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return _CardShell(
+      child: Row(
+        children: [
+          Icon(Icons.cloud_off_rounded, size: 20, color: colors.oliveDeep),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ResponsiveText(
+              'home.quran_sign.load_failed',
+              style: AppTextStyles.bodySmall.copyWith(
+                fontSize: 12.5,
+                height: 1.4,
+                color: colors.textSecondary,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: const ResponsiveText('common.retry'),
+            style: TextButton.styleFrom(
+              foregroundColor: colors.oliveDeep,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              textStyle: AppTextStyles.labelSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _Reference extends StatelessWidget {
   const _Reference({required this.sign});
 
@@ -95,16 +183,16 @@ class _Reference extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasSurah = sign.surahName != null && sign.madaniNumber != null;
-    if (!hasSurah) return const SizedBox.shrink();
+    final surahName = sign.surahName;
+    final ayah = sign.madaniNumber;
+    if (surahName == null || ayah == null) return const SizedBox.shrink();
     return Align(
       alignment: AlignmentDirectional.centerStart,
-      child: _SurahPill(surahName: sign.surahName!, ayah: sign.madaniNumber!),
+      child: _SurahPill(surahName: surahName, ayah: ayah),
     );
   }
 }
 
-/// Rounded pill showing the surah name and ayah number with a small book glyph.
 class _SurahPill extends StatelessWidget {
   const _SurahPill({required this.surahName, required this.ayah});
 

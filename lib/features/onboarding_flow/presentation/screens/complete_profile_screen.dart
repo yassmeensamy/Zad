@@ -422,7 +422,7 @@ class _CountryField extends StatelessWidget {
               sheetTitle: 'complete_profile.country_label'.tr(),
               searchHint: 'complete_profile.country_search_hint'.tr(),
               emptyLabel: 'complete_profile.country_empty'.tr(),
-              itemLabel: (c) => c.name,
+              itemLabel: (c) => c.displayName,
               onChanged: onSelected,
             ),
             if (state.isError) ...[

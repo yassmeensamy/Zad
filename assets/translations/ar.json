@@ -119,13 +119,14 @@
     "profile": "حسابي"
   },
   "home": {
-    "greeting_morning": "أسعد الله صباحك،",
-    "greeting_afternoon": "طاب يومك،",
-    "greeting_evening": "أسعد الله مساءك،",
+    "greeting_morning": "أسعد الله صباحك، {name}",
+    "greeting_afternoon": "طاب يومك، {name}",
+    "greeting_evening": "أسعد الله مساءك، {name}",
     "salam_arabic": "السلام عليكم ورحمة الله وبركاته",
     "fallback_name": "يا صديقي",
     "load_failed": "لم نتمكن من تحميل الصفحة — حاول مجدداً",
     "streak": {
+      "load_failed": "تعذّر تحميل تتابعك",
       "eyebrow_prefix": "تتابعك ",
       "eyebrow_accent": "اليومي",
       "days_word": "أيام",
@@ -167,6 +168,7 @@
     },
     "quran_sign": {
       "section_title": "آية قرآنية اليوم",
+      "load_failed": "تعذّر تحميل آية اليوم",
       "view_all": "عرض الكل",
       "reference_no": "المرجع رقم {}",
       "surah_ayah": "سورة {} · الآية {}"
@@ -523,6 +525,12 @@
     "email_locked": "لا يمكن تغيير البريد الإلكتروني.",
     "birthday_label": "تاريخ الميلاد",
     "birthday_hint": "اختر تاريخ ميلادك",
+    "country_label": "الدولة",
+    "country_hint": "اختر دولتك",
+    "country_loading": "جاري تحميل الدول…",
+    "country_search_hint": "ابحث عن دولة",
+    "country_empty": "لا توجد دول",
+    "country_retry": "تعذّر تحميل الدول. اضغط لإعادة المحاولة.",
     "update_success": "تم تحديث ملفك الشخصي",
     "update_failed": "لم نتمكن من تحديث ملفك الشخصي",
     "delete_account": "حذف الحساب",

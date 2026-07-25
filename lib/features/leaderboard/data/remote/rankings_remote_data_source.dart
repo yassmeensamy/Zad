@@ -8,6 +8,7 @@ abstract class RankingsRemoteDataSource {
     int page = 0,
     int size = 20,
     int? categoryId,
+    int? countryId,
   });
 
   Future<TeamRankingsResponse> getTeamRankings({int page = 0, int size = 20});
@@ -28,10 +29,16 @@ class RankingsRemoteDataSourceImpl implements RankingsRemoteDataSource {
     int page = 0,
     int size = 20,
     int? categoryId,
+    int? countryId,
   }) async {
     final response = await _networkService.get(
       _endpoints.rankingIndividuals,
-      queryParameters: {'page': page, 'size': size, 'category_id': ?categoryId},
+      queryParameters: {
+        'page': page,
+        'size': size,
+        'category_id': ?categoryId,
+        'country_id': ?countryId,
+      },
     );
     response.validated();
     return IndividualRankingsResponse.fromMap(

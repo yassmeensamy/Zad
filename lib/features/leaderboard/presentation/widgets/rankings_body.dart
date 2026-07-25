@@ -89,6 +89,7 @@ class RankingsBody extends StatelessWidget {
               name: r.username,
               completed: r.completedLevels,
               total: r.totalLevels,
+              flag: r.countryFlag,
             ),
         ]
       : [
@@ -110,6 +111,8 @@ class RankingsBody extends StatelessWidget {
         name: r.username,
         completed: r.completedLevels,
         total: r.totalLevels,
+        subtitle: r.countryName,
+        flag: r.countryFlag,
         isMe: myRank != null && r.rank == myRank,
       );
     }

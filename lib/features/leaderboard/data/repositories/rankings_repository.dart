@@ -7,6 +7,7 @@ abstract class RankingsRepository {
     int page = 0,
     int size = 20,
     int? categoryId,
+    int? countryId,
   });
 
   Future<TeamRankingsResponse> getTeamRankings({
@@ -26,10 +27,12 @@ class RankingsRepositoryImpl implements RankingsRepository {
     int page = 0,
     int size = 20,
     int? categoryId,
+    int? countryId,
   }) => _remoteDataSource.getIndividualRankings(
     page: page,
     size: size,
     categoryId: categoryId,
+    countryId: countryId,
   );
 
   @override

@@ -7,6 +7,9 @@ class IndividualRankingModel {
     required this.username,
     required this.completedLevels,
     required this.totalLevels,
+    required this.countryName,
+    required this.countryCode,
+    required this.countryFlag,
   });
 
   final int rank;
@@ -14,6 +17,13 @@ class IndividualRankingModel {
   final String username;
   final int completedLevels;
   final int totalLevels;
+
+  /// Country of the ranked user. All three are null when the user never picked
+  /// a country — the backend only guarantees them for `country_id` filtered
+  /// requests.
+  final String? countryName;
+  final String? countryCode;
+  final String? countryFlag;
 
   double get progress {
     if (totalLevels <= 0) return 0;
@@ -29,6 +39,9 @@ class IndividualRankingModel {
         username: map['username'] as String? ?? '',
         completedLevels: (map['completedLevels'] as num?)?.toInt() ?? 0,
         totalLevels: (map['totalLevels'] as num?)?.toInt() ?? 0,
+        countryName: map['countryName'] as String?,
+        countryCode: map['countryCode'] as String?,
+        countryFlag: map['countryFlag'] as String?,
       );
 
   factory IndividualRankingModel.fromJson(String source) =>
@@ -42,6 +55,9 @@ class IndividualRankingModel {
     'username': username,
     'completedLevels': completedLevels,
     'totalLevels': totalLevels,
+    'countryName': countryName,
+    'countryCode': countryCode,
+    'countryFlag': countryFlag,
   };
 
   String toJson() => json.encode(toMap());
@@ -54,17 +70,28 @@ class IndividualRankingModel {
         other.userId == userId &&
         other.username == username &&
         other.completedLevels == completedLevels &&
-        other.totalLevels == totalLevels;
+        other.totalLevels == totalLevels &&
+        other.countryName == countryName &&
+        other.countryCode == countryCode &&
+        other.countryFlag == countryFlag;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(rank, userId, username, completedLevels, totalLevels);
+  int get hashCode => Object.hash(
+    rank,
+    userId,
+    username,
+    completedLevels,
+    totalLevels,
+    countryName,
+    countryCode,
+    countryFlag,
+  );
 
   @override
   String toString() =>
       'IndividualRankingModel(#$rank $username, '
-      '$completedLevels/$totalLevels)';
+      '$completedLevels/$totalLevels, $countryCode)';
 }
 
 class MyIndividualRank {

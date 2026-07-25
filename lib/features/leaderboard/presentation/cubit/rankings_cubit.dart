@@ -38,6 +38,12 @@ class RankingsCubit extends BaseCubit<RankingsState> {
     await _loadIndividuals(reset: true);
   }
 
+  Future<void> setCountry(int? countryId) async {
+    if (countryId == state.countryId) return;
+    emit(state.copyWith(countryId: () => countryId));
+    await _loadIndividuals(reset: true);
+  }
+
   Future<void> loadMore() async {
     if (state.loadingMore || !state.canLoadMore) return;
     if (state.isIndividuals) {
@@ -76,6 +82,7 @@ class RankingsCubit extends BaseCubit<RankingsState> {
         page: nextPage,
         size: _pageSize,
         categoryId: state.categoryId,
+        countryId: state.countryId,
       );
       final merged = reset
           ? res.rankings

@@ -3,6 +3,44 @@ import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
 import 'responsive_text.dart';
 
+/// Opens the searchable bottom-sheet picker used by [AppDropdownField], for
+/// callers that need a different trigger (a filter pill, a menu entry, …).
+/// Resolves to the picked item, or null when the sheet is dismissed.
+Future<T?> showAppPickerSheet<T>({
+  required BuildContext context,
+  required List<T> items,
+  required String Function(T item) itemLabel,
+  T? selected,
+  String? title,
+  String? searchHint,
+  String? emptyLabel,
+}) {
+  final colors = context.appColors;
+  return showModalBottomSheet<T>(
+    context: context,
+    isScrollControlled: true,
+    // The raised sheet token, not `canvas` — in dark the page base is a near
+    // black (#140F0A) that swallowed the whole picker; `sheetSurface` lifts it
+    // to the same brown the team sheets and dialogs sit on. The hairline keeps
+    // the lifted edge legible against the scrim.
+    backgroundColor: colors.sheetSurface,
+    shape: RoundedRectangleBorder(
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(ZaadRadii.xl),
+      ),
+      side: BorderSide(color: colors.borderSubtle),
+    ),
+    builder: (_) => _PickerSheet<T>(
+      items: items,
+      itemLabel: itemLabel,
+      selected: selected,
+      title: title,
+      searchHint: searchHint,
+      emptyLabel: emptyLabel,
+    ),
+  );
+}
+
 /// A tappable form field that opens a searchable bottom-sheet picker, styled to
 /// match the onboarding text/date fields (canvas fill, olive border, leading
 /// icon, trailing chevron). Generic over the item type [T].
@@ -41,22 +79,14 @@ class AppDropdownField<T> extends StatelessWidget {
   bool get _interactive => enabled && !loading && items.isNotEmpty;
 
   Future<void> _openPicker(BuildContext context) async {
-    final colors = context.appColors;
-    final selected = await showModalBottomSheet<T>(
+    final selected = await showAppPickerSheet<T>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: colors.canvas,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(ZaadRadii.xl)),
-      ),
-      builder: (_) => _PickerSheet<T>(
-        items: items,
-        itemLabel: itemLabel,
-        selected: value,
-        title: sheetTitle,
-        searchHint: searchHint,
-        emptyLabel: emptyLabel,
-      ),
+      items: items,
+      itemLabel: itemLabel,
+      selected: value,
+      title: sheetTitle,
+      searchHint: searchHint,
+      emptyLabel: emptyLabel,
     );
     if (selected != null) onChanged(selected);
   }
@@ -198,7 +228,7 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colors.olive.withValues(alpha: 0.2),
+                  color: colors.borderDefault,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -229,13 +259,26 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                     prefixIcon: Icon(
                       Icons.search_rounded,
                       size: 20,
-                      color: colors.olive.withValues(alpha: 0.55),
+                      color: colors.textSecondary,
                     ),
+                    // A 4% olive tint was invisible on the dark sheet; the
+                    // frosted card film reads as a raised field in both themes,
+                    // and the hairline gives it an edge to sit on.
                     filled: true,
-                    fillColor: colors.olive.withValues(alpha: 0.04),
+                    fillColor: colors.cardSurface,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(ZaadRadii.lg),
-                      borderSide: BorderSide.none,
+                      borderSide: BorderSide(color: colors.borderSubtle),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                      borderSide: BorderSide(color: colors.borderSubtle),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                      borderSide: BorderSide(
+                        color: colors.accent.withValues(alpha: 0.55),
+                      ),
                     ),
                   ),
                 ),
@@ -254,19 +297,26 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                     : ListView.separated(
                         padding: const EdgeInsets.only(bottom: 8),
                         itemCount: filtered.length,
-                        separatorBuilder: (_, _) => Divider(
-                          height: 1,
-                          color: colors.olive.withValues(alpha: 0.08),
-                        ),
+                        separatorBuilder: (_, _) =>
+                            Divider(height: 1, color: colors.borderSubtle),
                         itemBuilder: (context, index) {
                           final item = filtered[index];
                           final isSelected = item == widget.selected;
                           return ListTile(
+                            // The selection cue is the accent (amber in both
+                            // themes) — plain olive turned muted green on the
+                            // dark sheet and barely registered as "picked".
+                            selected: isSelected,
+                            selectedTileColor: colors.accent.withValues(
+                              alpha: 0.10,
+                            ),
                             title: ResponsiveText(
                               widget.itemLabel(item),
                               style: AppTextStyles.labelLarge.copyWith(
                                 letterSpacing: 0,
-                                color: colors.oliveDeep,
+                                color: isSelected
+                                    ? colors.accent
+                                    : colors.oliveDeep,
                                 fontWeight: isSelected
                                     ? FontWeight.w700
                                     : FontWeight.w400,
@@ -276,7 +326,7 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                                 ? Icon(
                                     Icons.check_rounded,
                                     size: 20,
-                                    color: colors.olive,
+                                    color: colors.accent,
                                   )
                                 : null,
                             onTap: () => Navigator.of(context).pop(item),

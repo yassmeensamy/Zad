@@ -106,27 +106,13 @@ class LevelCard extends StatelessWidget {
                     height: 5,
                   ),
                   const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      ResponsiveText(
-                        'levels.percent'.tr(args: ['${level.progressPercent}']),
-                        style: AppTextStyles.labelMedium.copyWith(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: tint,
-                        ),
-                      ),
-                      const Spacer(),
-                      if (level.passingGrade > 0)
-                        ResponsiveText(
-                          'levels.pass'.tr(args: ['${level.passingGrade}']),
-                          style: AppTextStyles.labelMedium.copyWith(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: colors.textTertiary,
-                          ),
-                        ),
-                    ],
+                  ResponsiveText(
+                    'levels.percent'.tr(args: ['${level.progressPercent}']),
+                    style: AppTextStyles.labelMedium.copyWith(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: tint,
+                    ),
                   ),
                 ],
               ],

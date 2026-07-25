@@ -7,6 +7,8 @@ import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
 import '../../../categories/presentation/cubit/categories_state.dart';
+import '../../../onboarding_flow/presentation/cubit/countries_cubit.dart';
+import '../../../onboarding_flow/presentation/cubit/countries_state.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../cubit/rankings_cubit.dart';
@@ -16,6 +18,7 @@ import '../widgets/leaderboard_guest_prompt.dart';
 import '../widgets/leaderboard_header.dart';
 import '../widgets/rankings_body.dart';
 import '../widgets/rankings_category_filter.dart';
+import '../widgets/rankings_country_filter.dart';
 import '../widgets/rankings_scope_tabs.dart';
 
 class LeaderboardScreen extends StatelessWidget {
@@ -27,6 +30,7 @@ class LeaderboardScreen extends StatelessWidget {
       providers: [
         BlocProvider<RankingsCubit>(create: (_) => sl<RankingsCubit>()),
         BlocProvider<CategoriesCubit>.value(value: sl<CategoriesCubit>()),
+        BlocProvider<CountriesCubit>(create: (_) => sl<CountriesCubit>()),
       ],
       child: const _LeaderboardView(),
     );
@@ -60,6 +64,8 @@ class _LeaderboardViewState extends State<_LeaderboardView>
     final isGuest = context.read<UserCubit>().state.user?.isAnonymous ?? false;
     if (isGuest) return;
     context.read<CategoriesCubit>().ensureLoaded();
+    final countries = context.read<CountriesCubit>();
+    if (countries.state.countries.isEmpty) countries.fetchCountries();
     context.read<RankingsCubit>().refresh();
   }
 
@@ -89,7 +95,19 @@ class _LeaderboardViewState extends State<_LeaderboardView>
                     final cubit = context.read<RankingsCubit>();
                     return Column(
                       children: [
-                        const LeaderboardHeader(),
+                        LeaderboardHeader(
+                          trailing: state.isIndividuals
+                              ? BlocBuilder<CountriesCubit, CountriesState>(
+                                  builder: (context, countryState) =>
+                                      RankingsCountryFilter(
+                                        countries: countryState.countries,
+                                        selectedId: state.countryId,
+                                        loading: countryState.isLoading,
+                                        onSelected: cubit.setCountry,
+                                      ),
+                                )
+                              : null,
+                        ),
                         const SizedBox(height: 14),
                         RankingsScopeTabs(
                           value: state.scope,

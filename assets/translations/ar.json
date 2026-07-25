@@ -230,7 +230,6 @@
     "percent": "{}٪ مكتمل",
     "count": "{} / {} مستويات",
     "questions": "{} / {} أسئلة",
-    "pass": "للاجتياز: {}٪",
     "state": {
       "completed": "أتممته",
       "in_progress": "في الطريق",
@@ -858,6 +857,10 @@
     "error": "تعذّر تحميل لوحة المتصدرين.",
     "top_three": "الثلاثة الأوائل",
     "category_all": "الكل",
+    "country_all": "كل الدول",
+    "country_filter": "التصفية حسب الدولة",
+    "country_search_hint": "ابحث عن دولة",
+    "country_empty": "لا توجد دول مطابقة.",
     "all_members": "كل الأعضاء · {count}",
     "levels_progress": "{completed} / {total} مستوى",
     "you": "أنت",

@@ -10,6 +10,7 @@ class RankSeed {
     required this.completed,
     required this.total,
     this.subtitle,
+    this.flag,
     this.isMe = false,
   });
 
@@ -18,6 +19,10 @@ class RankSeed {
   final int completed;
   final int total;
   final String? subtitle;
+
+  /// Country flag emoji supplied by the backend, shown before [name]. Null for
+  /// teams and for users without a country.
+  final String? flag;
   final bool isMe;
 
   int get percent =>

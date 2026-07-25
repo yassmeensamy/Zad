@@ -16,24 +16,36 @@ class RankingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final isDark = context.isDark;
     final isMe = seed.isMe;
+
+    // Your own row carried a 12%→2% amber wash, which all but vanished against
+    // the list; the fill, hairline and border weight are all raised so it reads
+    // as the pinned row it is. The amber ink follows: `accentSoft` holds up on
+    // the dark wash but sat around 1.5:1 on the light cream one, so light drops
+    // to the deeper amber.
+    final meInk = isDark ? colors.accentSoft : colors.accentDeep;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         gradient: isMe
             ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: [
-                  colors.accent.withValues(alpha: 0.12),
-                  colors.accent.withValues(alpha: 0.02),
+                  colors.accent.withValues(alpha: isDark ? 0.26 : 0.30),
+                  colors.accent.withValues(alpha: isDark ? 0.10 : 0.14),
                 ],
               )
             : null,
         color: isMe ? null : colors.textPrimary.withValues(alpha: 0.024),
         border: Border.all(
           color: isMe
-              ? colors.accent.withValues(alpha: 0.4)
+              ? colors.accent.withValues(alpha: 0.7)
               : colors.textPrimary.withValues(alpha: 0.05),
+          width: isMe ? 1.4 : 1,
         ),
       ),
       child: Row(
@@ -45,8 +57,8 @@ class RankingRow extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppTextStyles.labelMedium.copyWith(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: isMe ? colors.accent : colors.textTertiary,
+                fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
+                color: isMe ? meInk : colors.textTertiary,
               ),
             ),
           ),
@@ -62,20 +74,36 @@ class RankingRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ResponsiveText(
-                  isMe
-                      ? 'leaderboard.name_you'.tr(
-                          namedArgs: {'name': seed.name},
-                        )
-                      : seed.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                    height: 1.1,
-                    color: isMe ? colors.accentSoft : colors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    if (seed.flag case final flag? when flag.isNotEmpty) ...[
+                      ResponsiveText(
+                        flag,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontSize: 13.5,
+                          height: 1.1,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                    ],
+                    Flexible(
+                      child: ResponsiveText(
+                        isMe
+                            ? 'leaderboard.name_you'.tr(
+                                namedArgs: {'name': seed.name},
+                              )
+                            : seed.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontSize: 13.5,
+                          fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
+                          height: 1.1,
+                          color: isMe ? meInk : colors.textPrimary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 3),
                 ResponsiveText(
@@ -99,8 +127,8 @@ class RankingRow extends StatelessWidget {
                 '${seed.completed}/${seed.total}',
                 style: AppTextStyles.labelLarge.copyWith(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: isMe ? colors.accentSoft : colors.textPrimary,
+                  fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
+                  color: isMe ? meInk : colors.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),

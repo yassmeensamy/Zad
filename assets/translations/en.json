@@ -230,7 +230,6 @@
     "percent": "{}% complete",
     "count": "{} / {} levels",
     "questions": "{} / {} questions",
-    "pass": "Pass: {}%",
     "state": {
       "completed": "DONE",
       "in_progress": "IN PROGRESS",
@@ -858,6 +857,10 @@
     "error": "Couldn't load the leaderboard.",
     "top_three": "Top three",
     "category_all": "All",
+    "country_all": "All countries",
+    "country_filter": "Filter by country",
+    "country_search_hint": "Search countries",
+    "country_empty": "No countries found.",
     "all_members": "All members · {count}",
     "levels_progress": "{completed} / {total} levels",
     "you": "You",

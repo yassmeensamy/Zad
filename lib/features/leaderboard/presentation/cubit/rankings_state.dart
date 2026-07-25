@@ -20,6 +20,7 @@ class RankingsState {
   const RankingsState({
     this.scope = RankingsScope.individuals,
     this.categoryId,
+    this.countryId,
     this.individualStatus = RankingsStatus.idle,
     this.individuals = const [],
     this.myRank,
@@ -35,6 +36,10 @@ class RankingsState {
   final RankingsScope scope;
 
   final int? categoryId;
+
+  /// Optional `country_id` filter for individual rankings. Null means every
+  /// country; a value also excludes users who never picked one.
+  final int? countryId;
 
   final RankingsStatus individualStatus;
   final List<IndividualRankingModel> individuals;
@@ -52,6 +57,7 @@ class RankingsState {
   RankingsState copyWith({
     RankingsScope? scope,
     int? Function()? categoryId,
+    int? Function()? countryId,
     RankingsStatus? individualStatus,
     List<IndividualRankingModel>? individuals,
     MyIndividualRank? Function()? myRank,
@@ -65,6 +71,7 @@ class RankingsState {
   }) => RankingsState(
     scope: scope ?? this.scope,
     categoryId: categoryId != null ? categoryId() : this.categoryId,
+    countryId: countryId != null ? countryId() : this.countryId,
     individualStatus: individualStatus ?? this.individualStatus,
     individuals: individuals ?? this.individuals,
     myRank: myRank != null ? myRank() : this.myRank,
@@ -87,6 +94,7 @@ class RankingsState {
     return other is RankingsState &&
         other.scope == scope &&
         other.categoryId == categoryId &&
+        other.countryId == countryId &&
         other.individualStatus == individualStatus &&
         listEquals(other.individuals, individuals) &&
         other.myRank == myRank &&
@@ -103,6 +111,7 @@ class RankingsState {
   int get hashCode => Object.hashAll([
     scope,
     categoryId,
+    countryId,
     individualStatus,
     Object.hashAll(individuals),
     myRank,

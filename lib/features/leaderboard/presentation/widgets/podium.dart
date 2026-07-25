@@ -106,16 +106,30 @@ class _PodiumPillar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
-        ResponsiveText(
-          seed?.name ?? '—',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: AppTextStyles.labelMedium.copyWith(
-            fontSize: 12,
-            fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-            color: isFirst ? colors.accent : colors.textPrimary,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (seed?.flag case final flag? when flag.isNotEmpty) ...[
+              ResponsiveText(
+                flag,
+                style: AppTextStyles.labelMedium.copyWith(fontSize: 12),
+              ),
+              const SizedBox(width: 4),
+            ],
+            Flexible(
+              child: ResponsiveText(
+                seed?.name ?? '—',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.labelMedium.copyWith(
+                  fontSize: 12,
+                  fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
+                  color: isFirst ? colors.accent : colors.textPrimary,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 2),
         ResponsiveText(

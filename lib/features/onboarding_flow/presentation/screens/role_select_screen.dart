@@ -209,7 +209,6 @@ class _Heading extends StatelessWidget {
             fontStyle: FontStyle.italic,
             color: colors.textArabic,
           ),
-          suffix: '?',
         ),
         const SizedBox(height: 10),
         ResponsiveText(

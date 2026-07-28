@@ -29,6 +29,7 @@ class AppEndpoint {
 
   String get streak => '${baseUrl}api/users/me/streak';
   String get weeklyStreak => '${baseUrl}api/users/me/streak/weekly';
+  String get dailyCheckIn => '${baseUrl}api/users/me/daily-checkin';
 
   String get randomQuranSign => '${baseUrl}api/quran-signs/random';
 

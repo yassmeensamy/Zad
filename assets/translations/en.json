@@ -905,6 +905,12 @@
     "levels_count": "{} levels",
     "unsynced_on_logout": "You have unsynced answers. Sync before logging out?"
   },
+  "daily_checkin": {
+    "failed": "Couldn't complete today's check-in",
+    "awarded": "Check-in complete — +1 point!",
+    "already_done": "You've already checked in today",
+    "total_points": "{} points"
+  },
   "children_list": {
     "saved": "Changes saved",
     "load_failed": "Couldn't load your people",

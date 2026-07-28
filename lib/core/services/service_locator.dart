@@ -73,6 +73,9 @@ import '../../features/notification/presentation/cubit/notification_preferences_
 import '../../features/onboarding/data/repositories/onboarding_repository.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import '../bootstrap/app_startup_cubit.dart';
+import '../../features/daily_checkin/data/remote/daily_checkin_remote_data_source.dart';
+import '../../features/daily_checkin/data/repositories/daily_checkin_repository.dart';
+import '../../features/daily_checkin/presentation/cubit/daily_checkin_cubit.dart';
 import '../../features/streak/data/remote/streak_remote_data_source.dart';
 import '../../features/streak/data/repositories/streak_repository.dart';
 import '../../features/streak/presentation/cubit/streak_cubit.dart';
@@ -422,6 +425,18 @@ class ServiceLocator {
       () => StreakCubit(streakRepository: sl(), quizEventService: sl()),
     );
 
+    sl.registerLazySingleton<DailyCheckInRemoteDataSource>(
+      () => DailyCheckInRemoteDataSourceImpl(
+        networkService: sl(),
+        endpoints: sl(),
+      ),
+    );
+    sl.registerLazySingleton<DailyCheckInRepository>(
+      () => DailyCheckInRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerFactory<DailyCheckInCubit>(
+      () => DailyCheckInCubit(repository: sl()),
+    );
   }
 
   Future<void> startOffline() async {

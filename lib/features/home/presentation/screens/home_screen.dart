@@ -10,6 +10,7 @@ import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/light_mode_backdrop.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
+import '../../../daily_checkin/presentation/cubit/daily_checkin_cubit.dart';
 import '../../../teams/data/models/team_progress_model.dart';
 import '../../../teams/presentation/widgets/team_number_one_dialog.dart';
 import '../../../teams/presentation/widgets/team_week_stats.dart';
@@ -52,6 +53,10 @@ class HomeScreen extends StatelessWidget {
         ),
         BlocProvider<NotificationBadgeCubit>(
           create: (_) => sl<NotificationBadgeCubit>()..refresh(),
+        ),
+        BlocProvider<DailyCheckInCubit>(
+          lazy: false,
+          create: (_) => sl<DailyCheckInCubit>()..checkIn(),
         ),
       ],
       child: const _HomeView(),

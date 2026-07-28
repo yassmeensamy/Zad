@@ -118,7 +118,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
           sparkles: _sparkles,
           ambientFade: _ambientFade,
         ),
-        const SizedBox(height: 26),
+       // const SizedBox(height: 26),
         _FadeUp(
           animation: _title,
           child: Text.rich(
@@ -131,7 +131,6 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
                 color: colors.oliveDeep,
               ),
               children: [
-                TextSpan(text: 'auth.signup_success.title_prefix'.tr()),
                 TextSpan(
                   text: 'auth.signup_success.title_accent'.tr(),
                   style: AppTextStyles.displayMedium.copyWith(
@@ -168,8 +167,8 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
             'about.tanbih',
             textAlign: TextAlign.center,
             style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 11.5,
-              height: 1.85,
+              fontSize: 13.5,
+              height: 1.9,
               letterSpacing: 0.1,
               color: colors.textSecondary.withValues(alpha: 0.78),
             ),

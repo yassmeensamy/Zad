@@ -10,7 +10,9 @@ import 'teams_state.dart';
 class TeamsCubit extends BaseCubit<TeamsState> {
   TeamsCubit({required TeamsRepository repository})
     : _repository = repository,
-      super(const TeamsState());
+      super(const TeamsState()) {
+    logger.debug('[TPROG] cubit CREATED #${identityHashCode(this)}');
+  }
 
   final TeamsRepository _repository;
 
@@ -95,7 +97,15 @@ class TeamsCubit extends BaseCubit<TeamsState> {
     // Dedupe: the team-home route builder and the home view can both request
     // the initial board in the same frame — don't fire two fetches for the
     // same scope.
-    if (state.progressLoading && state.progressCategoryId == categoryId) return;
+    logger.debug(
+      '[TPROG] loadTeamProgress ENTER cubit=#${identityHashCode(this)} '
+      'cat=$categoryId loading=${state.progressLoading} '
+      'curCat=${state.progressCategoryId}\n${StackTrace.current}',
+    );
+    if (state.progressLoading && state.progressCategoryId == categoryId) {
+      logger.debug('[TPROG] DEDUPED cubit=#${identityHashCode(this)}');
+      return;
+    }
 
     emit(
       state.copyWith(
@@ -115,8 +125,15 @@ class TeamsCubit extends BaseCubit<TeamsState> {
       // A newer request (e.g. the user switched category) supersedes this one.
       if (isClosed || state.progressCategoryId != categoryId) return;
       try {
+        logger.debug(
+          '[TPROG] HTTP attempt $attempt/$maxAttempts '
+          'cubit=#${identityHashCode(this)} cat=$categoryId',
+        );
         final progress = await _repository.getMyTeamProgress(
           categoryId: categoryId,
+        );
+        logger.debug(
+          '[TPROG] HTTP attempt $attempt OK cubit=#${identityHashCode(this)}',
         );
         if (isClosed || state.progressCategoryId != categoryId) return;
         emit(
@@ -130,12 +147,14 @@ class TeamsCubit extends BaseCubit<TeamsState> {
         );
         return;
       } on ServerException catch (e) {
+        logger.debug('[TPROG] attempt $attempt FAILED server: ${e.message}');
         if (attempt < maxAttempts) {
           await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
           continue;
         }
         logger.error('TeamsCubit.loadTeamProgress server: ${e.message}');
       } catch (e) {
+        logger.debug('[TPROG] attempt $attempt FAILED other: $e');
         if (attempt < maxAttempts) {
           await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
           continue;

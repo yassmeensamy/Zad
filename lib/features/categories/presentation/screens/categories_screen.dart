@@ -20,6 +20,7 @@ import '../../data/models/category_model.dart';
 import '../cubit/categories_cubit.dart';
 import '../cubit/categories_state.dart';
 import '../widgets/category_card.dart';
+import '../widgets/coming_soon_card.dart';
 
 const List<CategoryModel> _kPlaceholders = [
   CategoryModel(
@@ -175,7 +176,11 @@ class _CategoriesView extends StatelessWidget {
                         SliverPadding(
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
                           sliver: SliverGrid.builder(
-                            itemCount: categories.length,
+                            // One extra tile after the real categories: the
+                            // "coming soon" / share-the-app card. Skipped while
+                            // skeletons are showing so it doesn't shimmer as if
+                            // it were loading data.
+                            itemCount: categories.length + (isLoading ? 0 : 1),
                             // Cap each card's width so wide screens add columns
                             // (2 on phones, 4-6 on tablets) instead of stretching
                             // two giant cards across the row. A fixed mainAxisExtent
@@ -189,6 +194,9 @@ class _CategoriesView extends StatelessWidget {
                                   mainAxisExtent: 220,
                                 ),
                             itemBuilder: (context, index) {
+                              if (index == categories.length) {
+                                return const ComingSoonCard();
+                              }
                               final category = categories[index];
                               return CategoryCard(
                                 category: category,

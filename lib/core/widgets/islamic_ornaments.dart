@@ -2,6 +2,29 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+/// The eight-pointed khatim outline as a path, centred on [c] with outer
+/// radius [r]. Exposed so other painters can compose the rosette (as a bloom,
+/// a clip, a motif) without redrawing the geometry.
+Path khatimStarPath(Offset c, double r) {
+  final path = Path();
+  const points = 16; // 8 outer + 8 inner alternating vertices
+  for (var i = 0; i < points; i++) {
+    final angle = -math.pi / 2 + (i * math.pi / 8);
+    final radius = i.isEven ? r : r * 0.62;
+    final p = Offset(
+      c.dx + radius * math.cos(angle),
+      c.dy + radius * math.sin(angle),
+    );
+    if (i == 0) {
+      path.moveTo(p.dx, p.dy);
+    } else {
+      path.lineTo(p.dx, p.dy);
+    }
+  }
+  path.close();
+  return path;
+}
+
 /// Eight-pointed star (khatim) — the foundational rosette of Islamic
 /// geometric design. Used here as a decorative medallion that frames
 /// menu icons and punctuates ornamental rules.
@@ -22,7 +45,7 @@ class KhatimStarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final r = size.shortestSide / 2;
-    final path = _starPath(center, r);
+    final path = khatimStarPath(center, r);
 
     canvas.drawPath(
       path,
@@ -38,26 +61,6 @@ class KhatimStarPainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round
         ..color = stroke,
     );
-  }
-
-  Path _starPath(Offset c, double r) {
-    final path = Path();
-    const points = 16; // 8 outer + 8 inner alternating vertices
-    for (var i = 0; i < points; i++) {
-      final angle = -math.pi / 2 + (i * math.pi / 8);
-      final radius = i.isEven ? r : r * 0.62;
-      final p = Offset(
-        c.dx + radius * math.cos(angle),
-        c.dy + radius * math.sin(angle),
-      );
-      if (i == 0) {
-        path.moveTo(p.dx, p.dy);
-      } else {
-        path.lineTo(p.dx, p.dy);
-      }
-    }
-    path.close();
-    return path;
   }
 
   @override

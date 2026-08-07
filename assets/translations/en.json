@@ -208,6 +208,13 @@
       "levels": "{} / {} levels",
       "not_started": "Not started"
     },
+    "coming_soon": {
+      "title": "Coming soon!",
+      "subtitle": "Share the application with others to support unlocking more levels and gain more hasanaat!",
+      "cta": "Share the app",
+      "share_subject": "{app}",
+      "share_message": "Share {app} with others to support unlocking more levels and gain more hasanaat!"
+    },
     "state": {
       "completed": "DONE",
       "in_progress": "IN PROGRESS",

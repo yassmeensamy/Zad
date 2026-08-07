@@ -918,6 +918,28 @@
     "already_done": "You've already checked in today",
     "total_points": "{} points"
   },
+  "points_guide": {
+    "tooltip": "How points work",
+    "title": "Every tap earns you good 🌙",
+    "showing_up_title": "Just for showing up",
+    "showing_up_body": "Open Zaad each day and you've already scored — that's a point, before you even begin. Come back tomorrow and do it again.",
+    "answer_title": "When you answer",
+    "first_try": "Right the first time — the faster, the more points",
+    "under_10": "Under 10 seconds",
+    "under_10_value": "3 points",
+    "under_20": "Under 20 seconds",
+    "under_20_value": "2 points",
+    "after_that": "After that",
+    "after_that_value": "1 point",
+    "second_try": "Right on your 2nd try",
+    "second_try_value": "1 point",
+    "third_try": "Right on your 3rd try",
+    "third_try_value": "half a point",
+    "wrong": "Every wrong answer",
+    "wrong_value": "minus 1 point",
+    "perfect": "Every question right the first time, all under 10 seconds",
+    "perfect_value": "5 bonus points!"
+  },
   "children_list": {
     "saved": "Changes saved",
     "load_failed": "Couldn't load your people",

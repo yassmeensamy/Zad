@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,9 @@ import '../../../../core/utils/scroll_pagination_mixin.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/error_state.dart';
+import '../../../../core/widgets/points_guide_sheet.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
+import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../cubit/levels_cubit.dart';
 import '../cubit/levels_state.dart';
@@ -61,6 +64,13 @@ class _LevelsScreenState extends State<LevelsScreen>
               ZaadAppBar(
                 title: widget.category?.name ?? 'levels.title',
                 onBack: context.canPop() ? () => context.pop() : null,
+                action: Tooltip(
+                  message: 'points_guide.tooltip'.tr(),
+                  child: ZaadCircleIconButton(
+                    icon: Icons.lightbulb_outline_rounded,
+                    onTap: () => PointsGuideSheet.show(context),
+                  ),
+                ),
               ),
               Expanded(
                 child: BlocBuilder<LevelsCubit, LevelsState>(

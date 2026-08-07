@@ -145,19 +145,7 @@ class _JoinTeamCard extends StatelessWidget {
                 color: colors.textPrimary,
               ),
             ),
-            const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              child: ResponsiveText(
-                'home.team.join_subtitle',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodySmall.copyWith(
-                  fontSize: 11.5,
-                  height: 1.5,
-                  color: colors.textSecondary,
-                ),
-              ),
-            ),
+            
             const SizedBox(height: 16),
             Row(
               children: [

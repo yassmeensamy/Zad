@@ -226,10 +226,13 @@ class ServiceLocator {
     sl.registerLazySingleton<NotificationPreferencesRepository>(
       () => NotificationPreferencesRepositoryImpl(remoteDataSource: sl()),
     );
-    sl.registerFactory<NotificationPreferencesCubit>(
+    // Singleton: the profile switch and the home warning banner share one
+    // instance so a change on either surface is reflected on the other.
+    sl.registerLazySingleton<NotificationPreferencesCubit>(
       () => NotificationPreferencesCubit(
         repository: sl(),
         permissionService: sl(),
+        authEventService: sl(),
       ),
     );
     sl.registerFactory<NotificationBadgeCubit>(

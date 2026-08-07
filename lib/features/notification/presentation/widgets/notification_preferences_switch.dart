@@ -10,16 +10,20 @@ import '../cubit/notification_preferences_cubit.dart';
 import '../cubit/notification_preferences_state.dart';
 
 /// Master "push notifications" toggle used as the trailing control of a profile
-/// menu item. Self-contained: it owns its [NotificationPreferencesCubit] so the
-/// item can be dropped into the section list without the screen wiring a
-/// provider, and the cubit is only created when the item actually renders.
+/// menu item. Self-contained: it attaches the shared
+/// [NotificationPreferencesCubit] itself so the item can be dropped into the
+/// section list without the screen wiring a provider.
+///
+/// The cubit is a singleton shared with the home warning banner — hence
+/// `.value` (this widget must not close it) and [ensureLoaded] (whichever
+/// surface renders first does the fetch).
 class NotificationPreferencesSwitch extends StatelessWidget {
   const NotificationPreferencesSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NotificationPreferencesCubit>(
-      create: (_) => sl<NotificationPreferencesCubit>()..load(),
+    return BlocProvider<NotificationPreferencesCubit>.value(
+      value: sl<NotificationPreferencesCubit>()..ensureLoaded(),
       child: const _NotificationPreferencesSwitchView(),
     );
   }

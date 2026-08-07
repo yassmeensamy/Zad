@@ -125,6 +125,13 @@
     "salam_arabic": "السلام عليكم ورحمة الله وبركاته",
     "fallback_name": "friend",
     "load_failed": "Couldn't load your home — please try again",
+    "notifications_warning": {
+      "permission_title": "Notifications are turned off",
+      "permission_subtitle": "Turn them on so reminders and streak nudges reach you.",
+      "preferences_title": "You've muted all notifications",
+      "preferences_subtitle": "Turn them back on so reminders and streak nudges reach you.",
+      "enable": "Turn on"
+    },
     "streak": {
       "load_failed": "Couldn't load your streak",
       "eyebrow_prefix": "Your ",
@@ -295,6 +302,7 @@
       "title": "Level Complete",
       "level_complete": "LEVEL {} · COMPLETE",
       "answered_prefix": "You answered",
+    "first_try_suffix": "on the first try",
       "continue": "Continue",
       "score": "SCORE",
       "points_label": "POINTS",

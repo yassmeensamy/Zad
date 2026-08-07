@@ -124,6 +124,9 @@ class _Subtitle extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
+          // The count is the first-try tally, so it's spelled out on the same
+          // line rather than left to be read as a plain score.
+          TextSpan(text: ' ${'quiz.result.first_try_suffix'.tr()}'),
           TextSpan(text: ' — $closing'),
         ],
       ),

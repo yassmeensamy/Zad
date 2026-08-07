@@ -19,12 +19,14 @@ import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../streak/presentation/cubit/streak_state.dart';
 import '../../../teams/presentation/cubit/teams_cubit.dart';
 import '../../../notification/presentation/cubit/notification_badge_cubit.dart';
+import '../../../notification/presentation/cubit/notification_preferences_cubit.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
 import '../../../quran_sign/presentation/cubit/quran_sign_cubit.dart';
 import '../../../quran_sign/presentation/widgets/quran_sign_card.dart';
 import '../widgets/home_backdrop_pattern.dart';
 import '../widgets/home_header.dart';
+import '../widgets/home_notification_warning.dart';
 import '../widgets/home_streak_section.dart';
 import '../widgets/home_team_section.dart';
 import '../widgets/home_why_login_section.dart';
@@ -58,6 +60,12 @@ class HomeScreen extends StatelessWidget {
           lazy: false,
           create: (_) => sl<DailyCheckInCubit>()..checkIn(),
         ),
+        // Shared singleton (`.value`, so it outlives this screen): keeps the
+        // warning banner in sync with the profile switch, and keeps its loaded
+        // state while it scrolls in and out of the sliver list.
+        BlocProvider<NotificationPreferencesCubit>.value(
+          value: sl<NotificationPreferencesCubit>()..ensureLoaded(),
+        ),
       ],
       child: const _HomeView(),
     );
@@ -73,6 +81,9 @@ class _HomeView extends StatelessWidget {
       context.read<StreakCubit>().load(refresh: true),
       context.read<QuizStatsCubit>().refresh(),
       context.read<TeamsCubit>().loadTeamProgress(),
+      // Picks up a mute/unmute made from the profile tab, which owns a separate
+      // cubit instance and can't notify this one.
+      context.read<NotificationPreferencesCubit>().load(),
     ]);
   }
 
@@ -135,6 +146,8 @@ class HomeLoadedContent extends StatelessWidget {
             },
           ),
           const SizedBox(height: 26),
+          // Collapses to nothing (spacing included) when notifications are on.
+          const HomeNotificationWarning(),
           if (!isGuest) ...[
             const HomeStreakSection(),
             const SizedBox(height: 14),

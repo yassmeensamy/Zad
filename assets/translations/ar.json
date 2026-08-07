@@ -125,6 +125,13 @@
     "salam_arabic": "السلام عليكم ورحمة الله وبركاته",
     "fallback_name": "يا صديقي",
     "load_failed": "لم نتمكن من تحميل الصفحة — حاول مجدداً",
+    "notifications_warning": {
+      "permission_title": "الإشعارات متوقّفة",
+      "permission_subtitle": "فعّلها لتصلك التذكيرات وتنبيهات تتابعك اليومي.",
+      "preferences_title": "أوقفت جميع الإشعارات",
+      "preferences_subtitle": "أعد تفعيلها لتصلك التذكيرات وتنبيهات تتابعك اليومي.",
+      "enable": "تفعيل"
+    },
     "streak": {
       "load_failed": "تعذّر تحميل تتابعك",
       "eyebrow_prefix": "تتابعك ",
@@ -295,6 +302,7 @@
       "title": "أتممت المستوى",
       "level_complete": "المستوى {} · مكتمل",
       "answered_prefix": "أجبت على",
+    "first_try_suffix": "من المحاولة الأولى",
       "continue": "متابعة",
       "score": "النتيجة",
       "points_label": "نقطة",

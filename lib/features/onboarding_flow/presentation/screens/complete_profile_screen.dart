@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/user_model.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_dropdown_field.dart';
 import '../../../../core/widgets/app_scaffold.dart';
@@ -47,6 +48,11 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   void initState() {
     super.initState();
     final user = context.read<UserCubit>().state.user;
+    logger.debug(
+      '[apple-name] 6/6 complete-profile prefill → '
+      'user=${user == null ? 'null' : 'loaded'}, '
+      'fullName="${user?.fullName ?? ''}", email=${user?.email}',
+    );
     _fullNameController = TextEditingController(text: user?.fullName ?? '');
     _birthDate = user?.birthDate;
     _gender = user?.gender;

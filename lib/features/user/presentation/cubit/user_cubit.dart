@@ -34,6 +34,10 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     emit(state.copyWith(status: UserStatus.loading));
     try {
       final user = await _userRepository.fetchUserProfile();
+      logger.debug(
+        '[apple-name] 5/6 /me profile → fullName="${user.fullName}", '
+        'email=${user.email}, profileComplete=${user.isProfileComplete}',
+      );
       emit(state.copyWith(status: UserStatus.success, user: user));
     } on ServerException catch (e) {
       await _fallbackToCache(message: e.message);

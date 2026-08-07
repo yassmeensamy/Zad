@@ -1,5 +1,6 @@
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../../../core/utils/logger.dart';
 import '../models/social_provider.dart';
 import 'oauth_strategy.dart';
 
@@ -42,6 +43,16 @@ class AppleOAuthStrategy implements OAuthStrategy {
       webAuthenticationOptions: _webAuthenticationOptions,
     );
     _lastCredential = credential;
+    // Apple hands back the name ONLY on the first authorization for this Apple
+    // ID + bundle id. Nulls here on a later sign-in are expected, not a bug —
+    // revoke the app under Settings › Apple ID › Sign in with Apple to retest.
+    logger.debug(
+      '[apple-name] 1/6 strategy credential → '
+      'givenName=${credential.givenName}, '
+      'familyName=${credential.familyName}, '
+      'email=${credential.email}, '
+      'webFlow=${_webAuthenticationOptions != null}',
+    );
     return {
       'idToken': credential.identityToken,
       'accessToken': credential.authorizationCode,

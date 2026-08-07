@@ -73,7 +73,9 @@ class UserModel {
     id: map['id'] as String,
     email: map['email'] as String?,
     username: map['username'] as String?,
-    fullName: map['fullName'] as String,
+    // Nullable on the wire: a social account created without a name comes back
+    // with no fullName, and a hard cast here would fail the whole /me parse.
+    fullName: map['fullName'] as String? ?? '',
     role: UserRole.fromWire(map['role'] as String),
     googleLinked: map['googleLinked'] as bool? ?? false,
     birthDate: map['birthDate'] == null

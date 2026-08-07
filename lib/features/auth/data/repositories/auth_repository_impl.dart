@@ -118,11 +118,12 @@ class AuthRepositoryImpl implements AuthRepository {
     final identityToken = tokens['idToken'];
 
     logger.debug(
-      'Apple sign-in tokens → identityToken: ${tokens['idToken']}, '
-      'authorizationCode: ${tokens['accessToken']}, '
-      'givenName: ${strategy.lastGivenName}, '
-      'familyName: ${strategy.lastFamilyName}, '
-      'email: ${strategy.lastEmail}',
+      '[apple-name] 2/6 repository read strategy → '
+      'givenName=${strategy.lastGivenName}, '
+      'familyName=${strategy.lastFamilyName}, '
+      'email=${strategy.lastEmail}, '
+      'hasIdentityToken=${identityToken != null}, '
+      'hasAuthCode=${tokens['accessToken'] != null}',
     );
 
     if (identityToken == null) {
@@ -137,12 +138,27 @@ class AuthRepositoryImpl implements AuthRepository {
         .where((part) => part.isNotEmpty)
         .join(' ');
 
+    logger.debug(
+      '[apple-name] 3/6 composed fullName → '
+      '"$fullName" (sent=${fullName.isNotEmpty})',
+    );
+
+    // This is the only time Apple will ever hand us the name, so keep a local
+    // copy before the round-trip — if the backend drops it, /me can't recover
+    // it and no later sign-in will offer it again.
+    if (fullName.isNotEmpty) {
+      await _localService.setPendingSocialName(fullName);
+    }
+
     final response = await _remoteDataSource.appleAuth(
       identityToken,
       authorizationCode: tokens['accessToken'],
       email: strategy.lastEmail,
       fullName: fullName.isEmpty ? null : fullName,
       fcmToken: await _fcmToken(),
+    );
+    logger.debug(
+      '[apple-name] 4/6 /apple response → fullName="${response.fullName}"',
     );
     await _localService.onLoginSuccess(response);
     await _localService.setLoginMethod(SocialProvider.apple);

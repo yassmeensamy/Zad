@@ -36,6 +36,15 @@ class AuthLocalService {
   Future<void> clearLoginMethod() async =>
       await _cache.remove(StorageKeys.kLoginMethodKey);
 
+  /// Keeps the name a social provider handed us at sign-in. Apple returns it
+  /// only on the first authorization, so this is the one chance to hold on to
+  /// it; the user repository prefers it over the name /me reports.
+  Future<void> setPendingSocialName(String fullName) async =>
+      await _cache.set<String>(StorageKeys.kPendingSocialNameKey, fullName);
+
+  Future<void> clearPendingSocialName() async =>
+      await _cache.remove(StorageKeys.kPendingSocialNameKey);
+
 
   Future<void> onLoginSuccess(AuthResponse response) async {
     await setAccessToken(response.accessToken);
@@ -61,5 +70,6 @@ class AuthLocalService {
     }
     await clearTokens();
     await clearUserModel();
+    await clearPendingSocialName();
   }
 }

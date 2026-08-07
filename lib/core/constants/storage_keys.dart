@@ -9,4 +9,9 @@ class StorageKeys {
   static const String kAccessTokenKey = 'access_token';
   static const String kRefreshTokenKey = 'refresh_token';
   static const String kUserKey = 'user_profile';
+
+  /// Name handed over by a social provider at sign-in. Apple only returns it on
+  /// the very first authorization, so it's stashed here and takes precedence
+  /// over whatever /me reports until the user saves a profile of their own.
+  static const String kPendingSocialNameKey = 'pending_social_name';
 }

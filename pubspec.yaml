@@ -78,6 +78,7 @@ dependencies:
   firebase_remote_config: ^6.5.2
   upgrader: ^13.5.0
   pub_semver: ^2.2.0
+  audioplayers: ^6.7.1
 
 dev_dependencies:
   flutter_test:
@@ -133,6 +134,7 @@ flutter:
     - assets/translations/
     - assets/images/
     - assets/animations/
+    - assets/voices/
     - .env
 
   fonts:

@@ -100,6 +100,7 @@ import 'notification_service.dart';
 import 'permession_service.dart';
 import 'remote_config_service.dart';
 import 'share_service.dart';
+import 'sound_service.dart';
 import 'upgrade_service.dart';
 
 class ServiceLocator {
@@ -113,6 +114,7 @@ class ServiceLocator {
     sl.registerLazySingleton<AppInfoService>(() => AppInfoServiceImpl());
     sl.registerLazySingleton<PermissionService>(() => PermissionServiceImpl());
     sl.registerLazySingleton<ShareService>(() => ShareServiceImpl());
+    sl.registerLazySingleton<SoundService>(() => SoundServiceImpl());
     sl.registerLazySingleton<NotificationService>(
       () => NotificationService(permissionService: sl()),
     );

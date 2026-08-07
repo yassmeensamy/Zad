@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/sound_service.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
@@ -55,10 +56,24 @@ class QuizScreen extends StatelessWidget {
         BlocProvider<QuizHistoryCubit>(create: (_) => QuizHistoryCubit()),
         BlocProvider<DraftsCubit>(create: (_) => sl<DraftsCubit>()),
       ],
-      child: BlocListener<QuizCubit, QuizState>(
-        listenWhen: (prev, curr) =>
-            prev.history.isNotEmpty && curr.history.isEmpty,
-        listener: (context, _) => context.read<QuizHistoryCubit>().exit(),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<QuizCubit, QuizState>(
+            listenWhen: (prev, curr) =>
+                prev.history.isNotEmpty && curr.history.isEmpty,
+            listener: (context, _) => context.read<QuizHistoryCubit>().exit(),
+          ),
+          BlocListener<QuizCubit, QuizState>(
+            listenWhen: (prev, curr) =>
+                !curr.isReview && prev.phase != curr.phase && curr.isAnswered,
+            listener: (context, state) {
+              final sounds = sl<SoundService>();
+              unawaited(
+                state.isCorrect ? sounds.playCorrect() : sounds.playWrong(),
+              );
+            },
+          ),
+        ],
         child: _QuizBootstrap(
           levelId: levelId,
           review: isReview,
@@ -88,7 +103,16 @@ class _QuizBootstrapState extends State<_QuizBootstrap> {
   @override
   void initState() {
     super.initState();
+    // Copies the clips out of the bundle up front so the first answer's sound
+    // isn't late.
+    unawaited(sl<SoundService>().preload());
     WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
+  }
+
+  @override
+  void dispose() {
+    unawaited(sl<SoundService>().stop());
+    super.dispose();
   }
 
   Future<void> _bootstrap() async {

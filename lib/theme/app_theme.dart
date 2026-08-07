@@ -4,6 +4,7 @@ import 'app_color_scheme.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 import 'custom_button_theme.dart';
+import 'theme_context_extensions.dart';
 import 'zaad_radii.dart';
 
 class AppTheme {
@@ -37,16 +38,16 @@ class AppTheme {
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[
         appColors,
-        _buildCustomButtonTheme(appColors),
+        _buildCustomButtonTheme(appColors, textTheme),
       ],
+      // No titleTextStyle — Material 3 resolves it from textTheme.titleLarge,
+      // which already carries onSurface. Same for the button themes below and
+      // their labelLarge.
       appBarTheme: AppBarTheme(
         backgroundColor: isDark ? Colors.transparent : colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: AppTextStyles.titleLarge.copyWith(
-          color: colorScheme.onSurface,
-        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -57,19 +58,21 @@ class AppTheme {
           horizontal: 16,
           vertical: 18,
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: appColors.oliveSoft.withValues(alpha: 0.55),
+        // Kept (not removed): Material 3 would default the hint to bodyLarge
+        // (16) and the labels to bodySmall, which would resize the inputs.
+        // Sourced from textTheme so the roles stay the single source of truth.
+        hintStyle: textTheme.bodyMedium!.tinted(
+          appColors.oliveSoft.withValues(alpha: 0.55),
         ),
-        labelStyle: AppTextStyles.labelMedium.copyWith(
-          color: appColors.oliveSoft,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.32 * 12,
-        ),
-        floatingLabelStyle: AppTextStyles.labelSmall.copyWith(
-          color: appColors.oliveSoft,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.32 * 9,
-        ),
+        labelStyle: textTheme.labelMedium!
+            .semiBold
+            .tracked(0.32)
+            .tinted(appColors.oliveSoft),
+        // Tracking is deliberately resolved against 9, not labelSmall's own
+        // 10 — a pre-existing quirk, preserved so the float doesn't shift.
+        floatingLabelStyle: textTheme.labelSmall!.semiBold
+            .copyWith(letterSpacing: 0.32 * 9)
+            .tinted(appColors.oliveSoft),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(ZaadRadii.lg),
           borderSide: BorderSide(
@@ -101,14 +104,12 @@ class AppTheme {
             borderRadius: BorderRadius.circular(ZaadRadii.md),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: AppTextStyles.labelLarge,
           elevation: 0,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: colorScheme.primary,
-          textStyle: AppTextStyles.labelLarge,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         ),
       ),
@@ -120,7 +121,6 @@ class AppTheme {
             borderRadius: BorderRadius.circular(ZaadRadii.md),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: AppTextStyles.labelLarge,
         ),
       ),
       cardTheme: CardThemeData(
@@ -154,7 +154,10 @@ class AppTheme {
     );
   }
 
-  static CustomButtonTheme _buildCustomButtonTheme(AppColorsTheme c) {
+  static CustomButtonTheme _buildCustomButtonTheme(
+    AppColorsTheme c,
+    TextTheme textTheme,
+  ) {
     return CustomButtonTheme(
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -170,11 +173,10 @@ class AppTheme {
       ),
       backgroundColor: c.ctaMid,
       textColor: c.onCta,
-      textStyle: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 14 * 0.14,
-      ),
+      // labelLarge (14) is already the CTA size; the CTA only differs by
+      // weight and tracking, so express it as variants rather than a literal.
+      // Color comes from [textColor] above — CustomButton applies it last.
+      textStyle: textTheme.labelLarge!.semiBold.tracked(0.14),
     );
   }
 }

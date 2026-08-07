@@ -147,8 +147,15 @@ class _WarningCard extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: ZaadRadii.xlAll,
-            color: colors.cardSurface,
-            border: Border.all(color: colors.warning.withValues(alpha: 0.35)),
+            // Blended rather than translucent so the tint lands the same over
+            // the cream and the roasted-brown canvas.
+            color: Color.alphaBlend(
+              AppColors.error.withValues(alpha: 0.07),
+              colors.cardSurface,
+            ),
+            border: Border.all(
+              color: AppColors.error.withValues(alpha: 0.45),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(14),
@@ -159,16 +166,16 @@ class _WarningCard extends StatelessWidget {
                   height: 38,
                   decoration: BoxDecoration(
                     borderRadius: ZaadRadii.mdAll,
-                    color: colors.warning.withValues(alpha: 0.14),
+                    color: AppColors.error.withValues(alpha: 0.14),
                     border: Border.all(
-                      color: colors.warning.withValues(alpha: 0.28),
+                      color: AppColors.error.withValues(alpha: 0.28),
                     ),
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     Icons.notifications_off_outlined,
                     size: 19,
-                    color: colors.warning,
+                    color: AppColors.error,
                   ),
                 ),
                 const SizedBox(width: 11),
@@ -219,25 +226,25 @@ class _ActionPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-
+    // Solid error fill so the CTA reads as the loudest thing on the card; the
+    // ink is the constant ivory rather than `textInverse`, which would flip to
+    // dark-on-terracotta in dark mode.
     return Container(
       height: 30,
       constraints: const BoxConstraints(minWidth: 62),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         borderRadius: ZaadRadii.pillAll,
-        color: colors.warning.withValues(alpha: updating ? 0.10 : 0.18),
-        border: Border.all(color: colors.warning.withValues(alpha: 0.35)),
+        color: AppColors.error.withValues(alpha: updating ? 0.55 : 1),
       ),
       alignment: Alignment.center,
       child: updating
-          ? SizedBox(
+          ? const SizedBox(
               width: 14,
               height: 14,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: colors.warning,
+                color: AppColors.ivory,
               ),
             )
           : ResponsiveText(
@@ -248,7 +255,7 @@ class _ActionPill extends StatelessWidget {
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0,
-                color: colors.warning,
+                color: AppColors.ivory,
               ),
             ),
     );

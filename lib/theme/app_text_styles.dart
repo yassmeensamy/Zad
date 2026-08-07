@@ -39,6 +39,16 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 1.35,
   );
+
+  /// The quiet 24 — dialog header titles and the custom app-bar title.
+  /// [headlineLarge] is the emphatic (w600) 24; this is its w500 counterpart.
+  static const TextStyle headlineSmall = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: -0.3,
+  );
+
   static const TextStyle titleLarge = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w500,
@@ -49,11 +59,18 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     height: 1.4,
   );
-  static const TextStyle bodyXLarge = TextStyle(
+
+  /// Lead-paragraph role — the same 18 as [titleLarge] but at regular weight,
+  /// so it reads as running copy rather than a heading.
+  static const TextStyle titleSmall = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w400,
     height: 1.4,
   );
+
+  /// Alias for [titleSmall], which is its Material 3 slot. Kept so existing
+  /// call sites keep working; new code should use `context.titleSmall`.
+  static const TextStyle bodyXLarge = titleSmall;
   static const TextStyle bodyLarge = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
@@ -107,13 +124,25 @@ class AppTextStyles {
     color: color,
   );
 
+  /// The app's single source of truth for typography.
+  ///
+  /// All 15 Material 3 roles are filled, so framework widgets (app bars,
+  /// buttons, inputs, dialogs, snack bars) resolve their text from here
+  /// instead of needing per-component overrides in [AppTheme]. It also lets
+  /// `context.bodyMedium` & friends return non-nullable styles.
+  ///
+  /// [numericLarge] is deliberately absent — a 96pt hero numeral is a
+  /// component style, not a typography role.
   static TextTheme buildTextTheme(Color onSurface) => TextTheme(
     displayLarge: displayLarge.copyWith(color: onSurface),
     displayMedium: displayMedium.copyWith(color: onSurface),
+    displaySmall: displaySmall.copyWith(color: onSurface),
     headlineLarge: headlineLarge.copyWith(color: onSurface),
     headlineMedium: headlineMedium.copyWith(color: onSurface),
+    headlineSmall: headlineSmall.copyWith(color: onSurface),
     titleLarge: titleLarge.copyWith(color: onSurface),
     titleMedium: titleMedium.copyWith(color: onSurface),
+    titleSmall: titleSmall.copyWith(color: onSurface),
     bodyLarge: bodyLarge.copyWith(color: onSurface),
     bodyMedium: bodyMedium.copyWith(color: onSurface),
     bodySmall: bodySmall.copyWith(color: onSurface),

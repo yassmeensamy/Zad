@@ -272,15 +272,14 @@ class _Pitch extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Flexible(
-          // The grid cell's height is pinned, but ResponsiveText scales type up
-          // to 2x on wide screens (and again by the system accessibility
-          // setting) — so a fixed maxLines would overflow the cell on a tablet.
-          // Derive the line count from the height actually left over instead,
-          // and let the copy ellipsize.
+          // The grid cell's height is pinned, but type scales with the app's
+          // text scaler — so a fixed maxLines would overflow the cell at large
+          // scales. Derive the line count from the height actually left over
+          // instead, and let the copy ellipsize.
           child: LayoutBuilder(
             builder: (context, constraints) {
               final lineHeight =
-                  ScaleSize.getTextScaler(context).scale(fontSize) * lineSpacing;
+                  MediaQuery.textScalerOf(context).scale(fontSize) * lineSpacing;
               final lines = (constraints.maxHeight / lineHeight)
                   .floor()
                   .clamp(1, 3);

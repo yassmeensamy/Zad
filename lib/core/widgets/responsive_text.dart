@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:easy_localization/easy_localization.dart' as localization;
 import 'package:flutter/material.dart';
 
@@ -55,13 +53,16 @@ class ResponsiveText extends StatelessWidget {
         style?.copyWith(decoration: textDecoration) ??
         TextStyle(decoration: textDecoration);
 
+    // No `textScaler` argument: an explicit one would *override* what the
+    // widget inherits, flattening the OS's non-linear accessibility curve to
+    // a plain multiplier. Letting Text read MediaQuery itself keeps app-wide
+    // scaling in one place — the clamp in `MyApp`'s builder.
     if (isSelectable) {
       return SelectableText(
         resolved,
         style: effectiveStyle,
         textAlign: textAlign,
         maxLines: maxLines,
-        textScaler: ScaleSize.getTextScaler(context), // Use textScaler
       );
     }
 
@@ -73,25 +74,6 @@ class ResponsiveText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       softWrap: softWrap,
-      textScaler: ScaleSize.getTextScaler(context), // Use textScaler
     );
   }
-}
-
-class ScaleSize {
-  static double textScaleFactor(
-    BuildContext context, {
-    double maxTextScaleFactor = 2,
-  }) {
-    final deviceWidth = MediaQuery.of(context).size.width;
-    final systemScale = MediaQuery.textScaleFactorOf(context);
-
-    final customScale = (deviceWidth / 1100) * maxTextScaleFactor;
-    final finalScale = max(1, min(customScale, maxTextScaleFactor));
-
-    return finalScale * systemScale;
-  }
-
-  static TextScaler getTextScaler(BuildContext context) =>
-      TextScaler.linear(textScaleFactor(context));
 }

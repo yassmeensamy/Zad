@@ -285,7 +285,7 @@
     },
     "exit": {
       "confirm_title": "Leave the quiz?",
-      "confirm_subtitle": "Your progress in this attempt will be lost. You can start again anytime.",
+      "confirm_subtitle": "Your answers so far will be saved. You can pick this level up again anytime.",
       "confirm_cta": "Leave quiz"
     },
     "report": {

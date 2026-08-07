@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -261,7 +263,7 @@ class _LoadingView extends StatelessWidget {
   }
 }
 
-class _ActiveView extends StatelessWidget {
+class _ActiveView extends StatefulWidget {
   const _ActiveView({
     required this.state,
     this.level,
@@ -271,9 +273,26 @@ class _ActiveView extends StatelessWidget {
   final QuizState state;
 
   @override
+  State<_ActiveView> createState() => _ActiveViewState();
+}
+
+class _ActiveViewState extends State<_ActiveView> {
+  bool _exiting = false;
+
+  LevelModel? get level => widget.level;
+  QuizState get state => widget.state;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<QuizHistoryCubit, QuizHistoryState>(
-      builder: (context, historyState) => _buildContent(context, historyState),
+    return PopScope(
+      canPop: state.isReview,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _confirmExit();
+      },
+      child: BlocBuilder<QuizHistoryCubit, QuizHistoryState>(
+        builder: (context, historyState) =>
+            _buildContent(context, historyState),
+      ),
     );
   }
 
@@ -328,7 +347,7 @@ class _ActiveView extends StatelessWidget {
               title: level?.title ?? 'quiz.eyebrow',
               titleStyle: _quizAppBarTitleStyle,
               titleMaxLines: 2,
-              onBack: () => _confirmExit(context),
+              onBack: () => _confirmExit(),
             ),
             Expanded(
               child: ListView(
@@ -491,11 +510,16 @@ class _ActiveView extends StatelessWidget {
     }
   }
 
-  Future<void> _confirmExit(BuildContext context) async {
+  Future<void> _confirmExit() async {
     if (state.isReview) {
       if (context.canPop()) context.pop();
       return;
     }
+    if (_exiting) return;
+    _exiting = true;
+
+    final quizCubit = context.read<QuizCubit>();
+
     final confirmed = await ConfirmDialog.show(
       context: context,
       icon: Icons.logout_rounded,
@@ -503,8 +527,17 @@ class _ActiveView extends StatelessWidget {
       messageKey: 'quiz.exit.confirm_subtitle',
       confirmKey: 'quiz.exit.confirm_cta',
     );
-    if (confirmed == true && context.mounted && context.canPop()) {
+    if (confirmed != true) {
+      _exiting = false;
+      return;
+    }
+
+    unawaited(quizCubit.submit());
+
+    if (mounted && context.canPop()) {
       context.pop();
+    } else {
+      _exiting = false;
     }
   }
 }

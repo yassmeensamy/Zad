@@ -42,7 +42,12 @@ class QuizCubit extends BaseCubit<QuizState> {
     ));
     try {
       final response = await _quizRepository.getQuestions(levelId);
-      emit(_buildLoadedState(response.questions, review: review));
+      final remaining = _remaining(response.questions, review: review);
+      emit(_buildLoadedState(
+        remaining,
+        review: review,
+        history: _carriedOver(response.questions, remaining, review: review),
+      ));
     } on ServerException catch (e) {
       _emitLoadError(e.message);
     } catch (e) {
@@ -117,15 +122,24 @@ class QuizCubit extends BaseCubit<QuizState> {
 
   Future<void> submit() async {
     final levelId = state.levelId;
-    if (levelId == null || state.isSubmitting) return;
+    if (levelId == null || state.isSubmitting || state.isSubmitted) return;
+
+    // Only what the user actually answered: on an early exit the questions they
+    // never reached are left out entirely rather than reported as wrong.
+    final answeredIds = state.answeredIds;
+    if (answeredIds.isEmpty) return;
+
+    final answered =
+        state.allQuestions.where((q) => answeredIds.contains(q.id)).toList();
 
     final request = QuizSubmissionRequest(
       pointsEarned: state.pointsRounded,
       answers: [
-        for (final q in state.allQuestions)
+        for (final q in answered)
           QuizAnswerSubmission(
             questionId: q.id,
             isCorrect: state.answeredCorrectIds.contains(q.id),
+            isAnswerBefore10s: state.fastFirstTryIds.contains(q.id),
           ),
       ],
     );
@@ -137,7 +151,7 @@ class QuizCubit extends BaseCubit<QuizState> {
       }
     }
     final selectedAnswers = [
-      for (final q in state.allQuestions)
+      for (final q in answered)
         PendingAnswerInput(
           questionId: q.id,
           selectedAnswer: firstRoundChoice[q.id] ?? -1,
@@ -176,8 +190,8 @@ class QuizCubit extends BaseCubit<QuizState> {
     final firstTryCorrect =
         isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect;
 
-    final stillPerfect =
-        state.isPerfectRun && isFirstTry && QuizScoring.isFast(elapsed);
+    final isFastFirstTry = isFirstTry && QuizScoring.isFast(elapsed);
+    final stillPerfect = state.isPerfectRun && isFastFirstTry;
 
     final isAttemptComplete =
         state.isLastInCurrentRound && state.retryQueue.isEmpty;
@@ -190,6 +204,9 @@ class QuizCubit extends BaseCubit<QuizState> {
       selectedChoiceId: () => choiceId,
       firstTryCorrect: firstTryCorrect,
       answeredCorrectIds: {...state.answeredCorrectIds, question.id},
+      fastFirstTryIds: isFastFirstTry
+          ? {...state.fastFirstTryIds, question.id}
+          : state.fastFirstTryIds,
       points: QuizScoring.floor(
         state.points +
             earned +
@@ -277,9 +294,46 @@ class QuizCubit extends BaseCubit<QuizState> {
     return shownAt == null ? Duration.zero : _now().difference(shownAt);
   }
 
+  /// Drops questions a previous attempt already answered correctly, so a
+  /// resumed level opens straight on the first unanswered question. Review
+  /// replays the whole level, and a level with nothing left falls back to the
+  /// full set rather than opening an empty quiz.
+  List<QuestionModel> _remaining(
+    List<QuestionModel> questions, {
+    required bool review,
+  }) {
+    if (review) return questions;
+    final remaining =
+        questions.where((q) => !q.isAnsweredCorrectly).toList();
+    return remaining.isEmpty ? questions : remaining;
+  }
+
+  /// Seeds the browsable history with the questions [_remaining] skipped, so
+  /// the user can page back to them, sees them revealed as already answered,
+  /// and cannot answer them again.
+  List<QuizHistoryEntry> _carriedOver(
+    List<QuestionModel> questions,
+    List<QuestionModel> remaining, {
+    required bool review,
+  }) {
+    if (review || remaining.length == questions.length) return const [];
+    final remainingIds = {for (final q in remaining) q.id};
+    return [
+      for (final q in questions)
+        if (!remainingIds.contains(q.id))
+          QuizHistoryEntry(
+            question: q,
+            choiceId: q.correctIndex,
+            round: 1,
+            fromPreviousAttempt: true,
+          ),
+    ];
+  }
+
   QuizState _buildLoadedState(
     List<QuestionModel> questions, {
     required bool review,
+    List<QuizHistoryEntry> history = const [],
   }) {
     final empty = questions.isEmpty;
     final now = review ? null : _now();
@@ -288,6 +342,7 @@ class QuizCubit extends BaseCubit<QuizState> {
       phase: empty ? QuizPhase.finished : QuizPhase.question,
       allQuestions: questions,
       currentQueue: questions,
+      history: history,
       isReview: review,
       startedAt: now,
       questionShownAt: empty ? null : now,

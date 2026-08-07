@@ -78,6 +78,7 @@ class QuizRepositoryImpl implements QuizRepository {
           questionId: a.questionId,
           selectedAnswer: byId[a.questionId]?.selectedAnswer ?? -1,
           isCorrect: a.isCorrect,
+          isAnswerBefore10s: a.isAnswerBefore10s,
         ),
     ];
     return _pendingDao.insertAttempt(

@@ -13,7 +13,7 @@ class AppDatabase {
   AppDatabase();
 
   static const String _dbName = 'zaad_offline.db';
-  static const int _version = 2;
+  static const int _version = 3;
 
   Database? _db;
 
@@ -50,6 +50,14 @@ class AppDatabase {
       final batch = db.batch();
       batch.execute(_createPendingDrafts);
       batch.execute(_createPendingDraftsIndex);
+      await batch.commit(noResult: true);
+    }
+    if (oldVersion < 3) {
+      final batch = db.batch();
+      batch.execute(
+        'ALTER TABLE $tablePendingAnswers '
+        'ADD COLUMN is_answer_before_10s INTEGER NOT NULL DEFAULT 0',
+      );
       await batch.commit(noResult: true);
     }
   }
@@ -125,6 +133,7 @@ class AppDatabase {
       question_id INTEGER NOT NULL,
       selected_answer INTEGER NOT NULL,
       is_correct INTEGER NOT NULL,
+      is_answer_before_10s INTEGER NOT NULL DEFAULT 0,
       points_earned INTEGER NOT NULL DEFAULT 0,
       attempt_id TEXT NOT NULL,
       created_at INTEGER NOT NULL,

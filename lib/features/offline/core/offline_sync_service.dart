@@ -70,6 +70,7 @@ class OfflineSyncService {
                     QuizAnswerSubmission(
                       questionId: row.questionId,
                       isCorrect: row.isCorrect,
+                      isAnswerBefore10s: row.isAnswerBefore10s,
                     ),
                 ],
               ),

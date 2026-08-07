@@ -4,14 +4,17 @@ class QuizAnswerSubmission {
   const QuizAnswerSubmission({
     required this.questionId,
     required this.isCorrect,
+    required this.isAnswerBefore10s,
   });
 
   final int questionId;
   final bool isCorrect;
+  final bool isAnswerBefore10s;
 
   Map<String, dynamic> toMap() => {
         'questionId': questionId,
         'isCorrect': isCorrect,
+        'isAnswerBefore10s': isAnswerBefore10s,
       };
 }
 

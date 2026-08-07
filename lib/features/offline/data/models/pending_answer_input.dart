@@ -6,6 +6,7 @@ class PendingAnswerInput {
     required this.questionId,
     required this.selectedAnswer,
     required this.isCorrect,
+    this.isAnswerBefore10s = false,
   });
 
   final int questionId;
@@ -13,4 +14,5 @@ class PendingAnswerInput {
   /// The chosen choice index (`ChoiceModel.index`). `-1` if unknown.
   final int selectedAnswer;
   final bool isCorrect;
+  final bool isAnswerBefore10s;
 }

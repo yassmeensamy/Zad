@@ -55,6 +55,7 @@ class PendingAnswersDaoImpl implements PendingAnswersDao {
           'question_id': answer.questionId,
           'selected_answer': answer.selectedAnswer,
           'is_correct': answer.isCorrect ? 1 : 0,
+          'is_answer_before_10s': answer.isAnswerBefore10s ? 1 : 0,
           'points_earned': pointsEarned,
           'attempt_id': attemptId,
           'created_at': createdAt,

@@ -9,9 +9,11 @@ class QuestionModel {
     required this.choices,
     required this.correctIndex,
     this.isAnsweredCorrectly = false,
+    this.isAnsweredBefore10s = false,
     this.isDrafted = false,
     this.explanation,
     this.source,
+    this.missingLocales = const [],
   });
 
   final int id;
@@ -19,9 +21,11 @@ class QuestionModel {
   final List<ChoiceModel> choices;
   final int correctIndex;
   final bool isAnsweredCorrectly;
+  final bool isAnsweredBefore10s;
   final bool isDrafted;
   final String? explanation;
   final String? source;
+  final List<String> missingLocales;
 
   bool isCorrect(int choiceIndex) => choiceIndex == correctIndex;
 
@@ -36,11 +40,22 @@ class QuestionModel {
             .map((e) => ChoiceModel.fromMap(e as Map<String, dynamic>))
             .toList(),
         correctIndex: (map['correctIndex'] as num).toInt(),
-        isAnsweredCorrectly: (map['isAnsweredCorrectly'] as bool?) ?? false,
-        isDrafted: (map['isDrafted'] as bool?) ?? false,
+        isAnsweredCorrectly: _flag(map['isAnsweredCorrectly']),
+        isAnsweredBefore10s: _flag(map['isAnsweredBefore10s']),
+        isDrafted: _flag(map['isDrafted']),
         explanation: map['explanation'] as String?,
         source: map['source'] as String?,
+        missingLocales: [
+          for (final e in map['missingLocales'] as List<dynamic>? ?? const [])
+            '$e',
+        ],
       );
+
+  static bool _flag(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    return false;
+  }
 
   factory QuestionModel.fromJson(String source) =>
       QuestionModel.fromMap(json.decode(source) as Map<String, dynamic>);
@@ -51,9 +66,11 @@ class QuestionModel {
         'choices': choices.map((c) => c.toMap()).toList(),
         'correctIndex': correctIndex,
         'isAnsweredCorrectly': isAnsweredCorrectly,
+        'isAnsweredBefore10s': isAnsweredBefore10s,
         'isDrafted': isDrafted,
         if (explanation != null) 'explanation': explanation,
         if (source != null) 'source': source,
+        if (missingLocales.isNotEmpty) 'missingLocales': missingLocales,
       };
 
   String toJson() => json.encode(toMap());
@@ -64,9 +81,11 @@ class QuestionModel {
     List<ChoiceModel>? choices,
     int? correctIndex,
     bool? isAnsweredCorrectly,
+    bool? isAnsweredBefore10s,
     bool? isDrafted,
     String? explanation,
     String? source,
+    List<String>? missingLocales,
   }) =>
       QuestionModel(
         id: id ?? this.id,
@@ -74,9 +93,11 @@ class QuestionModel {
         choices: choices ?? this.choices,
         correctIndex: correctIndex ?? this.correctIndex,
         isAnsweredCorrectly: isAnsweredCorrectly ?? this.isAnsweredCorrectly,
+        isAnsweredBefore10s: isAnsweredBefore10s ?? this.isAnsweredBefore10s,
         isDrafted: isDrafted ?? this.isDrafted,
         explanation: explanation ?? this.explanation,
         source: source ?? this.source,
+        missingLocales: missingLocales ?? this.missingLocales,
       );
 
   @override
@@ -87,13 +108,15 @@ class QuestionModel {
         other.text == text &&
         other.correctIndex == correctIndex &&
         other.isAnsweredCorrectly == isAnsweredCorrectly &&
+        other.isAnsweredBefore10s == isAnsweredBefore10s &&
         other.isDrafted == isDrafted &&
         other.explanation == explanation &&
         other.source == source &&
-        _listEq(other.choices, choices);
+        _listEq(other.choices, choices) &&
+        _listEq(other.missingLocales, missingLocales);
   }
 
-  static bool _listEq(List<ChoiceModel> a, List<ChoiceModel> b) {
+  static bool _listEq<T>(List<T> a, List<T> b) {
     if (a.length != b.length) return false;
     for (var i = 0; i < a.length; i++) {
       if (a[i] != b[i]) return false;
@@ -108,9 +131,11 @@ class QuestionModel {
         Object.hashAll(choices),
         correctIndex,
         isAnsweredCorrectly,
+        isAnsweredBefore10s,
         isDrafted,
         explanation,
         source,
+        Object.hashAll(missingLocales),
       );
 
   @override

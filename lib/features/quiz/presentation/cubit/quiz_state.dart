@@ -20,11 +20,16 @@ class QuizHistoryEntry {
     required this.question,
     required this.choiceId,
     required this.round,
+    this.fromPreviousAttempt = false,
   });
 
   final QuestionModel question;
   final int choiceId;
   final int round;
+
+  /// Seeded at load for a question an earlier attempt already answered
+  /// correctly: browsable and revealed, but not part of this attempt.
+  final bool fromPreviousAttempt;
 
   bool get isCorrect => question.isCorrect(choiceId);
 
@@ -34,10 +39,12 @@ class QuizHistoryEntry {
       other is QuizHistoryEntry &&
           other.question == question &&
           other.choiceId == choiceId &&
-          other.round == round;
+          other.round == round &&
+          other.fromPreviousAttempt == fromPreviousAttempt;
 
   @override
-  int get hashCode => Object.hash(question, choiceId, round);
+  int get hashCode =>
+      Object.hash(question, choiceId, round, fromPreviousAttempt);
 }
 
 class QuizState {
@@ -52,6 +59,7 @@ class QuizState {
     this.round = 1,
     this.firstTryCorrect = 0,
     this.answeredCorrectIds = const {},
+    this.fastFirstTryIds = const {},
     this.totalRetries = 0,
     this.points = 0,
     this.isPerfectRun = true,
@@ -79,6 +87,7 @@ class QuizState {
   final int firstTryCorrect;
 
   final Set<int> answeredCorrectIds;
+  final Set<int> fastFirstTryIds;
   final int totalRetries;
 
   final double points;
@@ -115,6 +124,7 @@ class QuizState {
     int? round,
     int? firstTryCorrect,
     Set<int>? answeredCorrectIds,
+    Set<int>? fastFirstTryIds,
     int? totalRetries,
     double? points,
     bool? isPerfectRun,
@@ -143,6 +153,7 @@ class QuizState {
         round: round ?? this.round,
         firstTryCorrect: firstTryCorrect ?? this.firstTryCorrect,
         answeredCorrectIds: answeredCorrectIds ?? this.answeredCorrectIds,
+        fastFirstTryIds: fastFirstTryIds ?? this.fastFirstTryIds,
         totalRetries: totalRetries ?? this.totalRetries,
         points: points ?? this.points,
         isPerfectRun: isPerfectRun ?? this.isPerfectRun,
@@ -179,6 +190,7 @@ class QuizState {
         other.round == round &&
         other.firstTryCorrect == firstTryCorrect &&
         setEquals(other.answeredCorrectIds, answeredCorrectIds) &&
+        setEquals(other.fastFirstTryIds, fastFirstTryIds) &&
         other.totalRetries == totalRetries &&
         other.points == points &&
         other.isPerfectRun == isPerfectRun &&
@@ -206,7 +218,10 @@ class QuizState {
         selectedChoiceId,
         round,
         firstTryCorrect,
-        Object.hashAllUnordered(answeredCorrectIds),
+        Object.hash(
+          Object.hashAllUnordered(answeredCorrectIds),
+          Object.hashAllUnordered(fastFirstTryIds),
+        ),
         totalRetries,
         Object.hash(points, isPerfectRun, perfectBonusAwarded),
         motivationalMessageKey,
@@ -242,6 +257,13 @@ extension QuizStateX on QuizState {
   }
 
   int get totalQuestions => allQuestions.length;
+
+  /// Every question the user has tapped an answer for in this attempt, right or
+  /// wrong. Questions carried over from an earlier attempt are excluded.
+  Set<int> get answeredIds => {
+        for (final entry in history)
+          if (!entry.fromPreviousAttempt) entry.question.id,
+      };
 
   int get positionInRound => currentQueue.isEmpty ? 0 : currentIndex + 1;
   int get roundLength => currentQueue.length;

@@ -13,5 +13,4 @@ abstract class QuizPoints {
   static const double perfectRunBonus = 5;
 
   static const double none = 0;
-  static const double minTotal = 0;
 }

@@ -184,9 +184,13 @@ class QuizCubit extends BaseCubit<QuizState> {
   }
 
   void _emitCorrect(int choiceId, QuestionModel question) {
-    final isFirstTry = state.round == 1;
+    // The retry round this session has reached, pushed along by the wrong
+    // answers already recorded against the question, so walking away from one
+    // you got wrong and coming back doesn't restore it to full value.
+    final attempt = state.round + question.wrongAttempts;
+    final isFirstTry = attempt == 1;
     final elapsed = _elapsedSinceShown();
-    final earned = QuizScoring.correct(round: state.round, elapsed: elapsed);
+    final earned = QuizScoring.correct(attempt: attempt, elapsed: elapsed);
     final firstTryCorrect =
         isFirstTry ? state.firstTryCorrect + 1 : state.firstTryCorrect;
 
@@ -207,11 +211,9 @@ class QuizCubit extends BaseCubit<QuizState> {
       fastFirstTryIds: isFastFirstTry
           ? {...state.fastFirstTryIds, question.id}
           : state.fastFirstTryIds,
-      points: QuizScoring.floor(
-        state.points +
-            earned +
-            (earnsBonus ? QuizPoints.perfectRunBonus : QuizPoints.none),
-      ),
+      points: state.points +
+          earned +
+          (earnsBonus ? QuizPoints.perfectRunBonus : QuizPoints.none),
       isPerfectRun: stillPerfect,
       perfectBonusAwarded: earnsBonus,
       motivationalMessageKey: () => _messages.randomCorrect(),
@@ -229,7 +231,7 @@ class QuizCubit extends BaseCubit<QuizState> {
       selectedChoiceId: () => choiceId,
       retryQueue: [...state.retryQueue, question],
       totalRetries: state.totalRetries + 1,
-      points: QuizScoring.floor(state.points - QuizPoints.wrongPenalty),
+      points: state.points - QuizPoints.wrongPenalty,
       isPerfectRun: false,
       motivationalMessageKey: () => _messages.randomWrong(),
       history: _appendHistory(question, choiceId),
@@ -303,8 +305,7 @@ class QuizCubit extends BaseCubit<QuizState> {
     required bool review,
   }) {
     if (review) return questions;
-    final remaining =
-        questions.where((q) => !q.isAnsweredCorrectly).toList();
+    final remaining = questions.where((q) => !q.isCleared).toList();
     return remaining.isEmpty ? questions : remaining;
   }
 

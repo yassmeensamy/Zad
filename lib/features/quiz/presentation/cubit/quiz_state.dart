@@ -256,7 +256,20 @@ extension QuizStateX on QuizState {
     return currentQueue[currentIndex];
   }
 
+  /// Questions this attempt was served. A resumed level is loaded with only
+  /// what was left, so this is not the level's size — see [levelQuestionCount].
   int get totalQuestions => allQuestions.length;
+
+  /// Questions an earlier attempt already answered correctly, seeded into
+  /// [history] at load and never re-served.
+  int get carriedOverCount => history.where((e) => e.fromPreviousAttempt).length;
+
+  /// Every question in the level, whichever attempt answered it.
+  int get levelQuestionCount => totalQuestions + carriedOverCount;
+
+  /// First-try correct across the whole level: this attempt's tally plus the
+  /// carried-over questions, which only carry over because they were correct.
+  int get levelFirstTryCorrect => firstTryCorrect + carriedOverCount;
 
   /// Every question the user has tapped an answer for in this attempt, right or
   /// wrong. Questions carried over from an earlier attempt are excluded.

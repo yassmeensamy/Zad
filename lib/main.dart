@@ -18,7 +18,6 @@ import 'core/navigation/deep_links.dart';
 import 'core/services/core_service_locator.dart';
 import 'core/services/remote_config_service.dart';
 import 'core/services/service_locator.dart';
-import 'core/utils/logger.dart';
 import 'features/auth/data/strategies/oauth_strategy_factory.dart';
 
 Future<void> main() async {
@@ -53,18 +52,22 @@ Future<void> main() async {
   );
   await serviceLocator.startOffline();
 
-  // Fetch & activate Remote Config so the splash force-update check reads fresh
-  // min-version values. Failures must never block startup.
-  await sl<RemoteConfigService>().init().catchError(
-    (Object e) => logger.error('RemoteConfig init failed: $e'),
-  );
+  // Warm Remote Config so the splash force-update check reads fresh min-version
+  // values — but NEVER await it here. The Android native splash stays up until
+  // Flutter renders its first frame, which only happens after `runApp`, so any
+  // network call awaited above it holds the launch screen hostage. Awaiting
+  // `fetchAndActivate` used to strand Play-signed builds on the native splash
+  // indefinitely. The force-update gate awaits `RemoteConfigService.ready`
+  // (bounded) after the first frame instead.
+  unawaited(sl<RemoteConfigService>().init());
 
   final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
   final initialLink = await deepLinks.initialLocation();
 
   runApp(
     RequestsInspector(
-      enabled: !kReleaseMode,
+      enabled: false,
+      //!kReleaseMode,
       showInspectorOn: ShowInspectorOn.Both,
       child: EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

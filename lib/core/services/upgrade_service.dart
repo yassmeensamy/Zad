@@ -32,6 +32,14 @@ class UpgradeServiceImpl implements UpgradeService {
   @override
   Future<bool> isForceUpdateRequired({required String languageCode}) async {
     if (debugForceUpdate) return true;
+    // Remote Config is warmed in `main` without being awaited, so wait for that
+    // fetch to settle before reading the minimum version — bounded, because
+    // this runs on the splash and must not stall the app behind a dead network.
+    // Timing out just means we read the default (empty) and fail open.
+    await _remoteConfig.ready.timeout(
+      _remoteConfigWait,
+      onTimeout: () => logger.error('Force-update gate: RemoteConfig not ready'),
+    );
     final upgrader = await _ensureReady(languageCode);
     if (upgrader == null) return false;
     return _isBelowMinimum(upgrader);
@@ -104,4 +112,6 @@ class UpgradeServiceImpl implements UpgradeService {
   String get _minVersionKey => Platform.isIOS
       ? RemoteConfigKeys.clientMinVersionIos
       : RemoteConfigKeys.clientMinVersionAndroid;
+
+  static const _remoteConfigWait = Duration(seconds: 5);
 }

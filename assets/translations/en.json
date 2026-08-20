@@ -219,8 +219,8 @@
       "title": "Coming soon!",
       "subtitle": "Share the application with others to support unlocking more levels and gain more hasanaat!",
       "cta": "Share the app",
-      "share_subject": "{app}",
-      "share_message": "Share {app} with others to support unlocking more levels and gain more hasanaat!"
+      "share_subject": "Try {app}",
+      "share_message": "Try {app} — Islamic quizzes that teach you something new every day and earn you hasanaat along the way. 🌙\n\niPhone: {ios}\nAndroid: {android}"
     },
     "state": {
       "completed": "DONE",

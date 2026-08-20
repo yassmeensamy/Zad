@@ -204,9 +204,11 @@ class _QuizView extends StatelessWidget {
             }
             return ResultView(
               points: state.points,
-              questionsCompleted: state.totalQuestions,
+              // The whole level, not just what this attempt was served: a
+              // resumed level opens on the unanswered questions only.
+              questionsCompleted: state.levelQuestionCount,
               totalRetries: state.totalRetries,
-              firstTryCorrect: state.firstTryCorrect,
+              firstTryCorrect: state.levelFirstTryCorrect,
               elapsed: state.elapsed,
               motivationalKey: state.motivationalMessageKey,
               level: level,

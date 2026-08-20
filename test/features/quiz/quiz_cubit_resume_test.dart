@@ -72,7 +72,8 @@ QuestionModel _question(int id, {bool answered = false}) => QuestionModel(
       id: id,
       text: 'Q$id',
       correctIndex: _rightChoice,
-      isAnsweredCorrectly: answered,
+      // `isAnsweredCorrectly` is an int now: >0 cleared, <0 negated retry count.
+      isAnsweredCorrectly: answered ? 1 : 0,
       choices: const [
         ChoiceModel(index: _rightChoice, text: 'right'),
         ChoiceModel(index: _wrongChoice, text: 'wrong'),

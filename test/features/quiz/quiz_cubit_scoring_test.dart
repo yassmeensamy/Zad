@@ -203,16 +203,16 @@ void main() {
     });
   });
 
-  test('the running total never goes negative', () async {
+  test('the running total goes negative once penalties outrun the score',
+      () async {
     final cubit = await buildCubit(1);
 
-    for (var i = 0; i < 4; i++) {
+    for (final expected in [-1, -2, -3, -4]) {
       cubit.selectAnswer(_wrongChoice);
-      expect(cubit.state.points, greaterThanOrEqualTo(0));
+      expect(cubit.state.points, expected);
       cubit.next();
     }
 
-    expect(cubit.state.points, 0);
     await cubit.close();
   });
 
@@ -239,7 +239,12 @@ void main() {
       cubit.next();
       cubit.selectAnswer(_rightChoice);
 
-      expect(cubit.state.points, 4);
+      expect(
+        cubit.state.points,
+        3,
+        reason: '-1 for the miss, +3 for the fast first try, '
+            '+1 for the second-try fix',
+      );
       expect(cubit.state.perfectBonusAwarded, isFalse);
       await cubit.close();
     });

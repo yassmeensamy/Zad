@@ -8,7 +8,7 @@ class QuestionModel {
     required this.text,
     required this.choices,
     required this.correctIndex,
-    this.isAnsweredCorrectly = false,
+    this.isAnsweredCorrectly = 0,
     this.isAnsweredBefore10s = false,
     this.isDrafted = false,
     this.explanation,
@@ -20,7 +20,16 @@ class QuestionModel {
   final String text;
   final List<ChoiceModel> choices;
   final int correctIndex;
-  final bool isAnsweredCorrectly;
+  /// Where this question stands for the current user:
+  ///
+  /// * `1` — cleared, answered correctly.
+  /// * `0` — never answered.
+  /// * `-n` — answered wrong `n` times and still unresolved, so `-1` is one
+  ///   wrong attempt, `-2` is two, and so on.
+  ///
+  /// The sign carries the meaning and the magnitude carries the attempt count,
+  /// so the value is stored as sent rather than flattened to a flag.
+  final int isAnsweredCorrectly;
   final bool isAnsweredBefore10s;
   final bool isDrafted;
   final String? explanation;
@@ -28,6 +37,15 @@ class QuestionModel {
   final List<String> missingLocales;
 
   bool isCorrect(int choiceIndex) => choiceIndex == correctIndex;
+
+  /// Answered correctly already, so a resumed level doesn't serve it again.
+  /// A question sitting on wrong attempts is not cleared and comes back.
+  bool get isCleared => isAnsweredCorrectly > 0;
+
+  /// How many times this question has already been answered wrong: `0` for a
+  /// cleared or untouched question, `n` for a value of `-n`.
+  int get wrongAttempts =>
+      isAnsweredCorrectly < 0 ? -isAnsweredCorrectly : 0;
 
   bool get hasFeedback =>
       (explanation != null && explanation!.isNotEmpty) ||
@@ -40,7 +58,7 @@ class QuestionModel {
             .map((e) => ChoiceModel.fromMap(e as Map<String, dynamic>))
             .toList(),
         correctIndex: (map['correctIndex'] as num).toInt(),
-        isAnsweredCorrectly: _flag(map['isAnsweredCorrectly']),
+        isAnsweredCorrectly: _answerState(map['isAnsweredCorrectly']),
         isAnsweredBefore10s: _flag(map['isAnsweredBefore10s']),
         isDrafted: _flag(map['isDrafted']),
         explanation: map['explanation'] as String?,
@@ -55,6 +73,14 @@ class QuestionModel {
     if (value is bool) return value;
     if (value is num) return value != 0;
     return false;
+  }
+
+  static int _answerState(dynamic value) {
+    if (value is num) return value.toInt();
+    // Questions cached for offline use were persisted through [toMap] while
+    // this was a boolean, so old rows still decode.
+    if (value is bool) return value ? 1 : 0;
+    return 0;
   }
 
   factory QuestionModel.fromJson(String source) =>
@@ -80,7 +106,7 @@ class QuestionModel {
     String? text,
     List<ChoiceModel>? choices,
     int? correctIndex,
-    bool? isAnsweredCorrectly,
+    int? isAnsweredCorrectly,
     bool? isAnsweredBefore10s,
     bool? isDrafted,
     String? explanation,

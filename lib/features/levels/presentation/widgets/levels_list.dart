@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../cubit/levels_state.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
+import 'coming_soon_level_row.dart';
 import 'level_timeline_row.dart';
 import 'levels_hero.dart';
 
@@ -28,7 +29,13 @@ class LevelsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final levels = state.levels;
     final showLoadingTail = state.isLoadingMore;
-    final itemCount = _firstRowIndex + levels.length + (showLoadingTail ? 1 : 0);
+    // One trailing slot after the levels, holding whichever of the two ends the
+    // rail: the pagination spinner while more pages are coming, or the "coming
+    // soon" row once the last page is in. Never both, so they share the slot.
+    final showComingSoon = !showLoadingTail && !state.hasMore;
+    final itemCount = _firstRowIndex +
+        levels.length +
+        (showLoadingTail || showComingSoon ? 1 : 0);
 
     return ListView.builder(
       controller: controller,
@@ -53,8 +60,13 @@ class LevelsList extends StatelessWidget {
             level: level,
             tint: tint,
             isFirst: rowIndex == 0,
-            isLast: rowIndex == levels.length - 1,
+            // The "coming soon" row takes over as the rail's end, so the last
+            // real level keeps its connector running down into it.
+            isLast: rowIndex == levels.length - 1 && !showComingSoon,
           );
+        }
+        if (showComingSoon) {
+          return ComingSoonLevelRow(tint: tint);
         }
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),

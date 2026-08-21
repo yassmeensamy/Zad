@@ -1,11 +1,8 @@
 import 'dart:ui' as ui;
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_links.dart';
-import '../../../../core/services/core_service_locator.dart';
-import '../../../../core/services/share_service.dart';
+import '../../../../core/utils/share_app.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/star_medallion.dart';
@@ -31,24 +28,6 @@ import 'coming_soon_motifs.dart';
 class ComingSoonCard extends StatelessWidget {
   const ComingSoonCard({super.key});
 
-  Future<void> _share(BuildContext context) async {
-    // Both store links go out every time: the share sheet has no idea what the
-    // recipient is holding, so whoever gets the message picks their own.
-    await sl<ShareService>().shareFrom(
-      context: context,
-      text: 'categories.coming_soon.share_message'.tr(
-        namedArgs: {
-          'app': 'app_name'.tr(),
-          'ios': AppLinks.appStore,
-          'android': AppLinks.playStore,
-        },
-      ),
-      subject: 'categories.coming_soon.share_subject'.tr(
-        namedArgs: {'app': 'app_name'.tr()},
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
@@ -71,7 +50,7 @@ class ComingSoonCard extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => _share(context),
+                onTap: () => shareApp(context),
                 splashColor: tint.withValues(alpha: 0.10),
                 highlightColor: tint.withValues(alpha: 0.05),
                 child: _Content(tint: tint),

@@ -1,5 +1,9 @@
 {
   "app_name": "Zaad",
+  "share": {
+    "subject": "Try {app}",
+    "message": "Try {app} — Islamic quizzes that teach you something new every day and earn you hasanaat along the way. 🌙\n\niPhone: {ios}\nAndroid: {android}"
+  },
   "about": {
     "tanbih": "We ask Allah to grant us success and sound guidance. If you notice any mistakes, we kindly ask you to let us know. Whatever is correct is from Allah alone, and whatever is incorrect is from us and Shaytan. Allah and His Messenger ﷺ are free from it. May Allah reward you abundantly."
   },
@@ -218,9 +222,7 @@
     "coming_soon": {
       "title": "Coming soon!",
       "subtitle": "Share the application with others to support unlocking more levels and gain more hasanaat!",
-      "cta": "Share the app",
-      "share_subject": "Try {app}",
-      "share_message": "Try {app} — Islamic quizzes that teach you something new every day and earn you hasanaat along the way. 🌙\n\niPhone: {ios}\nAndroid: {android}"
+      "cta": "Share the app"
     },
     "state": {
       "completed": "DONE",
@@ -244,6 +246,12 @@
     "percent": "{}% complete",
     "count": "{} / {} levels",
     "questions": "{} / {} questions",
+    "coming_soon": {
+      "title": "More levels are on the way",
+      "subtitle": "Share the app to help unlock them sooner — and earn hasanaat for everyone who learns from it.",
+      "chip": "SOON",
+      "cta": "Share the app"
+    },
     "state": {
       "completed": "DONE",
       "in_progress": "IN PROGRESS",

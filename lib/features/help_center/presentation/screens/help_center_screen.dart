@@ -11,7 +11,6 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
 import '../../../../theme/theme.dart';
-import '../../../support_tickets/presentation/cubit/support_tickets_cubit.dart';
 import '../../data/models/support_request_model.dart';
 import '../cubit/help_center_cubit.dart';
 import '../cubit/help_center_state.dart';
@@ -65,7 +64,8 @@ class _HelpCenterViewState extends State<_HelpCenterView> {
         listenWhen: (a, b) => a.status != b.status,
         listener: (context, state) {
           if (state.isSent) {
-            context.read<SupportTicketsCubit?>()?.load(isRefresh: true);
+            // The tickets list re-reads itself when this route pops; nothing
+            // to refresh from here.
             FocusScope.of(context).unfocus();
             _resetControllers();
           } else if (state.isError) {

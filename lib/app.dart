@@ -92,12 +92,12 @@ class _AppViewState extends State<_AppView> {
     auth: context.read<AuthCubit>(),
     user: context.read<UserCubit>(),
     startup: context.read<AppStartupCubit>(),
+    connectivity: sl<ConnectivityService>(),
   );
 
   late final GoRouter _router = AppRouter.build(
     initialLocation: widget.initialLocation ?? AppRoutes.splash,
     gate: _gate,
-    isOnline: () => sl<ConnectivityService>().isOnline,
   );
 
   bool _started = false;

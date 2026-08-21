@@ -46,10 +46,7 @@ class _SupportTicketsView extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: colors.olive,
         foregroundColor: colors.canvas,
-        onPressed: () => context.pushNamed(
-          AppRoutes.helpCenterName,
-          extra: context.read<SupportTicketsCubit>(),
-        ),
+        onPressed: () => _onCompose(context),
         icon: const Icon(Icons.add_rounded),
         label: const ResponsiveText('support_tickets.new_ticket'),
       ),
@@ -85,12 +82,7 @@ class _SupportTicketsView extends StatelessWidget {
             }
             final isLoading = state.isInitial || state.isLoading;
             if (!isLoading && !state.hasTickets) {
-              return _Empty(
-                onCompose: () => context.pushNamed(
-                  AppRoutes.helpCenterName,
-                  extra: context.read<SupportTicketsCubit>(),
-                ),
-              );
+              return _Empty(onCompose: () => _onCompose(context));
             }
             final tickets = isLoading ? _placeholderTickets : state.tickets;
             return RefreshIndicator(
@@ -122,12 +114,24 @@ class _SupportTicketsView extends StatelessWidget {
     );
   }
 
-  void _onView(BuildContext context, TicketModel ticket) {
-    context.pushNamed(
+  /// Composing and viewing both run on their own cubit, so the list re-reads
+  /// itself once the pushed route returns. `isRefresh` skips the loading emit,
+  /// so nothing flashes.
+  Future<void> _onCompose(BuildContext context) async {
+    final cubit = context.read<SupportTicketsCubit>();
+    await context.pushNamed(AppRoutes.helpCenterName);
+    if (context.mounted) await cubit.load(isRefresh: true);
+  }
+
+  Future<void> _onView(BuildContext context, TicketModel ticket) async {
+    final cubit = context.read<SupportTicketsCubit>();
+    await context.pushNamed(
       AppRoutes.ticketDetailName,
       pathParameters: {'id': ticket.id},
-      extra: (cubit: context.read<SupportTicketsCubit>(), ticket: ticket),
+      // Value object only — a seed for instant paint, never a live cubit.
+      extra: ticket,
     );
+    if (context.mounted) await cubit.load(isRefresh: true);
   }
 }
 

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
-import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/empty_state.dart';
@@ -19,13 +18,10 @@ import '../widgets/draft_card.dart';
 class DraftsScreen extends StatelessWidget {
   const DraftsScreen({super.key});
 
+  // The DraftsCubit is provided by the shell route above this screen so the
+  // detail route shares the same instance — see AppRouter.
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<DraftsCubit>(
-      create: (_) => sl<DraftsCubit>()..load(),
-      child: const _DraftsView(),
-    );
-  }
+  Widget build(BuildContext context) => const _DraftsView();
 }
 
 class _DraftsView extends StatelessWidget {
@@ -45,10 +41,7 @@ class _DraftsView extends StatelessWidget {
             listenWhen: (a, b) =>
                 a.errorMessage != b.errorMessage && b.errorMessage != null,
             listener: (context, state) {
-              SnackBarHelper.showError(
-                context,
-                message: state.errorMessage!,
-              );
+              SnackBarHelper.showError(context, message: state.errorMessage!);
             },
           ),
           BlocListener<DraftsCubit, DraftsState>(
@@ -114,7 +107,8 @@ class _DraftsView extends StatelessWidget {
     context.pushNamed(
       AppRoutes.draftDetailName,
       pathParameters: {'id': draft.id.toString()},
-      extra: (cubit: context.read<DraftsCubit>(), draft: draft),
+      // Value object only — the cubit comes from the shared shell provider.
+      extra: draft,
     );
   }
 

@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
-enum AuthPhase { unknown, transitioning, onboarding, signedOut, signedIn }
+import 'routing_state.dart';
+
+export 'routing_state.dart' show AuthPhase, RoutingState;
 
 class GuardRoutes {
   const GuardRoutes({
@@ -60,26 +62,32 @@ class GuardRoutes {
   }
 }
 
+/// Builds the top-level redirect.
+///
+/// [readState] is the *only* source of routing inputs. It is the same function
+/// the router's `refreshListenable` snapshots, so the guard can never depend on
+/// something that would not have triggered a re-evaluation. The callback itself
+/// holds no mutable state — the intended destination travels in the URL as
+/// `?from=`, which keeps the redirect a pure function of (location, snapshot)
+/// even when go_router re-invokes it several times in one redirect chain.
 GoRouterRedirect authGuard({
   required GuardRoutes routes,
-  required AuthPhase Function() phase,
-  bool Function() isOnline = _alwaysOnline,
-  bool Function() isGuest = _notGuest,
-  bool Function() isChild = _notChild,
-  bool Function() needsProfileSetup = _profileComplete,
+  required RoutingState Function() readState,
   String fromParam = 'from',
 }) {
   return (context, state) {
+    final routing = readState();
     final loc = state.matchedLocation;
 
     final existingFrom = state.uri.queryParameters[fromParam];
     final intended = (existingFrom != null && !routes.isEntry(existingFrom))
         ? existingFrom
         : (routes.isEntry(state.uri.toString()) ? null : state.uri.toString());
-    final suffix =
-        intended == null ? '' : '?$fromParam=${Uri.encodeComponent(intended)}';
+    final suffix = intended == null
+        ? ''
+        : '?$fromParam=${Uri.encodeComponent(intended)}';
 
-    switch (phase()) {
+    switch (routing.phase) {
       case AuthPhase.unknown:
         return loc == routes.splash ? null : '${routes.splash}$suffix';
       case AuthPhase.transitioning:
@@ -92,7 +100,7 @@ GoRouterRedirect authGuard({
         }
         return '${routes.signIn}$suffix';
       case AuthPhase.signedIn:
-        if (isGuest()) {
+        if (routing.isGuest) {
           // Guests skip the parent/child flow and cannot open child screens.
           if (routes.guestBlocked.contains(loc)) return routes.guestHome;
           if (loc == routes.splash || loc == routes.signIn) {
@@ -105,7 +113,7 @@ GoRouterRedirect authGuard({
           }
           return null;
         }
-        if (isChild()) {
+        if (routing.isChild) {
           // Children skip the parent/child selection flow and land on their
           // own home instead of the profile-selection screen.
           if (routes.childBlocked.contains(loc)) return routes.childHome;
@@ -119,7 +127,7 @@ GoRouterRedirect authGuard({
           }
           return null;
         }
-        if (needsProfileSetup()) {
+        if (routing.needsProfileSetup) {
           // New / unfinished accounts must complete the profile flow first.
           return routes.setupFlow.contains(loc) ? null : routes.profileSetup;
         }
@@ -128,18 +136,10 @@ GoRouterRedirect authGuard({
         if (loc == routes.splash ||
             loc == routes.signIn ||
             routes.setupFlow.contains(loc)) {
-          final home = isOnline() ? routes.home : routes.offlineHome;
+          final home = routing.isOnline ? routes.home : routes.offlineHome;
           return intended ?? home;
         }
         return null;
     }
   };
 }
-
-bool _alwaysOnline() => true;
-
-bool _notGuest() => false;
-
-bool _notChild() => false;
-
-bool _profileComplete() => false;

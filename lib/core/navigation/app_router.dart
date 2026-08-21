@@ -46,8 +46,7 @@ import 'app_routes.dart';
 import 'auth_gate.dart';
 import 'auth_guard.dart';
 import 'deep_links.dart';
-
-bool _alwaysOnline() => true;
+import 'extra_codec.dart';
 
 class AppRouter {
   const AppRouter._();
@@ -64,7 +63,11 @@ class AppRouter {
     // incomplete profile isn't redirected off /signup the instant /me resolves —
     // that would tear down the success dialog before it can be seen. The dialog's
     // Continue button navigates on to role-select explicitly.
-    setupFlow: {AppRoutes.signup, AppRoutes.roleSelect, AppRoutes.completeProfile},
+    setupFlow: {
+      AppRoutes.signup,
+      AppRoutes.roleSelect,
+      AppRoutes.completeProfile,
+    },
     offlineHome: AppRoutes.home,
     guestHome: AppRoutes.home,
     childHome: AppRoutes.home,
@@ -87,20 +90,22 @@ class AppRouter {
   static GoRouter build({
     required String initialLocation,
     required AuthGate gate,
-    bool Function() isOnline = _alwaysOnline,
   }) {
     return GoRouter(
       navigatorKey: rootNavigatorKey,
       initialLocation: initialLocation,
-      refreshListenable: gate.listenable,
+      // Both of these resolve to `gate.routingState`: the refresh only fires
+      // when that snapshot changes, and the guard decides from the same
+      // snapshot. Neither can depend on an input the other doesn't see.
+      refreshListenable: gate.refresh,
       redirect: authGuard(
         routes: guardRoutes,
-        phase: () => gate.phase,
-        isOnline: isOnline,
-        isGuest: () => gate.isGuest,
-        isChild: () => gate.isChild,
-        needsProfileSetup: () => gate.needsProfileSetup,
+        readState: () => gate.routingState,
       ),
+      // A refresh re-decodes `extra`; without this codec go_router json-encodes
+      // it through the models' `toJson()`, which return Strings. See
+      // [AppExtraCodec].
+      extraCodec: const AppExtraCodec(),
       routes: [
         GoRoute(
           path: AppRoutes.splash,
@@ -141,7 +146,9 @@ class AppRouter {
           builder: (context, state) => BlocProvider<CountriesCubit>(
             create: (_) => sl<CountriesCubit>()..fetchCountries(),
             child: CompleteProfileScreen(
-              nextDestination: state.extra as String? ?? AppRoutes.home,
+              nextDestination: state.extra is String
+                  ? state.extra! as String
+                  : AppRoutes.home,
             ),
           ),
         ),
@@ -178,32 +185,41 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.helpCenter,
           name: AppRoutes.helpCenterName,
-          builder: (context, state) {
-            final ticketsCubit = state.extra as SupportTicketsCubit?;
-            if (ticketsCubit == null) return const HelpCenterScreen();
-            return BlocProvider<SupportTicketsCubit>.value(
-              value: ticketsCubit,
-              child: const HelpCenterScreen(),
-            );
-          },
+          builder: (context, state) => const HelpCenterScreen(),
         ),
-        GoRoute(
-          path: AppRoutes.drafts,
-          name: AppRoutes.draftsName,
-          builder: (context, state) => const DraftsScreen(),
+        // The drafts list and a single draft share one DraftsCubit: the detail
+        // screen reads the live note out of the list's state and mutates it in
+        // place. Hoisting the provider above both routes keeps that instance
+        // shared without putting a live object into `extra`, which could never
+        // survive go_router's serialization.
+        ShellRoute(
+          builder: (context, state, child) => BlocProvider<DraftsCubit>(
+            create: (_) => sl<DraftsCubit>()..load(),
+            child: child,
+          ),
           routes: [
             GoRoute(
-              path: AppRoutes.draftDetail,
-              name: AppRoutes.draftDetailName,
-              builder: (context, state) {
-                final extra =
-                    state.extra as ({DraftsCubit cubit, DraftModel draft})?;
-                if (extra == null) return const SizedBox.shrink();
-                return BlocProvider<DraftsCubit>.value(
-                  value: extra.cubit,
-                  child: DraftDetailScreen(draft: extra.draft),
-                );
-              },
+              path: AppRoutes.drafts,
+              name: AppRoutes.draftsName,
+              builder: (context, state) => const DraftsScreen(),
+              routes: [
+                GoRoute(
+                  path: AppRoutes.draftDetail,
+                  name: AppRoutes.draftDetailName,
+                  // The screen cannot render without a draft, and the id alone
+                  // isn't enough to rebuild one. If the hint didn't survive,
+                  // fall back to the list rather than an empty page.
+                  redirect: (context, state) =>
+                      state.extra is DraftModel ? null : AppRoutes.drafts,
+                  builder: (context, state) {
+                    final extra = state.extra;
+                    // Unreachable: the redirect above already bounced a missing
+                    // draft to the list.
+                    if (extra is! DraftModel) return const SizedBox.shrink();
+                    return DraftDetailScreen(draft: extra);
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -215,14 +231,17 @@ class AppRouter {
             GoRoute(
               path: AppRoutes.ticketDetail,
               name: AppRoutes.ticketDetailName,
+              // Detail owns its cubit — it only ever reads detail-scoped state
+              // and loads by id, so it never needs the list's instance. The
+              // ticket is an optional seed for instant paint.
               builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                final extra =
-                    state.extra
-                        as ({SupportTicketsCubit cubit, TicketModel ticket});
-                return BlocProvider<SupportTicketsCubit>.value(
-                  value: extra.cubit,
-                  child: TicketDetailScreen(ticketId: id, seed: extra.ticket),
+                final extra = state.extra;
+                return BlocProvider<SupportTicketsCubit>(
+                  create: (_) => sl<SupportTicketsCubit>(),
+                  child: TicketDetailScreen(
+                    ticketId: state.pathParameters['id'] ?? '',
+                    seed: extra is TicketModel ? extra : null,
+                  ),
                 );
               },
             ),
@@ -231,9 +250,13 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.levels,
           name: AppRoutes.levelsName,
+          // `category` is a paint-ahead hint only; the id in the path is the
+          // source of truth and the screen fetches from it either way.
           builder: (context, state) => LevelsScreen(
             categoryId: state.pathParameters['id']!,
-            category: state.extra as CategoryModel?,
+            category: state.extra is CategoryModel
+                ? state.extra! as CategoryModel
+                : null,
           ),
         ),
         GoRoute(
@@ -241,7 +264,9 @@ class AppRouter {
           name: AppRoutes.quizName,
           builder: (context, state) => QuizScreen(
             levelId: int.tryParse(state.pathParameters['levelId'] ?? '') ?? -1,
-            level: state.extra as LevelModel?,
+            level: state.extra is LevelModel
+                ? state.extra! as LevelModel
+                : null,
           ),
         ),
         GoRoute(
@@ -281,22 +306,13 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.teamHome,
           name: AppRoutes.teamHomeName,
-          builder: (context, state) {
-            final passed = state.extra;
-            if (passed is TeamsCubit) {
-              return BlocProvider<TeamsCubit>.value(
-                value: passed,
-                child: const TeamHomeScreen(),
-              );
-            }
-            return BlocProvider<TeamsCubit>(
-              create: (_) => sl<TeamsCubit>()
-                ..loadTeamStatus()
-                ..loadTeamMembers()
-                ..loadTeamProgress(),
-              child: const TeamHomeScreen(),
-            );
-          },
+          builder: (context, state) => BlocProvider<TeamsCubit>(
+            create: (_) => sl<TeamsCubit>()
+              ..loadTeamStatus()
+              ..loadTeamMembers()
+              ..loadTeamProgress(),
+            child: const TeamHomeScreen(),
+          ),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) =>

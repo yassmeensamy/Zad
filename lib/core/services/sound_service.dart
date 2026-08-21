@@ -18,6 +18,9 @@ abstract class SoundService {
   /// Played when the user picks a wrong choice.
   Future<void> playWrong();
 
+  /// Played once when the level-complete result screen lands.
+  Future<void> playLevelComplete();
+
   /// Cuts off anything still playing, e.g. when leaving the quiz.
   Future<void> stop();
 }
@@ -40,6 +43,14 @@ class SoundServiceImpl implements SoundService {
     'voices/wrong_soft_buzz_3.mp3',
     'voices/wrong_deflate.mp3',
     'voices/wrong_peep.mp3',
+  ];
+
+  /// Longer, warmer stings than the per-answer ones: they land once at the end
+  /// of a level, not between questions.
+  static const _levelCompleteClips = <String>[
+    'voices/level_alhamdulillah.mp3',
+    'voices/level_cheerful_chime.mp3',
+    'voices/level_joyful_cheer.mp3',
   ];
 
   /// Game feedback semantics: mixes with any audio already playing and stays
@@ -70,7 +81,11 @@ class SoundServiceImpl implements SoundService {
       try {
         await _player.setReleaseMode(ReleaseMode.stop);
         await _player.setAudioContext(_sfxContext);
-        await _player.audioCache.loadAll([..._correctClips, ..._wrongClips]);
+        await _player.audioCache.loadAll([
+          ..._correctClips,
+          ..._wrongClips,
+          ..._levelCompleteClips,
+        ]);
       } catch (e) {
         logger.error('SoundService.preload failed: $e');
         _ready = null;
@@ -83,6 +98,9 @@ class SoundServiceImpl implements SoundService {
 
   @override
   Future<void> playWrong() => _play(_wrongClips);
+
+  @override
+  Future<void> playLevelComplete() => _play(_levelCompleteClips);
 
   @override
   Future<void> stop() async {

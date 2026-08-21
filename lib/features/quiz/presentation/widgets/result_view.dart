@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -5,8 +7,10 @@ import '../../../../theme/theme.dart';
 import '../../../levels/data/models/level_model.dart';
 import '../../../levels/presentation/screens/celebration.dart';
 import '../../../../core/constants/quiz_points.dart';
+import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/sound_service.dart';
 
-class ResultView extends StatelessWidget {
+class ResultView extends StatefulWidget {
   const ResultView({
     super.key,
     required this.points,
@@ -38,14 +42,28 @@ class ResultView extends StatelessWidget {
 
   final bool perfectBonusAwarded;
 
+  @override
+  State<ResultView> createState() => _ResultViewState();
+}
+
+class _ResultViewState extends State<ResultView> {
+  @override
+  void initState() {
+    super.initState();
+    // The level's reward sting, fired from initState so it plays once as the
+    // screen lands rather than on every rebuild.
+    unawaited(sl<SoundService>().playLevelComplete());
+  }
+
   int get _correct {
-    final c = firstTryCorrect ?? (questionsCompleted - totalRetries);
-    return c.clamp(0, questionsCompleted);
+    final c = widget.firstTryCorrect ??
+        (widget.questionsCompleted - widget.totalRetries);
+    return c.clamp(0, widget.questionsCompleted);
   }
 
   int get _accuracy {
-    if (questionsCompleted <= 0) return 0;
-    return ((_correct / questionsCompleted) * 100).round();
+    if (widget.questionsCompleted <= 0) return 0;
+    return ((_correct / widget.questionsCompleted) * 100).round();
   }
 
   String _formatElapsed(Duration d) {
@@ -56,11 +74,12 @@ class ResultView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final correct = _correct;
-    final total = questionsCompleted;
+    final total = widget.questionsCompleted;
     final accuracy = _accuracy;
+    final level = widget.level;
 
     final eyebrow = level != null
-        ? 'quiz.result.level_complete'.tr(args: ['${level!.order}'])
+        ? 'quiz.result.level_complete'.tr(args: ['${level.order}'])
         : 'quiz.result.eyebrow'.tr();
 
     return LevelCompleteCelebration(
@@ -70,8 +89,8 @@ class ResultView extends StatelessWidget {
       subtitle: _Subtitle(
         correct: correct,
         total: total,
-        closing: (motivationalKey ?? 'quiz.result.closing').tr(),
-        perfectBonusAwarded: perfectBonusAwarded,
+        closing: (widget.motivationalKey ?? 'quiz.result.closing').tr(),
+        perfectBonusAwarded: widget.perfectBonusAwarded,
       ),
       stats: [
         CelebrationStat(
@@ -80,7 +99,9 @@ class ResultView extends StatelessWidget {
           label: 'quiz.result.stat_correct'.tr(),
         ),
         CelebrationStat(
-          value: elapsed != null ? _formatElapsed(elapsed!) : '—',
+          value: widget.elapsed != null
+              ? _formatElapsed(widget.elapsed!)
+              : '—',
           label: 'quiz.result.stat_time'.tr(),
         ),
         CelebrationStat(
@@ -90,9 +111,9 @@ class ResultView extends StatelessWidget {
           fire: accuracy >= 100,
         ),
       ],
-      xp: points.round(),
+      xp: widget.points.round(),
       continueLabel: 'quiz.result.continue'.tr(),
-      onContinue: onDone,
+      onContinue: widget.onDone,
     );
   }
 }

@@ -90,6 +90,7 @@ class RankingsBody extends StatelessWidget {
               completed: r.completedLevels,
               total: r.totalLevels,
               flag: r.countryFlag,
+              points: r.totalPoints,
             ),
         ]
       : [
@@ -111,8 +112,10 @@ class RankingsBody extends StatelessWidget {
         name: r.username,
         completed: r.completedLevels,
         total: r.totalLevels,
-        subtitle: r.countryName,
+        // Country reads as the flag alone — no name. The flag already says
+        // where someone is from without spending a line of the meta on it.
         flag: r.countryFlag,
+        points: r.totalPoints,
         isMe: myRank != null && r.rank == myRank,
       );
     }
@@ -150,6 +153,7 @@ class RankingsFooter extends StatelessWidget {
         title: 'leaderboard.you'.tr(),
         completed: me.completedLevels,
         total: me.totalLevels,
+        points: me.totalPoints,
       );
     }
     final me = state.myTeamRank;

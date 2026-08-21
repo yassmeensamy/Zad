@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/eight_point_star.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -14,11 +15,16 @@ class StreakHero extends StatelessWidget {
     required this.streakDays,
     required this.weekProgress,
     required this.todayIndex,
+    this.points,
   });
 
   final int streakDays;
   final List<bool> weekProgress;
   final int todayIndex;
+
+  /// The account's running points total, badged opposite the eyebrow. Null
+  /// leaves the eyebrow alone — a guest or a profile still loading.
+  final int? points;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +52,7 @@ class StreakHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _StreakHeader(),
+                _StreakHeader(points: points),
                 const SizedBox(height: 8),
                 _StreakNumberRow(totalDays: streakDays),
                 const SizedBox(height: 8),
@@ -178,35 +184,94 @@ class _AmberGlow extends StatelessWidget {
 }
 
 class _StreakHeader extends StatelessWidget {
-  const _StreakHeader();
+  const _StreakHeader({this.points});
+
+  final int? points;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final total = points;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        RichText(
-          text: TextSpan(
-            style: AppTextStyles.eyebrow(
-              fontSize: 14,
-              tracking: 0.4,
-              color: colors.heroInk.withValues(alpha: 0.55),
-            ),
-            children: [
-              TextSpan(text: 'home.streak.eyebrow_prefix'.tr().toUpperCase()),
-              TextSpan(
-                text: 'home.streak.eyebrow_accent'.tr().toUpperCase(),
-                style: AppTextStyles.eyebrow(
-                  fontSize: 14,
-                  tracking: 0.4,
-                  color: colors.heroGold,
-                ),
+        // Flexible so a scaled-up eyebrow wraps instead of overflowing the row
+        // now that the badge shares it.
+        Flexible(
+          child: RichText(
+            text: TextSpan(
+              style: AppTextStyles.eyebrow(
+                fontSize: 14,
+                tracking: 0.4,
+                color: colors.heroInk.withValues(alpha: 0.55),
               ),
-            ],
+              children: [
+                TextSpan(text: 'home.streak.eyebrow_prefix'.tr().toUpperCase()),
+                TextSpan(
+                  text: 'home.streak.eyebrow_accent'.tr().toUpperCase(),
+                  style: AppTextStyles.eyebrow(
+                    fontSize: 14,
+                    tracking: 0.4,
+                    color: colors.heroGold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+        // The eyebrow row has always been `spaceBetween` with nothing opposite
+        // it; the balance takes that slot, in the hero's own gold-on-dark ink
+        // rather than the amber pill the page uses elsewhere.
+        if (total != null) _PointsBadge(points: total),
       ],
+    );
+  }
+}
+
+class _PointsBadge extends StatelessWidget {
+  const _PointsBadge({required this.points});
+
+  final int points;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(9, 4, 11, 4),
+      decoration: BoxDecoration(
+        borderRadius: ZaadRadii.pillAll,
+        color: colors.heroInk.withValues(alpha: 0.08),
+        border: Border.all(color: colors.heroGold.withValues(alpha: 0.32)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.stars_rounded, size: 13, color: colors.heroGold),
+          const SizedBox(width: 5),
+          ResponsiveText(
+            groupedNumber(points),
+            style: AppTextStyles.displaySmall.copyWith(
+              fontSize: 15,
+              height: 1,
+              letterSpacing: -0.2,
+              color: colors.heroGold,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1),
+            child: ResponsiveText(
+              'home.streak.points_word',
+              style: AppTextStyles.eyebrow(
+                fontSize: 8,
+                tracking: 0.34,
+                color: colors.heroInk.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

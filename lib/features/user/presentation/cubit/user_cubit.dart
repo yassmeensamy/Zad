@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../core/cubits/base_cubit.dart';
 import '../../../../core/expections/server_exception.dart';
 import '../../../../core/models/user_model.dart';
@@ -5,6 +7,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../auth/core/auth_event_service.dart';
 import '../../../auth/core/auth_state_listener_mixin.dart';
 import '../../../onboarding_flow/data/avatar_model.dart';
+import '../../../quiz/core/quiz_event_service.dart';
 import '../../data/repositories/user_repository.dart';
 import 'user_state.dart';
 
@@ -12,14 +15,21 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   UserCubit({
     required UserRepository userRepository,
     required AuthEventService authEventService,
+    required QuizEventService quizEventService,
   }) : _userRepository = userRepository,
        _authEventService = authEventService,
        super(const UserState()) {
     initAuthListener();
+    // A finished level moves `totalPoints` server-side, so re-read /me to keep
+    // the displayed total honest. Silent: the profile already on screen stays.
+    _submitSub = quizEventService.onSubmitted.listen(
+      (_) => fetchUserProfile(isRefresh: true),
+    );
   }
 
   final UserRepository _userRepository;
   final AuthEventService _authEventService;
+  StreamSubscription<int>? _submitSub;
 
   @override
   AuthEventService get authEventService => _authEventService;
@@ -30,19 +40,34 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   @override
   void onUnauthenticated() => clearUser();
 
-  Future<void> fetchUserProfile() async {
-    emit(state.copyWith(status: UserStatus.loading));
+  /// Reads `GET /api/users/me` into state.
+  ///
+  /// [isRefresh] marks a background re-read of an already-loaded profile (after
+  /// a quiz submit): it skips the `loading` emit so nothing on screen flashes,
+  /// and swallows failures instead of falling back to cache — a momentarily
+  /// stale total beats knocking a live session into an error/cache state.
+  Future<void> fetchUserProfile({bool isRefresh = false}) async {
+    if (!isRefresh) {
+      emit(state.copyWith(status: UserStatus.loading));
+    }
     try {
       final user = await _userRepository.fetchUserProfile();
-      logger.debug(
-        '[apple-name] 5/6 /me profile → fullName="${user.fullName}", '
-        'email=${user.email}, profileComplete=${user.isProfileComplete}',
-      );
+      if (!isRefresh) {
+        logger.debug(
+          '[apple-name] 5/6 /me profile → fullName="${user.fullName}", '
+          'email=${user.email}, profileComplete=${user.isProfileComplete}',
+        );
+      }
       emit(state.copyWith(status: UserStatus.success, user: user));
     } on ServerException catch (e) {
+      if (isRefresh) {
+        logger.error('UserCubit.fetchUserProfile refresh failed: ${e.message}');
+        return;
+      }
       await _fallbackToCache(message: e.message);
     } catch (e) {
       logger.error('UserCubit.fetchUserProfile failed: $e');
+      if (isRefresh) return;
       await _fallbackToCache(message: 'Failed to load user profile');
     }
   }
@@ -166,7 +191,8 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    await _submitSub?.cancel();
     disposeAuthListener();
     return super.close();
   }

@@ -44,7 +44,8 @@
     "retry": "حاول مجدداً",
     "yes": "نعم",
     "no": "لا",
-    "reset": "إعادة الضبط"
+    "reset": "إعادة الضبط",
+    "total_points": "{} نقطة"
   },
   "onboarding": {
     "get_started": "ابدأ الآن",
@@ -147,7 +148,8 @@
       "personal_best": "أعلى تتابع لك",
       "personal_best_value": "{} يومًا",
       "next_milestone": "الهدف القادم",
-      "next_milestone_value": "{} · أسبوعان"
+      "next_milestone_value": "{} · أسبوعان",
+      "points_word": "نقطة"
     },
     "play": {
       "title_prefix": "ابدأ ",
@@ -310,7 +312,7 @@
       "title": "أتممت المستوى",
       "level_complete": "المستوى {} · مكتمل",
       "answered_prefix": "أجبت على",
-    "first_try_suffix": "من المحاولة الأولى",
+      "first_try_suffix": "من المحاولة الأولى",
       "continue": "متابعة",
       "score": "النتيجة",
       "points_label": "نقطة",
@@ -325,7 +327,8 @@
       "stat_accuracy": "الدقة",
       "stat_xp_earned": "النقاط المكتسبة",
       "stat_xp": "النقاط",
-      "stat_revisits": "مراجعات"
+      "stat_revisits": "مراجعات",
+      "total_points": "رصيدك {} نقطة"
     },
     "motivation": {
       "correct_1": "ما شاء الله! إجابة موفقة 🌿",

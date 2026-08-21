@@ -8,6 +8,7 @@ import '../../../../theme/theme.dart';
 import '../../../streak/presentation/cubit/streak_cubit.dart';
 import '../../../streak/presentation/cubit/streak_state.dart';
 import '../../../streak/presentation/widgets/streak_hero.dart';
+import '../../../user/presentation/cubit/user_cubit.dart';
 
 /// Home's adapter over the streak feature: binds [StreakCubit] to
 /// [StreakHero] and owns the section's loading and failure presentation.
@@ -39,6 +40,12 @@ class HomeStreakSection extends StatelessWidget {
             streakDays: state.streakDays,
             weekProgress: state.weekProgress,
             todayIndex: state.todayIndex,
+            // Points ride along with the streak: both answer "what has my
+            // effort added up to". Null until the profile lands, which keeps
+            // the badge off rather than flashing a zero.
+            points: context.select<UserCubit, int?>(
+              (cubit) => cubit.state.user?.totalPoints,
+            ),
           ),
         );
       },

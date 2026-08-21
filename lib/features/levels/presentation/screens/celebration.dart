@@ -46,6 +46,7 @@ class LevelCompleteCelebration extends StatelessWidget {
     required this.title,
     required this.stats,
     required this.xp,
+    this.totalNote,
     this.arabic,
     this.subtitle,
     this.continueLabel = 'CONTINUE',
@@ -64,6 +65,11 @@ class LevelCompleteCelebration extends StatelessWidget {
 
   /// Points earned — counts up from zero.
   final int xp;
+
+  /// Optional running total under the earned counter, e.g. `Total 1,240
+  /// points`. Already localised and formatted by the caller; null hides the
+  /// line, which is what an offline submit does — no server total to report.
+  final String? totalNote;
 
   /// Optional Arabic blessing under the title.
   final String? arabic;
@@ -529,10 +535,20 @@ class _ContentColumn extends StatelessWidget {
     );
   }
 
-  Widget _xp() => _XpCounter(to: data.xp, palette: palette)
-      .animate()
-      .fadeIn(delay: 2050.ms, duration: 600.ms, curve: _ease)
-      .moveY(begin: 12, end: 0, delay: 2050.ms, duration: 600.ms, curve: _ease);
+  Widget _xp() => _XpCounter(
+        to: data.xp,
+        totalNote: data.totalNote,
+        palette: palette,
+      )
+          .animate()
+          .fadeIn(delay: 2050.ms, duration: 600.ms, curve: _ease)
+          .moveY(
+            begin: 12,
+            end: 0,
+            delay: 2050.ms,
+            duration: 600.ms,
+            curve: _ease,
+          );
 }
 
 // ─── Stat chip ───────────────────────────────────────────────────────────────
@@ -629,9 +645,10 @@ class _StatChip extends StatelessWidget {
 // ─── XP count-up ─────────────────────────────────────────────────────────────
 
 class _XpCounter extends StatefulWidget {
-  const _XpCounter({required this.to, required this.palette});
+  const _XpCounter({required this.to, required this.palette, this.totalNote});
 
   final int to;
+  final String? totalNote;
   final _CelPalette palette;
 
   @override
@@ -665,7 +682,9 @@ class _XpCounterState extends State<_XpCounter>
   @override
   Widget build(BuildContext context) {
     final p = widget.palette;
-    return Row(
+    final totalNote = widget.totalNote;
+
+    final earned = Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
@@ -695,6 +714,40 @@ class _XpCounterState extends State<_XpCounter>
             );
           },
         ),
+      ],
+    );
+
+    if (totalNote == null) return earned;
+
+    // The running total sits under the earned figure as a quiet glass pill:
+    // the count-up stays the moment, this is the balance it landed on.
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        earned,
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: ZaadRadii.pillAll,
+            border: Border.all(color: p.glassBorder),
+          ),
+          child: ResponsiveText(
+            totalNote,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              color: p.muted,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        )
+            // The submit call is often still in flight when the celebration
+            // lands, so the total can arrive a beat late. Fading it in keeps
+            // that from reading as a pop.
+            .animate()
+            .fadeIn(duration: 400.ms, curve: _ease),
       ],
     );
   }

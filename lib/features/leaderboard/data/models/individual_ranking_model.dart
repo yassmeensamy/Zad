@@ -10,6 +10,7 @@ class IndividualRankingModel {
     required this.countryName,
     required this.countryCode,
     required this.countryFlag,
+    this.totalPoints = 0,
   });
 
   final int rank;
@@ -17,6 +18,11 @@ class IndividualRankingModel {
   final String username;
   final int completedLevels;
   final int totalLevels;
+
+  /// The ranked user's points balance. Defaults to 0: the rankings endpoint
+  /// ranks on `completedLevels` and does not send this yet, so rows read zero
+  /// until the backend adds `totalPoints` to the payload.
+  final int totalPoints;
 
   /// Country of the ranked user. All three are null when the user never picked
   /// a country — the backend only guarantees them for `country_id` filtered
@@ -42,6 +48,7 @@ class IndividualRankingModel {
         countryName: map['countryName'] as String?,
         countryCode: map['countryCode'] as String?,
         countryFlag: map['countryFlag'] as String?,
+        totalPoints: (map['totalPoints'] as num?)?.toInt() ?? 0,
       );
 
   factory IndividualRankingModel.fromJson(String source) =>
@@ -58,6 +65,7 @@ class IndividualRankingModel {
     'countryName': countryName,
     'countryCode': countryCode,
     'countryFlag': countryFlag,
+    'totalPoints': totalPoints,
   };
 
   String toJson() => json.encode(toMap());
@@ -73,7 +81,8 @@ class IndividualRankingModel {
         other.totalLevels == totalLevels &&
         other.countryName == countryName &&
         other.countryCode == countryCode &&
-        other.countryFlag == countryFlag;
+        other.countryFlag == countryFlag &&
+        other.totalPoints == totalPoints;
   }
 
   @override
@@ -86,12 +95,13 @@ class IndividualRankingModel {
     countryName,
     countryCode,
     countryFlag,
+    totalPoints,
   );
 
   @override
   String toString() =>
       'IndividualRankingModel(#$rank $username, '
-      '$completedLevels/$totalLevels, $countryCode)';
+      '$completedLevels/$totalLevels, $totalPoints pts, $countryCode)';
 }
 
 class MyIndividualRank {
@@ -99,11 +109,16 @@ class MyIndividualRank {
     required this.rank,
     required this.completedLevels,
     required this.totalLevels,
+    this.totalPoints = 0,
   });
 
   final int rank;
   final int completedLevels;
   final int totalLevels;
+
+  /// See [IndividualRankingModel.totalPoints] — zero until the endpoint sends
+  /// it.
+  final int totalPoints;
 
   double get progress {
     if (totalLevels <= 0) return 0;
@@ -115,12 +130,14 @@ class MyIndividualRank {
         rank: (map['rank'] as num?)?.toInt() ?? 0,
         completedLevels: (map['completedLevels'] as num?)?.toInt() ?? 0,
         totalLevels: (map['totalLevels'] as num?)?.toInt() ?? 0,
+        totalPoints: (map['totalPoints'] as num?)?.toInt() ?? 0,
       );
 
   Map<String, dynamic> toMap() => {
     'rank': rank,
     'completedLevels': completedLevels,
     'totalLevels': totalLevels,
+    'totalPoints': totalPoints,
   };
 
   @override
@@ -129,9 +146,11 @@ class MyIndividualRank {
     return other is MyIndividualRank &&
         other.rank == rank &&
         other.completedLevels == completedLevels &&
-        other.totalLevels == totalLevels;
+        other.totalLevels == totalLevels &&
+        other.totalPoints == totalPoints;
   }
 
   @override
-  int get hashCode => Object.hash(rank, completedLevels, totalLevels);
+  int get hashCode =>
+      Object.hash(rank, completedLevels, totalLevels, totalPoints);
 }

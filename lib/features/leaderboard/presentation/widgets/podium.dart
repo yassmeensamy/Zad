@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/rank_crown.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -140,6 +141,26 @@ class _PodiumPillar extends StatelessWidget {
             color: accent,
           ),
         ),
+        // Points under the level count — individuals only; the teams podium
+        // has no points to show.
+        if (seed?.points case final points?) ...[
+          const SizedBox(height: 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.stars_rounded, size: isFirst ? 11 : 10, color: accent),
+              const SizedBox(width: 3),
+              ResponsiveText(
+                groupedNumber(points),
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontSize: isFirst ? 11 : 10,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 7),
         Container(
           height: pedHeight,

@@ -44,7 +44,8 @@
     "retry": "Retry",
     "yes": "Yes",
     "no": "No",
-    "reset": "Reset"
+    "reset": "Reset",
+    "total_points": "{} points"
   },
   "onboarding": {
     "get_started": "Get started",
@@ -147,7 +148,8 @@
       "personal_best": "PERSONAL BEST",
       "personal_best_value": "{} days",
       "next_milestone": "NEXT MILESTONE",
-      "next_milestone_value": "{} · two weeks"
+      "next_milestone_value": "{} · two weeks",
+      "points_word": "POINTS"
     },
     "play": {
       "title_prefix": "Start ",
@@ -310,7 +312,7 @@
       "title": "Level Complete",
       "level_complete": "LEVEL {} · COMPLETE",
       "answered_prefix": "You answered",
-    "first_try_suffix": "on the first try",
+      "first_try_suffix": "on the first try",
       "continue": "Continue",
       "score": "SCORE",
       "points_label": "POINTS",
@@ -325,7 +327,8 @@
       "stat_accuracy": "Accuracy",
       "stat_xp_earned": "XP earned",
       "stat_xp": "XP",
-      "stat_revisits": "Revisits"
+      "stat_revisits": "Revisits",
+      "total_points": "Total {} points"
     },
     "motivation": {
       "correct_1": "Mashallah! A blessed answer 🌿",

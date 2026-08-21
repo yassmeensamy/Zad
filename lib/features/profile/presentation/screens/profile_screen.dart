@@ -8,6 +8,7 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/points_pill.dart';
 // import '../../../../core/widgets/force_update_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/tanbih_note.dart';
@@ -167,6 +168,12 @@ class _MihrabHero extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+          ],
+          // Guests earn nothing server-side, so the balance would only ever
+          // read zero for them.
+          if (!(user?.isAnonymous ?? false)) ...[
+            const SizedBox(height: 12),
+            PointsPill(points: user?.totalPoints ?? 0),
           ],
         ],
       ),

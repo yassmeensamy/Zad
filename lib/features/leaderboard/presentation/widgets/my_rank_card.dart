@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
@@ -14,6 +15,7 @@ class MyRankCard extends StatelessWidget {
     required this.title,
     required this.completed,
     required this.total,
+    this.points,
     this.onTap,
   });
 
@@ -22,6 +24,10 @@ class MyRankCard extends StatelessWidget {
   final String title;
   final int completed;
   final int total;
+
+  /// Your points balance, badged after the levels line. Null on the team card,
+  /// whose endpoint carries no points.
+  final int? points;
   final VoidCallback? onTap;
 
   @override
@@ -149,6 +155,20 @@ class MyRankCard extends StatelessWidget {
                         color: colors.textSecondary,
                       ),
                     ),
+                    if (points case final points?) ...[
+                      const SizedBox(width: 8),
+                      Icon(Icons.stars_rounded, size: 12, color: accentInk),
+                      const SizedBox(width: 3),
+                      ResponsiveText(
+                        groupedNumber(points),
+                        maxLines: 1,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],

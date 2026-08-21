@@ -212,6 +212,7 @@ class _QuizView extends StatelessWidget {
               elapsed: state.elapsed,
               motivationalKey: state.motivationalMessageKey,
               level: level,
+              totalPoints: state.submissionResult?.totalPoints,
               perfectBonusAwarded: state.perfectBonusAwarded,
               onDone: () => _exit(context),
             );

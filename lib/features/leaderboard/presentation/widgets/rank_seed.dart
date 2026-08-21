@@ -11,6 +11,7 @@ class RankSeed {
     required this.total,
     this.subtitle,
     this.flag,
+    this.points,
     this.isMe = false,
   });
 
@@ -19,6 +20,10 @@ class RankSeed {
   final int completed;
   final int total;
   final String? subtitle;
+
+  /// Points balance for this entry. Null for teams, whose endpoint carries no
+  /// points — those rows keep showing level progress instead.
+  final int? points;
 
   /// Country flag emoji supplied by the backend, shown before [name]. Null for
   /// teams and for users without a country.

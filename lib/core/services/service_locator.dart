@@ -168,7 +168,11 @@ class ServiceLocator {
       () => UserRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
     sl.registerFactory<UserCubit>(
-      () => UserCubit(userRepository: sl(), authEventService: sl()),
+      () => UserCubit(
+        userRepository: sl(),
+        authEventService: sl(),
+        quizEventService: sl(),
+      ),
     );
 
     sl.registerLazySingleton<ChildRemoteDataSource>(

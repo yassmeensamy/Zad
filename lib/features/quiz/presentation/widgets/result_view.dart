@@ -9,6 +9,7 @@ import '../../../levels/presentation/screens/celebration.dart';
 import '../../../../core/constants/quiz_points.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/sound_service.dart';
+import '../../../../core/utils/number_format.dart';
 
 class ResultView extends StatefulWidget {
   const ResultView({
@@ -21,10 +22,16 @@ class ResultView extends StatefulWidget {
     this.elapsed,
     this.motivationalKey,
     this.level,
+    this.totalPoints,
     this.perfectBonusAwarded = false,
   });
 
   final double points;
+
+  /// The account's running total after this level, as the submit call reported
+  /// it. Null — or zero, which is what an offline submit synthesises — leaves
+  /// the total line off rather than showing a figure we can't stand behind.
+  final int? totalPoints;
 
   final int questionsCompleted;
 
@@ -64,6 +71,12 @@ class _ResultViewState extends State<ResultView> {
   int get _accuracy {
     if (widget.questionsCompleted <= 0) return 0;
     return ((_correct / widget.questionsCompleted) * 100).round();
+  }
+
+  String? get _totalNote {
+    final total = widget.totalPoints;
+    if (total == null || total <= 0) return null;
+    return 'quiz.result.total_points'.tr(args: [groupedNumber(total)]);
   }
 
   String _formatElapsed(Duration d) {
@@ -112,6 +125,7 @@ class _ResultViewState extends State<ResultView> {
         ),
       ],
       xp: widget.points.round(),
+      totalNote: _totalNote,
       continueLabel: 'quiz.result.continue'.tr(),
       onContinue: widget.onDone,
     );

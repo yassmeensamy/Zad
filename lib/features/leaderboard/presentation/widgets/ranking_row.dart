@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import 'leaderboard_disc.dart';
@@ -123,14 +124,36 @@ class RankingRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              ResponsiveText(
-                '${seed.completed}/${seed.total}',
-                style: AppTextStyles.labelLarge.copyWith(
-                  fontSize: 14,
-                  fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
-                  color: isMe ? meInk : colors.textPrimary,
+              // Points lead the trailing column for individuals. The level
+              // count moved out rather than doubling up — the meta line under
+              // the name already spells out "x of y levels".
+              if (seed.points case final points?)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Amber on every row, not just your own: the star is the
+                    // unit marker here, not a highlight.
+                    Icon(Icons.stars_rounded, size: 13, color: meInk),
+                    const SizedBox(width: 3),
+                    ResponsiveText(
+                      groupedNumber(points),
+                      style: AppTextStyles.labelLarge.copyWith(
+                        fontSize: 14,
+                        fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
+                        color: isMe ? meInk : colors.textPrimary,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                ResponsiveText(
+                  '${seed.completed}/${seed.total}',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    fontSize: 14,
+                    fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,
+                    color: isMe ? meInk : colors.textPrimary,
+                  ),
                 ),
-              ),
               const SizedBox(height: 2),
               ResponsiveText(
                 '${seed.percent}%',

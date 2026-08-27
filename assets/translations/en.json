@@ -849,8 +849,8 @@
       "warning_stay": "Stay with the team"
     },
     "transfer": {
-      "menu_title": "Owner options",
-      "menu_transfer": "Transfer ownership",
+      "menu_title": "Team Captain Options",
+      "menu_transfer": "Captaincy transfer",
       "menu_leave": "Leave team",
       "picker_title": "Transfer ownership",
       "picker_lede": "Choose a member to become the new owner. You'll become a regular member.",

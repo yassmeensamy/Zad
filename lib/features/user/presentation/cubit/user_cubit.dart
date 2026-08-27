@@ -25,11 +25,17 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     _submitSub = quizEventService.onSubmitted.listen(
       (_) => fetchUserProfile(isRefresh: true),
     );
+    // A reset moves the total the other way, and covers all three producers —
+    // reset-all from the profile, a single level, and a whole category.
+    _resetSub = quizEventService.onReset.listen(
+      (_) => fetchUserProfile(isRefresh: true),
+    );
   }
 
   final UserRepository _userRepository;
   final AuthEventService _authEventService;
   StreamSubscription<int>? _submitSub;
+  StreamSubscription<void>? _resetSub;
 
   @override
   AuthEventService get authEventService => _authEventService;
@@ -43,9 +49,10 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   /// Reads `GET /api/users/me` into state.
   ///
   /// [isRefresh] marks a background re-read of an already-loaded profile (after
-  /// a quiz submit): it skips the `loading` emit so nothing on screen flashes,
-  /// and swallows failures instead of falling back to cache — a momentarily
-  /// stale total beats knocking a live session into an error/cache state.
+  /// a quiz submit or a progress reset): it skips the `loading` emit so nothing
+  /// on screen flashes, and swallows failures instead of falling back to cache
+  /// — a momentarily stale total beats knocking a live session into an
+  /// error/cache state.
   Future<void> fetchUserProfile({bool isRefresh = false}) async {
     if (!isRefresh) {
       emit(state.copyWith(status: UserStatus.loading));
@@ -158,9 +165,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
         newPassword: newPassword,
         confirmNewPassword: confirmNewPassword,
       );
-      emit(
-        state.copyWith(changePasswordStatus: ChangePasswordStatus.success),
-      );
+      emit(state.copyWith(changePasswordStatus: ChangePasswordStatus.success));
     } on ServerException catch (e) {
       emit(
         state.copyWith(
@@ -180,9 +185,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   }
 
   void resetChangePasswordStatus() {
-    emit(
-      state.copyWith(changePasswordStatus: ChangePasswordStatus.initial),
-    );
+    emit(state.copyWith(changePasswordStatus: ChangePasswordStatus.initial));
   }
 
   Future<void> clearUser() async {
@@ -193,6 +196,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
   @override
   Future<void> close() async {
     await _submitSub?.cancel();
+    await _resetSub?.cancel();
     disposeAuthListener();
     return super.close();
   }

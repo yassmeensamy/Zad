@@ -98,10 +98,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: DesertBackground(
+          // `bottom: false` keeps the scroll viewport running to the screen
+          // edge; the home-indicator inset is folded into the scroll padding so
+          // content scrolls through it instead of stopping above a dead strip.
           child: SafeArea(
+            bottom: false,
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(32, 12, 32, 32),
+              padding: EdgeInsets.fromLTRB(
+                32,
+                12,
+                32,
+                32 + MediaQuery.paddingOf(context).bottom,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

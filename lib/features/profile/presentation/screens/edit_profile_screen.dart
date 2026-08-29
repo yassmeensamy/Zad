@@ -94,9 +94,18 @@ class _EditProfileViewState extends State<_EditProfileView> {
             context.read<UserCubit>().resetUpdateStatus();
           }
         },
+        // `bottom: false` keeps the scroll viewport running to the screen edge;
+        // the home-indicator inset is folded into the scroll padding below so
+        // content scrolls through it instead of being clipped above a dead strip.
         child: SafeArea(
+          bottom: false,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+            padding: EdgeInsets.fromLTRB(
+              20,
+              20,
+              20,
+              32 + MediaQuery.paddingOf(context).bottom,
+            ),
             physics: const BouncingScrollPhysics(),
             child: Form(
               key: _formKey,

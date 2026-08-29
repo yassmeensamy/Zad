@@ -73,6 +73,11 @@ class AppRouter {
       AppRoutes.roleSelect,
       AppRoutes.completeProfile,
     },
+    // Saving the profile is what flips `needsProfileSetup` to false, so without
+    // this the guard would bounce off complete-profile in the same frame the
+    // save lands — tearing down the success dialog before it renders. The
+    // screen navigates on to `nextDestination` when the dialog is dismissed.
+    selfExitRoutes: {AppRoutes.completeProfile},
     offlineHome: AppRoutes.home,
     guestHome: AppRoutes.home,
     childHome: AppRoutes.home,

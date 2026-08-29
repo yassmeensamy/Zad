@@ -9,21 +9,42 @@ import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
+/// Celebration dialog for the milestones in the onboarding flow: a freshly
+/// created account, and a freshly completed profile. The copy is swappable via
+/// the `*Key` params so both steps share one piece of choreography; the tanbih
+/// note is fixed, since it is the same disclaimer everywhere.
 class SignupSuccessDialog extends StatefulWidget {
-  const SignupSuccessDialog({super.key, required this.onContinue});
+  const SignupSuccessDialog({
+    super.key,
+    required this.onContinue,
+    this.titleAccentKey = 'auth.signup_success.title_accent',
+    this.subtitleKey = 'auth.signup_success.subtitle',
+    this.ctaKey = 'auth.signup_success.cta',
+  });
 
   final VoidCallback onContinue;
+  final String titleAccentKey;
+  final String subtitleKey;
+  final String ctaKey;
 
   static Future<void> show(
     BuildContext context, {
     required VoidCallback onContinue,
+    String titleAccentKey = 'auth.signup_success.title_accent',
+    String subtitleKey = 'auth.signup_success.subtitle',
+    String ctaKey = 'auth.signup_success.cta',
   }) {
     return CustomDialog.show(
       context: context,
       barrierDismissible: false,
       padding: const EdgeInsets.fromLTRB(28, 32, 28, 26),
       constraints: const BoxConstraints(maxWidth: 380),
-      child: SignupSuccessDialog(onContinue: onContinue),
+      child: SignupSuccessDialog(
+        onContinue: onContinue,
+        titleAccentKey: titleAccentKey,
+        subtitleKey: subtitleKey,
+        ctaKey: ctaKey,
+      ),
     );
   }
 
@@ -132,7 +153,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
               ),
               children: [
                 TextSpan(
-                  text: 'auth.signup_success.title_accent'.tr(),
+                  text: widget.titleAccentKey.tr(),
                   style: AppTextStyles.displayMedium.copyWith(
                     fontSize: 26,
                     fontStyle: FontStyle.italic,
@@ -150,7 +171,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
         _FadeUp(
           animation: _subtitle,
           child: ResponsiveText(
-            'auth.signup_success.subtitle',
+            widget.subtitleKey,
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium.copyWith(
               height: 1.5,
@@ -178,7 +199,7 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
         _FadeUp(
           animation: _cta,
           child: CustomButton.full(
-            text: 'auth.signup_success.cta'.tr(),
+            text: widget.ctaKey.tr(),
             theme: buttonTheme.copyWith(
               useGradient: true,
               gradient: LinearGradient(

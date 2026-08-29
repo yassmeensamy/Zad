@@ -16,6 +16,7 @@ class GuardRoutes {
     String? childHome,
     String? profileSetup,
     this.setupFlow = const {},
+    this.selfExitRoutes = const {},
     this.guestBlocked = const {},
     this.childBlocked = const {},
     this.publicRoutes = const {},
@@ -45,6 +46,13 @@ class GuardRoutes {
   /// profile is already complete is redirected out of these to [home]; a user
   /// whose profile is incomplete may stay here while finishing setup.
   final Set<String> setupFlow;
+
+  /// Subset of [setupFlow] whose screens navigate themselves out once setup
+  /// completes, so the guard must *not* bounce them to [home] the moment the
+  /// profile turns complete. Without this, the very save that finishes the
+  /// profile also tears the screen down mid-frame, killing any confirmation
+  /// the screen wanted to show first. These screens own their own exit.
+  final Set<String> selfExitRoutes;
 
   /// Where a guest (anonymous) user lands instead of [home]; guests skip the
   /// parent/child selection flow and go straight here.
@@ -144,10 +152,13 @@ GoRouterRedirect authGuard({
           return routes.setupFlow.contains(loc) ? null : routes.profileSetup;
         }
         // Profile complete: never strand a returning user in the onboarding
-        // flow — bounce them out of the entry/setup routes to home.
+        // flow — bounce them out of the entry/setup routes to home. Routes in
+        // [selfExitRoutes] are exempt: they are the screens that *cause* the
+        // profile to become complete and drive their own exit afterwards.
         if (loc == routes.splash ||
             loc == routes.signIn ||
-            routes.setupFlow.contains(loc)) {
+            (routes.setupFlow.contains(loc) &&
+                !routes.selfExitRoutes.contains(loc))) {
           final home = routing.isOnline ? routes.home : routes.offlineHome;
           return intended ?? home;
         }

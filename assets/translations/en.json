@@ -90,7 +90,12 @@
     "country_empty": "No countries found",
     "country_retry": "Couldn't load countries. Tap to retry.",
     "continue": "CONTINUE",
-    "save_failed": "Couldn't save your profile"
+    "save_failed": "Couldn't save your profile",
+    "success": {
+      "title_accent": "Profile complete",
+      "subtitle": "Everything is ready. May what you learn here benefit you.",
+      "cta": "LET'S BEGIN"
+    }
   },
   "create_profiles": {
     "step": "STEP 2 OF 2",

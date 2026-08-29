@@ -13,6 +13,7 @@ import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
+import '../../../auth/presentation/widgets/signup_success_dialog.dart';
 import '../../../auth/presentation/widgets/zaad_text_field.dart';
 import '../../../user/presentation/cubit/user_cubit.dart';
 import '../../../user/presentation/cubit/user_state.dart';
@@ -99,9 +100,27 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     );
   }
 
-  void _onUpdateStatusChanged(BuildContext context, UserState state) {
+  /// The save that lands here is also what flips the user to "profile
+  /// complete", which the auth guard watches. `/complete-profile` is listed in
+  /// [AppRouter.guardRoutes]'s `selfExitRoutes` so the guard leaves us in place
+  /// instead of redirecting in the same frame — otherwise the dialog below
+  /// would be torn down with the route before it could be seen. Continuing on
+  /// to [CompleteProfileScreen.nextDestination] is therefore our job, once the
+  /// user dismisses the dialog.
+  Future<void> _onUpdateStatusChanged(
+    BuildContext context,
+    UserState state,
+  ) async {
     if (state.isUpdateSuccess) {
       context.read<UserCubit>().resetUpdateStatus();
+      await SignupSuccessDialog.show(
+        context,
+        titleAccentKey: 'complete_profile.success.title_accent',
+        subtitleKey: 'complete_profile.success.subtitle',
+        ctaKey: 'complete_profile.success.cta',
+        onContinue: () => Navigator.of(context, rootNavigator: true).pop(),
+      );
+      if (!context.mounted) return;
       context.go(widget.nextDestination);
     } else if (state.isUpdateError) {
       setState(() => _saving = false);

@@ -57,6 +57,11 @@ class AppRouter {
   static const GuardRoutes guardRoutes = GuardRoutes(
     splash: AppRoutes.splash,
     signIn: AppRoutes.login,
+    // Sign-up is the front door: a signed-out user coming off the splash (or
+    // hitting a protected route) lands on registration, not login. Login stays
+    // a first-class route — the guard leaves a signed-out user sitting there,
+    // and the sign-up screen links across to it for returning users.
+    signedOutLanding: AppRoutes.signup,
     home: AppRoutes.profileSelect,
     profileSetup: AppRoutes.roleSelect,
     // signup is included so a just-registered (or just-upgraded) user with an

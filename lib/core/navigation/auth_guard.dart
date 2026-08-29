@@ -10,6 +10,7 @@ class GuardRoutes {
     required this.signIn,
     required this.home,
     required this.onboarding,
+    String? signedOutLanding,
     String? offlineHome,
     String? guestHome,
     String? childHome,
@@ -18,13 +19,21 @@ class GuardRoutes {
     this.guestBlocked = const {},
     this.childBlocked = const {},
     this.publicRoutes = const {},
-  }) : offlineHome = offlineHome ?? home,
+  }) : signedOutLanding = signedOutLanding ?? signIn,
+       offlineHome = offlineHome ?? home,
        guestHome = guestHome ?? home,
        childHome = childHome ?? home,
        profileSetup = profileSetup ?? home;
 
   final String splash;
   final String signIn;
+
+  /// Where a signed-out user is *sent* when they land anywhere they may not be.
+  /// Defaults to [signIn]; point it at registration to make sign-up the front
+  /// door while [signIn] stays reachable for returning users. Must be a route
+  /// a signed-out user is allowed to sit on — [signIn] itself or a member of
+  /// [publicRoutes] — or the guard would redirect it straight back to itself.
+  final String signedOutLanding;
   final String home;
   final String offlineHome;
 
@@ -58,7 +67,10 @@ class GuardRoutes {
 
   bool isEntry(String location) {
     final path = Uri.parse(location).path;
-    return path == splash || path == signIn || path == onboarding;
+    return path == splash ||
+        path == signIn ||
+        path == signedOutLanding ||
+        path == onboarding;
   }
 }
 
@@ -98,7 +110,7 @@ GoRouterRedirect authGuard({
         if (loc == routes.signIn || routes.publicRoutes.contains(loc)) {
           return null;
         }
-        return '${routes.signIn}$suffix';
+        return '${routes.signedOutLanding}$suffix';
       case AuthPhase.signedIn:
         if (routing.isGuest) {
           // Guests skip the parent/child flow and cannot open child screens.

@@ -68,10 +68,19 @@ const List<LevelModel> _kPlaceholders = [
 ];
 
 class LevelsLoading extends StatelessWidget {
-  const LevelsLoading({super.key, required this.tint, this.category});
+  const LevelsLoading({
+    super.key,
+    required this.tint,
+    this.category,
+    this.allowComingSoon = true,
+  });
 
   final Color tint;
   final CategoryModel? category;
+
+  /// Mirrors `LevelsList.allowComingSoon` so a completed category's skeleton
+  /// doesn't flash a "coming soon" row that the loaded list then drops.
+  final bool allowComingSoon;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +94,12 @@ class LevelsLoading extends StatelessWidget {
         baseColor: colors.olive.withValues(alpha: 0.10),
         highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
       ),
-      child: LevelsList(state: mockState, tint: tint, category: category),
+      child: LevelsList(
+        state: mockState,
+        tint: tint,
+        category: category,
+        allowComingSoon: allowComingSoon,
+      ),
     );
   }
 }

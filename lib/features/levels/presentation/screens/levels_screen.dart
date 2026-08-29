@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/completed_categories.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/random_tint.dart';
 import '../../../../core/utils/scroll_pagination_mixin.dart';
@@ -36,6 +37,7 @@ class _LevelsScreenState extends State<LevelsScreen>
       ? tintFor(widget.category!.id)
       : randomTint();
   late final LevelsCubit _cubit = sl<LevelsCubit>()..getLevels(_categoryId);
+  late final bool _allowComingSoon = !CompletedCategories.contains(_categoryId);
 
   @override
   void onLoadMore() => _cubit.loadMore(_categoryId);
@@ -48,7 +50,6 @@ class _LevelsScreenState extends State<LevelsScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider<LevelsCubit>.value(
       value: _cubit,
       child: BlocListener<LevelsCubit, LevelsState>(
@@ -84,6 +85,7 @@ class _LevelsScreenState extends State<LevelsScreen>
                       return LevelsLoading(
                         tint: _tint,
                         category: widget.category,
+                        allowComingSoon: _allowComingSoon,
                       );
                     }
                     if (state.isError && !state.hasLevels) {
@@ -97,6 +99,7 @@ class _LevelsScreenState extends State<LevelsScreen>
                       state: state,
                       tint: _tint,
                       category: widget.category,
+                      allowComingSoon: _allowComingSoon,
                     );
                   },
                 ),

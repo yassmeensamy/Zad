@@ -14,12 +14,18 @@ class LevelsList extends StatelessWidget {
     required this.state,
     required this.tint,
     this.category,
+    this.allowComingSoon = true,
   });
 
   final ScrollController? controller;
   final LevelsState state;
   final Color tint;
   final CategoryModel? category;
+
+  /// Whether this category is still getting new levels. Categories that are
+  /// already complete pass `false` so the rail ends on the last real level
+  /// rather than promising more.
+  final bool allowComingSoon;
 
   static const _headerSlot = 0;
   static const _dividerSlot = 1;
@@ -31,9 +37,12 @@ class LevelsList extends StatelessWidget {
     final showLoadingTail = state.isLoadingMore;
     // One trailing slot after the levels, holding whichever of the two ends the
     // rail: the pagination spinner while more pages are coming, or the "coming
-    // soon" row once the last page is in. Never both, so they share the slot.
-    final showComingSoon = !showLoadingTail && !state.hasMore;
-    final itemCount = _firstRowIndex +
+    // soon" row once the last page is in. Never both, so they share the slot —
+    // and a category that is already finished ends on neither.
+    final showComingSoon =
+        allowComingSoon && !showLoadingTail && !state.hasMore;
+    final itemCount =
+        _firstRowIndex +
         levels.length +
         (showLoadingTail || showComingSoon ? 1 : 0);
 

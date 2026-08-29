@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -489,8 +491,11 @@ class _BirthDatePickerSheet extends StatefulWidget {
 }
 
 class _BirthDatePickerSheetState extends State<_BirthDatePickerSheet> {
-  static const _pickerHeight = 320.0;
-  static const _headerHeight = 50.0;
+  static const _pickerHeight = 240.0;
+  static const _actionPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 10,
+  );
 
   late DateTime _selectedDate;
 
@@ -506,15 +511,17 @@ class _BirthDatePickerSheetState extends State<_BirthDatePickerSheet> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    // The header grows with the OS text scale, so cap the wheel instead of
+    // giving the sheet one fixed height that the header has to fit inside.
+    final maxPickerHeight = MediaQuery.sizeOf(context).height * 0.42;
     return Container(
-      height: _pickerHeight,
       color: colors.canvas,
       child: SafeArea(
         top: false,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              height: _headerHeight,
+            DecoratedBox(
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -527,19 +534,23 @@ class _BirthDatePickerSheetState extends State<_BirthDatePickerSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(
+                    padding: _actionPadding,
                     onPressed: () => Navigator.of(context).pop(),
                     child: ResponsiveText(
                       'common.cancel',
+                      maxLines: 1,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: colors.textSecondary,
                       ),
                     ),
                   ),
                   CupertinoButton(
+                    padding: _actionPadding,
                     onPressed: () =>
                         Navigator.of(context).pop(_selectedDate),
                     child: ResponsiveText(
                       'common.done',
+                      maxLines: 1,
                       style: AppTextStyles.labelLarge.copyWith(
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0,
@@ -550,7 +561,8 @@ class _BirthDatePickerSheetState extends State<_BirthDatePickerSheet> {
                 ],
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: math.min(_pickerHeight, maxPickerHeight),
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.date,
                 initialDateTime: _selectedDate,

@@ -156,6 +156,12 @@ class ProfileSelectScreen extends StatelessWidget {
   }
 }
 
+/// Unscaled height of the text stacked below a tile's avatar — the name line,
+/// the role label, and the chip slot. It's the only part of a tile that grows
+/// with the text scale, so the grid adds this block's growth to each tile's
+/// extent. Keep it in step with [ProfileCard]'s column if that layout changes.
+const double _scalingTextBlockHeight = 70;
+
 class _ProfilesGrid extends StatelessWidget {
   const _ProfilesGrid({
     required this.children,
@@ -216,12 +222,28 @@ class _ProfilesGrid extends StatelessWidget {
               ? 3
               : 2;
           final childAspectRatio = crossAxisCount >= 3 ? 0.78 : 0.72;
+
+          // A tile's furniture — padding, the 96pt avatar, the gaps between
+          // rows — is a fixed height, but the name/role/chip stacked under it
+          // grow with the text scale. So derive the extent from the aspect
+          // ratio as before, then add exactly what that text block gains.
+          // Without this the tile stays put while its contents grow, and a
+          // raised scale clips the name and overflows the add-a-person tile.
+          const crossAxisSpacing = 16.0;
+          final tileWidth =
+              (width - crossAxisSpacing * (crossAxisCount - 1)) /
+              crossAxisCount;
+          const scalingTextBlock = _scalingTextBlockHeight;
+          final textGrowth =
+              MediaQuery.textScalerOf(context).scale(scalingTextBlock) -
+              scalingTextBlock;
+
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
               mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: childAspectRatio,
+              crossAxisSpacing: crossAxisSpacing,
+              mainAxisExtent: tileWidth / childAspectRatio + textGrowth,
             ),
             itemCount: entries.length + (loading ? 0 : 1),
             itemBuilder: (_, i) {
@@ -335,7 +357,9 @@ class _AddTile extends StatelessWidget {
           ),
           // Reserves the height of role label + chip slot from
           // ProfileCard so both tiles end at the same vertical position.
-          const SizedBox(height: 46),
+          // Flexible so it yields the space back when "add a person" wraps
+          // to a second line at a large text scale, rather than overflowing.
+          const Flexible(child: SizedBox(height: 46)),
         ],
       ),
     );

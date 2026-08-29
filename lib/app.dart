@@ -38,7 +38,7 @@ import 'theme/theme.dart';
 ///   1.15 → 14.9 / 12.7   barely perceptible
 ///   1.25 → 16.3 / 13.8   clearly larger, layouts still hold   ← current
 ///   1.35 → 17.6 / 14.9   strong; expect clipping on the dense screens
-const double kMinTextScale = 1.07;
+const double kMinTextScale = 1.25;
 
 /// Ceiling for text scaling, so the dense grid and leaderboard screens stay
 /// laid out at the top of the OS accessibility range.

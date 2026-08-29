@@ -224,33 +224,40 @@ class _CurrentAccountTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: colors.oliveSoft.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(99),
-        border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.35)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_rounded,
-            size: 11,
-            color: colors.oliveDeep,
-          ),
-          const SizedBox(width: 5),
-          ResponsiveText(
-            'profile_select.current_account',
-            style: AppTextStyles.labelSmall.copyWith(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0,
+    // The pill is sized by its label, which at a large text scale grows wider
+    // than the tile. Scale the whole chip down to fit rather than ellipsing
+    // the label — a truncated "Current accou…" reads worse than a slightly
+    // smaller pill, and the chip is already the card's quietest element.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: colors.oliveSoft.withValues(alpha: 0.14),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(color: colors.oliveSoft.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_rounded,
+              size: 11,
               color: colors.oliveDeep,
             ),
-          ),
-        ],
+            const SizedBox(width: 5),
+            ResponsiveText(
+              'profile_select.current_account',
+              style: AppTextStyles.labelSmall.copyWith(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
+                color: colors.oliveDeep,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -264,33 +271,38 @@ class _StreakChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: colors.accent.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(99),
-        border: Border.all(color: colors.accent.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.local_fire_department_rounded,
-            size: 11,
-            color: colors.accent,
-          ),
-          const SizedBox(width: 5),
-          ResponsiveText(
-            '$streak ${'profile_select.days'.tr()}',
-            style: AppTextStyles.labelSmall.copyWith(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0,
-              color: colors.accentDeep,
+    // Same sizing guard as [_CurrentAccountTag] — a long localized "days"
+    // plural at a large text scale would otherwise overflow the tile.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: colors.accent.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(color: colors.accent.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.local_fire_department_rounded,
+              size: 11,
+              color: colors.accent,
             ),
-          ),
-        ],
+            const SizedBox(width: 5),
+            ResponsiveText(
+              '$streak ${'profile_select.days'.tr()}',
+              style: AppTextStyles.labelSmall.copyWith(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
+                color: colors.accentDeep,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

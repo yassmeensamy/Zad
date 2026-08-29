@@ -41,9 +41,7 @@ class LevelCard extends StatelessWidget {
         splashColor: tint.withValues(alpha: 0.08),
         child: Ink(
           decoration: BoxDecoration(
-            color: locked
-                ? colors.canvasRaised.withValues(alpha: 0.55)
-                : colors.canvasRaised,
+            color: level.status.tileSurface(colors),
             borderRadius: ZaadRadii.xlAll,
             border: Border.all(color: borderColor, width: 0.8),
           ),
@@ -68,8 +66,12 @@ class LevelCard extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                               height: 1.2,
                               letterSpacing: -0.1,
+                              // A step brighter than the old tertiary/
+                              // placeholder pair: the shaded fill supplies the
+                              // "locked" signal now, and dune-on-sand ink was
+                              // barely legible against it.
                               color: locked
-                                  ? colors.textTertiary
+                                  ? colors.textSecondary
                                   : colors.textPrimary,
                             ),
                           ),
@@ -84,7 +86,7 @@ class LevelCard extends StatelessWidget {
                             style: AppTextStyles.labelMedium.copyWith(
                               letterSpacing: 0,
                               color: locked
-                                  ? colors.textPlaceholder
+                                  ? colors.textTertiary
                                   : colors.textSecondary,
                             ),
                           ),

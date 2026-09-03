@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 
 import 'auth_interceptor.dart';
@@ -158,7 +159,8 @@ class NetworkServiceImpl implements NetworkService {
           LanguageInterceptor(cacheService: sl()),
           AppTypeInterceptor(appType: appType),
           TimezoneInterceptor(),
-          RequestsInspectorInterceptor(),
+          // Debug/profile-only network inspector; release builds drop it.
+          if (!kReleaseMode) RequestsInspectorInterceptor(),
         ]);
 
   @override

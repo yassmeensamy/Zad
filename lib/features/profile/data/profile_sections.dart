@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/app_languages.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../../language/presentation/modals/language_dialog.dart';
@@ -34,7 +35,7 @@ ProfileMenuItem _notificationsToggleItem() => const ProfileMenuItem(
 ProfileMenuItem _languageItem(BuildContext context) => ProfileMenuItem(
   icon: Icons.translate_rounded,
   titleKey: 'profile.language',
-  trailingText: context.locale.languageCode == 'ar' ? 'العربية' : 'English',
+  trailingText: context.appLanguage.nativeName,
   onTap: () => LanguageDialog.show(context),
 );
 

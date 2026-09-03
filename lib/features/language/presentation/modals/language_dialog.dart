@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/l10n/app_languages.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
@@ -24,22 +25,6 @@ class LanguageDialog extends StatelessWidget {
 
   final bool shouldSkipBackend;
   final OnLanguageChangedCallback? onLanguageChanged;
-
-  static const List<_LanguageOption> _availableLanguages = [
-    _LanguageOption(
-      native: 'English',
-      english: 'English',
-      code: 'en',
-      flag: 'EN',
-    ),
-    _LanguageOption(
-      native: 'العربية',
-      english: 'Arabic',
-      code: 'ar',
-      flag: 'ع',
-      isArabic: true,
-    ),
-  ];
 
   static Future<void> show(
     BuildContext context, {
@@ -75,8 +60,8 @@ class LanguageDialog extends StatelessWidget {
                   children: [
                     const _LanguageHeader(),
                     const SizedBox(height: 14),
-                    for (final lang in _availableLanguages) ...[
-                      _LanguageTile(option: lang),
+                    for (final lang in AppLanguages.all) ...[
+                      _LanguageTile(language: lang),
                       const SizedBox(height: 8),
                     ],
                     const SizedBox(height: 6),
@@ -122,22 +107,6 @@ class LanguageDialog extends StatelessWidget {
   }
 }
 
-class _LanguageOption {
-  const _LanguageOption({
-    required this.native,
-    required this.english,
-    required this.code,
-    required this.flag,
-    this.isArabic = false,
-  });
-
-  final String native;
-  final String english;
-  final String code;
-  final String flag;
-  final bool isArabic;
-}
-
 class _LanguageHeader extends StatelessWidget {
   const _LanguageHeader();
 
@@ -181,9 +150,9 @@ class _LanguageHeader extends StatelessWidget {
 }
 
 class _LanguageTile extends StatelessWidget {
-  const _LanguageTile({required this.option});
+  const _LanguageTile({required this.language});
 
-  final _LanguageOption option;
+  final AppLanguage language;
 
   @override
   Widget build(BuildContext context) {
@@ -191,14 +160,14 @@ class _LanguageTile extends StatelessWidget {
       selector: (s) => s.selectedLanguage,
       builder: (context, selectedCode) {
         final colors = context.appColors;
-        final isSelected = selectedCode == option.code;
+        final isSelected = selectedCode == language.code;
         return Material(
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(ZaadRadii.lg),
             onTap: () => context
                 .read<LanguageCubit>()
-                .updateCurrentLanguage(option.code),
+                .updateCurrentLanguage(language.code),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
@@ -223,7 +192,10 @@ class _LanguageTile extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  _FlagBadge(flag: option.flag, isArabic: option.isArabic),
+                  _FlagBadge(
+                    badge: language.badge,
+                    usesArabicScript: language.usesArabicScript,
+                  ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -231,16 +203,16 @@ class _LanguageTile extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ResponsiveText(
-                          option.native,
+                          language.nativeName,
                           style: AppTextStyles.titleMedium.copyWith(
-                            fontSize: option.isArabic ? 18 : 16,
+                            fontSize: language.usesArabicScript ? 18 : 16,
                             height: 1.1,
                             color: colors.oliveDeep,
                           ),
                         ),
                         const SizedBox(height: 2),
                         ResponsiveText(
-                          option.english,
+                          language.englishName,
                           style: AppTextStyles.bodySmall.copyWith(
                             fontSize: 11,
                             letterSpacing: 0.4,
@@ -262,10 +234,10 @@ class _LanguageTile extends StatelessWidget {
 }
 
 class _FlagBadge extends StatelessWidget {
-  const _FlagBadge({required this.flag, required this.isArabic});
+  const _FlagBadge({required this.badge, required this.usesArabicScript});
 
-  final String flag;
-  final bool isArabic;
+  final String badge;
+  final bool usesArabicScript;
 
   @override
   Widget build(BuildContext context) {
@@ -290,9 +262,9 @@ class _FlagBadge extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: ResponsiveText(
-        flag,
+        badge,
         style: AppTextStyles.titleLarge.copyWith(
-          fontSize: isArabic ? 18 : 13,
+          fontSize: usesArabicScript ? 18 : 13,
           height: 1,
           color: colors.oliveDeep,
         ),

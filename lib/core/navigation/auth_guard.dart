@@ -160,7 +160,16 @@ GoRouterRedirect authGuard({
             (routes.setupFlow.contains(loc) &&
                 !routes.selfExitRoutes.contains(loc))) {
           final home = routing.isOnline ? routes.home : routes.offlineHome;
-          return intended ?? home;
+          // `intended` is a destination only when it points somewhere this
+          // branch isn't already bouncing off. Navigating straight to a setup
+          // route makes `intended` that very route, and go_router treats a
+          // redirect back to the current location as no redirect at all — so
+          // returning it would strand the user on the screen this branch
+          // exists to move them off.
+          final wantsSetup =
+              intended != null &&
+              routes.setupFlow.contains(Uri.parse(intended).path);
+          return (intended == null || wantsSetup) ? home : intended;
         }
         return null;
     }

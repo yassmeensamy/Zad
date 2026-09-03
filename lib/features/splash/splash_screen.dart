@@ -102,7 +102,7 @@ class _ZaadSplashScreenState extends State<ZaadSplashScreen>
                       return Opacity(
                         opacity: opacity,
                         child: ResponsiveText(
-                          'LOADING...',
+                          'splash.loading',
                           textAlign: TextAlign.center,
                           style: AppTextStyles.labelSmall.copyWith(
                             fontWeight: FontWeight.w600,

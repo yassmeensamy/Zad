@@ -136,7 +136,7 @@ class RankingRow extends StatelessWidget {
                     Icon(Icons.stars_rounded, size: 13, color: meInk),
                     const SizedBox(width: 3),
                     ResponsiveText(
-                      groupedNumber(points),
+                      groupedNumber(context, points),
                       style: AppTextStyles.labelLarge.copyWith(
                         fontSize: 14,
                         fontWeight: isMe ? FontWeight.w700 : FontWeight.w600,

@@ -102,7 +102,9 @@
       "Bash(ls -d \"/Applications/Google Chrome.app\" \"/Applications/Microsoft Edge.app\" \"/Applications/Brave Browser.app\" 2>/dev/null; echo \"---cupsfilter---\"; which cupsfilter; echo \"done\")",
       "Read(//Applications/Google Chrome.app/**)",
       "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=/Users/yassmeen/Documents/zad/my_app/Zaad_Features.pdf file:///tmp/zaad_features.html)",
-      "Bash(curl -sIL https://services.gradle.org/distributions/gradle-8.14-all.zip)"
+      "Bash(curl -sIL https://services.gradle.org/distributions/gradle-8.14-all.zip)",
+      "Bash(git -C /Users/yassmeen/Documents/zad/my_app diff lib/main.dart lib/features/language/presentation/modals/language_dialog.dart)",
+      "Bash(osascript -e 'tell application \"System Events\" to return name of first process whose frontmost is true')"
     ]
   }
 }

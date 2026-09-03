@@ -75,7 +75,7 @@ class UserCubit extends BaseCubit<UserState> with AuthStateListenerMixin {
     } catch (e) {
       logger.error('UserCubit.fetchUserProfile failed: $e');
       if (isRefresh) return;
-      await _fallbackToCache(message: 'Failed to load user profile');
+      await _fallbackToCache(message: 'errors.profile_load_failed');
     }
   }
 

@@ -1,3 +1,4 @@
+import '../../../../core/l10n/app_languages.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../../levels/data/models/level_model.dart';
 import '../../../quiz/data/models/choice_model.dart';
@@ -100,8 +101,7 @@ class CategoryDownloadBundle {
     if (translations is! Map) return const {};
     final byLang = translations.cast<String, dynamic>();
     final chosen = byLang[languageCode] ??
-        byLang['ar'] ??
-        byLang['en'] ??
+        byLang[AppLanguages.fallback.code] ??
         (byLang.isNotEmpty ? byLang.values.first : null);
     return chosen is Map ? chosen.cast<String, dynamic>() : const {};
   }

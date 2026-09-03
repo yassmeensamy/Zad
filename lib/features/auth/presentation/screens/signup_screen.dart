@@ -140,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _successShown = true;
     SignupSuccessDialog.show(
       context,
-      onContinue: () {
+      onClose: () {
         Navigator.of(context, rootNavigator: true).pop();
         context.go(AppRoutes.roleSelect);
       },

@@ -17,12 +17,22 @@ import '../cubit/child_draft_state.dart';
 import '../cubit/child_state.dart';
 import '../widgets/kid_card.dart';
 
+/// Reached from two places, so where "back" goes is an input rather than a
+/// constant: role-select drives the first-run family setup, and profile-select's
+/// "add another person" tile opens the same screen for an established parent.
+/// Both arrive via `context.go`, which replaces the stack — there is nothing to
+/// pop, so the screen has to be told which route it is returning to.
 class CreateChildrenScreen extends StatelessWidget {
-  const CreateChildrenScreen({super.key});
+  const CreateChildrenScreen({super.key, this.backDestination});
+
+  /// Route the back button and the OS back gesture return to. Defaults to
+  /// role-select, the first-run entry point.
+  final String? backDestination;
 
   void _onContinue(BuildContext context) => context.go(AppRoutes.profileSelect);
 
-  void _onBack(BuildContext context) => context.go(AppRoutes.roleSelect);
+  void _onBack(BuildContext context) =>
+      context.go(backDestination ?? AppRoutes.roleSelect);
 
   Future<void> _onSubmit(BuildContext context) async {
     final draftCubit = context.read<ChildDraftCubit>();

@@ -3,14 +3,8 @@ import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
 import 'responsive_text.dart';
 
-/// Tone applied to a scoring row's value pill.
 enum _ScoreTone { gain, loss, bonus }
 
-/// Explains how points are earned — the daily check-in point, the speed tiers
-/// for a first-try answer, retry credit, the wrong-answer penalty, and the
-/// perfect-level bonus.
-///
-/// Opened from the lamp button in the levels app bar via [show].
 class PointsGuideSheet extends StatelessWidget {
   const PointsGuideSheet({super.key});
 
@@ -39,48 +33,45 @@ class PointsGuideSheet extends StatelessWidget {
         ),
         border: Border(top: BorderSide(color: colors.borderSubtle)),
       ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Container(
-              width: 38,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colors.borderDefault,
-                borderRadius: ZaadRadii.pillAll,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          Container(
+            width: 38,
+            height: 4,
+            decoration: BoxDecoration(
+              color: colors.borderDefault,
+              borderRadius: ZaadRadii.pillAll,
+            ),
+          ),
+          const SizedBox(height: 18),
+          ResponsiveText(
+            'points_guide.title',
+            textAlign: TextAlign.center,
+            style: ZaadType.titleAccent.copyWith(
+              fontSize: 20,
+              color: colors.oliveDeep,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(width: 28, height: 1, color: colors.accent),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  _ShowingUpCard(),
+                  SizedBox(height: 12),
+                  _AnswerCard(),
+                  SizedBox(height: 12),
+                  _BonusBanner(),
+                ],
               ),
             ),
-            const SizedBox(height: 18),
-            ResponsiveText(
-              'points_guide.title',
-              textAlign: TextAlign.center,
-              style: ZaadType.titleAccent.copyWith(
-                fontSize: 20,
-                color: colors.oliveDeep,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(width: 28, height: 1, color: colors.accent),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: const [
-                    _ShowingUpCard(),
-                    SizedBox(height: 12),
-                    _AnswerCard(),
-                    SizedBox(height: 12),
-                    _BonusBanner(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -222,9 +213,7 @@ class _BonusBanner extends StatelessWidget {
               children: [
                 ResponsiveText(
                   'points_guide.perfect',
-                  style: ZaadType.bodySmall.copyWith(
-                    color: colors.textPrimary,
-                  ),
+                  style: ZaadType.bodySmall.copyWith(color: colors.textPrimary),
                 ),
                 const SizedBox(height: 6),
                 _ValuePill(
@@ -276,9 +265,7 @@ class _ScoreRow extends StatelessWidget {
               padding: const EdgeInsets.only(top: 2),
               child: ResponsiveText(
                 labelKey,
-                style: ZaadType.bodySmall.copyWith(
-                  color: colors.textSecondary,
-                ),
+                style: ZaadType.bodySmall.copyWith(color: colors.textSecondary),
               ),
             ),
           ),

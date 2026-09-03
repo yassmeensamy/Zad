@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/core/l10n/app_languages.dart';
 import 'package:my_app/core/widgets/responsive_text.dart';
 
 class MainTextFormField extends StatefulWidget {
@@ -160,7 +160,7 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
       return widget.textDirection!;
     }
     if (text.isEmpty) {
-      return context.locale.languageCode == 'ar'
+      return context.appLanguage.isRtl
           ? TextDirection.rtl
           : TextDirection.ltr;
     }

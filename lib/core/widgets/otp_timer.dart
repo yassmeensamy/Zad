@@ -104,23 +104,15 @@ class _OtpTimerState extends State<OtpTimer> {
     );
 
     return Center(
-      child: widget.direction == Axis.vertical
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                didNotReceiveText,
-                SizedBox(height: widget.spacing),
-                resendLink,
-              ],
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                didNotReceiveText,
-                SizedBox(width: widget.spacing),
-                resendLink,
-              ],
-            ),
+      child: Wrap(
+        direction: widget.direction,
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: widget.spacing,
+        runSpacing: widget.spacing,
+        children: [didNotReceiveText, resendLink],
+      ),
     );
   }
 }

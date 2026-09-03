@@ -76,7 +76,7 @@ class _ResultViewState extends State<ResultView> {
   String? get _totalNote {
     final total = widget.totalPoints;
     if (total == null || total <= 0) return null;
-    return 'quiz.result.total_points'.tr(args: [groupedNumber(total)]);
+    return 'quiz.result.total_points'.tr(args: [groupedNumber(context, total)]);
   }
 
   String _formatElapsed(Duration d) {

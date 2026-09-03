@@ -151,7 +151,7 @@ class _PodiumPillar extends StatelessWidget {
               Icon(Icons.stars_rounded, size: isFirst ? 11 : 10, color: accent),
               const SizedBox(width: 3),
               ResponsiveText(
-                groupedNumber(points),
+                groupedNumber(context, points),
                 style: AppTextStyles.labelSmall.copyWith(
                   fontSize: isFirst ? 11 : 10,
                   fontWeight: FontWeight.w600,

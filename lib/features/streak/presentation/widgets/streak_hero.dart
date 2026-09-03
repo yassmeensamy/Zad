@@ -201,7 +201,7 @@ class _StreakHeader extends StatelessWidget {
           child: RichText(
             text: TextSpan(
               style: AppTextStyles.eyebrow(
-                fontSize: 14,
+                fontSize: 16,
                 tracking: 0.4,
                 color: colors.heroInk.withValues(alpha: 0.55),
               ),
@@ -210,7 +210,8 @@ class _StreakHeader extends StatelessWidget {
                 TextSpan(
                   text: 'home.streak.eyebrow_accent'.tr().toUpperCase(),
                   style: AppTextStyles.eyebrow(
-                    fontSize: 14,
+                    fontSize: 16,
+
                     tracking: 0.4,
                     color: colors.heroGold,
                   ),
@@ -250,7 +251,7 @@ class _PointsBadge extends StatelessWidget {
           Icon(Icons.stars_rounded, size: 13, color: colors.heroGold),
           const SizedBox(width: 5),
           ResponsiveText(
-            groupedNumber(points),
+            groupedNumber(context, points),
             style: AppTextStyles.displaySmall.copyWith(
               fontSize: 15,
               height: 1,

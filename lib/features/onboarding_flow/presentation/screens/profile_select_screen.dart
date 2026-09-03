@@ -45,7 +45,9 @@ class ProfileSelectScreen extends StatelessWidget {
   }
 
   void _onAddChild(BuildContext context) {
-    context.go(AppRoutes.createProfiles);
+    // `go` replaces the stack, so create-profiles is told to come back here
+    // rather than falling through to its first-run default of role-select.
+    context.go(AppRoutes.createProfiles, extra: AppRoutes.profileSelect);
   }
 
   void _onAuthState(BuildContext context, AuthState state) {

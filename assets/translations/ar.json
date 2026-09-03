@@ -1,5 +1,9 @@
 {
   "app_name": "زاد",
+  "splash": {
+    "tagline": "رفيقك اليومي",
+    "loading": "جارٍ التحميل..."
+  },
   "share": {
     "subject": "جرّب تطبيق {app}",
     "message": "جرّب تطبيق {app} — مسابقات إسلامية تتعلّم منها كل يوم شيئاً جديداً وتكسب بها الحسنات. 🌙\n\nآيفون: {ios}\nأندرويد: {android}"
@@ -93,8 +97,7 @@
     "save_failed": "تعذّر حفظ ملفك الشخصي",
     "success": {
       "title_accent": "تمَّ إكمال ملفك",
-      "subtitle": "كل شيء جاهز. نسأل الله أن ينفعك بما تتعلَّم.",
-      "cta": "لنبدأ"
+      "subtitle": "كل شيء جاهز. نسأل الله أن ينفعك بما تتعلَّم."
     }
   },
   "create_profiles": {
@@ -399,8 +402,7 @@
     "signup_success": {
       "title_prefix": "حياك الله\n",
       "title_accent": "زاد",
-      "subtitle": "حسابك جاهز. لنبدأ رحلتك معاً.",
-      "cta": "متابعة"
+      "subtitle": "حسابك جاهز. لنبدأ رحلتك معاً."
     },
     "forgot_password_screen": {
       "headline_prefix": "نسيت ",
@@ -436,7 +438,8 @@
     "no_internet": "يبدو أنك بدون إنترنت",
     "connection_title": "انقطع الاتصال",
     "connection_message": "تعذّر الوصول إلى الخادم. تحقّق من اتصالك بالإنترنت وحاول مجدداً.",
-    "required_field": "لا تنسَ تعبئة هذا الحقل"
+    "required_field": "لا تنسَ تعبئة هذا الحقل",
+    "profile_load_failed": "تعذّر تحميل ملفك الشخصي"
   },
   "please_enter_email": "أدخل بريدك الإلكتروني",
   "please_enter_valid_email": "أدخل بريدًا إلكترونيًا صحيحًا",

@@ -165,7 +165,11 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.createProfiles,
           name: AppRoutes.createProfilesName,
-          builder: (context, state) => const CreateChildrenScreen(),
+          builder: (context, state) => CreateChildrenScreen(
+            backDestination: state.extra is String
+                ? state.extra! as String
+                : null,
+          ),
         ),
         GoRoute(
           path: AppRoutes.profileSelect,

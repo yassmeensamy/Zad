@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_languages.dart';
 import '../../../../theme/theme.dart';
 import '../../../language/presentation/modals/language_dialog.dart';
 
@@ -19,7 +19,7 @@ class AuthLanguageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final label = context.locale.languageCode == 'ar' ? 'العربية' : 'English';
+    final label = context.appLanguage.nativeName;
     return Material(
       color: colors.overlayLight,
       shape: StadiumBorder(

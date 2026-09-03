@@ -4,46 +4,45 @@ import 'dart:ui' show lerpDouble;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_circle_button.dart';
 import '../../../../theme/theme.dart';
 
-/// Celebration dialog for the milestones in the onboarding flow: a freshly
-/// created account, and a freshly completed profile. The copy is swappable via
-/// the `*Key` params so both steps share one piece of choreography; the tanbih
-/// note is fixed, since it is the same disclaimer everywhere.
+/// Success checkpoint in the signup / profile-completion flow. The close button
+/// in the corner is the *only* way out: the caller navigates the flow onward
+/// from [onClose], so a dismissal the caller never hears about would strand the
+/// user on the screen behind the dialog.
 class SignupSuccessDialog extends StatefulWidget {
   const SignupSuccessDialog({
     super.key,
-    required this.onContinue,
+    required this.onClose,
     this.titleAccentKey = 'auth.signup_success.title_accent',
     this.subtitleKey = 'auth.signup_success.subtitle',
-    this.ctaKey = 'auth.signup_success.cta',
   });
 
-  final VoidCallback onContinue;
+  /// Runs when the close button is tapped. Must dismiss the dialog itself —
+  /// nothing else can, by design.
+  final VoidCallback onClose;
   final String titleAccentKey;
   final String subtitleKey;
-  final String ctaKey;
 
   static Future<void> show(
     BuildContext context, {
-    required VoidCallback onContinue,
+    required VoidCallback onClose,
     String titleAccentKey = 'auth.signup_success.title_accent',
     String subtitleKey = 'auth.signup_success.subtitle',
-    String ctaKey = 'auth.signup_success.cta',
   }) {
     return CustomDialog.show(
       context: context,
+      // Tapping the barrier must not dismiss — see the class doc.
       barrierDismissible: false,
       padding: const EdgeInsets.fromLTRB(28, 32, 28, 26),
       constraints: const BoxConstraints(maxWidth: 380),
       child: SignupSuccessDialog(
-        onContinue: onContinue,
+        onClose: onClose,
         titleAccentKey: titleAccentKey,
         subtitleKey: subtitleKey,
-        ctaKey: ctaKey,
       ),
     );
   }
@@ -94,10 +93,6 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
     parent: _ctrl,
     curve: const Interval(0.66, 0.88, curve: Curves.easeOutCubic),
   );
-  late final Animation<double> _cta = CurvedAnimation(
-    parent: _ctrl,
-    curve: const Interval(0.74, 0.98, curve: Curves.easeOutCubic),
-  );
 
   // Fades the ambient layer in once the badge is on-screen.
   late final Animation<double> _ambientFade = CurvedAnimation(
@@ -127,8 +122,30 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final buttonTheme = Theme.of(context).extension<CustomButtonTheme>()!;
 
+    // `barrierDismissible: false` stops a tap outside; this stops the OS back
+    // gesture. Together they leave the close button as the only exit, so the
+    // caller's `onClose` always runs and the flow never stalls behind a dialog
+    // that dismissed itself silently.
+    return PopScope(
+      canPop: false,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          _buildContent(colors),
+          // Not part of the entrance choreography: the only way out of this
+          // dialog is available from the first frame.
+          Positioned(
+            top: -6,
+            right: -6,
+            child: ZaadCircleIconButton.close(onTap: widget.onClose),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContent(AppColorsTheme colors) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -193,30 +210,6 @@ class _SignupSuccessDialogState extends State<SignupSuccessDialog>
               letterSpacing: 0.1,
               color: colors.textSecondary.withValues(alpha: 0.78),
             ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        _FadeUp(
-          animation: _cta,
-          child: CustomButton.full(
-            text: widget.ctaKey.tr(),
-            theme: buttonTheme.copyWith(
-              useGradient: true,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [colors.ctaTop, colors.ctaBottom],
-              ),
-              textColor: colors.onCta,
-              textStyle: AppTextStyles.labelLarge.copyWith(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1.6,
-              ),
-              height: 54,
-              borderRadius: 18,
-            ),
-            onTap: widget.onContinue,
           ),
         ),
       ],

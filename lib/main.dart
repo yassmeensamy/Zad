@@ -13,6 +13,8 @@ import 'package:requests_inspector/requests_inspector.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'app.dart';
+import 'core/l10n/app_languages.dart';
+import 'core/navigation/app_router.dart';
 import 'core/navigation/deep_link_service.dart';
 import 'core/navigation/deep_links.dart';
 import 'core/services/core_service_locator.dart';
@@ -32,10 +34,12 @@ Future<void> main() async {
   await Future.wait([
     dotenv.load(fileName: '.env'),
     EasyLocalization.ensureInitialized(),
-    initializeDateFormatting('ar'),
+    for (final code in AppLanguages.codes) initializeDateFormatting(code),
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
   ]);
   timeago.setLocaleMessages('ar', timeago.ArMessages());
+  timeago.setLocaleMessages('ur', timeago.UrMessages());
+  timeago.setLocaleMessages('id', timeago.IdMessages());
 
   final serviceLocator = ServiceLocator();
   await serviceLocator.init(
@@ -52,13 +56,6 @@ Future<void> main() async {
   );
   await serviceLocator.startOffline();
 
-  // Warm Remote Config so the splash force-update check reads fresh min-version
-  // values — but NEVER await it here. The Android native splash stays up until
-  // Flutter renders its first frame, which only happens after `runApp`, so any
-  // network call awaited above it holds the launch screen hostage. Awaiting
-  // `fetchAndActivate` used to strand Play-signed builds on the native splash
-  // indefinitely. The force-update gate awaits `RemoteConfigService.ready`
-  // (bounded) after the first frame instead.
   unawaited(sl<RemoteConfigService>().init());
 
   final deepLinks = DeepLinkService(resolver: DeepLinks.toLocation);
@@ -67,12 +64,13 @@ Future<void> main() async {
   runApp(
     RequestsInspector(
       enabled: false,
-      //!kReleaseMode,
-      showInspectorOn: ShowInspectorOn.Both,
+
+      //showInspectorOn: ShowInspectorOn.Both,
+      navigatorKey: AppRouter.rootNavigatorKey,
       child: EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ar')],
+        supportedLocales: AppLanguages.locales,
         path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
+        fallbackLocale: AppLanguages.fallback.locale,
         child: MyApp(deepLinks: deepLinks, initialLocation: initialLink),
       ),
     ),

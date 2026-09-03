@@ -27,7 +27,9 @@ class FeedbackPanel extends StatelessWidget {
         : 'quiz.feedback.incorrect_eyebrow';
 
     return TweenAnimationBuilder<double>(
-      key: ValueKey('feedback-${isCorrect ? 'correct' : 'wrong'}-$motivationalKey'),
+      key: ValueKey(
+        'feedback-${isCorrect ? 'correct' : 'wrong'}-$motivationalKey',
+      ),
       tween: Tween(begin: 0, end: 1),
       duration: const Duration(milliseconds: 320),
       curve: Curves.easeOutCubic,
@@ -108,7 +110,7 @@ class FeedbackPanel extends StatelessWidget {
                     child: ResponsiveText(
                       reference,
                       style: ZaadType.captionSmall.copyWith(
-                        fontSize: 11,
+                        fontSize: 14,
                         color: colors.textTertiary,
                       ),
                     ),

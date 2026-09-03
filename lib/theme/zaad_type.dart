@@ -44,7 +44,7 @@ class ZaadType {
 
   /// Smaller kicker — used inside dialog headers.
   static const TextStyle eyebrowSm = TextStyle(
-    fontSize: 9.5,
+    fontSize: 14,
     fontWeight: FontWeight.w700,
     letterSpacing: 3.4,
     height: 1.4,

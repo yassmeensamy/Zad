@@ -1,5 +1,9 @@
 {
   "app_name": "Zaad",
+  "splash": {
+    "tagline": "YOUR DAILY COMPANION",
+    "loading": "LOADING..."
+  },
   "share": {
     "subject": "Try {app}",
     "message": "Try {app} — Islamic quizzes that teach you something new every day and earn you hasanaat along the way. 🌙\n\niPhone: {ios}\nAndroid: {android}"
@@ -93,8 +97,7 @@
     "save_failed": "Couldn't save your profile",
     "success": {
       "title_accent": "Profile complete",
-      "subtitle": "Everything is ready. May what you learn here benefit you.",
-      "cta": "LET'S BEGIN"
+      "subtitle": "Everything is ready. May what you learn here benefit you."
     }
   },
   "create_profiles": {
@@ -399,8 +402,7 @@
     "signup_success": {
       "title_prefix": "Welcome to ",
       "title_accent": "Zaad",
-      "subtitle": "Your account is ready. Let's set up your space and begin the journey.",
-      "cta": "CONTINUE"
+      "subtitle": "Your account is ready. Let's set up your space and begin the journey."
     },
     "forgot_password_screen": {
       "headline_prefix": "Forgot ",
@@ -436,7 +438,8 @@
     "no_internet": "No internet connection",
     "connection_title": "Connection lost",
     "connection_message": "We couldn't reach the server. Check your internet connection and try again.",
-    "required_field": "This field is required"
+    "required_field": "This field is required",
+    "profile_load_failed": "Couldn't load your profile"
   },
   "please_enter_email": "Please enter your email",
   "please_enter_valid_email": "Please enter a valid email",

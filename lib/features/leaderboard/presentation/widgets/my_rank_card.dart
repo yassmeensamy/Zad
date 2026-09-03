@@ -160,7 +160,7 @@ class MyRankCard extends StatelessWidget {
                       Icon(Icons.stars_rounded, size: 12, color: accentInk),
                       const SizedBox(width: 3),
                       ResponsiveText(
-                        groupedNumber(points),
+                        groupedNumber(context, points),
                         maxLines: 1,
                         style: AppTextStyles.labelSmall.copyWith(
                           fontSize: 11.5,

@@ -93,13 +93,13 @@ class AppTextStyles {
     letterSpacing: 0.1,
   );
   static const TextStyle labelMedium = TextStyle(
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: FontWeight.w500,
     height: 1.4,
     letterSpacing: 0.2,
   );
   static const TextStyle labelSmall = TextStyle(
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     height: 1.4,
     letterSpacing: 0.3,
@@ -113,7 +113,7 @@ class AppTextStyles {
   /// resolved here to an absolute `letterSpacing` so call sites stay
   /// declarative. Pass [color] to tint it; [weight] defaults to bold.
   static TextStyle eyebrow({
-    double fontSize = 10,
+    double fontSize = 14,
     required double tracking,
     FontWeight weight = FontWeight.w700,
     Color? color,

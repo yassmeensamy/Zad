@@ -119,8 +119,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         context,
         titleAccentKey: 'complete_profile.success.title_accent',
         subtitleKey: 'complete_profile.success.subtitle',
-        ctaKey: 'complete_profile.success.cta',
-        onContinue: () => Navigator.of(context, rootNavigator: true).pop(),
+        onClose: () => Navigator.of(context, rootNavigator: true).pop(),
       );
       if (!context.mounted) return;
       context.go(widget.nextDestination);

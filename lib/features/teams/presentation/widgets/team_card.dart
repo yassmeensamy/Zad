@@ -161,7 +161,6 @@ class TeamCard extends StatelessWidget {
                 ResponsiveText(
                   'home.team.rank_label',
                   style: AppTextStyles.labelSmall.copyWith(
-                    fontSize: 7.5,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                     color: colors.textSecondary,
@@ -232,7 +231,6 @@ class TeamCard extends StatelessWidget {
             'categories.progress.percent',
             args: [percent.toString()],
             style: AppTextStyles.bodySmall.copyWith(
-              fontSize: 10.5,
               fontWeight: FontWeight.w600,
               color: colors.success,
             ),

@@ -6,20 +6,31 @@ import '../../../../core/expections/server_exception.dart';
 import '../../../../core/utils/logger.dart';
 
 import '../../core/auth_event_service.dart';
+import '../../core/auth_state_listener_mixin.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/responses/auth_response.dart';
 import 'auth_state.dart';
 
-class AuthCubit extends BaseCubit<AuthState> {
+class AuthCubit extends BaseCubit<AuthState> with AuthStateListenerMixin {
   AuthCubit({
     required AuthRepository repository,
     required AuthEventService authEventService,
   }) : _repository = repository,
        _authEventService = authEventService,
-       super(const AuthState());
+       super(const AuthState()) {
+    initAuthListener();
+  }
 
   final AuthRepository _repository;
   final AuthEventService _authEventService;
+
+  @override
+  AuthEventService get authEventService => _authEventService;
+
+  @override
+  void onUnauthenticated() {
+    emit(const AuthState(status: AuthStatus.notLoggedIn));
+  }
 
   Future<void> init() async {
     try {
@@ -364,4 +375,10 @@ class AuthCubit extends BaseCubit<AuthState> {
   }
 
   String _errorMessage(ServerException e) => e.message;
+
+  @override
+  Future<void> close() {
+    disposeAuthListener();
+    return super.close();
+  }
 }

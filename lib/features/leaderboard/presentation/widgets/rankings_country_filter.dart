@@ -16,8 +16,7 @@ class _CountryChoice {
 
   int? get id => country?.id;
 
-  String get label =>
-      country?.displayName ?? 'leaderboard.country_all'.tr();
+  String get label => country?.displayName ?? 'leaderboard.country_all'.tr();
 
   @override
   bool operator ==(Object other) =>
@@ -27,9 +26,6 @@ class _CountryChoice {
   int get hashCode => id.hashCode;
 }
 
-/// Compact pill that filters the individual rankings by country. Sits beside
-/// the category chips and opens the same searchable sheet the profile country
-/// field uses.
 class RankingsCountryFilter extends StatelessWidget {
   const RankingsCountryFilter({
     super.key,

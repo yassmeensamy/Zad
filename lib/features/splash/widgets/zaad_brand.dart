@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/l10n/app_languages.dart';
 import '../../../core/widgets/responsive_text.dart';
 import '../../../theme/theme.dart';
 
@@ -14,14 +15,14 @@ class ZaadBrand extends StatelessWidget {
     this.gap = 14,
     this.ruleGap = 24,
     this.tagGap = 18,
-    this.tag = 'Your daily companion',
+    this.tagKey = 'splash.tagline',
   });
 
   /// Compact preset used on auth screens (login). Matches the Olive v2 design:
   /// 44px wordmark, 18px Arabic, 9.5px tag, 28px rule.
   const ZaadBrand.compact({
     super.key,
-    this.tag = 'Your daily companion',
+    this.tagKey = 'splash.tagline',
   })  : wordSize = 44,
         arabicSize = 18,
         tagSize = 9.5,
@@ -37,7 +38,7 @@ class ZaadBrand extends StatelessWidget {
   final double gap;
   final double ruleGap;
   final double tagGap;
-  final String tag;
+  final String tagKey;
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +70,13 @@ class ZaadBrand extends StatelessWidget {
         Container(width: ruleWidth, height: 1, color: colors.accent),
         SizedBox(height: tagGap),
         ResponsiveText(
-          tag.toUpperCase(),
+          tagKey,
           style: AppTextStyles.labelSmall.copyWith(
             fontSize: tagSize,
             fontWeight: FontWeight.w600,
-            letterSpacing: tagSize * 0.42,
+            letterSpacing: context.appLanguage.usesArabicScript
+                ? 0
+                : tagSize * 0.42,
             color: colors.oliveSoft,
           ),
         ),

@@ -36,8 +36,10 @@ class AuthInterceptor extends Interceptor {
           ),
         )
         ..interceptors.addAll([
-          // Debug-only network inspector; release builds tree-shake it out.
-          if (kDebugMode) RequestsInspectorInterceptor(),
+          // Debug/profile-only network inspector; release builds drop it.
+          // Same guard as `NetworkService._createDioClient` and the
+          // `RequestsInspector` widget in `main`.
+          if (!kReleaseMode) RequestsInspectorInterceptor(),
         ])
         // Sentry breadcrumbs + spans + failed-request capture for the
         // token-refresh / retry traffic. Headers/body are scrubbed in the
@@ -288,6 +290,7 @@ class AuthInterceptor extends Interceptor {
 
   Future<void> _navigateToLogin() async {
     await _cacheService.clearAll(isSecure: true);
+    await _cacheService.remove(StorageKeys.kUserKey);
     onLogout?.call();
     logger.debug('Logout triggered');
   }

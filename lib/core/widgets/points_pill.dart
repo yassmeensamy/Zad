@@ -43,7 +43,7 @@ class PointsPill extends StatelessWidget {
           SizedBox(width: dense ? 5 : 6),
           ResponsiveText(
             'common.total_points',
-            args: [groupedNumber(points)],
+            args: [groupedNumber(context, points)],
             style: AppTextStyles.labelMedium.copyWith(
               fontSize: dense ? 11.5 : 13,
               fontWeight: FontWeight.w700,

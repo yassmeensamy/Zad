@@ -1,6 +1,7 @@
 import '../../../../core/api/endpoints/app_endpoints.dart';
 import '../../../../core/api/network_service.dart';
 import '../../../../core/constants/storage_keys.dart';
+import '../../../../core/l10n/app_languages.dart';
 import '../../../../core/services/cache_service.dart';
 import '../models/category_download_bundle.dart';
 
@@ -28,7 +29,8 @@ class DownloadsRemoteDataSourceImpl implements DownloadsRemoteDataSource {
     );
     response.validated();
     final languageCode =
-        await _cacheService.get<String>(StorageKeys.kLocaleKey) ?? 'ar';
+        await _cacheService.get<String>(StorageKeys.kLocaleKey) ??
+        AppLanguages.fallback.code;
     return CategoryDownloadBundle.fromMap(
       response.data as Map<String, dynamic>,
       languageCode: languageCode,

@@ -40,6 +40,9 @@ Future<void> main() async {
   timeago.setLocaleMessages('ar', timeago.ArMessages());
   timeago.setLocaleMessages('ur', timeago.UrMessages());
   timeago.setLocaleMessages('id', timeago.IdMessages());
+  timeago.setLocaleMessages('ru', timeago.RuMessages());
+  timeago.setLocaleMessages('tr', timeago.TrMessages());
+  timeago.setLocaleMessages('fr', timeago.FrMessages());
 
   final serviceLocator = ServiceLocator();
   await serviceLocator.init(

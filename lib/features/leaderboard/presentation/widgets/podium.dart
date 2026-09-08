@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/number_format.dart';
-import '../../../../core/widgets/rank_crown.dart';
-import '../../../../core/widgets/responsive_text.dart';
-import '../../../../theme/theme.dart';
-import 'leaderboard_disc.dart';
+import '../../../../core/widgets/medal_disc.dart';
+import '../../../../core/widgets/podium_row.dart';
 import 'leaderboard_states.dart';
 import 'rank_seed.dart';
 
-/// Top-three podium: silver (2nd) — gold (1st, raised) — bronze (3rd).
+/// The leaderboard's top three, mapped onto the shared [PodiumRow].
 class Podium extends StatelessWidget {
   const Podium({super.key, required this.seeds});
 
@@ -22,208 +20,22 @@ class Podium extends StatelessWidget {
         vertical: 28,
       );
     }
-    RankSeed? at(int i) => i < seeds.length ? seeds[i] : null;
+    PodiumEntry? at(int i) =>
+        i < seeds.length ? _entry(context, seeds[i]) : null;
+    return PodiumRow(places: [at(0), at(1), at(2)]);
+  }
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(flex: 100, child: _PodiumPillar(place: 2, seed: at(1))),
-          const SizedBox(width: 9),
-          Expanded(flex: 115, child: _PodiumPillar(place: 1, seed: at(0))),
-          const SizedBox(width: 9),
-          Expanded(flex: 100, child: _PodiumPillar(place: 3, seed: at(2))),
-        ],
-      ),
+  PodiumEntry _entry(BuildContext context, RankSeed seed) {
+    final points = seed.points;
+    return PodiumEntry(
+      initial: discInitial(seed.name),
+      name: seed.name,
+      caption: '${seed.completed}/${seed.total}',
+      flag: seed.flag,
+      // Points sit under the level count — individuals only; the teams podium
+      // has no points to show.
+      noteIcon: points == null ? null : Icons.stars_rounded,
+      note: points == null ? null : groupedNumber(context, points),
     );
   }
 }
-
-class _PodiumPillar extends StatelessWidget {
-  const _PodiumPillar({required this.place, required this.seed});
-
-  final int place;
-  final RankSeed? seed;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final isFirst = place == 1;
-    final accent = switch (place) {
-      1 => AppColors.discGoldMid,
-      2 => AppColors.discSilverMid,
-      _ => AppColors.emberBright,
-    };
-    final pedHeight = switch (place) {
-      1 => 46.0,
-      2 => 34.0,
-      _ => 25.0,
-    };
-    final pedTint = switch (place) {
-      1 => AppColors.discGoldMid,
-      2 => AppColors.discSilverMid,
-      _ => AppColors.ember,
-    };
-    final avatarSize = isFirst ? 62.0 : 52.0;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          width: avatarSize + 14,
-          height: avatarSize + (isFirst ? 22 : 14),
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: avatarSize + 14,
-                height: avatarSize + 14,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      accent.withValues(alpha: 0.5),
-                      accent.withValues(alpha: 0),
-                    ],
-                    stops: const [0.5, 1.0],
-                  ),
-                ),
-              ),
-              LeaderboardDisc(
-                size: avatarSize,
-                initial: discInitial(seed?.name),
-                style: discStyleForPlace(place),
-                fontSize: isFirst ? 24 : 20,
-              ),
-              if (isFirst && seed != null)
-                const Positioned(top: -8, child: RankCrown()),
-              Positioned(
-                right: 2,
-                bottom: 2,
-                child: _RankBadge(place: place, color: accent),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 7),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (seed?.flag case final flag? when flag.isNotEmpty) ...[
-              ResponsiveText(
-                flag,
-                style: AppTextStyles.labelMedium.copyWith(fontSize: 12),
-              ),
-              const SizedBox(width: 4),
-            ],
-            Flexible(
-              child: ResponsiveText(
-                seed?.name ?? '—',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.labelMedium.copyWith(
-                  fontSize: 12,
-                  fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-                  color: isFirst ? colors.accent : colors.textPrimary,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 2),
-        ResponsiveText(
-          seed == null ? '—' : '${seed!.completed}/${seed!.total}',
-          style: AppTextStyles.labelMedium.copyWith(
-            fontSize: isFirst ? 12 : 11,
-            fontWeight: FontWeight.w500,
-            color: accent,
-          ),
-        ),
-        // Points under the level count — individuals only; the teams podium
-        // has no points to show.
-        if (seed?.points case final points?) ...[
-          const SizedBox(height: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.stars_rounded, size: isFirst ? 11 : 10, color: accent),
-              const SizedBox(width: 3),
-              ResponsiveText(
-                groupedNumber(context, points),
-                style: AppTextStyles.labelSmall.copyWith(
-                  fontSize: isFirst ? 11 : 10,
-                  fontWeight: FontWeight.w600,
-                  color: colors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ],
-        const SizedBox(height: 7),
-        Container(
-          height: pedHeight,
-          width: double.infinity,
-          padding: const EdgeInsets.only(top: 7),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
-            border: Border(
-              top: BorderSide(color: pedTint.withValues(alpha: 0.4)),
-              left: BorderSide(color: pedTint.withValues(alpha: 0.4)),
-              right: BorderSide(color: pedTint.withValues(alpha: 0.4)),
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                pedTint.withValues(alpha: 0.28),
-                pedTint.withValues(alpha: 0.05),
-              ],
-            ),
-          ),
-          child: ResponsiveText(
-            place < 10 ? '0$place' : '$place',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelMedium.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: accent,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _RankBadge extends StatelessWidget {
-  const _RankBadge({required this.place, required this.color});
-
-  final int place;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Container(
-      width: 24,
-      height: 24,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: colors.canvas,
-        border: Border.all(color: color, width: 2),
-      ),
-      child: ResponsiveText(
-        '$place',
-        style: AppTextStyles.labelSmall.copyWith(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
-    );
-  }
-}
-

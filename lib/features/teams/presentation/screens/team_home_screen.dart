@@ -12,7 +12,7 @@ import '../../../../core/navigation/deep_links.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
 import '../../../../core/widgets/app_scaffold.dart';
-import '../../../../core/widgets/rank_crown.dart';
+import '../../../../core/widgets/podium_row.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/presentation/cubit/categories_cubit.dart';
@@ -149,9 +149,7 @@ class _AppBar extends StatelessWidget {
     if (left && context.mounted) {
       // Pop (rather than go) so the home section's awaited pushNamed resolves
       // and refreshTeam() re-syncs to noTeam.
-      context.canPop()
-          ? context.pop()
-          : context.goNamed(AppRoutes.homeName);
+      context.canPop() ? context.pop() : context.goNamed(AppRoutes.homeName);
     }
   }
 }
@@ -1250,6 +1248,7 @@ const _skeletonBoard = <_LbEntry>[
   ),
 ];
 
+/// The team's top three, mapped onto the shared [PodiumRow].
 class _TopThree extends StatelessWidget {
   const _TopThree({required this.entries});
 
@@ -1257,193 +1256,14 @@ class _TopThree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _LbEntry? at(int i) => i < entries.length ? entries[i] : null;
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(flex: 100, child: _PodiumPillar(place: 2, entry: at(1))),
-          const SizedBox(width: 9),
-          Expanded(flex: 115, child: _PodiumPillar(place: 1, entry: at(0))),
-          const SizedBox(width: 9),
-          Expanded(flex: 100, child: _PodiumPillar(place: 3, entry: at(2))),
-        ],
-      ),
-    );
-  }
-}
-
-class _PodiumPillar extends StatelessWidget {
-  const _PodiumPillar({required this.place, required this.entry});
-
-  final int place;
-  final _LbEntry? entry;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    final isFirst = place == 1;
-
-    final accent = switch (place) {
-      1 => AppColors.discGoldMid,
-      2 => AppColors.discSilverMid,
-      _ => AppColors.discBronzeMid,
-    };
-    final discHi = switch (place) {
-      1 => AppColors.discGoldHi,
-      2 => AppColors.discSilverHi,
-      _ => AppColors.discBronzeHi,
-    };
-    final discLo = switch (place) {
-      1 => AppColors.discGoldLo,
-      2 => AppColors.discSilverLo,
-      _ => AppColors.discBronzeLo,
-    };
-    final avatarSize = isFirst ? 60.0 : 50.0;
-    final pedHeight = switch (place) {
-      1 => 42.0,
-      2 => 30.0,
-      _ => 24.0,
-    };
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          width: avatarSize + 16,
-          height: avatarSize + (isFirst ? 24 : 16),
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: avatarSize + 16,
-                height: avatarSize + 16,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      accent.withValues(alpha: 0.5),
-                      accent.withValues(alpha: 0),
-                    ],
-                    stops: const [0.5, 1.0],
-                  ),
-                ),
-              ),
-              Container(
-                width: avatarSize,
-                height: avatarSize,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    center: const Alignment(-0.36, -0.44),
-                    colors: [discHi, discLo],
-                  ),
-                ),
-                child: ResponsiveText(
-                  entry?.letter ?? '—',
-                  style: TextStyle(
-                    fontSize: isFirst ? 24 : 20,
-                    color: AppColors.discGoldInk,
-                  ),
-                ),
-              ),
-              if (isFirst && entry != null)
-                const Positioned(top: -10, child: RankCrown()),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: _PodiumBadge(place: place, color: accent),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 7),
-        ResponsiveText(
-          entry?.name ?? '—',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12.5,
-            fontWeight: isFirst ? FontWeight.w700 : FontWeight.w600,
-            color: isFirst ? p.gold : p.ink,
-          ),
-        ),
-        const SizedBox(height: 2),
-        ResponsiveText(
-          entry?.points ?? '—',
-          style: TextStyle(
-            fontSize: isFirst ? 12 : 11,
-            fontWeight: FontWeight.w500,
-            color: accent,
-          ),
-        ),
-        const SizedBox(height: 8),
-
-        Container(
-          height: pedHeight,
-          width: double.infinity,
-          padding: const EdgeInsets.only(top: 7),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(9)),
-            border: Border(
-              top: BorderSide(color: accent.withValues(alpha: 0.4)),
-              left: BorderSide(color: accent.withValues(alpha: 0.4)),
-              right: BorderSide(color: accent.withValues(alpha: 0.4)),
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                accent.withValues(alpha: 0.28),
-                accent.withValues(alpha: 0.05),
-              ],
-            ),
-          ),
-          child: ResponsiveText(
-            '0$place',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: accent,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _PodiumBadge extends StatelessWidget {
-  const _PodiumBadge({required this.place, required this.color});
-
-  final int place;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = _Pal(context);
-    return Container(
-      width: 22,
-      height: 22,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: p.bgBottom,
-        border: Border.all(color: color, width: 2),
-      ),
-      child: ResponsiveText(
-        '$place',
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
-    );
+    PodiumEntry? at(int i) => i < entries.length
+        ? PodiumEntry(
+            initial: entries[i].letter,
+            name: entries[i].name,
+            caption: entries[i].points,
+          )
+        : null;
+    return PodiumRow(places: [at(0), at(1), at(2)]);
   }
 }
 
@@ -1599,10 +1419,7 @@ class _LbRow extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (me) ...[
-                      const SizedBox(width: 6),
-                      const _Tag(),
-                    ],
+                    if (me) ...[const SizedBox(width: 6), const _Tag()],
                   ],
                 ),
                 const SizedBox(height: 3),
@@ -1699,7 +1516,6 @@ class _Tag extends StatelessWidget {
   }
 }
 
-
 class _Sparkle extends StatelessWidget {
   const _Sparkle({required this.size, required this.color});
 
@@ -1708,10 +1524,7 @@ class _Sparkle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: SparklePainter(color),
-    );
+    return CustomPaint(size: Size.square(size), painter: SparklePainter(color));
   }
 }
 

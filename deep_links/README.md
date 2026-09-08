@@ -57,16 +57,20 @@ Hosting and repoint DNS, then change `host` in
 `lib/core/navigation/deep_links.dart`, the Android manifest, the entitlement,
 and these files to match.)
 
-### ⚠️ Fill these placeholders before deploying
+### Project-specific values (already filled in)
 
-1. `public/index.html` → `APPSTORE_URL` — replace `REPLACE_WITH_APPLE_APP_ID`
-   with your numeric App Store ID (e.g. `id1234567890`).
-2. `public/.well-known/assetlinks.json` → `sha256_cert_fingerprints` — your
+1. `public/index.html` → store URLs — App Store `id6763949535`, Play
+   `com.zad.islamic`.
+2. `public/.well-known/assetlinks.json` → `sha256_cert_fingerprints` — the
    **release** signing SHA-256 (Play Console → App signing, or `keytool -list -v
    -keystore <ks> -alias <alias>`). Add both upload and Play app-signing
    fingerprints if you use Play App Signing.
 3. `public/.well-known/apple-app-site-association` → `appID` —
-   `<AppleTeamID>.com.zad.islamic`.
+   `KNR485329A.com.zad.islamic`.
+
+Any change to these files only takes effect once you re-run
+`firebase deploy --only hosting` — the Apple CDN caches the AASA, so allow time
+after deploying.
 
 ### iOS one-time Xcode step
 

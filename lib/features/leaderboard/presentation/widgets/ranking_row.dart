@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/number_format.dart';
+import '../../../../core/widgets/medal_disc.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
-import 'leaderboard_disc.dart';
 import 'rank_seed.dart';
 
 /// A single row in the full ranking list. Highlights the current user ("me")
@@ -64,7 +64,7 @@ class RankingRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          LeaderboardDisc(
+          MedalDisc(
             size: 38,
             initial: discInitial(seed.name),
             style: discStyleForRow(seed.rank, isMe),

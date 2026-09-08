@@ -14,6 +14,9 @@ Future<T?> showAppPickerSheet<T>({
   String? title,
   String? searchHint,
   String? emptyLabel,
+  String Function(T item)? itemSubtitle,
+  Widget Function(T item)? itemLeading,
+  bool searchable = true,
 }) {
   final colors = context.appColors;
   return showModalBottomSheet<T>(
@@ -37,6 +40,9 @@ Future<T?> showAppPickerSheet<T>({
       title: title,
       searchHint: searchHint,
       emptyLabel: emptyLabel,
+      itemSubtitle: itemSubtitle,
+      itemLeading: itemLeading,
+      searchable: searchable,
     ),
   );
 }
@@ -59,6 +65,9 @@ class AppDropdownField<T> extends StatelessWidget {
     this.enabled = true,
     this.loadingLabel,
     this.loading = false,
+    this.itemSubtitle,
+    this.itemLeading,
+    this.searchable = true,
   });
 
   final List<T> items;
@@ -71,6 +80,11 @@ class AppDropdownField<T> extends StatelessWidget {
   final String? emptyLabel;
   final IconData? prefixIcon;
   final bool enabled;
+
+  /// Forwarded to the picker sheet — see [showAppPickerSheet].
+  final String Function(T item)? itemSubtitle;
+  final Widget Function(T item)? itemLeading;
+  final bool searchable;
 
   /// Shown in place of the hint while the items are still being fetched.
   final String? loadingLabel;
@@ -87,6 +101,9 @@ class AppDropdownField<T> extends StatelessWidget {
       title: sheetTitle,
       searchHint: searchHint,
       emptyLabel: emptyLabel,
+      itemSubtitle: itemSubtitle,
+      itemLeading: itemLeading,
+      searchable: searchable,
     );
     if (selected != null) onChanged(selected);
   }
@@ -129,9 +146,7 @@ class AppDropdownField<T> extends StatelessWidget {
                     label,
                     style: AppTextStyles.labelLarge.copyWith(
                       letterSpacing: 0,
-                      color: hasValue
-                          ? colors.oliveDeep
-                          : colors.textSecondary,
+                      color: hasValue ? colors.oliveDeep : colors.textSecondary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -168,6 +183,9 @@ class _PickerSheet<T> extends StatefulWidget {
     this.title,
     this.searchHint,
     this.emptyLabel,
+    this.itemSubtitle,
+    this.itemLeading,
+    this.searchable = true,
   });
 
   final List<T> items;
@@ -176,6 +194,17 @@ class _PickerSheet<T> extends StatefulWidget {
   final String? title;
   final String? searchHint;
   final String? emptyLabel;
+
+  /// Optional second line under [itemLabel] — e.g. a language's English name
+  /// beside its native one.
+  final String Function(T item)? itemSubtitle;
+
+  /// Optional leading widget per row, for pickers that carry a badge or flag.
+  final Widget Function(T item)? itemLeading;
+
+  /// Whether to show the search field. Off for short, fixed lists where the
+  /// box is noise and only serves to raise the keyboard over the options.
+  final bool searchable;
 
   @override
   State<_PickerSheet<T>> createState() => _PickerSheetState<T>();
@@ -190,7 +219,8 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
     super.initState();
     _searchController = TextEditingController();
     _searchController.addListener(
-      () => setState(() => _query = _searchController.text.trim().toLowerCase()),
+      () =>
+          setState(() => _query = _searchController.text.trim().toLowerCase()),
     );
   }
 
@@ -241,48 +271,51 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                   ),
                 ),
               ],
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
-                child: TextField(
-                  controller: _searchController,
-                  style: AppTextStyles.labelLarge.copyWith(
-                    letterSpacing: 0,
-                    color: colors.oliveDeep,
-                  ),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    hintText: widget.searchHint,
-                    hintStyle: AppTextStyles.labelLarge.copyWith(
+              if (!widget.searchable)
+                const SizedBox(height: 12)
+              else
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+                  child: TextField(
+                    controller: _searchController,
+                    style: AppTextStyles.labelLarge.copyWith(
                       letterSpacing: 0,
-                      color: colors.textSecondary,
+                      color: colors.oliveDeep,
                     ),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      size: 20,
-                      color: colors.textSecondary,
-                    ),
-                    // A 4% olive tint was invisible on the dark sheet; the
-                    // frosted card film reads as a raised field in both themes,
-                    // and the hairline gives it an edge to sit on.
-                    filled: true,
-                    fillColor: colors.cardSurface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ZaadRadii.lg),
-                      borderSide: BorderSide(color: colors.borderSubtle),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ZaadRadii.lg),
-                      borderSide: BorderSide(color: colors.borderSubtle),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ZaadRadii.lg),
-                      borderSide: BorderSide(
-                        color: colors.accent.withValues(alpha: 0.55),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: widget.searchHint,
+                      hintStyle: AppTextStyles.labelLarge.copyWith(
+                        letterSpacing: 0,
+                        color: colors.textSecondary,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        size: 20,
+                        color: colors.textSecondary,
+                      ),
+                      // A 4% olive tint was invisible on the dark sheet; the
+                      // frosted card film reads as a raised field in both themes,
+                      // and the hairline gives it an edge to sit on.
+                      filled: true,
+                      fillColor: colors.cardSurface,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                        borderSide: BorderSide(color: colors.borderSubtle),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                        borderSide: BorderSide(color: colors.borderSubtle),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(ZaadRadii.lg),
+                        borderSide: BorderSide(
+                          color: colors.accent.withValues(alpha: 0.55),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
               Flexible(
                 child: filtered.isEmpty
                     ? Padding(
@@ -302,6 +335,7 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                         itemBuilder: (context, index) {
                           final item = filtered[index];
                           final isSelected = item == widget.selected;
+                          final subtitle = widget.itemSubtitle?.call(item);
                           return ListTile(
                             // The selection cue is the accent (amber in both
                             // themes) — plain olive turned muted green on the
@@ -310,6 +344,7 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                             selectedTileColor: colors.accent.withValues(
                               alpha: 0.10,
                             ),
+                            leading: widget.itemLeading?.call(item),
                             title: ResponsiveText(
                               widget.itemLabel(item),
                               style: AppTextStyles.labelLarge.copyWith(
@@ -322,6 +357,19 @@ class _PickerSheetState<T> extends State<_PickerSheet<T>> {
                                     : FontWeight.w400,
                               ),
                             ),
+                            // Plain [Text]: subtitles carry caller-supplied
+                            // content (a language's English name), not a
+                            // translation key, so it must not go through `.tr()`.
+                            subtitle: subtitle == null
+                                ? null
+                                : Text(
+                                    subtitle,
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      fontSize: 11,
+                                      letterSpacing: 0.4,
+                                      color: colors.textSecondary,
+                                    ),
+                                  ),
                             trailing: isSelected
                                 ? Icon(
                                     Icons.check_rounded,

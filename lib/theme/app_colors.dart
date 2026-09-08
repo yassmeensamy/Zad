@@ -86,6 +86,12 @@ class AppColors {
   static const Color discSilverHi = Color(0xFFF4EBDC);
   static const Color discSilverMid = Color(0xFFCDBFA6);
   static const Color discSilverLo = Color(0xFF8A7456);
+  // Silver's mid stop is a pale cream — right for a disc gradient, wrong for
+  // text: it sits near 1.5:1 on the cream canvas and glares at ~10:1 on the
+  // night one. Second place inks its caption, badge digit and pedestal number
+  // in these instead; the medal tint still carries the metal itself.
+  static const Color discSilverInk = Color(0xFF6E5C42);
+  static const Color discSilverInkDark = Color(0xFFA8987C);
   static const Color discBronzeHi = Color(0xFFE8A877);
   static const Color discBronzeMid = Color(0xFFC9512B);
   static const Color discBronzeLo = Color(0xFF7A2E15);
@@ -157,7 +163,9 @@ class AppColors {
   // border tones are pre-baked per theme to keep the widget brightness-agnostic.
   static const Color ticketCloseSurfaceLight = Color(0x8CE9D9B8); // sand @ 55%
   static const Color ticketCloseBorderLight = Color(0x293E4A2A); // olive @ 16%
-  static const Color ticketCloseBorderDark = Color(0x3D7A8A5A); // oliveLight @ 24%
+  static const Color ticketCloseBorderDark = Color(
+    0x3D7A8A5A,
+  ); // oliveLight @ 24%
 
   // Status — tinted slightly toward the warm palette
   static const Color success = Color(0xFF6B8E3D);

@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "REPLACE_WITH_TEAMID.com.zad.islamic",
+        "appID": "KNR485329A.com.zad.islamic",
         "paths": ["/teams/join", "/teams/join/*"]
       }
     ]

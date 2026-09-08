@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/responsive_text.dart';
-import '../../../../theme/theme.dart';
+import '../../theme/theme.dart';
+import 'responsive_text.dart';
 
-/// Metallic medal styles for [LeaderboardDisc] avatars.
+/// Metallic medal styles for [MedalDisc] avatars.
 enum DiscStyle { gold, silver, bronze, olive }
 
 /// First glyph of [name], upper-cased; `?` when empty/null.
@@ -32,8 +32,11 @@ DiscStyle discStyleForRow(int rank, bool isMe) {
 
 /// A circular metallic avatar disc showing a single initial. The gold/silver/
 /// bronze/olive ramps are sourced from the Date & Ember palette.
-class LeaderboardDisc extends StatelessWidget {
-  const LeaderboardDisc({
+///
+/// Palette-independent (uses const [AppColors] directly), so it renders the
+/// same in any feature. Shared by the leaderboard rows and [PodiumRow].
+class MedalDisc extends StatelessWidget {
+  const MedalDisc({
     super.key,
     required this.size,
     required this.initial,

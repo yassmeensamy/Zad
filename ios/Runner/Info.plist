@@ -23,6 +23,9 @@
 		<string>ar</string>
 		<string>ur</string>
 		<string>id</string>
+		<string>ru</string>
+		<string>tr</string>
+		<string>fr</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Zaad</string>

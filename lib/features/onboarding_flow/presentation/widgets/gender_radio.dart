@@ -17,9 +17,11 @@ class GenderRadioGroup extends StatelessWidget {
   });
 
   final Gender? value;
-  final ValueChanged<Gender> onChanged;
+  final ValueChanged<Gender?> onChanged;
   final String maleLabel;
   final String femaleLabel;
+
+  void _toggle(Gender gender) => onChanged(value == gender ? null : gender);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class GenderRadioGroup extends StatelessWidget {
           child: _GenderRadioTile(
             label: maleLabel,
             selected: value == Gender.male,
-            onTap: () => onChanged(Gender.male),
+            onTap: () => _toggle(Gender.male),
           ),
         ),
         const SizedBox(width: 12),
@@ -37,7 +39,7 @@ class GenderRadioGroup extends StatelessWidget {
           child: _GenderRadioTile(
             label: femaleLabel,
             selected: value == Gender.female,
-            onTap: () => onChanged(Gender.female),
+            onTap: () => _toggle(Gender.female),
           ),
         ),
       ],

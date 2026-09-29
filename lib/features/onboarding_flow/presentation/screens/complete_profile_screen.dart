@@ -73,8 +73,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   bool get _canSubmit =>
       _fullNameController.text.trim().isNotEmpty &&
-      _birthDate != null &&
-      _gender != null &&
       _countryId != null &&
       !_saving;
 
@@ -91,7 +89,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   void _onSave() {
     if (_saving) return;
     if (!_formKey.currentState!.validate()) return;
-    if (_birthDate == null || _gender == null || _countryId == null) return;
+    if (_countryId == null) return;
 
     setState(() => _saving = true);
     context.read<UserCubit>().updateProfile(
@@ -220,14 +218,21 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _FieldLabel(label: 'complete_profile.birthday_label'),
+                        _FieldLabel(
+                          label: 'complete_profile.birthday_label',
+                          optional: true,
+                        ),
                         const SizedBox(height: 8),
                         _BirthDateField(
                           birthDate: _birthDate,
                           onTap: _pickBirthDate,
+                          onClear: () => setState(() => _birthDate = null),
                         ),
                         const SizedBox(height: 16),
-                        _FieldLabel(label: 'complete_profile.gender_label'),
+                        _FieldLabel(
+                          label: 'complete_profile.gender_label',
+                          optional: true,
+                        ),
                         const SizedBox(height: 8),
                         GenderRadioGroup(
                           value: _gender,
@@ -301,20 +306,38 @@ class _Heading extends StatelessWidget {
 }
 
 class _FieldLabel extends StatelessWidget {
-  const _FieldLabel({required this.label});
+  const _FieldLabel({required this.label, this.optional = false});
+
   final String label;
+  final bool optional;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final style = ZaadType.sectionLabel.copyWith(
+      letterSpacing: 0.4,
+      color: colors.oliveDeep,
+    );
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 4),
-      child: ResponsiveText(
-        label,
-        style: ZaadType.sectionLabel.copyWith(
-          letterSpacing: 0.4,
-          color: colors.oliveDeep,
-        ),
+      child: Row(
+        children: [
+          Flexible(child: ResponsiveText(label, style: style)),
+          if (optional) ...[
+            const SizedBox(width: 6),
+            Flexible(
+              child: ResponsiveText(
+                'complete_profile.optional_tag',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: style.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: colors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -365,10 +388,15 @@ class _ReadOnlyField extends StatelessWidget {
 }
 
 class _BirthDateField extends StatelessWidget {
-  const _BirthDateField({required this.birthDate, required this.onTap});
+  const _BirthDateField({
+    required this.birthDate,
+    required this.onTap,
+    required this.onClear,
+  });
 
   final DateTime? birthDate;
   final VoidCallback onTap;
+  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -406,11 +434,29 @@ class _BirthDateField extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(
-                Icons.calendar_month_rounded,
-                size: 18,
-                color: colors.olive.withValues(alpha: 0.55),
-              ),
+              if (hasDate)
+                Semantics(
+                  button: true,
+                  label: 'complete_profile.birthday_clear'.tr(),
+                  child: InkResponse(
+                    onTap: onClear,
+                    radius: 18,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: colors.olive.withValues(alpha: 0.55),
+                      ),
+                    ),
+                  ),
+                )
+              else
+                Icon(
+                  Icons.calendar_month_rounded,
+                  size: 18,
+                  color: colors.olive.withValues(alpha: 0.55),
+                ),
             ],
           ),
         ),

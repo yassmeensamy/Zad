@@ -9,7 +9,7 @@
     "message": "Try {app} — Islamic quizzes that teach you something new every day and earn you hasanaat along the way. 🌙\n\niPhone: {ios}\nAndroid: {android}"
   },
   "about": {
-    "tanbih": "We ask Allah to grant us success and sound guidance. If you notice any mistakes, we kindly ask you to let us know. Whatever is correct is from Allah alone, and whatever is incorrect is from us and Shaytan. Allah and His Messenger ﷺ are free from it. May Allah reward you abundantly."
+    "tanbih": "This app is a self-funded sadaqah jariyah — for everyone who builds it, plays it and shares it. Its core features will always be free and ad-free. We’re a very small team, so please bear with us, keep us in your duaa, and may Allah reward you for your patience.\n\nThe quiz the whole family races to play — Qur'an, Seerah, Hadith and more. Online or offline.\nSuitable for all ages — for born Muslims and new Muslims.\n\nSwap a little scrolling time for learning and good deeds — and keep your daily streak.\nForm a team with family or friends and compete — see where your team ranks globally.\nWorks fully offline — perfect for the car, the plane, or anywhere.\nEvery right answer counts twice — once on the leaderboard, once in your book of deeds, en-shaa-Allah. And imagine when you share it with others.\n\nWe ask Allah to grant us success and sound guidance. If you notice any mistakes, we kindly ask you to let us know. Whatever is correct is from Allah alone, and whatever is incorrect is from us and Shaytan. Allah and His Messenger ﷺ are free from it. May Allah reward you abundantly."
   },
   "update": {
     "title": "Update available",
@@ -84,6 +84,7 @@
     "username_too_short": "Username must be at least 3 characters",
     "birthday_label": "BIRTHDAY",
     "birthday_hint": "Choose your birth date",
+    "birthday_clear": "Clear birth date",
     "gender_label": "GENDER",
     "gender_male": "Male",
     "gender_female": "Female",
@@ -98,7 +99,8 @@
     "success": {
       "title_accent": "Profile complete",
       "subtitle": "Everything is ready. May what you learn here benefit you."
-    }
+    },
+    "optional_tag": "OPTIONAL"
   },
   "create_profiles": {
     "step": "STEP 2 OF 2",

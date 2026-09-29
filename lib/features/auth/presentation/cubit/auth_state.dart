@@ -108,6 +108,7 @@ class AuthState {
   bool get isError => status.isError;
   bool get isGuest => userType?.isGuest ?? status.isGuest;
   bool get isSocialLoading => socialAuthStatus?.isLoading ?? false;
+  bool get isSocialSuccess => socialAuthStatus?.isSuccess ?? false;
   bool get isPendingVerification => verificationStatus?.isPending ?? false;
   bool get isVerifying => verificationStatus?.isVerifying ?? false;
   bool get isResendingCode => verificationStatus?.isResending ?? false;

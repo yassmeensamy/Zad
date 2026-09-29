@@ -9,7 +9,7 @@
     "message": "Essaie {app} — des quiz islamiques qui t'apprennent quelque chose de nouveau chaque jour et te font gagner des hasanate en chemin. 🌙\n\niPhone : {ios}\nAndroid : {android}"
   },
   "about": {
-    "tanbih": "Nous demandons à Allah de nous accorder la réussite et une guidée droite. Si vous relevez la moindre erreur, nous vous prions de bien vouloir nous en informer. Tout ce qui est juste vient d'Allah seul, et tout ce qui est erroné vient de nous et du Shaytan ; Allah et Son Messager ﷺ en sont exempts. Qu'Allah vous récompense en abondance."
+    "tanbih": "Cette application est financée par nos soins comme une sadaqa jariya — pour tous ceux qui la développent, l’utilisent et la partagent. Ses fonctionnalités principales resteront toujours gratuites et sans publicité. Nous sommes une toute petite équipe, alors soyez indulgents avec nous, gardez-nous dans vos douas, et qu’Allah vous récompense pour votre patience.\n\nLe quiz auquel toute la famille se précipite pour jouer — Coran, Sîra, Hadith et plus encore. En ligne ou hors ligne.\nConvient à tous les âges — pour les musulmans de naissance comme pour les nouveaux musulmans.\n\nÉchange un peu de temps de défilement contre de l’apprentissage et des bonnes actions — et garde ta série quotidienne.\nForme une équipe avec ta famille ou tes amis et rivalisez — vois où se classe ton équipe dans le monde.\nFonctionne entièrement hors ligne — parfait pour la voiture, l’avion ou n’importe où.\nChaque bonne réponse compte deux fois — une fois au classement, une fois dans ton livre des œuvres, in shâ' Allah. Et imagine quand tu le partages avec les autres.\n\nNous demandons à Allah la réussite et la droiture. Si vous remarquez une erreur, nous vous prions de nous en informer afin que nous la corrigions. Ce qui est juste vient d'Allah seul, et ce qui est erroné vient de nous et de Chaytan ; Allah et Son Messager ﷺ en sont innocents. Qu'Allah vous récompense par le bien."
   },
   "update": {
     "title": "Mise à jour disponible",
@@ -84,6 +84,7 @@
     "username_too_short": "Le nom d'utilisateur doit contenir au moins 3 caractères",
     "birthday_label": "DATE DE NAISSANCE",
     "birthday_hint": "Choisis ta date de naissance",
+    "birthday_clear": "Effacer la date de naissance",
     "gender_label": "GENRE",
     "gender_male": "Homme",
     "gender_female": "Femme",
@@ -98,7 +99,8 @@
     "success": {
       "title_accent": "Profil complété",
       "subtitle": "Tout est prêt. Que ce que tu apprends ici te soit profitable."
-    }
+    },
+    "optional_tag": "FACULTATIF"
   },
   "create_profiles": {
     "step": "ÉTAPE 2 SUR 2",

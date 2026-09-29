@@ -9,7 +9,7 @@
     "message": "{app} uygulamasını dene — her gün sana yeni bir şey öğreten ve bu yolda hasenat kazandıran İslami testler. 🌙\n\niPhone: {ios}\nAndroid: {android}"
   },
   "about": {
-    "tanbih": "Allah'tan bize başarı ve doğru bir hidayet nasip etmesini niyaz ederiz. Bir hata fark ederseniz, lütfen bize bildirmenizi rica ederiz. Doğru olan her şey yalnızca Allah'tandır; hatalı olan her şey ise bizden ve şeytandandır. Allah ve Rasûlü ﷺ bundan berîdir. Allah sizden razı olsun."
+    "tanbih": "Bu uygulamayı, onu geliştiren, kullanan ve paylaşan herkes için kendi imkânlarımızla sadaka-i cariye olarak geliştiriyoruz. Temel özellikleri her zaman ücretsiz ve reklamsız kalacaktır. Çok küçük bir ekibiz; bu yüzden lütfen bize karşı sabırlı olun, dualarınızda bizi de unutmayın. Allah sabrınızın karşılığını hayırla versin.\n\nTüm ailenin oynamak için yarıştığı bilgi yarışması — Kur'an, Siyer, Hadis ve daha fazlası. Çevrimiçi veya çevrimdışı.\nHer yaşa uygun — doğuştan Müslümanlar ve yeni Müslümanlar için.\n\nBiraz kaydırma zamanını öğrenme ve iyiliklerle değiştir — ve günlük serini koru.\nAile veya arkadaşlarınla takım kur ve yarış — takımının dünya sıralamasındaki yerini gör.\nTamamen çevrimdışı çalışır — araba, uçak veya her yer için mükemmel.\nHer doğru cevap iki kez sayılır — bir kez lider tablosunda, bir kez amel defterinde, inşaallah. Bir de başkalarıyla paylaştığını düşün.\n\nAllah'tan muvaffakiyet ve doğruluk dileriz. Bir hata fark ederseniz, düzeltebilmemiz için bize bildirmenizi rica ederiz. Doğru olan yalnızca Allah'tandır; yanlış olan ise bizden ve şeytandandır. Allah ve Rasûlü ﷺ bundan berîdir. Allah sizi hayırla mükâfatlandırsın."
   },
   "update": {
     "title": "Güncelleme mevcut",
@@ -84,6 +84,7 @@
     "username_too_short": "Kullanıcı adı en az 3 karakter olmalı",
     "birthday_label": "DOĞUM TARİHİ",
     "birthday_hint": "Doğum tarihini seç",
+    "birthday_clear": "Doğum tarihini temizle",
     "gender_label": "CİNSİYET",
     "gender_male": "Erkek",
     "gender_female": "Kadın",
@@ -98,7 +99,8 @@
     "success": {
       "title_accent": "Profil tamamlandı",
       "subtitle": "Her şey hazır. Burada öğrendiklerin sana faydalı olsun."
-    }
+    },
+    "optional_tag": "İSTEĞE BAĞLI"
   },
   "create_profiles": {
     "step": "2 ADIMDAN 2.'Sİ",

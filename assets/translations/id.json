@@ -9,7 +9,7 @@
     "message": "Coba {app} — kuis islami yang mengajarkanmu hal baru setiap hari sekaligus menambah hasanah. 🌙\n\niPhone: {ios}\nAndroid: {android}"
   },
   "about": {
-    "tanbih": "Kami memohon kepada Allah taufik dan petunjuk yang lurus. Jika Anda menemukan kekeliruan, kami mohon dengan hormat agar Anda memberi tahu kami. Segala yang benar datang dari Allah semata, dan segala yang keliru datang dari kami dan setan; Allah dan Rasul-Nya ﷺ berlepas diri darinya. Jazakumullahu khairan."
+    "tanbih": "Aplikasi ini kami biayai sendiri sebagai sedekah jariyah — untuk semua yang mengembangkannya, menggunakannya, dan membagikannya. Fitur utamanya akan selalu gratis dan tanpa iklan. Kami adalah tim yang sangat kecil, jadi mohon bersabar bersama kami, ingatlah kami dalam doa Anda, dan semoga Allah membalas kesabaran Anda dengan kebaikan.\n\nKuis yang membuat seluruh keluarga berlomba memainkannya — Al-Qur'an, Sirah, Hadits, dan lainnya. Online atau offline.\nCocok untuk semua usia — untuk Muslim sejak lahir maupun mualaf.\n\nTukar sedikit waktu scrolling dengan belajar dan amal baik — dan jaga streak harian Anda.\nBentuk tim bersama keluarga atau teman dan bersainglah — lihat peringkat tim Anda secara global.\nBerfungsi sepenuhnya offline — sempurna untuk di mobil, pesawat, atau di mana saja.\nSetiap jawaban benar dihitung dua kali — sekali di papan peringkat, sekali di catatan amal Anda, insya Allah. Dan bayangkan saat Anda membagikannya kepada orang lain.\n\nKami memohon kepada Allah taufik dan kelurusan. Jika Anda menemukan kesalahan, kami mohon agar memberitahu kami untuk kami perbaiki. Apa yang benar berasal dari Allah semata, dan apa yang salah berasal dari kami dan dari setan, sedangkan Allah dan Rasul-Nya ﷺ berlepas diri darinya. Jazakumullahu khairan."
   },
   "update": {
     "title": "Pembaruan tersedia",
@@ -84,6 +84,7 @@
     "username_too_short": "Nama pengguna minimal 3 karakter",
     "birthday_label": "TANGGAL LAHIR",
     "birthday_hint": "Pilih tanggal lahirmu",
+    "birthday_clear": "Hapus tanggal lahir",
     "gender_label": "JENIS KELAMIN",
     "gender_male": "Laki-laki",
     "gender_female": "Perempuan",
@@ -98,7 +99,8 @@
     "success": {
       "title_accent": "Profil lengkap",
       "subtitle": "Semuanya sudah siap. Semoga apa yang kamu pelajari di sini bermanfaat bagimu."
-    }
+    },
+    "optional_tag": "OPSIONAL"
   },
   "create_profiles": {
     "step": "LANGKAH 2 DARI 2",

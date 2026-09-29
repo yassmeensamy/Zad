@@ -53,12 +53,18 @@ class SoundServiceImpl implements SoundService {
     'voices/level_joyful_cheer.mp3',
   ];
 
-  /// Game feedback semantics: mixes with any audio already playing and stays
-  /// silent while the device is muted, instead of grabbing the media session.
+  /// Game feedback semantics: mixes with any audio already playing instead of
+  /// grabbing the media session.
+  ///
+  /// The usage stays [AndroidUsageType.media] on purpose. Android maps
+  /// `assistanceSonification` onto STREAM_SYSTEM, which is muted outright while
+  /// the ringer is on silent/vibrate and is hidden behind the "system sounds"
+  /// toggle on several OEM skins — so the clips were inaudible on Android while
+  /// iOS, whose `ambient` category rides the media volume, played them fine.
   static final _sfxContext = AudioContext(
     android: const AudioContextAndroid(
       contentType: AndroidContentType.sonification,
-      usageType: AndroidUsageType.assistanceSonification,
+      usageType: AndroidUsageType.media,
       audioFocus: AndroidAudioFocus.none,
     ),
     iOS: AudioContextIOS(category: AVAudioSessionCategory.ambient),

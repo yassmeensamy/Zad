@@ -169,6 +169,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
               !previous.isAwaitingVerification,
           listener: _onAuthStateChanged,
         ),
+        // Social sign-in has no success dialog to protect, and the guard
+        // deliberately parks a signed-in user on /signup (it is part of
+        // `setupFlow`) so the email-signup dialog survives. Nothing would move,
+        // so step off the route explicitly; the guard takes it from role-select
+        // — on to home when the profile is already complete. A guest tapping a
+        // social button is covered too: `status` is already loggedIn for them,
+        // so the status listeners above never fire.
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isSocialSuccess && current.isSocialSuccess,
+          listener: (context, state) => context.go(AppRoutes.roleSelect),
+        ),
         // Guest upgrade tracks its outcome on `upgradeStatus`, not the auth
         // `status` (which is already loggedIn for a guest), so the listeners
         // above can't see it. Surface success and failure explicitly.

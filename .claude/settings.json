@@ -112,7 +112,8 @@
       "Bash(sed -i '' '731s/Gabunglah ke lingkaranku/Gabunglah ke timku/' id.json)",
       "Bash(python3 -c \"import json;a=json.load\\(open\\('en.json'\\)\\);b=json.load\\(open\\('es.json'\\)\\)\")",
       "Bash(python3 -c \"import json;print\\(json.load\\(open\\('ar.json'\\)\\)['teams']['home']['feed']\\)\")",
-      "mcp__dart__get_runtime_errors"
+      "mcp__dart__get_runtime_errors",
+      "Bash(bash -c ' *)"
     ]
   }
 }

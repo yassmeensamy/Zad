@@ -695,7 +695,6 @@ class _PremiumInviteField extends StatelessWidget {
       width: 34,
       height: 44,
       textStyle: TextStyle(
-        fontFamily: 'monospace',
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: colors.oliveDeep,
@@ -914,7 +913,6 @@ class _ErrorCodeChip extends StatelessWidget {
                     ResponsiveText(
                       shown,
                       style: TextStyle(
-                        fontFamily: 'monospace',
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 4.0,

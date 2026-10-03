@@ -35,6 +35,7 @@ class LanguageDialog extends StatelessWidget {
     context: context,
     radius: 24,
     padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
+    scrollable: false,
     child: LanguageDialog(
       shouldSkipBackend: shouldSkipBackend,
       onLanguageChanged: onLanguageChanged,
@@ -65,11 +66,8 @@ class LanguageDialog extends StatelessWidget {
                       titleAccentKey: 'language_title_accent',
                     ),
                     const SizedBox(height: 14),
-                    for (final lang in AppLanguages.all) ...[
-                      _LanguageTile(language: lang),
-                      const SizedBox(height: 8),
-                    ],
-                    const SizedBox(height: 6),
+                    const Flexible(child: _LanguageGrid()),
+                    const SizedBox(height: 14),
                     _SaveCtaButton(shouldSkipBackend: shouldSkipBackend),
                   ],
                 ),
@@ -112,6 +110,44 @@ class LanguageDialog extends StatelessWidget {
   }
 }
 
+/// Two-column grid of compact tiles; scrolls on its own so the save CTA below
+/// stays pinned. Rows use [IntrinsicHeight] so a wrapped name (e.g. "Bahasa
+/// Indonesia") keeps both tiles in the row the same height.
+class _LanguageGrid extends StatelessWidget {
+  const _LanguageGrid();
+
+  static const double _gap = 8;
+
+  @override
+  Widget build(BuildContext context) {
+    const languages = AppLanguages.all;
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < languages.length; i += 2) ...[
+            if (i > 0) const SizedBox(height: _gap),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: _LanguageTile(language: languages[i])),
+                  const SizedBox(width: _gap),
+                  Expanded(
+                    child: i + 1 < languages.length
+                        ? _LanguageTile(language: languages[i + 1])
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _LanguageTile extends StatelessWidget {
   const _LanguageTile({required this.language});
 
@@ -133,7 +169,7 @@ class _LanguageTile extends StatelessWidget {
                 .updateCurrentLanguage(language.code),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
                 color: isSelected ? colors.inputSurface : colors.cardSurface,
                 borderRadius: BorderRadius.circular(ZaadRadii.lg),
@@ -155,37 +191,33 @@ class _LanguageTile extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  _FlagBadge(
-                    badge: language.badge,
-                    usesArabicScript: language.usesArabicScript,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _FlagBadge(
+                        badge: language.badge,
+                        usesArabicScript: language.usesArabicScript,
+                      ),
+                      PositionedDirectional(
+                        bottom: -5,
+                        end: -5,
+                        child: _CheckPill(selected: isSelected),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 10),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ResponsiveText(
-                          language.nativeName,
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontSize: language.usesArabicScript ? 18 : 16,
-                            height: 1.1,
-                            color: colors.oliveDeep,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        ResponsiveText(
-                          language.englishName,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            fontSize: 11,
-                            letterSpacing: 0.4,
-                            color: colors.textArabic,
-                          ),
-                        ),
-                      ],
+                    child: ResponsiveText(
+                      language.nativeName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontSize: language.usesArabicScript ? 16 : 14,
+                        height: 1.15,
+                        color: colors.oliveDeep,
+                      ),
                     ),
                   ),
-                  _CheckPill(selected: isSelected),
                 ],
               ),
             ),
@@ -206,8 +238,8 @@ class _FlagBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Container(
-      width: 34,
-      height: 34,
+      width: 30,
+      height: 30,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(ZaadRadii.sm),
         gradient: LinearGradient(
@@ -244,23 +276,20 @@ class _CheckPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return AnimatedContainer(
+    // Sits on the flag badge's corner, so it only appears once selected.
+    return AnimatedScale(
       duration: const Duration(milliseconds: 180),
-      width: 22,
-      height: 22,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: selected ? colors.olive : Colors.transparent,
-        border: Border.all(
-          color: selected
-              ? colors.olive
-              : colors.olive.withValues(alpha: 0.30),
-          width: 1.5,
+      scale: selected ? 1 : 0,
+      child: Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colors.olive,
+          border: Border.all(color: colors.canvas, width: 1.5),
         ),
+        child: Icon(Icons.check_rounded, size: 10, color: colors.canvas),
       ),
-      child: selected
-          ? Icon(Icons.check_rounded, size: 12, color: colors.canvas)
-          : null,
     );
   }
 }

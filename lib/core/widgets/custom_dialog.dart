@@ -11,9 +11,15 @@ class CustomDialog extends StatelessWidget {
     this.radius = ZaadRadii.dialog,
     this.constraints,
     this.insetPadding,
+    this.scrollable = true,
   });
 
   final Widget child;
+
+  /// When false the child is laid out within the dialog's max height instead
+  /// of being wrapped in a scroll view, so it can pin parts (e.g. a CTA) while
+  /// scrolling the rest itself via a `Flexible` region.
+  final bool scrollable;
   final EdgeInsetsGeometry padding;
   final double radius;
   final BoxConstraints? constraints;
@@ -32,6 +38,7 @@ class CustomDialog extends StatelessWidget {
     BoxConstraints? constraints,
     EdgeInsets? insetPadding,
     bool barrierDismissible = true,
+    bool scrollable = true,
   }) {
     return showDialog<T>(
       context: context,
@@ -41,6 +48,7 @@ class CustomDialog extends StatelessWidget {
         radius: radius,
         constraints: constraints,
         insetPadding: insetPadding,
+        scrollable: scrollable,
         child: child,
       ),
     );
@@ -104,7 +112,10 @@ class CustomDialog extends StatelessWidget {
                           child: SizedBox.shrink(),
                         ),
                 ),
-                SingleChildScrollView(padding: padding, child: child),
+                if (scrollable)
+                  SingleChildScrollView(padding: padding, child: child)
+                else
+                  Padding(padding: padding, child: child),
               ],
             ),
           ),

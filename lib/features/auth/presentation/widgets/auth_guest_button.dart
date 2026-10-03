@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../theme/theme.dart';
 
 class AuthGuestButton extends StatelessWidget {
@@ -27,14 +28,7 @@ class AuthGuestButton extends StatelessWidget {
         ),
       ),
       child: loading
-          ? SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(colors.olive),
-              ),
-            )
+          ? const ZaadLoader(size: 18)
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [

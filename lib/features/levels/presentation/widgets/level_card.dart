@@ -7,6 +7,7 @@ import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/level_model.dart';
 import '../cubit/levels_cubit.dart';
@@ -159,16 +160,9 @@ class _LevelResetButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 4),
       child: isResetting
-          ? SizedBox(
-              width: 32,
-              height: 32,
-              child: Padding(
-                padding: const EdgeInsets.all(7),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: errorColor,
-                ),
-              ),
+          ? Padding(
+              padding: const EdgeInsets.all(7),
+              child: ZaadLoader(size: 18, color: errorColor),
             )
           : IconButton(
               onPressed: () => _confirmReset(context),

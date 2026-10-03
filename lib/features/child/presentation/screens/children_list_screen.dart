@@ -11,6 +11,7 @@ import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
+import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../onboarding_flow/data/child_avatar.dart';
 import '../cubit/child_cubit.dart';
@@ -197,10 +198,7 @@ class _LoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return Skeletonizer(
-      effect: ShimmerEffect(
-        baseColor: colors.olive.withValues(alpha: 0.10),
-        highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-      ),
+      effect: appShimmerEffect(colors),
       child: Column(
         children: [
           Expanded(

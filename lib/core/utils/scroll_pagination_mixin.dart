@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
+/// Calls [onLoadMore] when the list scrolls within 200px of its end. Repeat
+/// calls are expected: each cubit's `loadMore` guards on its own
+/// loading-more / has-more state.
 mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
-  Timer? _scrollDebounce;
-  bool _isScrolling = false;
   late ScrollController scrollController;
 
   @override
@@ -15,17 +14,9 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _onScroll() {
-    if (_isScrolling) return;
-
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
-      _isScrolling = true;
-
       onLoadMore();
-
-      _scrollDebounce = Timer(const Duration(milliseconds: 500), () {
-        _isScrolling = false;
-      });
     }
   }
 
@@ -33,7 +24,6 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
-    _scrollDebounce?.cancel();
     scrollController.dispose();
     super.dispose();
   }

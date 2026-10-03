@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../categories/data/models/category_model.dart';
 import '../../data/models/level_model.dart';
@@ -90,10 +91,7 @@ class LevelsLoading extends StatelessWidget {
       levels: _kPlaceholders,
     );
     return Skeletonizer(
-      effect: ShimmerEffect(
-        baseColor: colors.olive.withValues(alpha: 0.10),
-        highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-      ),
+      effect: appShimmerEffect(colors),
       child: LevelsList(
         state: mockState,
         tint: tint,

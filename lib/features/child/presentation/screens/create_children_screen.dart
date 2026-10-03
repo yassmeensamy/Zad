@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/accent_rich_title.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
@@ -118,21 +119,11 @@ class CreateChildrenScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                         BlocBuilder<ChildCubit, ChildState>(
                           buildWhen: (a, b) => a.actionStatus != b.actionStatus,
-                          builder: (context, state) {
-                            final loading = state.isActionLoading;
-                            return AbsorbPointer(
-                              absorbing: loading,
-                              child: Opacity(
-                                opacity: loading ? 0.6 : 1,
-                                child: AuthPrimaryButton(
-                                  label: loading
-                                      ? 'common.loading'
-                                      : 'common.continue',
-                                  onTap: () => _onSubmit(context),
-                                ),
-                              ),
-                            );
-                          },
+                          builder: (context, state) => AuthPrimaryButton(
+                            label: 'common.continue',
+                            loading: state.isActionLoading,
+                            onTap: () => _onSubmit(context),
+                          ),
                         ),
                         const SizedBox(height: 10),
                         InkWell(
@@ -218,26 +209,19 @@ class _Heading extends StatelessWidget {
           style: ZaadType.eyebrow.copyWith(color: colors.oliveSoft),
         ),
         const SizedBox(height: 10),
-        Text.rich(
-          TextSpan(
-            style: ZaadType.titleHero.copyWith(
-              fontSize: 28,
-              color: colors.oliveDeep,
-            ),
-            children: [
-              TextSpan(text: 'create_profiles.title_prefix'.tr()),
-              TextSpan(
-                text: 'create_profiles.title_accent'.tr(),
-                style: AppTextStyles.displayMedium.copyWith(
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0,
-                  color: colors.textArabic,
-                ),
-              ),
-            ],
+        AccentRichTitle(
+          prefixKey: 'create_profiles.title_prefix',
+          accentKey: 'create_profiles.title_accent',
+          baseStyle: ZaadType.titleHero.copyWith(
+            fontSize: 28,
+            color: colors.oliveDeep,
           ),
-          textAlign: TextAlign.center,
+          accentStyle: AppTextStyles.displayMedium.copyWith(
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0,
+            color: colors.textArabic,
+          ),
         ),
         const SizedBox(height: 6),
         ConstrainedBox(

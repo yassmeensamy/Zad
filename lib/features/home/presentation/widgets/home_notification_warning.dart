@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
+import '../../../../core/widgets/zaad_loader.dart';
 import '../../../../theme/theme.dart';
 import '../../../notification/presentation/cubit/notification_preferences_cubit.dart';
 import '../../../notification/presentation/cubit/notification_preferences_state.dart';
@@ -239,14 +240,7 @@ class _ActionPill extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: updating
-          ? const SizedBox(
-              width: 14,
-              height: 14,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppColors.ivory,
-              ),
-            )
+          ? const ZaadLoader(size: 14, color: AppColors.ivory)
           : ResponsiveText(
               labelKey,
               maxLines: 1,

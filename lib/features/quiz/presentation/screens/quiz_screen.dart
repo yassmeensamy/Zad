@@ -14,6 +14,7 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
+import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../drafts/presentation/cubit/drafts_cubit.dart';
 import '../../../drafts/presentation/cubit/drafts_state.dart';
@@ -263,10 +264,7 @@ class _LoadingView extends StatelessWidget {
         ),
         Expanded(
           child: Skeletonizer(
-            effect: ShimmerEffect(
-              baseColor: colors.olive.withValues(alpha: 0.10),
-              highlightColor: colors.oliveLeaf.withValues(alpha: 0.22),
-            ),
+            effect: appShimmerEffect(colors),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [

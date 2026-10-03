@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../leaderboard/data/models/individual_ranking_model.dart';
 import '../../../quiz_stats/data/models/weekly_stats_response.dart';
@@ -463,28 +464,11 @@ class _LevelProgressBar extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(99),
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 8,
-                        color: p.ink.withValues(alpha: 0.08),
-                      ),
-                      FractionallySizedBox(
-                        widthFactor: progress.clamp(0.0, 1.0),
-                        child: Container(
-                          height: 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(99),
-                            gradient: LinearGradient(
-                              colors: [p.gold, p.ember],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: GradientProgressBar(
+                  progress: progress,
+                  height: 8,
+                  trackColor: p.ink.withValues(alpha: 0.08),
+                  gradientColors: [p.gold, p.ember],
                 ),
               ),
             ],

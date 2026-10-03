@@ -8,6 +8,7 @@ import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_circle_button.dart';
+import '../../../../core/widgets/zaad_dialog_header.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
 import '../cubit/language_cubit.dart';
@@ -58,7 +59,11 @@ class LanguageDialog extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const _LanguageHeader(),
+                    const ZaadDialogHeader(
+                      eyebrowKey: 'language_eyebrow',
+                      titleLeadKey: 'language_title_lead',
+                      titleAccentKey: 'language_title_accent',
+                    ),
                     const SizedBox(height: 14),
                     for (final lang in AppLanguages.all) ...[
                       _LanguageTile(language: lang),
@@ -104,48 +109,6 @@ class LanguageDialog extends StatelessWidget {
       );
       context.read<LanguageCubit>().clearError();
     }
-  }
-}
-
-class _LanguageHeader extends StatelessWidget {
-  const _LanguageHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Column(
-        children: [
-          ResponsiveText(
-            'language_eyebrow',
-            textAlign: TextAlign.center,
-            style: ZaadType.eyebrowSm.copyWith(color: colors.oliveSoft),
-          ),
-          const SizedBox(height: 8),
-          DefaultTextStyle.merge(
-            style: ZaadType.titleAccent.copyWith(color: colors.oliveDeep),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: '${'language_title_lead'.tr()} '),
-                  TextSpan(
-                    text: 'language_title_accent'.tr(),
-                    style: AppTextStyles.titleLarge.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: colors.textArabic,
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(width: 28, height: 1, color: colors.accent),
-        ],
-      ),
-    );
   }
 }
 

@@ -14,6 +14,9 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'app.dart';
 import 'core/l10n/app_languages.dart';
+import 'core/l10n/kk_timeago_messages.dart';
+import 'core/l10n/sq_timeago_messages.dart';
+import 'core/l10n/uz_timeago_messages.dart';
 import 'core/navigation/app_router.dart';
 import 'core/navigation/deep_link_service.dart';
 import 'core/navigation/deep_links.dart';
@@ -43,6 +46,17 @@ Future<void> main() async {
   timeago.setLocaleMessages('ru', timeago.RuMessages());
   timeago.setLocaleMessages('tr', timeago.TrMessages());
   timeago.setLocaleMessages('fr', timeago.FrMessages());
+  timeago.setLocaleMessages('uz', UzMessages());
+  timeago.setLocaleMessages('de', timeago.DeMessages());
+  timeago.setLocaleMessages('nl', timeago.NlMessages());
+  timeago.setLocaleMessages('es', timeago.EsMessages());
+  timeago.setLocaleMessages('bn', timeago.BnMessages());
+  timeago.setLocaleMessages('fa', timeago.FaMessages());
+  timeago.setLocaleMessages('hi', timeago.HiMessages());
+  timeago.setLocaleMessages('kk', KkMessages());
+  timeago.setLocaleMessages('zh', timeago.ZhCnMessages());
+  timeago.setLocaleMessages('sq', SqMessages());
+  timeago.setLocaleMessages('bs', timeago.BsMessages());
 
   final serviceLocator = ServiceLocator();
   await serviceLocator.init(
@@ -66,7 +80,7 @@ Future<void> main() async {
 
   runApp(
     RequestsInspector(
-      enabled: false,
+      enabled: true,
 
       //showInspectorOn: ShowInspectorOn.Both,
       navigatorKey: AppRouter.rootNavigatorKey,

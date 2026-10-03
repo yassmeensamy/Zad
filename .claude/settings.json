@@ -104,7 +104,15 @@
       "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=/Users/yassmeen/Documents/zad/my_app/Zaad_Features.pdf file:///tmp/zaad_features.html)",
       "Bash(curl -sIL https://services.gradle.org/distributions/gradle-8.14-all.zip)",
       "Bash(git -C /Users/yassmeen/Documents/zad/my_app diff lib/main.dart lib/features/language/presentation/modals/language_dialog.dart)",
-      "Bash(osascript -e 'tell application \"System Events\" to return name of first process whose frontmost is true')"
+      "Bash(osascript -e 'tell application \"System Events\" to return name of first process whose frontmost is true')",
+      "Bash(sed -i '' '731s/Tritt meinem Kreis auf Zaad bei/Tritt meinem Team auf Zaad bei/' de.json)",
+      "Bash(sed -i '' '731s/Rejoins mon cercle/Rejoins mon équipe/' fr.json)",
+      "Bash(sed -i '' '731s/Join my circle/Join my team/' en.json)",
+      "Bash(sed -i '' '731s/Word lid van mijn kring/Word lid van mijn team/' nl.json)",
+      "Bash(sed -i '' '731s/Gabunglah ke lingkaranku/Gabunglah ke timku/' id.json)",
+      "Bash(python3 -c \"import json;a=json.load\\(open\\('en.json'\\)\\);b=json.load\\(open\\('es.json'\\)\\)\")",
+      "Bash(python3 -c \"import json;print\\(json.load\\(open\\('ar.json'\\)\\)['teams']['home']['feed']\\)\")",
+      "mcp__dart__get_runtime_errors"
     ]
   }
 }

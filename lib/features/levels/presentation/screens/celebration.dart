@@ -51,6 +51,8 @@ class LevelCompleteCelebration extends StatelessWidget {
     this.subtitle,
     this.continueLabel = 'CONTINUE',
     this.onContinue,
+    this.secondaryLabel,
+    this.onSecondary,
     this.showBackButton = true,
   });
 
@@ -83,6 +85,13 @@ class LevelCompleteCelebration extends StatelessWidget {
 
   /// Primary action. Defaults to popping the current route.
   final VoidCallback? onContinue;
+
+  /// Optional quieter action under the primary button, e.g. `Back to list`.
+  /// Shown only when both the label and the callback are set.
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
+
+  bool get _hasSecondary => secondaryLabel != null && onSecondary != null;
 
   /// Whether to show the standard top-start back control.
   final bool showBackButton;
@@ -333,7 +342,10 @@ class _CelebrationStageState extends State<_CelebrationStage>
               ),
             ),
             // Content column (z20) — settles with a near-imperceptible shake.
+            // Lifted clear of the taller action stack when there are two
+            // buttons, so the XP counter never sits under them.
             Positioned.fill(
+              bottom: data._hasSecondary ? 56 : 0,
               child: _ContentColumn(data: data, palette: p),
             ),
             // Confetti — above the content (z30).
@@ -354,6 +366,8 @@ class _CelebrationStageState extends State<_CelebrationStage>
                 palette: p,
                 onContinue: () => (data.onContinue ??
                     () => Navigator.of(context).maybePop())(),
+                secondaryLabel: data._hasSecondary ? data.secondaryLabel : null,
+                onSecondary: data.onSecondary,
               ),
             ),
             // Standard back control (z50).
@@ -760,15 +774,33 @@ class _Actions extends StatelessWidget {
     required this.onContinue,
     required this.label,
     required this.palette,
+    this.secondaryLabel,
+    this.onSecondary,
   });
 
   final VoidCallback onContinue;
   final String label;
   final _CelPalette palette;
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
 
   @override
   Widget build(BuildContext context) {
-    return _GoldButton(onTap: onContinue, label: label, palette: palette)
+    final secondary = secondaryLabel;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _GoldButton(onTap: onContinue, label: label, palette: palette),
+        if (secondary != null && onSecondary != null) ...[
+          const SizedBox(height: 8),
+          _GhostButton(
+            onTap: onSecondary!,
+            label: secondary,
+            palette: palette,
+          ),
+        ],
+      ],
+    )
         .animate()
         .fadeIn(delay: 2200.ms, duration: 600.ms, curve: _ease)
         .moveY(
@@ -899,6 +931,48 @@ class _GoldButtonState extends State<_GoldButton>
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Quiet text-weight action under the gold CTA — same ink as the page's muted
+/// copy so it never competes with the primary button.
+class _GhostButton extends StatelessWidget {
+  const _GhostButton({
+    required this.onTap,
+    required this.label,
+    required this.palette,
+  });
+
+  final VoidCallback onTap;
+  final String label;
+  final _CelPalette palette;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          height: 46,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: palette.glassBorder),
+          ),
+          child: ResponsiveText(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.6,
+              color: palette.muted,
+            ),
           ),
         ),
       ),

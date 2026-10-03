@@ -18,6 +18,7 @@ class ResultView extends StatefulWidget {
     required this.questionsCompleted,
     required this.totalRetries,
     required this.onDone,
+    this.onNextLevel,
     this.firstTryCorrect,
     this.elapsed,
     this.motivationalKey,
@@ -37,7 +38,12 @@ class ResultView extends StatefulWidget {
 
   final int totalRetries;
 
+  /// Back to the levels list.
   final VoidCallback onDone;
+
+  /// Straight into the next level's quiz. Null — no unlocked next level, or an
+  /// offline submit that can't know one — leaves only the back-to-list button.
+  final VoidCallback? onNextLevel;
 
   final int? firstTryCorrect;
 
@@ -90,6 +96,7 @@ class _ResultViewState extends State<ResultView> {
     final total = widget.questionsCompleted;
     final accuracy = _accuracy;
     final level = widget.level;
+    final nextLevel = widget.onNextLevel;
 
     final eyebrow = level != null
         ? 'quiz.result.level_complete'.tr(args: ['${level.order}'])
@@ -126,8 +133,15 @@ class _ResultViewState extends State<ResultView> {
       ],
       xp: widget.points.round(),
       totalNote: _totalNote,
-      continueLabel: 'quiz.result.continue'.tr(),
-      onContinue: widget.onDone,
+      // With a next level it takes the gold CTA and "back to list" drops to
+      // the quieter button; without one, back to list is the only action.
+      continueLabel: nextLevel != null
+          ? 'quiz.result.next_level'.tr()
+          : 'quiz.result.back_to_list'.tr(),
+      onContinue: nextLevel ?? widget.onDone,
+      secondaryLabel:
+          nextLevel != null ? 'quiz.result.back_to_list'.tr() : null,
+      onSecondary: nextLevel != null ? widget.onDone : null,
     );
   }
 }

@@ -26,6 +26,17 @@
 		<string>ru</string>
 		<string>tr</string>
 		<string>fr</string>
+		<string>uz</string>
+		<string>de</string>
+		<string>nl</string>
+		<string>es</string>
+		<string>bn</string>
+		<string>fa</string>
+		<string>hi</string>
+		<string>kk</string>
+		<string>zh</string>
+		<string>sq</string>
+		<string>bs</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Zaad</string>

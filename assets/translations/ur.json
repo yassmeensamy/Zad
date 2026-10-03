@@ -324,6 +324,8 @@
       "answered_prefix": "آپ نے جواب دیا",
       "first_try_suffix": "پہلی ہی کوشش میں",
       "continue": "جاری رکھیں",
+      "next_level": "اگلا لیول",
+      "back_to_list": "مرکزی فہرست پر واپس جائیں",
       "score": "اسکور",
       "points_label": "پوائنٹس",
       "questions_completed": "{} سوالات مکمل",
@@ -728,7 +730,7 @@
       "success_skip": "دعوت بعد میں شیئر کریں",
       "copied": "دعوتی کوڈ کاپی ہو گیا",
       "share_subject": "میری زاد ٹیم میں شامل ہوں",
-      "share_message": "زاد پر میرے حلقے میں شامل ہوں — دعوتی کوڈ {code} استعمال کریں\n{link}"
+      "share_message": "زاد پر میری ٹیم میں شامل ہوں — دعوتی کوڈ {code} استعمال کریں\n{link}"
     },
     "join": {
       "title": "ٹیم میں شامل ہوں",

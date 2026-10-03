@@ -324,6 +324,8 @@
       "answered_prefix": "أجبت على",
       "first_try_suffix": "من المحاولة الأولى",
       "continue": "متابعة",
+      "next_level": "المستوى التالي",
+      "back_to_list": "العودة إلى القائمة الرئيسية",
       "score": "النتيجة",
       "points_label": "نقطة",
       "questions_completed": "أتممت {} سؤال",
@@ -728,7 +730,7 @@
       "success_skip": "مشاركة الدعوة لاحقًا",
       "copied": "تم نسخ رمز الدعوة",
       "share_subject": "انضمّ إلى فريقي على Zaad",
-      "share_message": "انضمّ إلى دائرتي على Zaad — استخدم رمز الدعوة {code}\n{link}"
+      "share_message": "انضمّ إلى فريقي على Zaad — استخدم رمز الدعوة {code}\n{link}"
     },
     "join": {
       "title": "الانضمام لفريق",

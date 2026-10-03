@@ -324,6 +324,8 @@
       "answered_prefix": "Tu as répondu",
       "first_try_suffix": "du premier coup",
       "continue": "Continuer",
+      "next_level": "Niveau suivant",
+      "back_to_list": "Retour à la liste",
       "score": "SCORE",
       "points_label": "POINTS",
       "questions_completed": "{} questions terminées",
@@ -728,7 +730,7 @@
       "success_skip": "Partager l'invitation plus tard",
       "copied": "Code d'invitation copié",
       "share_subject": "Rejoins mon équipe Zaad",
-      "share_message": "Rejoins mon cercle sur Zaad — utilise le code d'invitation {code}\n{link}"
+      "share_message": "Rejoins mon équipe sur Zaad — utilise le code d'invitation {code}\n{link}"
     },
     "join": {
       "title": "Rejoindre une équipe",

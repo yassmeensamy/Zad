@@ -91,6 +91,105 @@ abstract final class AppLanguages {
     usesArabicScript: false,
   );
 
+  static const uzbek = AppLanguage(
+    code: 'uz',
+    nativeName: 'O‘zbekcha',
+    englishName: 'Uzbek',
+    badge: 'UZ',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const german = AppLanguage(
+    code: 'de',
+    nativeName: 'Deutsch',
+    englishName: 'German',
+    badge: 'DE',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const dutch = AppLanguage(
+    code: 'nl',
+    nativeName: 'Nederlands',
+    englishName: 'Dutch',
+    badge: 'NL',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const spanish = AppLanguage(
+    code: 'es',
+    nativeName: 'Español',
+    englishName: 'Spanish',
+    badge: 'ES',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const bengali = AppLanguage(
+    code: 'bn',
+    nativeName: 'বাংলা',
+    englishName: 'Bengali',
+    badge: 'BN',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const persian = AppLanguage(
+    code: 'fa',
+    nativeName: 'فارسی',
+    englishName: 'Persian',
+    badge: 'فا',
+    isRtl: true,
+    usesArabicScript: true,
+  );
+
+  static const hindi = AppLanguage(
+    code: 'hi',
+    nativeName: 'हिन्दी',
+    englishName: 'Hindi',
+    badge: 'HI',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const kazakh = AppLanguage(
+    code: 'kk',
+    nativeName: 'Қазақша',
+    englishName: 'Kazakh',
+    badge: 'KK',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const chinese = AppLanguage(
+    code: 'zh',
+    nativeName: '简体中文',
+    englishName: 'Chinese',
+    badge: 'ZH',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const albanian = AppLanguage(
+    code: 'sq',
+    nativeName: 'Shqip',
+    englishName: 'Albanian',
+    badge: 'SQ',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
+  static const bosnian = AppLanguage(
+    code: 'bs',
+    nativeName: 'Bosanski',
+    englishName: 'Bosnian',
+    badge: 'BS',
+    isRtl: false,
+    usesArabicScript: false,
+  );
+
   static const List<AppLanguage> all = [
     english,
     arabic,
@@ -99,6 +198,17 @@ abstract final class AppLanguages {
     russian,
     turkish,
     french,
+    uzbek,
+    german,
+    dutch,
+    spanish,
+    bengali,
+    persian,
+    hindi,
+    kazakh,
+    chinese,
+    albanian,
+    bosnian,
   ];
 
   static const AppLanguage fallback = english;

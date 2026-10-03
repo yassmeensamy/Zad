@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/sound_service.dart';
 import '../../../../core/utils/snackbar_helper.dart';
@@ -215,6 +216,7 @@ class _QuizView extends StatelessWidget {
               totalPoints: state.submissionResult?.totalPoints,
               perfectBonusAwarded: state.perfectBonusAwarded,
               onDone: () => _exit(context),
+              onNextLevel: _nextLevelAction(context, state),
             );
           }
           return _ActiveView(level: level, state: state);
@@ -228,6 +230,20 @@ class _QuizView extends StatelessWidget {
     if (context.canPop()) {
       context.pop();
     }
+  }
+
+  /// Replaces this quiz with the next level's, so back from there still lands
+  /// on the levels list. Null when the submit didn't unlock a next level.
+  VoidCallback? _nextLevelAction(BuildContext context, QuizState state) {
+    final result = state.submissionResult;
+    final nextId = result?.nextLevelId;
+    if (result == null || nextId == null || !result.nextLevelUnlocked) {
+      return null;
+    }
+    return () => context.pushReplacementNamed(
+          AppRoutes.quizName,
+          pathParameters: {'levelId': nextId.toString()},
+        );
   }
 }
 

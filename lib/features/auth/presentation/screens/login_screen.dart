@@ -15,6 +15,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_apple_button.dart';
 import '../widgets/auth_google_button.dart';
+import '../widgets/auth_guest_button.dart';
 import '../widgets/auth_language_button.dart';
 import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
@@ -232,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   BlocBuilder<AuthCubit, AuthState>(
                     buildWhen: (previous, current) =>
                         previous.isGuestLoading != current.isGuestLoading,
-                    builder: (context, state) => _GuestButton(
+                    builder: (context, state) => AuthGuestButton(
                       loading: state.isGuestLoading,
                       onTap: _onContinueAsGuest,
                     ),
@@ -249,56 +250,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _GuestButton extends StatelessWidget {
-  const _GuestButton({required this.loading, required this.onTap});
-
-  final bool loading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    return OutlinedButton(
-      onPressed: loading ? null : onTap,
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(46),
-        foregroundColor: colors.olive,
-        side: BorderSide(color: colors.oliveSoft.withValues(alpha: 0.5)),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ZaadRadii.lg),
-        ),
-      ),
-      child: loading
-          ? SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(colors.olive),
-              ),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.person_outline_rounded,
-                  size: 18,
-                  color: colors.olive,
-                ),
-                const SizedBox(width: 10),
-                ResponsiveText(
-                  'auth.continue_guest',
-                  style: AppTextStyles.labelLarge.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colors.olive,
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }

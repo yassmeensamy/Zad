@@ -14,6 +14,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_apple_button.dart';
 import '../widgets/auth_google_button.dart';
+import '../widgets/auth_guest_button.dart';
 import '../widgets/auth_language_button.dart';
 import '../widgets/auth_or_divider.dart';
 import '../widgets/auth_primary_button.dart';
@@ -95,6 +96,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onApple() {
     context.read<AuthCubit>().loginWithApple();
+  }
+
+  void _onContinueAsGuest() {
+    final isAlreadyGuest =
+        context.read<UserCubit>().state.user?.isAnonymous ?? false;
+    if (isAlreadyGuest) {
+      context.goNamed(AppRoutes.homeName);
+      return;
+    }
+    context.read<AuthCubit>().continueAsGuest();
   }
 
   void _onGoToLogin() {
@@ -184,6 +195,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // Guest upgrade tracks its outcome on `upgradeStatus`, not the auth
         // `status` (which is already loggedIn for a guest), so the listeners
         // above can't see it. Surface success and failure explicitly.
+        // The guard parks a signed-in user on /signup, so a fresh guest
+        // session has to step off to home explicitly (mirrors login).
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isGuestSuccess && current.isGuestSuccess,
+          listener: (context, state) => context.goNamed(AppRoutes.homeName),
+        ),
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) =>
+              !previous.isGuestError && current.isGuestError,
+          listener: (context, state) {
+            if (state.errorMessage != null) {
+              SnackBarHelper.showError(context, message: state.errorMessage!);
+            }
+          },
+        ),
         BlocListener<AuthCubit, AuthState>(
           listenWhen: (previous, current) =>
               !previous.isUpgradeSuccess && current.isUpgradeSuccess,
@@ -303,6 +330,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ],
+                  const SizedBox(height: 12),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    buildWhen: (previous, current) =>
+                        previous.isGuestLoading != current.isGuestLoading,
+                    builder: (context, state) => AuthGuestButton(
+                      loading: state.isGuestLoading,
+                      onTap: _onContinueAsGuest,
+                    ),
+                  ),
                   const SizedBox(height: 22),
                   AuthPromptLink(
                     prompt: 'auth.signup_screen.have_account_prompt',

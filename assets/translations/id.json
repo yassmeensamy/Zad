@@ -324,6 +324,8 @@
       "answered_prefix": "Kamu menjawab",
       "first_try_suffix": "pada percobaan pertama",
       "continue": "Lanjutkan",
+      "next_level": "Level berikutnya",
+      "back_to_list": "Kembali ke daftar",
       "score": "SKOR",
       "points_label": "POIN",
       "questions_completed": "{} pertanyaan terselesaikan",
@@ -728,7 +730,7 @@
       "success_skip": "Bagikan undangan nanti",
       "copied": "Kode undangan disalin",
       "share_subject": "Gabung ke timku di Zaad",
-      "share_message": "Gabunglah ke lingkaranku di Zaad — pakai kode undangan {code}\n{link}"
+      "share_message": "Gabunglah ke timku di Zaad — pakai kode undangan {code}\n{link}"
     },
     "join": {
       "title": "Gabung ke tim",

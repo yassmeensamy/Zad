@@ -324,6 +324,8 @@
       "answered_prefix": "İlk denemede",
       "first_try_suffix": "soruyu doğru bildin",
       "continue": "Devam et",
+      "next_level": "Sonraki seviye",
+      "back_to_list": "Listeye dön",
       "score": "PUAN",
       "points_label": "PUAN",
       "questions_completed": "{} soru tamamlandı",
@@ -728,7 +730,7 @@
       "success_skip": "Daveti sonra paylaş",
       "copied": "Davet kodu kopyalandı",
       "share_subject": "Zaad takımıma katıl",
-      "share_message": "Zaad'daki halkama katıl — {code} davet kodunu kullan\n{link}"
+      "share_message": "Zaad'daki takımıma katıl — {code} davet kodunu kullan\n{link}"
     },
     "join": {
       "title": "Takıma katıl",

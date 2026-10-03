@@ -20,6 +20,8 @@ abstract class RemoteConfigService {
   Future<void> get ready;
 
   String? getString(String key);
+
+  bool getBool(String key);
 }
 
 class RemoteConfigServiceImpl implements RemoteConfigService {
@@ -48,6 +50,7 @@ class RemoteConfigServiceImpl implements RemoteConfigService {
       await _remoteConfig.setDefaults(const {
         RemoteConfigKeys.clientMinVersionIos: '',
         RemoteConfigKeys.clientMinVersionAndroid: '',
+        RemoteConfigKeys.showExtraLanguages: true,
       });
       // `minimumFetchInterval: Duration.zero` always pulls fresh values (no
       // throttling) — appropriate for force-update gating on every cold start.
@@ -69,4 +72,7 @@ class RemoteConfigServiceImpl implements RemoteConfigService {
 
   @override
   String? getString(String key) => _remoteConfig.getString(key);
+
+  @override
+  bool getBool(String key) => _remoteConfig.getBool(key);
 }

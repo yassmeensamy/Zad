@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/remote_config_keys.dart';
 import '../../../../core/l10n/app_languages.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/services/remote_config_service.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/custom_dialog.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -118,9 +120,24 @@ class _LanguageGrid extends StatelessWidget {
 
   static const double _gap = 8;
 
+  /// Drops [AppLanguages.extra] unless Remote Config turns them on. The active
+  /// language always stays, so the user never loses their own selection.
+  List<AppLanguage> _visibleLanguages(String currentCode) {
+    final showExtra = sl<RemoteConfigService>().getBool(
+      RemoteConfigKeys.showExtraLanguages,
+    );
+    return [
+      for (final l in AppLanguages.all)
+        if (showExtra ||
+            l.code == currentCode ||
+            !AppLanguages.extra.contains(l))
+          l,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    const languages = AppLanguages.all;
+    final languages = _visibleLanguages(context.locale.languageCode);
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

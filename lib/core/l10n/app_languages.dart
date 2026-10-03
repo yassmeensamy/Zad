@@ -211,6 +211,18 @@ abstract final class AppLanguages {
     bosnian,
   ];
 
+  /// Shown in the language dialog only while the `show_extra_languages`
+  /// Remote Config flag is on.
+  static const List<AppLanguage> extra = [
+    bengali,
+    bosnian,
+    persian,
+    hindi,
+    kazakh,
+    albanian,
+    chinese,
+  ];
+
   static const AppLanguage fallback = english;
 
   static List<Locale> get locales => [for (final l in all) l.locale];

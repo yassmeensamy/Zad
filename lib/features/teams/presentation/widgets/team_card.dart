@@ -6,6 +6,7 @@
 // Fully theme-driven: every colour comes from `context.appColors` so it reads
 // as warm cream/gold in light and roasted brown/amber in dark, and all type
 // uses [AppTextStyles] with the app's default font (ElMessiri).
+import '../../../../core/utils/name_display.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/responsive_text.dart';
@@ -39,13 +40,6 @@ class TeamCard extends StatelessWidget {
     ([AppColors.discOliveHi, AppColors.discOliveLo], AppColors.discOliveInk),
     ([AppColors.discBronzeHi, AppColors.discBronzeLo], AppColors.discBronzeInk),
   ];
-
-  /// First visible character of [s] (works for Latin and Arabic names).
-  String _firstGlyph(String s) {
-    final t = s.trim();
-    if (t.isEmpty) return '?';
-    return String.fromCharCode(t.runes.first).toUpperCase();
-  }
 
   /// Overall team completion across all members, or null until [summary] loads.
   int? _teamPercent() {
@@ -98,7 +92,7 @@ class TeamCard extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: ResponsiveText(
-            _firstGlyph(team.name),
+            initialOf(team.name),
             style: AppTextStyles.headlineMedium.copyWith(
               fontSize: 22,
               height: 1,
@@ -253,7 +247,7 @@ class TeamCard extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: ResponsiveText(
-          _firstGlyph(username),
+          initialOf(username),
           style: AppTextStyles.labelMedium.copyWith(fontSize: 11, color: ink),
         ),
       ),

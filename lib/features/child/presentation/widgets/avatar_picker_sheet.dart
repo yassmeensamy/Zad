@@ -6,7 +6,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/custom_modal.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../onboarding_flow/data/avatar_model.dart';
 import '../../../onboarding_flow/presentation/cubit/avatars_cubit.dart';
@@ -89,7 +88,6 @@ class _LoadingGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: true,
-      effect: appShimmerEffect(colors),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

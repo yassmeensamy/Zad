@@ -9,7 +9,6 @@ import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/draft_model.dart';
 import '../cubit/drafts_cubit.dart';
@@ -125,9 +124,7 @@ class _LoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Skeletonizer(
-      effect: appShimmerEffect(colors),
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),

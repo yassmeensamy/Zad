@@ -11,7 +11,6 @@ import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
@@ -186,7 +185,6 @@ class _ProfilesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final parentName = context.select<UserCubit, String?>(
       (c) => c.state.user?.fullName,
     );
@@ -208,7 +206,6 @@ class _ProfilesGrid extends StatelessWidget {
 
     return Skeletonizer(
       enabled: loading,
-      effect: appShimmerEffect(colors),
       child: LayoutBuilder(
         builder: (context, constraints) {
           // Adapt to phones (2), small tablets / landscape phones (3),

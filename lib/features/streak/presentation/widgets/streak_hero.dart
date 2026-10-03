@@ -92,18 +92,7 @@ class StreakHero extends StatelessWidget {
               colors.heroSurfaceBottom,
             ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: colors.heroShadow.withValues(alpha: 0.45),
-              blurRadius: 50,
-              offset: const Offset(0, 26),
-            ),
-            BoxShadow(
-              color: colors.heroShadow.withValues(alpha: 0.30),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          boxShadow: ZaadShadows.hero(colors),
           border: Border.all(
             color: colors.heroGlow.withValues(alpha: 0.18),
             width: 1,

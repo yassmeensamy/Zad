@@ -23,7 +23,7 @@ class CustomButton extends StatefulWidget {
     this.onTap,
     this.enabled = true,
     this.loading = false,
-    this.theme,
+    required this.theme,
   }) : size = CustomButtonSize.intrinsic;
 
   /// Button that stretches to fill available width.
@@ -34,7 +34,7 @@ class CustomButton extends StatefulWidget {
     this.onTap,
     this.enabled = true,
     this.loading = false,
-    this.theme,
+    required this.theme,
   }) : size = CustomButtonSize.full;
 
   final String? text;
@@ -42,7 +42,7 @@ class CustomButton extends StatefulWidget {
   final FutureOr<void> Function()? onTap;
   final bool enabled;
   final bool loading;
-  final CustomButtonTheme? theme;
+  final CustomButtonTheme theme;
   final CustomButtonSize size;
 
   @override
@@ -54,8 +54,7 @@ class _CustomButtonState extends State<CustomButton> {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        widget.theme ?? Theme.of(context).extension<CustomButtonTheme>()!;
+    final theme = widget.theme;
     final width = switch (widget.size) {
       CustomButtonSize.intrinsic => null,
       CustomButtonSize.full => double.infinity,

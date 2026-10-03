@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_app/core/l10n/app_languages.dart';
-import 'package:my_app/core/widgets/responsive_text.dart';
 
 class MainTextFormField extends StatefulWidget {
   const MainTextFormField({
@@ -17,12 +16,8 @@ class MainTextFormField extends StatefulWidget {
     this.inputFormatters,
     this.textInputAction,
     this.style,
-    this.strutStyle,
-    this.textAlign = TextAlign.start,
-    this.textAlignVertical,
     this.isEnabled = true,
     this.autofocus = false,
-    this.readOnly = false,
     this.maxLines,
     this.minLines = 1,
     this.hintText,
@@ -32,24 +27,14 @@ class MainTextFormField extends StatefulWidget {
     this.validator,
     this.autovalidateMode,
     this.prefixIcon,
-    this.suffixIcon,
     this.autofillHints,
-    this.onTap,
     this.contentPadding,
     this.iconSize,
     this.hintStyle,
-    this.labelStyle,
     this.onFieldSubmitted,
-    this.prefixText,
-    this.showClearButton = false,
     this.borderRadius,
     this.counterText,
-    this.textDirection,
     this.errorText,
-    this.errorStyle,
-    this.forceErrorText,
-    this.autocorrect = true,
-    this.enableSuggestions = true,
   });
 
   // Core
@@ -62,7 +47,6 @@ class MainTextFormField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final bool autofocus;
-  final bool readOnly;
   final bool isEnabled;
   final int? maxLines;
   final int minLines;
@@ -70,40 +54,25 @@ class MainTextFormField extends StatefulWidget {
   final bool obscureText;
   final bool passwordToggle;
   final String? counterText;
-  final bool autocorrect;
-  final bool enableSuggestions;
 
   // Validation
   final String? Function(String?)? validator;
   final AutovalidateMode? autovalidateMode;
   final void Function(String)? onFieldSubmitted;
   final String? errorText;
-  final TextStyle? errorStyle;
-  final String? forceErrorText;
 
   final InputDecorationThemeData? inputDecorationTheme;
   final String? hintText;
   final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final String? prefixText;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? hintStyle;
-  final TextStyle? labelStyle;
   final double? iconSize;
   final BorderRadius? borderRadius;
-  final bool showClearButton;
 
   // Layout & style
   final TextStyle? style;
-  final StrutStyle? strutStyle;
-  final TextAlign textAlign;
-  final TextAlignVertical? textAlignVertical;
-  final TextDirection? textDirection;
   // Autofill
   final List<String>? autofillHints;
-
-  // Gestures
-  final VoidCallback? onTap;
 
   @override
   State<MainTextFormField> createState() => _MainTextFormFieldState();
@@ -156,9 +125,6 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
   }
 
   TextDirection _getTextDirection(String text) {
-    if (widget.textDirection != null) {
-      return widget.textDirection!;
-    }
     if (text.isEmpty) {
       return context.appLanguage.isRtl
           ? TextDirection.rtl
@@ -172,42 +138,14 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
   }
 
   Widget? _buildSuffixIcon() {
-    final widgets = <Widget>[];
-
-    if (widget.passwordToggle) {
-      widgets.add(
-        IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-            size: widget.iconSize ?? 24,
-          ),
-          onPressed: () => setState(() => _obscureText = !_obscureText),
-        ),
-      );
-    }
-
-    if (widget.showClearButton) {
-      widgets.add(
-        ValueListenableBuilder<TextEditingValue>(
-          valueListenable: _controller,
-          builder: (_, __, ___) {
-            if (_controller.text.isEmpty) return const SizedBox.shrink();
-            return IconButton(
-              icon: Icon(Icons.clear, size: widget.iconSize ?? 24),
-              onPressed: () => _controller.clear(),
-            );
-          },
-        ),
-      );
-    }
-
-    if (widget.suffixIcon != null && widgets.isEmpty) {
-      widgets.add(widget.suffixIcon!);
-    }
-
-    if (widgets.isEmpty) return null;
-    if (widgets.length == 1) return widgets.first;
-    return Row(mainAxisSize: MainAxisSize.min, children: widgets);
+    if (!widget.passwordToggle) return null;
+    return IconButton(
+      icon: Icon(
+        _obscureText ? Icons.visibility_off : Icons.visibility,
+        size: widget.iconSize ?? 24,
+      ),
+      onPressed: () => setState(() => _obscureText = !_obscureText),
+    );
   }
 
   InputDecoration _buildDecoration(BuildContext context) {
@@ -220,20 +158,10 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
       hintText: widget.hintText ?? deco.hintText,
       prefixIcon: widget.prefixIcon ?? deco.prefixIcon,
       suffixIcon: _buildSuffixIcon() ?? deco.suffixIcon,
-      prefixText: widget.prefixText ?? deco.prefixText,
       contentPadding: widget.contentPadding ?? deco.contentPadding,
       hintStyle: widget.hintStyle ?? deco.hintStyle,
-      labelStyle: widget.labelStyle ?? deco.labelStyle,
       counterText: widget.counterText ?? deco.counterText,
       errorText: widget.errorText,
-      errorStyle: widget.errorStyle ?? deco.errorStyle,
-      error:
-          widget.forceErrorText != null
-              ? ResponsiveText(
-                widget.forceErrorText!,
-                style: widget.errorStyle ?? deco.errorStyle,
-              )
-              : null,
     );
 
     if (widget.borderRadius != null) {
@@ -272,13 +200,8 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
           textCapitalization: widget.textCapitalization,
           textInputAction: widget.textInputAction,
           style: widget.style ?? Theme.of(context).textTheme.bodyLarge,
-
-          strutStyle: widget.strutStyle,
           textDirection: direction,
-          textAlign: widget.textAlign,
-          textAlignVertical: widget.textAlignVertical,
           autofocus: widget.autofocus,
-          readOnly: widget.readOnly,
           enabled: widget.isEnabled,
           maxLines: _obscureText ? 1 : widget.maxLines,
           minLines: _obscureText ? 1 : widget.minLines,
@@ -287,11 +210,8 @@ class _MainTextFormFieldState extends State<MainTextFormField> {
           validator: widget.validator,
           autovalidateMode: widget.autovalidateMode,
           autofillHints: widget.autofillHints,
-          onTap: widget.onTap,
           onFieldSubmitted: widget.onFieldSubmitted,
           cursorColor: inputDecoration.focusColor,
-          autocorrect: widget.autocorrect,
-          enableSuggestions: widget.enableSuggestions,
         );
       },
     );

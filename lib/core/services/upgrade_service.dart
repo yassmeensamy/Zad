@@ -19,19 +19,15 @@ abstract class UpgradeService {
 }
 
 class UpgradeServiceImpl implements UpgradeService {
-  UpgradeServiceImpl({
-    required RemoteConfigService remoteConfig,
-    this.debugForceUpdate = false,
-  }) : _remoteConfig = remoteConfig;
+  UpgradeServiceImpl({required RemoteConfigService remoteConfig})
+    : _remoteConfig = remoteConfig;
 
   final RemoteConfigService _remoteConfig;
-  final bool debugForceUpdate;
 
   Upgrader? _upgrader;
 
   @override
   Future<bool> isForceUpdateRequired({required String languageCode}) async {
-    if (debugForceUpdate) return true;
     // Remote Config is warmed in `main` without being awaited, so wait for that
     // fetch to settle before reading the minimum version — bounded, because
     // this runs on the splash and must not stall the app behind a dead network.
@@ -69,7 +65,6 @@ class UpgradeServiceImpl implements UpgradeService {
 
   @override
   UpgradeInfo get info {
-    if (debugForceUpdate) return UpgradeInfo.mock;
     final version = _upgrader?.state.versionInfo;
     if (version == null) return UpgradeInfo.empty;
     return UpgradeInfo(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'app_color_scheme.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
-import 'custom_button_theme.dart';
 import 'theme_context_extensions.dart';
 import 'zaad_radii.dart';
 
@@ -38,7 +38,13 @@ class AppTheme {
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[
         appColors,
-        _buildCustomButtonTheme(appColors, textTheme),
+        // Brand shimmer for every Skeletonizer that doesn't pass its own.
+        SkeletonizerConfigData(
+          effect: ShimmerEffect(
+            baseColor: appColors.olive.withValues(alpha: 0.10),
+            highlightColor: appColors.oliveLeaf.withValues(alpha: 0.22),
+          ),
+        ),
       ],
       // No titleTextStyle — Material 3 resolves it from textTheme.titleLarge,
       // which already carries onSurface. Same for the button themes below and
@@ -151,32 +157,6 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
-    );
-  }
-
-  static CustomButtonTheme _buildCustomButtonTheme(
-    AppColorsTheme c,
-    TextTheme textTheme,
-  ) {
-    return CustomButtonTheme(
-      height: 46,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      borderRadius: ZaadRadii.lg,
-      useGradient: true,
-      // Diagonal sweep (top-left → bottom-right) reads more premium than a
-      // flat vertical fill — it gives the CTA a subtle directional sheen.
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        stops: const [0.0, 0.55, 1.0],
-        colors: [c.ctaTop, c.ctaMid, c.ctaBottom],
-      ),
-      backgroundColor: c.ctaMid,
-      textColor: c.onCta,
-      // labelLarge (14) is already the CTA size; the CTA only differs by
-      // weight and tracking, so express it as variants rather than a literal.
-      // Color comes from [textColor] above — CustomButton applies it last.
-      textStyle: textTheme.labelLarge!.semiBold.tracked(0.14),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 
@@ -45,9 +46,7 @@ class TeamDisc extends StatelessWidget {
 
   String get _initial {
     if (label != null && label!.isNotEmpty) return label!;
-    final trimmed = seed.trim();
-    if (trimmed.isEmpty) return '?';
-    return trimmed.characters.first.toUpperCase();
+    return initialOf(seed);
   }
 
   @override

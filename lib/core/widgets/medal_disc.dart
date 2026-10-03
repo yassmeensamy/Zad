@@ -6,12 +6,6 @@ import 'responsive_text.dart';
 /// Metallic medal styles for [MedalDisc] avatars.
 enum DiscStyle { gold, silver, bronze, olive }
 
-/// First glyph of [name], upper-cased; `?` when empty/null.
-String discInitial(String? name) {
-  final t = name?.trim() ?? '';
-  return t.isEmpty ? '?' : t.substring(0, 1).toUpperCase();
-}
-
 /// Podium pedestal place → medal style (1st gold, 2nd silver, else bronze).
 DiscStyle discStyleForPlace(int place) => switch (place) {
   1 => DiscStyle.gold,

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/utils/number_format.dart';
 import '../../../../core/widgets/medal_disc.dart';
 import '../../../../core/widgets/responsive_text.dart';
@@ -66,7 +67,7 @@ class RankingRow extends StatelessWidget {
           const SizedBox(width: 12),
           MedalDisc(
             size: 38,
-            initial: discInitial(seed.name),
+            initial: initialOf(seed.name),
             style: discStyleForRow(seed.rank, isMe),
             fontSize: 15,
           ),

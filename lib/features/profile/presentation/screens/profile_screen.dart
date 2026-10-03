@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/services/core_service_locator.dart';
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/custom_button.dart';
@@ -132,7 +133,7 @@ class _MihrabHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = user?.fullName ?? '';
-    final initial = name.isNotEmpty ? name.characters.first : '؟';
+    final initial = initialOf(name, fallback: '؟');
     final email = user?.email;
 
     return Padding(

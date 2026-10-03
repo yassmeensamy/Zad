@@ -13,7 +13,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
 
   final Color borderSubtle;
   final Color borderDefault;
-  final Color borderStrong;
 
   final Color canvas;
   final Color canvasRaised;
@@ -109,8 +108,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color goldDeep;
   final Color goldDark;
   final Color goldInk;
-  final Color manuscriptCream;
-  final Color keyholeInk;
 
   // Brighter parchment gradient used by the Decree celebration screen.
   final Color parchmentTop;
@@ -126,7 +123,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
   final Color sealGreenDeep;
 
   // Closed-keyhole error palette (paired with the manuscript golds).
-  final Color errRimLight;
   final Color errRimDark;
   final Color errRose;
   final Color errStroke;
@@ -155,7 +151,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.dateSoft,
     required this.borderSubtle,
     required this.borderDefault,
-    required this.borderStrong,
     required this.canvas,
     required this.canvasRaised,
     required this.accent,
@@ -207,15 +202,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     required this.goldDeep,
     required this.goldDark,
     required this.goldInk,
-    required this.manuscriptCream,
-    required this.keyholeInk,
     required this.parchmentTop,
     required this.parchmentBottom,
     required this.inkBrown,
     required this.inkBrownDeep,
     required this.sealGreen,
     required this.sealGreenDeep,
-    required this.errRimLight,
     required this.errRimDark,
     required this.errRose,
     required this.errStroke,
@@ -240,7 +232,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     dateSoft: AppColors.dateSoft,
     borderSubtle: AppColors.sand,
     borderDefault: AppColors.dune,
-    borderStrong: AppColors.date,
     canvas: AppColors.ivory,
     canvasRaised: AppColors.sand,
     accent: AppColors.amber,
@@ -292,15 +283,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     goldDeep: AppColors.goldDeep,
     goldDark: AppColors.goldDark,
     goldInk: AppColors.manuscriptInk,
-    manuscriptCream: AppColors.creamLight,
-    keyholeInk: AppColors.date,
     parchmentTop: AppColors.parchmentTop,
     parchmentBottom: AppColors.parchmentBottom,
     inkBrown: AppColors.inkBrown,
     inkBrownDeep: AppColors.inkBrownDeep,
     sealGreen: AppColors.sealGreen,
     sealGreenDeep: AppColors.sealGreenDeep,
-    errRimLight: AppColors.errRimLight,
     errRimDark: AppColors.errRimDark,
     errRose: AppColors.roseBlush,
     errStroke: AppColors.errStroke,
@@ -325,7 +313,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     dateSoft: AppColors.amberLight,
     borderSubtle: AppColors.ivory08,
     borderDefault: AppColors.ivory16,
-    borderStrong: AppColors.ivory32,
     canvas: AppColors.canvasNight,
     canvasRaised: AppColors.nightRaised,
     accent: AppColors.amberGlow,
@@ -390,15 +377,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     goldDeep: AppColors.goldDeep,
     goldDark: AppColors.goldDark,
     goldInk: AppColors.manuscriptInk,
-    manuscriptCream: AppColors.creamLight,
-    keyholeInk: AppColors.date,
     parchmentTop: AppColors.parchmentTop,
     parchmentBottom: AppColors.parchmentBottom,
     inkBrown: AppColors.inkBrown,
     inkBrownDeep: AppColors.inkBrownDeep,
     sealGreen: AppColors.sealGreen,
     sealGreenDeep: AppColors.sealGreenDeep,
-    errRimLight: AppColors.errRimLight,
     errRimDark: AppColors.errRimDark,
     errRose: AppColors.roseBlush,
     errStroke: AppColors.errStroke,
@@ -424,7 +408,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? dateSoft,
     Color? borderSubtle,
     Color? borderDefault,
-    Color? borderStrong,
     Color? canvas,
     Color? canvasRaised,
     Color? accent,
@@ -476,15 +459,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     Color? goldDeep,
     Color? goldDark,
     Color? goldInk,
-    Color? manuscriptCream,
-    Color? keyholeInk,
     Color? parchmentTop,
     Color? parchmentBottom,
     Color? inkBrown,
     Color? inkBrownDeep,
     Color? sealGreen,
     Color? sealGreenDeep,
-    Color? errRimLight,
     Color? errRimDark,
     Color? errRose,
     Color? errStroke,
@@ -507,7 +487,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     dateSoft: dateSoft ?? this.dateSoft,
     borderSubtle: borderSubtle ?? this.borderSubtle,
     borderDefault: borderDefault ?? this.borderDefault,
-    borderStrong: borderStrong ?? this.borderStrong,
     canvas: canvas ?? this.canvas,
     canvasRaised: canvasRaised ?? this.canvasRaised,
     accent: accent ?? this.accent,
@@ -559,15 +538,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
     goldDeep: goldDeep ?? this.goldDeep,
     goldDark: goldDark ?? this.goldDark,
     goldInk: goldInk ?? this.goldInk,
-    manuscriptCream: manuscriptCream ?? this.manuscriptCream,
-    keyholeInk: keyholeInk ?? this.keyholeInk,
     parchmentTop: parchmentTop ?? this.parchmentTop,
     parchmentBottom: parchmentBottom ?? this.parchmentBottom,
     inkBrown: inkBrown ?? this.inkBrown,
     inkBrownDeep: inkBrownDeep ?? this.inkBrownDeep,
     sealGreen: sealGreen ?? this.sealGreen,
     sealGreenDeep: sealGreenDeep ?? this.sealGreenDeep,
-    errRimLight: errRimLight ?? this.errRimLight,
     errRimDark: errRimDark ?? this.errRimDark,
     errRose: errRose ?? this.errRose,
     errStroke: errStroke ?? this.errStroke,
@@ -595,7 +571,6 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       dateSoft: Color.lerp(dateSoft, other.dateSoft, t)!,
       borderSubtle: Color.lerp(borderSubtle, other.borderSubtle, t)!,
       borderDefault: Color.lerp(borderDefault, other.borderDefault, t)!,
-      borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,
       canvas: Color.lerp(canvas, other.canvas, t)!,
       canvasRaised: Color.lerp(canvasRaised, other.canvasRaised, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
@@ -683,15 +658,12 @@ class AppColorsTheme extends ThemeExtension<AppColorsTheme> {
       goldDeep: Color.lerp(goldDeep, other.goldDeep, t)!,
       goldDark: Color.lerp(goldDark, other.goldDark, t)!,
       goldInk: Color.lerp(goldInk, other.goldInk, t)!,
-      manuscriptCream: Color.lerp(manuscriptCream, other.manuscriptCream, t)!,
-      keyholeInk: Color.lerp(keyholeInk, other.keyholeInk, t)!,
       parchmentTop: Color.lerp(parchmentTop, other.parchmentTop, t)!,
       parchmentBottom: Color.lerp(parchmentBottom, other.parchmentBottom, t)!,
       inkBrown: Color.lerp(inkBrown, other.inkBrown, t)!,
       inkBrownDeep: Color.lerp(inkBrownDeep, other.inkBrownDeep, t)!,
       sealGreen: Color.lerp(sealGreen, other.sealGreen, t)!,
       sealGreenDeep: Color.lerp(sealGreenDeep, other.sealGreenDeep, t)!,
-      errRimLight: Color.lerp(errRimLight, other.errRimLight, t)!,
       errRimDark: Color.lerp(errRimDark, other.errRimDark, t)!,
       errRose: Color.lerp(errRose, other.errRose, t)!,
       errStroke: Color.lerp(errStroke, other.errStroke, t)!,

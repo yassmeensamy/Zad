@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 class CustomButtonTheme extends ThemeExtension<CustomButtonTheme> {
   const CustomButtonTheme({
-    this.width,
     this.height,
     this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
     this.margin,
@@ -18,7 +17,6 @@ class CustomButtonTheme extends ThemeExtension<CustomButtonTheme> {
     this.textStyle,
   });
 
-  final double? width;
   final double? height;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
@@ -33,7 +31,6 @@ class CustomButtonTheme extends ThemeExtension<CustomButtonTheme> {
 
   @override
   CustomButtonTheme copyWith({
-    double? width,
     double? height,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
@@ -47,7 +44,6 @@ class CustomButtonTheme extends ThemeExtension<CustomButtonTheme> {
     TextStyle? textStyle,
   }) {
     return CustomButtonTheme(
-      width: width ?? this.width,
       height: height ?? this.height,
       padding: padding ?? this.padding,
       margin: margin ?? this.margin,
@@ -68,7 +64,6 @@ class CustomButtonTheme extends ThemeExtension<CustomButtonTheme> {
       return this;
     }
     return CustomButtonTheme(
-      width: lerpDouble(width, other.width, t) ?? width,
       height: lerpDouble(height, other.height, t),
       padding: EdgeInsetsGeometry.lerp(padding, other.padding, t) ?? padding,
       margin: EdgeInsetsGeometry.lerp(margin, other.margin, t),

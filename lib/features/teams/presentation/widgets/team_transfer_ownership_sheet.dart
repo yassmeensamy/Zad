@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_primary_button.dart';
 import '../../../../theme/theme.dart';
@@ -241,7 +242,7 @@ class _MemberRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final name = member.username.trim();
-    final letter = name.isEmpty ? '—' : name.substring(0, 1).toUpperCase();
+    final letter = initialOf(name, fallback: '—');
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(

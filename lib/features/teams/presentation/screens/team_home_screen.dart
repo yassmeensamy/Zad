@@ -9,6 +9,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/navigation/deep_links.dart';
+import '../../../../core/utils/name_display.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
 import '../../../../core/widgets/app_scaffold.dart';
@@ -129,11 +131,10 @@ class _AppBar extends StatelessWidget {
       case TeamOwnerAction.transfer:
         final newOwner = await showTransferOwnershipSheet(context);
         if (newOwner != null && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'teams.transfer.success'.tr(namedArgs: {'name': newOwner}),
-              ),
+          SnackBarHelper.showSuccess(
+            context,
+            message: 'teams.transfer.success'.tr(
+              namedArgs: {'name': newOwner},
             ),
           );
         }
@@ -1290,7 +1291,7 @@ class _LbEntry {
     final name = member.username.trim();
     return _LbEntry(
       pos: '$rank',
-      letter: name.isEmpty ? '—' : name.substring(0, 1).toUpperCase(),
+      letter: initialOf(name, fallback: '—'),
       name: name.isEmpty ? 'teams.home.member_fallback'.tr() : name,
       meta: member.activityStatus.labelKey.tr(),
       points: '${member.completedLevels}/${member.totalLevels}',

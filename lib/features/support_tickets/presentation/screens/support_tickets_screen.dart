@@ -11,7 +11,6 @@ import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/support_topic_enum.dart';
 import '../../data/models/ticket_model.dart';
@@ -91,7 +90,6 @@ class _SupportTicketsView extends StatelessWidget {
                   context.read<SupportTicketsCubit>().load(isRefresh: true),
               child: Skeletonizer(
                 enabled: isLoading,
-                effect: appShimmerEffect(colors),
                 child: ListView.builder(
                   physics: isLoading
                       ? const NeverScrollableScrollPhysics()

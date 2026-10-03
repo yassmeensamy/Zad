@@ -14,7 +14,6 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../../drafts/presentation/cubit/drafts_cubit.dart';
 import '../../../drafts/presentation/cubit/drafts_state.dart';
@@ -253,7 +252,6 @@ class _LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Column(
       children: [
         ZaadAppBar(
@@ -264,7 +262,6 @@ class _LoadingView extends StatelessWidget {
         ),
         Expanded(
           child: Skeletonizer(
-            effect: appShimmerEffect(colors),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [

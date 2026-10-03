@@ -15,16 +15,6 @@ import 'app_color_scheme.dart';
 class ZaadShadows {
   ZaadShadows._();
 
-  /// Whisper of depth for small tiles / chips that sit close to the surface.
-  /// (blur 12, y+5, olive ink @ 6%).
-  static List<BoxShadow> subtle(AppColorsTheme c) => [
-    BoxShadow(
-      color: c.oliveDeep.withValues(alpha: 0.06),
-      blurRadius: 12,
-      offset: const Offset(0, 5),
-    ),
-  ];
-
   /// The default card lift — list rows, feed items, notifications.
   /// (blur 20, y+10, olive ink @ 8%).
   static List<BoxShadow> card(AppColorsTheme c) => [

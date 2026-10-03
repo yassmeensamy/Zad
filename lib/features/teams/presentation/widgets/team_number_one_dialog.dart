@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../theme/theme.dart';
 import 'teams_painters.dart';
@@ -365,10 +366,7 @@ class _Dialog extends StatelessWidget {
         .scaleXY(begin: 0.86, end: 1, delay: 150.ms, duration: 700.ms, curve: _pop);
   }
 
-  String get _initial {
-    final t = data.leaderName.trim();
-    return t.isEmpty ? '?' : t.characters.first;
-  }
+  String get _initial => initialOf(data.leaderName);
 
   Widget _ribbon(_CelPalette p) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
@@ -1074,7 +1072,6 @@ class _RankBadge extends StatelessWidget {
       child: ResponsiveText(
         '#1',
         style: TextStyle(
-          fontFamily: 'monospace',
           fontSize: 13,
           fontWeight: FontWeight.w700,
           color: AppColors.emberInk,

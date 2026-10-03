@@ -33,9 +33,7 @@ class LevelsScreen extends StatefulWidget {
 class _LevelsScreenState extends State<LevelsScreen>
     with ScrollPaginationMixin<LevelsScreen> {
   late final int _categoryId = int.tryParse(widget.categoryId) ?? -1;
-  late final Color _tint = widget.category != null
-      ? tintFor(widget.category!.id)
-      : randomTint();
+  late final Color _tint = tintFor(_categoryId);
   late final LevelsCubit _cubit = sl<LevelsCubit>()..getLevels(_categoryId);
   late final bool _allowComingSoon = !CompletedCategories.contains(_categoryId);
 

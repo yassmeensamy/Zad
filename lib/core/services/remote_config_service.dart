@@ -6,7 +6,7 @@ import '../constants/remote_config_keys.dart';
 import '../utils/logger.dart';
 
 /// Thin abstraction over [FirebaseRemoteConfig] so the rest of the app reads
-/// remote values through a single, mockable surface. Used by [UpgradeChecker]
+/// remote values through a single, mockable surface. Used by [UpgradeService]
 /// to read the platform-specific minimum allowed client version.
 abstract class RemoteConfigService {
   /// Kicks off the fetch. Never throws and never blocks longer than
@@ -19,10 +19,7 @@ abstract class RemoteConfigService {
   /// fresh values; never await it before the first frame is rendered.
   Future<void> get ready;
 
-  Future<void> refresh();
   String? getString(String key);
-  bool getBool(String key);
-  num getNumber(String key);
 }
 
 class RemoteConfigServiceImpl implements RemoteConfigService {
@@ -71,21 +68,5 @@ class RemoteConfigServiceImpl implements RemoteConfigService {
   }
 
   @override
-  Future<void> refresh() async {
-    final activated = await _remoteConfig.fetchAndActivate();
-    logger.debug(
-      activated
-          ? 'RemoteConfig refreshed and activated'
-          : 'RemoteConfig refreshed but no new values activated',
-    );
-  }
-
-  @override
   String? getString(String key) => _remoteConfig.getString(key);
-
-  @override
-  bool getBool(String key) => _remoteConfig.getBool(key);
-
-  @override
-  num getNumber(String key) => _remoteConfig.getDouble(key);
 }

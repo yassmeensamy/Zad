@@ -19,7 +19,7 @@ class PodiumEntry {
     this.note,
   });
 
-  /// Single glyph shown in the medal disc. See [discInitial].
+  /// Single glyph shown in the medal disc. See `initialOf`.
   final String initial;
   final String name;
 

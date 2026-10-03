@@ -41,8 +41,6 @@ class NetworkRequest {
 }
 
 abstract class NetworkService {
-  Future<Response> execute(NetworkRequest request);
-
   Future<Response> get(
     String url, {
     Map<String, dynamic>? queryParameters,
@@ -91,16 +89,6 @@ abstract class NetworkService {
     bool skipAuth,
     CancelToken? cancelToken,
   });
-
-  Future<Response> download(
-    String url,
-    String savePath, {
-    Map<String, dynamic>? queryParameters,
-    Map<String, dynamic>? headers,
-    bool skipAuth,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  });
 }
 
 class NetworkServiceImpl implements NetworkService {
@@ -115,24 +103,12 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   String _generateRequestId(NetworkRequest request) {
-    dynamic body;
-
-    if (request.data is FormData) {
-      final formData = request.data as FormData;
-      body = {
-        for (var field in formData.fields) field.key: field.value,
-        for (var file in formData.files) file.key: file.value.filename,
-      };
-    } else {
-      body = request.data ?? {};
-    }
-
     final dataString = jsonEncode({
       'method': request.method.toString(),
       'url': request.url,
       'headers': request.headers ?? {},
       'queryParameters': request.queryParameters ?? {},
-      'body': body,
+      'body': request.data ?? {},
     });
 
     final bytes = utf8.encode(dataString);
@@ -163,8 +139,7 @@ class NetworkServiceImpl implements NetworkService {
           if (!kReleaseMode) RequestsInspectorInterceptor(),
         ]);
 
-  @override
-  Future<Response> execute(NetworkRequest request) async {
+  Future<Response> _execute(NetworkRequest request) async {
     final mergedHeaders = {
       ...getDefaultHeaders(),
       if (request.headers != null) ...request.headers!,
@@ -269,7 +244,7 @@ class NetworkServiceImpl implements NetworkService {
     ResponseType responseType = ResponseType.json,
     bool skipAuth = false,
     CancelToken? cancelToken,
-  }) => execute(
+  }) => _execute(
     NetworkRequest(
       method: HttpMethod.get,
       url: url,
@@ -290,7 +265,7 @@ class NetworkServiceImpl implements NetworkService {
     ResponseType responseType = ResponseType.json,
     bool skipAuth = false,
     CancelToken? cancelToken,
-  }) => execute(
+  }) => _execute(
     NetworkRequest(
       method: HttpMethod.post,
       url: url,
@@ -312,7 +287,7 @@ class NetworkServiceImpl implements NetworkService {
     ResponseType responseType = ResponseType.json,
     bool skipAuth = false,
     CancelToken? cancelToken,
-  }) => execute(
+  }) => _execute(
     NetworkRequest(
       method: HttpMethod.patch,
       url: url,
@@ -334,7 +309,7 @@ class NetworkServiceImpl implements NetworkService {
     ResponseType responseType = ResponseType.json,
     bool skipAuth = false,
     CancelToken? cancelToken,
-  }) => execute(
+  }) => _execute(
     NetworkRequest(
       method: HttpMethod.put,
       url: url,
@@ -356,7 +331,7 @@ class NetworkServiceImpl implements NetworkService {
     ResponseType responseType = ResponseType.json,
     bool skipAuth = false,
     CancelToken? cancelToken,
-  }) => execute(
+  }) => _execute(
     NetworkRequest(
       method: HttpMethod.delete,
       url: url,
@@ -368,51 +343,6 @@ class NetworkServiceImpl implements NetworkService {
       cancelToken: cancelToken,
     ),
   );
-
-  @override
-  Future<Response> download(
-    String url,
-    String savePath, {
-    Map<String, dynamic>? queryParameters,
-    Map<String, dynamic>? headers,
-    bool skipAuth = false,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final mergedHeaders = {
-      ...getDefaultHeaders(),
-      if (headers != null) ...headers,
-    };
-
-    final token = cancelToken ?? CancelToken();
-    _pendingRequests.add(token);
-
-    try {
-      final options = Options(
-        headers: mergedHeaders,
-        extra: skipAuth ? {"skipAuth": true} : null,
-      );
-
-      final response = await _client.download(
-        url,
-        savePath,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: token,
-        onReceiveProgress: onReceiveProgress,
-      );
-
-      return response;
-    } on DioException catch (e) {
-      logger.error('Download DioException: ${e.message}');
-      rethrow;
-    } catch (e) {
-      logger.error('Download unexpected error: $e');
-      rethrow;
-    } finally {
-      _pendingRequests.remove(token);
-    }
-  }
 
   Map<String, dynamic> getDefaultHeaders() => {
     'Content-Type': 'application/json',

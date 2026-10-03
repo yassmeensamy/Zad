@@ -10,7 +10,6 @@ import '../../../../core/utils/random_tint.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/gradient_progress_bar.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../core/widgets/islamic_ornaments.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/star_medallion.dart';
@@ -143,7 +142,6 @@ class _CategoriesView extends StatelessWidget {
 
                 return Skeletonizer(
                   enabled: isLoading,
-                  effect: appShimmerEffect(colors),
                   child: RefreshIndicator(
                     onRefresh: () =>
                         context.read<CategoriesCubit>().refreshCurrent(),

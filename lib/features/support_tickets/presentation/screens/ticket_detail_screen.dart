@@ -12,7 +12,6 @@ import '../../../../core/widgets/confirm_dialog.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/responsive_text.dart';
 import '../../../../core/widgets/zaad_app_bar.dart';
-import '../../../../core/widgets/zaad_shimmer.dart';
 import '../../../../theme/theme.dart';
 import '../../data/models/reply_model.dart';
 import '../../data/models/support_topic_enum.dart';
@@ -111,7 +110,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                   .loadDetail(widget.ticketId),
               child: Skeletonizer(
                 enabled: isLoading,
-                effect: appShimmerEffect(colors),
                 child: ListView(
                   physics: isLoading
                       ? const NeverScrollableScrollPhysics()
@@ -385,7 +383,6 @@ class _ConversationThread extends StatelessWidget {
         ),
         if (loading && replies.isEmpty)
           Skeletonizer(
-            effect: appShimmerEffect(colors),
             child: Column(
               children: _placeholderReplies
                   .map((r) => ReplyBubble(reply: r))

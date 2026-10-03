@@ -30,10 +30,7 @@ class AuthInterceptor extends Interceptor {
 
   final Dio _dio =
       Dio(
-          BaseOptions(
-            baseUrl:  "https://zaad-app.com/",
-            validateStatus: (_) => true,
-          ),
+          BaseOptions(validateStatus: (_) => true),
         )
         ..interceptors.addAll([
           // Debug/profile-only network inspector; release builds drop it.
@@ -264,14 +261,11 @@ class AuthInterceptor extends Interceptor {
   }
 
   RequestOptions _cloneRequestOptions(RequestOptions from) {
-    final data = from.data is FormData
-        ? _cloneFormData(from.data as FormData)
-        : from.data;
     return RequestOptions(
       method: from.method,
       path: from.path,
       baseUrl: from.baseUrl,
-      data: data,
+      data: from.data,
       queryParameters: from.queryParameters,
       headers: Map.from(from.headers),
       responseType: from.responseType,
@@ -279,13 +273,6 @@ class AuthInterceptor extends Interceptor {
       cancelToken: from.cancelToken,
       extra: from.extra,
     );
-  }
-
-  FormData _cloneFormData(FormData src) {
-    final copy = FormData();
-    copy.fields.addAll(src.fields);
-    copy.files.addAll(src.files);
-    return copy;
   }
 
   Future<void> _navigateToLogin() async {

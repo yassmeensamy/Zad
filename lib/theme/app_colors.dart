@@ -36,9 +36,6 @@ class AppColors {
   static const Color oliveLeaf = Color(0xFF6B7A4D);
 
   // Dark-mode warm neutrals (kept in the same family)
-  static const Color inkwell = Color(0xFF1F140A);
-  static const Color sepia = Color(0xFF2E2014);
-  static const Color cocoa = Color(0xFF3F2C1C);
   static const Color tobacco = Color(0xFF5A4128);
 
   // ── Date & Ember night canvas (dark mode) ─────────────────────────────
@@ -60,7 +57,6 @@ class AppColors {
 
   // Container & frosted-surface tints — the whole dark mode derives from one
   // set of roasted-brown colours.
-  static const Color nightBeige = Color(0xFF271A10); // warm container
   static const Color nightGlass = Color(0x1FF4ECD8); // ~12% ivory frosted film
 
   // Gold / amber family — brightened accents tuned for legibility on the dark
@@ -100,9 +96,6 @@ class AppColors {
   static const Color discOliveMid = Color(0xFF7A8A5A);
   static const Color discOliveLo = Color(0xFF42502E);
   static const Color discOliveInk = Color(0xFF1A2010);
-  static const Color discDateHi = Color(0xFFD9A878);
-  static const Color discDateMid = Color(0xFFA6622A);
-  static const Color discDateLo = Color(0xFF5E3115);
 
   // App-update dialog medallion — the gilded disc highlight and the brown ink
   // for its arrow glyph. Kept constant across light/dark; the rest of the disc
@@ -113,7 +106,6 @@ class AppColors {
   // Ivory ink at fixed alphas — text & hairlines over the night canvas.
   static const Color ivory78 = Color(0xC7F4ECD8); // secondary text
   static const Color ivory62 = Color(0x9EF4ECD8); // Date & Ember muted text
-  static const Color ivory60 = Color(0x99F4ECD8); // tertiary text
   static const Color ivory40 = Color(0x66F4ECD8); // placeholder text
   static const Color ivory32 = Color(0x52F4ECD8); // strong border
   static const Color ivory16 = Color(0x29F4ECD8); // default border
@@ -195,28 +187,17 @@ class AppColors {
   static const Color sealGreenDeep = Color(0xFF4F7A47);
 
   // Closed-keyhole error tones paired with the manuscript golds.
-  static const Color errRimLight = Color(0xFFD27866);
   static const Color errRimDark = Color(0xFF8B3A30);
   static const Color errStroke = Color(0xFFB5564A);
 
   // ── Centralised feature tones (previously inline hex literals) ────────────
-  // Gilded gradient stops used by the team create / decree banners. Deeper than
-  // the manuscript golds; pair with [olive] and the gold multiply blend.
-  static const Color gildDeep = Color(0xFF6E5025); // banner gradient deep stop
+  // Gilded tone for the team create / decree banners.
   static const Color goldBlend = Color(0xFF8B6A2C); // logo multiply-blend gold
 
   // Date & Ember trend tints — the design's `--up` / `--down` (dark mode).
   static const Color trendUp = Color(0xFF9CCB8E); // gain / success arrow
   static const Color trendDown = Color(0xFFD98A6F); // loss / down arrow
 
-  // Dark roasted-brown surfaces & scrims for dialogs (used at high alpha).
-  // `cardNight*` are the force-update card gradient; `scrimNight` is the outer
-  // backdrop vignette; `nightOliveCard` backs the team-home card in dark mode.
-  static const Color cardNightTop = Color(0xFF281C12); // dialog card top
-  static const Color cardNightBottom = Color(0xFF140E09); // dialog card bottom
-  static const Color scrimNight = Color(0xFF080503); // backdrop outer scrim
-  static const Color nightOliveCard = Color(0xFF10160B); // dark team-home card
-
-  // Warm sand used by leaderboard surfaces at partial alpha.
-  static const Color sandWarm = Color(0xFFDCCDB4);
+  // Backs the team-home card in dark mode.
+  static const Color nightOliveCard = Color(0xFF10160B);
 }

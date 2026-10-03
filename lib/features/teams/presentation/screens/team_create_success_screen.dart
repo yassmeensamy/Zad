@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/core_service_locator.dart';
 import '../../../../core/services/share_service.dart';
+import '../../../../core/utils/name_display.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../core/navigation/deep_links.dart';
@@ -283,11 +285,7 @@ class _MedallionState extends State<_Medallion>
     super.dispose();
   }
 
-  String get _monogram {
-    final t = widget.seed.trim();
-    if (t.isEmpty) return '?';
-    return t.characters.first;
-  }
+  String get _monogram => initialOf(widget.seed);
 
   @override
   Widget build(BuildContext context) {
@@ -791,14 +789,7 @@ class _GildedInviteChip extends StatelessWidget {
   Future<void> _copy(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: code));
     if (!context.mounted) return;
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    messenger?.showSnackBar(
-      SnackBar(
-        content: ResponsiveText('teams.create.copied'),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    SnackBarHelper.showSuccess(context, message: 'teams.create.copied');
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/name_display.dart';
 import '../../../../core/utils/number_format.dart';
-import '../../../../core/widgets/medal_disc.dart';
 import '../../../../core/widgets/podium_row.dart';
 import 'leaderboard_states.dart';
 import 'rank_seed.dart';
@@ -28,7 +28,7 @@ class Podium extends StatelessWidget {
   PodiumEntry _entry(BuildContext context, RankSeed seed) {
     final points = seed.points;
     return PodiumEntry(
-      initial: discInitial(seed.name),
+      initial: initialOf(seed.name),
       name: seed.name,
       caption: '${seed.completed}/${seed.total}',
       flag: seed.flag,

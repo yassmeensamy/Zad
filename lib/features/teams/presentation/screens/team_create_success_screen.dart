@@ -344,7 +344,8 @@ class _MedallionState extends State<_Medallion>
           ResponsiveText(
             _monogram,
             style: TextStyle(
-              fontFamily: 'ElMessiri',
+              fontFamily: AppTextStyles.fontFamily,
+              fontFamilyFallback: AppTextStyles.fontFamilyFallback,
               fontWeight: FontWeight.w700,
               fontSize: 38,
               color: colors.inkBrown,
@@ -606,7 +607,8 @@ class _CopyBlock extends StatelessWidget {
         stops: const [0.0, 0.6, 1.0],
       ),
       style: TextStyle(
-        fontFamily: 'ElMessiri',
+        fontFamily: AppTextStyles.fontFamily,
+        fontFamilyFallback: AppTextStyles.fontFamilyFallback,
         fontWeight: FontWeight.w700,
         fontSize: 30,
         height: 1.0,
@@ -623,7 +625,8 @@ class _CopyBlock extends StatelessWidget {
       teamName,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontFamily: 'ElMessiri',
+        fontFamily: AppTextStyles.fontFamily,
+        fontFamilyFallback: AppTextStyles.fontFamilyFallback,
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w300,
         fontSize: 22,
@@ -637,7 +640,8 @@ class _CopyBlock extends StatelessWidget {
       'teams.create.success_open',
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontFamily: 'ElMessiri',
+        fontFamily: AppTextStyles.fontFamily,
+        fontFamilyFallback: AppTextStyles.fontFamilyFallback,
         fontStyle: FontStyle.italic,
         fontWeight: FontWeight.w300,
         fontSize: 13,

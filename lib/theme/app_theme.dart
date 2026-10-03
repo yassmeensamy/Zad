@@ -32,7 +32,8 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
-      fontFamily: 'ElMessiri',
+      fontFamily: AppTextStyles.fontFamily,
+      fontFamilyFallback: AppTextStyles.fontFamilyFallback,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: isDark ? Colors.transparent : colorScheme.surface,
       textTheme: textTheme,

@@ -5,7 +5,7 @@
 //
 // Fully theme-driven: every colour comes from `context.appColors` so it reads
 // as warm cream/gold in light and roasted brown/amber in dark, and all type
-// uses [AppTextStyles] with the app's default font (ElMessiri).
+// uses [AppTextStyles] with the app's default font (IBMPlexSansArabic).
 import '../../../../core/utils/name_display.dart';
 import 'package:flutter/material.dart';
 

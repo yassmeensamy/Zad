@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 class AppTextStyles {
   AppTextStyles._();
 
+  static const String fontFamily = 'IBMPlexSansArabic';
+
+  /// Plex siblings for glyphs the Arabic cut lacks: Latin Extended
+  /// (Turkish, Bosnian, ā) and Cyrillic (ru, kk), then Devanagari (hi).
+  /// Bengali and Chinese fall through to the system font.
+  static const List<String> fontFamilyFallback = [
+    'IBMPlexSans',
+    'IBMPlexSansDevanagari',
+  ];
+
   static const TextStyle numericLarge = TextStyle(
     fontSize: 96,
     fontWeight: FontWeight.w300,

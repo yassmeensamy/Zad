@@ -283,7 +283,8 @@ class _UpdateCard extends StatelessWidget {
                       'update.arabic_required',
                       textAlign: TextAlign.center,
                       style: AppTextStyles.titleMedium.copyWith(
-                        fontFamily: 'ElMessiri',
+                        fontFamily: AppTextStyles.fontFamily,
+                        fontFamilyFallback: AppTextStyles.fontFamilyFallback,
                         fontWeight: FontWeight.w700,
                         color: colors.textArabic,
                       ),
